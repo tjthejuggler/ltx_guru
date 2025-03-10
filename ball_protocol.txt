@@ -1,0 +1,135 @@
+
+LTX Ball Communication Protocol
+===========================
+
+Overview
+--------
+LTX juggling balls communicate over UDP using a simple command protocol. Each ball:
+- Listens on port 41412
+- Broadcasts its presence regularly
+- Accepts commands for color and brightness control
+
+Network Discovery
+---------------
+1. Ball Discovery Protocol:
+   - Balls broadcast their presence every ~1 second
+   - Broadcast packet structure:
+     * Destination: 255.255.255.255:41412 (network broadcast)
+     * Source: Ball's IP:41412
+     * Contains identifier "NPLAYLTXBALL" in hex (4e504c41594c545842414c4c)
+     * Full packet example:
+       ffffffffffffecfabcaef0ae08004500004b021c0000ff11f7c6c0a80117ffffffffa1c4a1c40037f86a01aef0ae000000000097010000dd3c1f000000000000000000050000004e504c41594c545842414c4c0046004d007a
+     * Packet breakdown:
+       - ff...ff: Ethernet broadcast
+       - 0800: IPv4
+       - 45: IP version 4, header length 5 words
+       - 004b: Total length 75 bytes
+       - a1c4: Source port 41412
+       - a1c4: Destination port 41412
+       - 4e504c41594c545842414c4c: "NPLAYLTXBALL" identifier
+
+   Notes:
+   - Capturing these packets requires root/sudo privileges
+   - Raw sockets must be used to properly parse headers
+   - Balls can be verified by sending a test command
+
+2. Balls can be discovered by either:
+   - Listening for broadcast packets
+   - Actively scanning network and sending test commands
+
+Command Format
+-------------
+All commands follow this structure:
+- 12 bytes total length
+- Byte 0: Always 66 (ASCII 'B')
+- Bytes 1-7: Unused (zero)
+- Byte 8: Command opcode
+- Bytes 9-11: Command parameters
+
+Known Commands
+-------------
+1. Set Color (0x0A):
+   - Opcode: 0x0A
+   - Byte 9: Red value (0-255)
+   - Byte 10: Green value (0-255)
+   - Byte 11: Blue value (0-255)
+   Example: Set to red
+   [66, 0, 0, 0, 0, 0, 0, 0, 0x0A, 255, 0, 0]
+
+2. Set Brightness (0x10):
+   - Opcode: 0x10
+   - Byte 9: Brightness value (0-255)
+   - Bytes 10-11: Unused
+   Example: Set 50% brightness
+   [66, 0, 0, 0, 0, 0, 0, 0, 0x10, 128, 0, 0]
+
+Command Examples (Python)
+-----------------------
+1. Create color command:
+```python
+def create_color_command(r, g, b):
+    cmd = bytearray(12)
+    cmd[0] = 66  # 'B'
+    cmd[8] = 0x0A  # Color opcode
+    cmd[9] = r
+    cmd[10] = g
+    cmd[11] = b
+    return cmd
+```
+
+2. Create brightness command:
+```python
+def create_brightness_command(level):
+    cmd = bytearray(12)
+    cmd[0] = 66  # 'B'
+    cmd[8] = 0x10  # Brightness opcode
+    cmd[9] = level
+    return cmd
+```
+
+3. Send command:
+```python
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.sendto(command, (ball_ip, 41412))
+```
+
+Implementation Notes
+------------------
+1. Ball Verification:
+   - Send a test command (e.g., black color)
+   - Valid balls will respond with some data
+   - Use this to distinguish balls from other UDP devices
+
+2. Network Considerations:
+   - Balls must be on same network as controller
+   - Network must allow UDP broadcasts
+   - Some networks may require specific configuration for broadcast packets
+
+3. Error Handling:
+   - Commands may be lost (UDP is unreliable)
+   - Consider retrying important commands
+   - Monitor for responses when reliability is important
+
+4. Performance:
+   - Commands can be sent rapidly (no known rate limiting)
+   - Multiple balls can be controlled simultaneously
+   - Consider network capacity when controlling many balls
+
+Future Investigation
+------------------
+1. Unknown Command Opcodes:
+   - Other opcodes may exist for additional features
+   - Sequence programming likely uses different protocol
+   - Further analysis needed of .prg file format
+
+2. Potential Features:
+   - Sequence upload protocol
+   - Ball synchronization commands
+   - Status/battery level queries
+   - Firmware update mechanism
+
+3. Areas for Research:
+   - Response packet format/meaning
+   - Additional command parameters
+   - Sequence file structure
+   - Ball-to-ball communication (if any)

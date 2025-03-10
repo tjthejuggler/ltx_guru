@@ -1,0 +1,145 @@
+LTX Ball Network Discovery Protocol
+
+Overview
+--------
+LTX juggling balls broadcast their presence on the network using UDP packets. These discovery packets can be used to automatically detect balls without knowing their IP addresses in advance.
+
+Discovery Protocol Details
+-------------------------
+1. Broadcast Packets:
+   - Balls send UDP broadcast packets to 255.255.255.255
+   - These packets contain the identifier "PLAYLTXBALL"
+   - The packets are sent periodically to maintain presence on the network
+
+2. Packet Structure:
+   - UDP broadcast packet
+   - Contains "PLAYLTXBALL" string in the payload
+   - Source IP: Ball's current IP address
+   - Destination IP: 255.255.255.255 (broadcast)
+
+Python Implementation Example
+---------------------------
+```python
+import socket
+import threading
+import time
+
+def discover_balls(timeout=5):
+    """
+    Listen for LTX ball broadcast packets and return discovered ball IPs
+    
+    Args:
+        timeout (int): How long to listen for broadcasts in seconds
+        
+    Returns:
+        set: Set of discovered ball IP addresses
+    """
+    # Create UDP socket for broadcast receiving
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+    sock.settimeout(0.5)  # Short timeout for checking stop condition
+    
+    # Bind to INADDR_ANY to receive broadcasts
+    sock.bind(('', 41412))  # Use ball's known port
+    
+    discovered_balls = set()
+    start_time = time.time()
+    
+    try:
+        while time.time() - start_time < timeout:
+            try:
+                data, (ip, port) = sock.recvfrom(1024)
+                
+                # Check if packet contains ball identifier
+                if b'PLAYLTXBALL' in data:
+                    discovered_balls.add(ip)
+                    print(f"Discovered ball at IP: {ip}")
+                    
+            except socket.timeout:
+                continue  # Keep listening until timeout
+                
+    finally:
+        sock.close()
+        
+    return discovered_balls
+
+# Example usage:
+if __name__ == "__main__":
+    print("Scanning for LTX balls...")
+    balls = discover_balls()
+    print(f"\nFound {len(balls)} balls:")
+    for ip in balls:
+        print(f"- {ip}")
+```
+
+Kotlin/Android Implementation Notes
+---------------------------------
+For Kotlin/Android implementations:
+
+1. Create a UDP socket listener:
+```kotlin
+private fun startDiscovery() {
+    val socket = DatagramSocket(41412)
+    socket.broadcast = true
+    
+    // Buffer for receiving packets
+    val buffer = ByteArray(1024)
+    val packet = DatagramPacket(buffer, buffer.size)
+    
+    // Run discovery in background
+    CoroutineScope(Dispatchers.IO).launch {
+        while(isActive) {
+            try {
+                socket.receive(packet)
+                val data = String(packet.data, 0, packet.length)
+                
+                if(data.contains("PLAYLTXBALL")) {
+                    val ballIP = packet.address.hostAddress
+                    // Handle discovered ball...
+                }
+            } catch(e: Exception) {
+                // Handle errors...
+            }
+        }
+    }
+}
+```
+
+2. Android Permissions Required:
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+```
+
+General Implementation Tips
+-------------------------
+1. Listen on UDP port 41412 (the ball's known port)
+
+2. Filter packets by checking for "PLAYLTXBALL" identifier
+
+3. Extract the source IP address from matching packets
+
+4. Consider implementing:
+   - Timeout mechanism for discovery
+   - Automatic reconnection if balls disappear
+   - Cache of known balls
+   - Status monitoring (balls should broadcast regularly)
+
+5. Network Considerations:
+   - Must be on same network as balls
+   - Network must allow UDP broadcasts
+   - Some networks may require specific configurations for broadcast packets
+
+Security Notes
+-------------
+1. The discovery protocol uses clear text identifiers
+2. Consider implementing additional verification if operating in untrusted networks
+3. Validate discovered IPs against expected network ranges
+
+Future Improvements
+-----------------
+1. Implement ball status monitoring based on broadcast frequency
+2. Add ball identification/naming capabilities
+3. Handle network changes and automatic rediscovery
+4. Implement secure ball verification

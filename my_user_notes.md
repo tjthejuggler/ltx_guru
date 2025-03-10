@@ -1,0 +1,1 @@
+i should ask claude3.7_think to come up with the most useful .prg files that it would like to see to help it figure out its current misunderstandings.

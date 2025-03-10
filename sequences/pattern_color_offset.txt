@@ -1,0 +1,85 @@
+pattern of color data offset
+
+1 = 15
+2 = 28
+3 = 3B
+4 = 4E
+5 = 61
+6 = 74
+7 = 87
+
+individual duration intros (3 bytes)
+first 2 are always 64 00 ZZ
+ZZ values
+1 = 33 00
+2 = 46 00, 72 01
+3 = 59 00, 85 01, B1 02
+4 = 6C 00, 98 01, C4 02, F0 03
+5 = 7F 00, AB 01, D7 02, 03 04, 2F 05
+6 = 92 00, BE 01, EA 02, 16 04, 42 05, 6E 06
+7 = A5 00, D1 01, FD 02, 29 04, 55 05, 81 06, AD 07
+
+# gets a list of 2 bytes that has the length of the input number, one for each duration section. the first byte of the first number tells us where our color data will start
+def get_duration_intro(i):
+    sequence = []
+    start_value = 0x33  # Initial starting value in hex (51 in decimal)
+    step = 0x13  # The consistent step increase (19 in decimal)
+
+    for index in range(i):
+        value = start_value + (index * step)
+        sequence.append(f"{value:02X} {index:02d}")
+
+    return sequence
+
+# Example usage:
+i = 7
+result = get_sequence(i)
+print(", ".join(result))
+
+
+
+
+pre-CD pattern
+1 = 30 01 00 00 64 00 00 00
+2 = 5C 02 00 00 C8 00 00 00
+3 = 88 03 00 00 2C 01 00 00
+4 = B4 04 00 00 90 01 00 00
+5 = E0 05 00 00 F4 01 00 00
+6 = 0C 07 00 00 58 02 00 00
+7 = 38 08 00 00 BC 02 00 00
+
+
+there is a 64 00 XX before each segments duration section
+duration sections get 16 bits for themself
+there is 10 characters before the RGB starts 43 44 (CD pattern YY YY 00 00 YY YY 00 00)
+
+to calculate the pre-CD pattern:
+
+import struct
+# gets a 10 byte number that goes directly before the color data starts
+def get_color_data_intro(i):
+    # Calculate numerical values
+    part1 = 304 + (i - 1) * 300
+    part2 = 100 * i
+
+    # Pack integers into 4-byte little-endian format
+    part1_hex = struct.pack('<I', part1).hex().upper()
+    part2_hex = struct.pack('<I', part2).hex().upper()
+
+    # Format hex values with spaces every two characters
+    part1_formatted = ' '.join(part1_hex[j:j+2] for j in range(0, 8, 2))
+    part2_formatted = ' '.join(part2_hex[j:j+2] for j in range(0, 8, 2))
+
+    return f"{i} = {part1_formatted} {part2_formatted}"
+
+# Example usage:
+for num in range(1, 8):
+    print(calculate_hex_values(num))
+
+single segment duration (17 bytes)
+64 00 XX XX(calculated in get_duration_intro()) 00 00 XX XX(duration of this segment) XX XX(number of pixels) 01 00   XX XX(duration of this segment) 00   00 00
+
+
+50 52 03 49 4E 05 00 00 00 XX(pixels variable) 00 08 XX(Refresh Rate, duration divisor for segments (0x01=1 sec, 0x0A=0.1 sec, 0x32=0.02 sec, etc.)) 00 50 49
+XX (21 + 19 × (segment_count - 1)) 00 00 00 XX(segment_count) 00 00 00 (this is where we put each of the single segment durations) (get_color_data_intro())
+(color data begins for all segments)

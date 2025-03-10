@@ -1,0 +1,17 @@
+{
+  "default_pixels": 4,
+  "color_format": "hsv",
+  "refresh_rate": 10,
+  "end_time": 450,
+  "sequence": {
+    "0": {"color": [0, 100, 100], "pixels": 4},
+    "50": {"color": [30, 100, 100], "pixels": 4},
+    "100": {"color": [60, 100, 100], "pixels": 4},
+    "150": {"color": [120, 100, 100], "pixels": 4},
+    "200": {"color": [180, 100, 100], "pixels": 4},
+    "250": {"color": [240, 100, 100], "pixels": 4},
+    "300": {"color": [300, 100, 100], "pixels": 4},
+    "350": {"color": [330, 100, 100], "pixels": 4},
+    "400": {"color": [0, 100, 100], "pixels": 4}
+  }
+}
