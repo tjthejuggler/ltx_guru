@@ -1,0 +1,13 @@
+{
+  "default_pixels": 4,
+  "color_format": "rgb",
+  "refresh_rate": 1,
+  "end_time": 10,
+  "sequence": {
+    "0": {"color": [255, 0, 0], "pixels": 4},
+    "2": {"color": [255, 255, 0], "pixels": 4},
+    "4": {"color": [0, 255, 0], "pixels": 4},
+    "6": {"color": [0, 255, 255], "pixels": 4},
+    "8": {"color": [0, 0, 255], "pixels": 4}
+  }
+}

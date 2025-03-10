@@ -32,16 +32,16 @@ def get_duration_intro(i):
     
     For each segment count i, the sequence contains i pairs of hexadecimal values.
     The first value in each pair increases by 0x2C from the previous pair.
-    The second value in each pair is the index (0, 1, 2, etc.).
+    The second value follows a specific pattern for indices.
     
     Examples:
     i=1: 3300
     i=2: 4600, 7201
     i=3: 5900, 8501, B102
     i=4: 6C00, 9801, C402, F003
-    i=5: 7F00, AB01, D702, 0303, 2F04
-    i=6: 9200, BE01, EA02, 1603, 4204, 6E05
-    i=7: A500, D101, FD02, 2903, 5504, 8105, AD06
+    i=5: 7F00, AB01, D702, 0304, 2F05
+    i=6: 9200, BE01, EA02, 1604, 4205, 6E06
+    i=7: A500, D101, FD02, 2904, 5505, 8106, AD07
     """
     print("\n[DURATION_INTRO] Generating sequence for", i, "segments")
     sequence = []
@@ -55,9 +55,15 @@ def get_duration_intro(i):
     # Generate the sequence for this segment count
     value = first_value
     for index in range(i):
+        # Determine the second byte (index value) based on the pattern
+        if index < 3:
+            second_byte = index
+        else:
+            second_byte = index + 1
+            
         # Return as a tuple of (first_byte, second_byte)
-        sequence.append((value, index))
-        print(f"[DURATION_INTRO] Added pair: (0x{value:02X}, {index}) -> {value:02X}{index:02X}")
+        sequence.append((value, second_byte))
+        print(f"[DURATION_INTRO] Added pair: (0x{value:02X}, {second_byte}) -> {value:02X}{second_byte:02X}")
         # Increment value for the next pair
         value = (value + within_row_step) & 0xFF  # Keep within byte range (0-255)
         if index < i - 1:  # Only print next value if not the last iteration
