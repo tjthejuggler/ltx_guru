@@ -1,0 +1,163 @@
+{
+  "name": "Strobe Effect",
+  "default_pixels": 4,
+  "refresh_rate": 50,
+  "total_duration": 30.0,
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "default_pixels": 4,
+      "segments": [
+        {
+          "start_time": 0.0,
+          "end_time": 10.0,
+          "color": [255, 255, 255],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 10,
+                "duty_cycle": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "start_time": 10.0,
+          "end_time": 20.0,
+          "color": [255, 0, 0],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 5,
+                "duty_cycle": 0.3
+              }
+            }
+          ]
+        },
+        {
+          "start_time": 20.0,
+          "end_time": 30.0,
+          "color": [0, 0, 255],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 15,
+                "duty_cycle": 0.7
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ball 2",
+      "default_pixels": 4,
+      "segments": [
+        {
+          "start_time": 0.0,
+          "end_time": 10.0,
+          "color": [0, 0, 255],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 10,
+                "duty_cycle": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "start_time": 10.0,
+          "end_time": 20.0,
+          "color": [255, 255, 255],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 5,
+                "duty_cycle": 0.3
+              }
+            }
+          ]
+        },
+        {
+          "start_time": 20.0,
+          "end_time": 30.0,
+          "color": [255, 0, 0],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 15,
+                "duty_cycle": 0.7
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ball 3",
+      "default_pixels": 4,
+      "segments": [
+        {
+          "start_time": 0.0,
+          "end_time": 10.0,
+          "color": [255, 0, 0],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 10,
+                "duty_cycle": 0.5
+              }
+            }
+          ]
+        },
+        {
+          "start_time": 10.0,
+          "end_time": 20.0,
+          "color": [0, 0, 255],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 5,
+                "duty_cycle": 0.3
+              }
+            }
+          ]
+        },
+        {
+          "start_time": 20.0,
+          "end_time": 30.0,
+          "color": [255, 255, 255],
+          "pixels": 4,
+          "effects": [
+            {
+              "type": "strobe",
+              "parameters": {
+                "frequency": 15,
+                "duty_cycle": 0.7
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "audio_file": null,
+  "key_mapping": "Default"
+}

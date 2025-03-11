@@ -1,0 +1,145 @@
+{
+  "name": "Default Mapping",
+  "mappings": {
+    "q": {
+      "color": [255, 0, 0],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "w": {
+      "color": [255, 165, 0],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "e": {
+      "color": [255, 255, 0],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "r": {
+      "color": [0, 255, 0],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "t": {
+      "color": [0, 255, 255],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "y": {
+      "color": [0, 0, 255],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "u": {
+      "color": [255, 0, 255],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "i": {
+      "color": [255, 255, 255],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "o": {
+      "color": [0, 0, 0],
+      "timelines": [0],
+      "modifiers": []
+    },
+    "a": {
+      "color": [255, 0, 0],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "s": {
+      "color": [255, 165, 0],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "d": {
+      "color": [255, 255, 0],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "f": {
+      "color": [0, 255, 0],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "g": {
+      "color": [0, 255, 255],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "h": {
+      "color": [0, 0, 255],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "j": {
+      "color": [255, 0, 255],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "k": {
+      "color": [255, 255, 255],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "l": {
+      "color": [0, 0, 0],
+      "timelines": [1],
+      "modifiers": []
+    },
+    "z": {
+      "color": [255, 0, 0],
+      "timelines": [2],
+      "modifiers": []
+    },
+    "x": {
+      "color": [255, 165, 0],
+      "timelines": [2],
+      "modifiers": []
+    },
+    "c": {
+      "color": [255, 255, 0],
+      "timelines": [2],
+      "modifiers": []
+    },
+    "v": {
+      "color": [0, 255, 0],
+      "timelines": [2],
+      "modifiers": []
+    },
+    "b": {
+      "color": [0, 255, 255],
+      "timelines": [2],
+      "modifiers": []
+    },
+    "n": {
+      "color": [0, 0, 255],
+      "timelines": [2],
+      "modifiers": []
+    },
+    "m": {
+      "color": [255, 0, 255],
+      "timelines": [2],
+      "modifiers": []
+    },
+    ",": {
+      "color": [255, 255, 255],
+      "timelines": [2],
+      "modifiers": []
+    },
+    ".": {
+      "color": [0, 0, 0],
+      "timelines": [2],
+      "modifiers": []
+    }
+  },
+  "effectModifiers": {
+    "shift": "strobe",
+    "ctrl": "fade",
+    "alt": "pulse"
+  }
+}

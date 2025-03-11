@@ -1,2 +1,37 @@
-manual
-pdf_extractor
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Project-specific files
+*.prg
+*.mp3
+*.wav
+*.ogg
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+.DS_Store
+
+# User-specific settings
+.sequence_maker/

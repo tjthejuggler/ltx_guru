@@ -1,0 +1,148 @@
+# Sequence Maker
+
+A tool for creating color sequences for LTX juggling balls.
+
+## Overview
+
+Sequence Maker is a desktop application that allows you to create, edit, and visualize color sequences for LTX juggling balls. It provides an intuitive interface for designing complex color patterns, synchronizing them with music, and exporting them to the LTX ball format.
+
+## Features
+
+- **Interactive Timeline Editing**: Create and edit color sequences on a timeline interface.
+- **Multiple Ball Support**: Design sequences for multiple juggling balls simultaneously.
+- **Audio Synchronization**: Import audio files and synchronize color changes with the music.
+- **Real-time Visualization**: See how your sequences will look on the juggling balls in real-time.
+- **Keyboard Mapping**: Customize keyboard shortcuts for quick color changes.
+- **Export to JSON and PRG**: Export your sequences to JSON format for use with prg_generator.
+- **LLM Integration**: Use AI to automatically generate sequences based on music analysis.
+
+## Installation
+
+### Prerequisites
+
+- Python 3.8 or higher
+- PyQt6
+- librosa (for audio analysis)
+- PyAudio (for audio playback)
+- numpy
+- matplotlib
+
+### Install Dependencies
+
+```bash
+pip install PyQt6 librosa PyAudio numpy matplotlib
+```
+
+### Run the Application
+
+```bash
+python sequence_maker/main.py
+```
+
+## Usage
+
+### Creating a New Project
+
+1. Launch the application. An untitled project will be created automatically.
+2. Alternatively, click on **File > New** to create a new project.
+3. Set the project name and default settings.
+4. New projects will have 3 timelines by default.
+
+### Adding Color Sequences
+
+1. Select a timeline for a ball.
+2. Double-click on the timeline to add a color segment.
+3. Choose a color for the segment.
+4. Adjust the start and end times by dragging the segment edges.
+
+### Keyboard Mapping
+
+1. Go to **Tools > Key Mapping** to configure keyboard shortcuts.
+2. Assign keys to specific colors and timelines.
+3. Use the keyboard to quickly add colors to the timeline.
+
+### Audio Synchronization
+
+1. Click on **File > Load Audio** to import an audio file.
+2. The audio waveform will be displayed in the audio visualization panel.
+3. Use the playback controls to play, pause, and stop the audio.
+4. Add color changes at specific points in the audio.
+
+### Exporting Sequences
+
+1. Click on **File > Export to JSON** to export the sequences to JSON format.
+2. Click on **File > Export to PRG** to export the sequences to PRG format for use with LTX balls.
+
+## Project Structure
+
+- **app/**: Core application components.
+- **models/**: Data models for the application.
+- **managers/**: Manager classes for different aspects of the application.
+- **ui/**: User interface components.
+- **export/**: Export functionality for different formats.
+- **utils/**: Utility functions.
+
+## Timeline Format
+
+The timeline format is a JSON structure that defines color changes over time. Each timeline represents a juggling ball, and each segment represents a color change.
+
+Example:
+
+```json
+{
+  "pixels": 4,
+  "refresh_rate": 50,
+  "sequence": {
+    "0": {"color": [255, 0, 0]},
+    "5.2": {"color": [0, 255, 0]},
+    "10.8": {"color": [0, 0, 255]}
+  }
+}
+```
+
+## Integration with prg_generator
+
+Sequence Maker is designed to work with prg_generator to create .prg files for LTX juggling balls. The application can export sequences in the JSON format expected by prg_generator, and can also directly call prg_generator to create .prg files.
+
+## Recent Projects
+
+The application keeps track of recently opened projects:
+
+1. Access recent projects from **File > Recent Projects**.
+2. Click on a project in the list to open it.
+3. Use the "Clear Recent Projects" option to clear the list.
+4. The application will remember the last opened project and can reopen it automatically.
+
+## Keyboard Shortcuts
+
+- **Ctrl+N**: New project
+- **Ctrl+O**: Open project
+- **Ctrl+S**: Save project
+- **Ctrl+Shift+S**: Save project as
+- **Ctrl+Z**: Undo
+- **Ctrl+Y**: Redo
+- **Ctrl+X**: Cut segment
+- **Ctrl+C**: Copy segment
+- **Ctrl+V**: Paste segment
+- **Delete**: Delete segment
+- **Space**: Play/Pause audio
+- **Escape**: Stop audio
+- **Ctrl+Plus**: Zoom in
+- **Ctrl+Minus**: Zoom out
+- **Ctrl+0**: Zoom fit
+
+## Configuration
+
+The application settings are stored in the user's home directory:
+
+- **Windows**: `%APPDATA%\SequenceMaker\config.json`
+- **macOS**: `~/Library/Application Support/SequenceMaker/config.json`
+- **Linux**: `~/.config/SequenceMaker/config.json`
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

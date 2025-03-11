@@ -1,0 +1,57 @@
+{
+  "general": {
+    "autosave_interval": 300,
+    "max_autosave_files": 10,
+    "default_project_dir": "~/Documents/SequenceMaker",
+    "recent_projects": [],
+    "recent_audio_files": []
+  },
+  "ui": {
+    "theme": "system",
+    "font_size": 12,
+    "show_welcome_screen": true,
+    "confirm_exit": true,
+    "show_tooltips": true
+  },
+  "timeline": {
+    "default_duration": 60,
+    "default_pixels": 4,
+    "default_refresh_rate": 50,
+    "default_ball_count": 3,
+    "timeline_height": 100,
+    "segment_min_width": 5,
+    "zoom_step": 1.2,
+    "min_zoom": 0.1,
+    "max_zoom": 10.0
+  },
+  "audio": {
+    "volume": 0.8,
+    "visualizations": ["waveform", "beats"],
+    "waveform_color": [0, 128, 255],
+    "beats_color": [255, 0, 0],
+    "beat_detection_threshold": 0.5
+  },
+  "ball_control": {
+    "discovery_timeout": 5,
+    "network_subnet": "192.168.1",
+    "port": 8888,
+    "auto_connect": false,
+    "auto_stream": false
+  },
+  "llm": {
+    "enabled": false,
+    "provider": "openai",
+    "api_key": "",
+    "model": "gpt-4",
+    "temperature": 0.7
+  },
+  "key_mappings": {
+    "default_mapping": "Default",
+    "mappings": {}
+  },
+  "export": {
+    "default_export_dir": "~/Documents/SequenceMaker/exports",
+    "auto_export_prg": false,
+    "include_json_with_prg": true
+  }
+}

@@ -1,0 +1,72 @@
+--- Page 1 ---
+adds canv a s o f s e l e c t e d c o l o r
+/
+a b o v e
+/
+t o l e f t o r r i g h t o f t h e i m a g e Creates n e w p r o j e c t O p e n s p r o j e c t f r o m h a r d d r i v e S a v e s p r o j e c t t o h a r d d r i v e t o w o r k o n i t l a t e r
+{
+i n c l u d i n g m u s i c a n d u s e d u i m a g e s
+}
+E x p o r t s p r g f l e t h a t c a n b e u p l o a d e d t o p r o p I m p o r t s p r g f l e
+{
+o n l y f o r p r g 2.
+0
+-
+p i x e l m o d u l e s
+}
+C h a n g e s p a r a m e t e r s o f o p e n e d p r o j e c t
+-
+r e s o l u t i o n a n d r e f r e s h r a t e image sele c t i o n original im a g e p r e v i e w Animatio n
+{
+p r e v i e w
+]
+P a t t e r n v i e w Adds sele c t e d f a d e t o t i m e l i n e { t o c u r s o r p o s i t i o n o r t o t h e e n d, i f " t o e n d “ c h e c k b o x i s s e l e c t e d A d d s s e l e c t e d c o l o r t o t i m e l i n e
+{
+t o c u r s o r p o s i t i o n o r t o t h e e n d,
+i f
+"
+t o e n d
+“
+c h e c k b o x i s s e l e c t e d A d d s s e l e c t e d i m a g e t o t i m e l i n e
+{
+t o c u r s o r p o s i t i o n o r t o t h e e n d,
+i f
+"
+t o e n d
+“
+c h e c k b o x i s s e l e c t e d Deletes c o n t e n t s o f t h e w h o l e p r o j e c t D e l e t e s s e l e c t e d e v e n t
+/
+i m a g e,
+c o l o r o r f a d e
+/
+t o t h e r i g h t M o v e s s e l e c t e d e v e n t
+/
+i m a g e,
+c o l o r o r f a d e
+/
+t o t h e r i g h t M o v e s s e l e c t e d e v e n t
+/
+i m a g e,
+c o l o r o r f a d e
+/
+t o t h e l e f t sets if the l a t e r e v e n t s a r e g o i n g t o b e m o v e d o r o v e r w r i g h t e d w h e n d u r a t i o n c h a n g e i s a p p l i e d t o s e l e c t e d e v e n t start time d u r a t i o n e n d t i m e o f a c t u a l e v e n t number o f r e p e a t s o f a c t u a l i m a g e w i t h i n i t
+'
+s d u r a t i o n selects im a g e s c a l i n g determin e s h o w m a n y t i m e s t h e i m a g e w i l l b e d i s p l a y e d i n v e r t i c a l s e n s e w i t h i n p r o p
+'
+s r e s o l u t i o n sets if the i m a g e i s t r a n s f o r m e d v e r t i c a l l y i n e a c h r e p e a t crops ima g e f r o m l e f t o r r i g h t applies ch a n g e s
+(
+p r e v i e w i s v i s i b l e w h e n s h i f t
++
+l e f t c l i c k o n i m a g e i n t i m e l i n e
+)
+w h e n b u t t o n i s c l i c k e d c h a n g e s w i l l b e v i s i b l e i n t i m e l i n e closes pre v i e w w i n d o w Drag gree n l i n e o n e v e n t b o u n d a r y t o c h a n g e d u r a t i o n s p a c e b a r t o s t a r t p l a y b a c k
+/
+s o m e m u s i c m u s t b e l o a d e d
+/,
+s p a c e b a r t o s t o p P r e s s
+"
+P
+“
+t o p a u s e p l a y b a c k M o u s e w h e e l t o z o o m i n o r o u t,
+u p a n d d o w n a r r o w s t o z o o m i n a n d o u t fips the i m a g e v e r t i c a l o r h o r i z o n t a l Opens co l o r s e l e c t i o n d i a l o g O p e n s c o l o r s e l e c t i o n d i a l o g f o r b e g i n i n g c o l o r,
+r e s p e c t i v e e n d i n g c o l o r o f t h e f a d e Replaces s e l e c t e d e v e n t i n t i m e l i n e w i t h s e l e c t e d i m a g e R e p l a c e s s e l e c t e d e v e n t i n t i m e l i n e w i t h s e l e c t e d c o l o r R e p l a c e s s e l e c t e d e v e n t i n t i m e l i n e w i t h s e l e c t e d f a d e Opens fo l d e r w i t h i m a g e s { t h i s i s t o l o c a t e f o l d e r o n y o u r c o m p u t e r w h e r e t h e i m a g e s a r e - d o e s n o t o p e n f l e, l o c a t e s f o l d e r R e f r e s h e s t h e f o l d e r c o n t e n t s i f n e w i m a g e w a s c r e a t e d LighTriX E d i t o r

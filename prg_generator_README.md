@@ -83,21 +83,12 @@ The script shows all packets in hex format for debugging purposes. You'll see:
 1. Discovery packets from balls (containing "NPLAYLTXBALL" identifier)
 2. Command packets sent to balls (12-byte format above)
 
-See [ball_protocol.txt](ball_protocol.txt) for detailed protocol documentation.
-
 ### Notes
 
 - Multiple balls can be controlled simultaneously
 - Commands are sent via UDP (no acknowledgment)
 - Network must allow UDP broadcasts
 - Some networks may need configuration for broadcast packets
-
-### Future Work
-
-- Implement sequence programming
-- Add ball synchronization
-- Add status/battery monitoring
-- Investigate additional commands
 
 ### Protocol Details
 
@@ -159,60 +150,7 @@ Note: Packet analysis can be useful for debugging communication issues or unders
 
 ## LTX Ball PRG Generator
 
-This is an updated PRG file generator for LTX LED juggling balls that implements the comprehensive specification of the file format. This generator creates .prg files that can be loaded onto LTX programmable juggling balls.
-
-### File Format Specification
-
-The LTX ball sequence files (.prg) follow a specific binary format:
-
-#### Header Structure (Byte Offsets)
-| Offset (Hex) | Length (Bytes) | Purpose | Details |
-|--------------|----------------|---------|---------|
-| 0x0000 | 8 | File Signature | Always 50 52 03 49 4E 05 00 00 |
-| 0x0008 | 2 | Pixel count | Number of pixels (e.g., 00 04 for 4 pixels) - Big endian |
-| 0x000A | 2 | Bit Depth | Usually 00 08 |
-| 0x000C | 2 | Refresh Rate (Hz) | Defines timing resolution (e.g., 01 00=1Hz) - Little endian |
-| 0x000E | 2 | Constant Marker | Always 50 49 ("PI") |
-| 0x0010 | 4 | Pointer to Duration Data | Always follows formula: 21 + 19×(n - 1) (decimal), with n as number of segments |
-| 0x0014 | 4 | Segment Count | Integer value indicating how many segments follow |
-| 0x0018 | 2 | Timing Constant | Always 64 00 (marks end of metadata/start of durations) |
-| 0x001A | 2 | RGB Data Start Position | Points exactly to the byte where RGB data begins (e.g., 33 00 for a single segment) |
-| 0x001C | 4 | Additional Data | Appears to be 00 00 01 00 |
-| 0x0020 | 2 | Pixel Count (repeated) | Number of pixels again (e.g., 04 00 for 4 pixels) |
-
-#### Segment Duration Data Structure
-
-Each segment's timing definition follows this structure:
-- Pixel count (04 00) (2 bytes)
-- Constant (01 00 00) (3 bytes)
-- Constant (01 00 00 00) (4 bytes)
-- Constant "CD0" (43 44 30) (3 bytes)
-- Duration (2 bytes)
-- Constant (00 00 64 00 00 00) (6 bytes)
-
-#### RGB Color Data
-
-- RGB data begins at the location marked by offset 0x001A (typically 0x33 for a single segment)
-- RGB values appear in 3-byte format (FF 00 00 for red, 00 FF 00 green, etc.)
-- Each color is repeated 100 times for each pixel
-- For example, a 4-pixel red segment would have FF 00 00 repeated 400 times (4 pixels × 100 repetitions)
-
-#### Footer
-
-- The file ends with a footer: 42 54 00 00 00 ("BT" followed by 3 null bytes)
-
-#### Timing Calculation
-
-The actual duration of each segment is calculated as:
-```
-Real Duration (sec) = Duration Value / Refresh Rate (Hz)
-```
-
-For example:
-- 1 second red @ 1Hz refresh rate: Duration value 01 00 = 1 second
-- 0.1 second red @ 10Hz refresh rate: Duration value 01 00 = 0.1 seconds
-- 0.02 second red @ 50Hz refresh rate: Duration value 01 00 = 0.02 seconds
-- 0.001 second red @ 1000Hz refresh rate: Duration value 01 00 = 0.001 seconds
+This is a PRG file generator for LTX LED juggling balls that implements the comprehensive specification of the file format. This generator creates .prg files that can be loaded onto LTX programmable juggling balls.
 
 ### Usage
 
@@ -241,9 +179,9 @@ The generator accepts a JSON file with the following structure:
 - `default_pixels`: Default number of pixels (1-4) used when not specified for a color
 - `color_format`: Color format, "rgb" or "hsv"
 - `refresh_rate`: Timing resolution in Hz (default: 1, meaning seconds)
-- `end_time`: Total duration of the sequence in deciseconds (optional)
+- `end_time`: Total duration of the sequence in seconds (optional)
 - `sequence`: Dictionary of time points and colors
-  - Keys: Time in deciseconds (e.g., "10" = 10 seconds with refresh_rate=1)
+  - Keys: Time in seconds (e.g., "10" = 10 seconds with refresh_rate=1)
   - Values: Object with:
     - `color`: RGB color [R, G, B] with values 0-255
     - `pixels`: Number of pixels for this segment (1-4)
@@ -328,6 +266,59 @@ The generator accepts a JSON file with the following structure:
   }
 }
 ```
+
+### File Format Specification
+
+The LTX ball sequence files (.prg) follow a specific binary format:
+
+#### Header Structure (Byte Offsets)
+| Offset (Hex) | Length (Bytes) | Purpose | Details |
+|--------------|----------------|---------|---------|
+| 0x0000 | 8 | File Signature | Always 50 52 03 49 4E 05 00 00 ('PR\x03IN\x05\x00\x00\x00') |
+| 0x0008 | 2 | Pixel count | Number of pixels (e.g., 00 04 for 4 pixels) - Big endian |
+| 0x000A | 2 | Bit Depth | Usually 00 08 |
+| 0x000C | 2 | Refresh Rate (Hz) | Defines timing resolution (e.g., 01 00=1Hz) - Little endian |
+| 0x000E | 2 | Constant Marker | Always 50 49 ("PI") |
+| 0x0010 | 4 | Pointer to Duration Data | Always follows formula: 21 + 19×(n - 1) (decimal), with n as number of segments |
+| 0x0014 | 4 | Segment Count | Integer value indicating how many segments follow |
+| 0x0018 | 2 | Timing Constant | Always 64 00 (marks end of metadata/start of durations) |
+| 0x001A | 2 | RGB Data Start Position | Points exactly to the byte where RGB data begins (e.g., 33 00 for a single segment) |
+| 0x001C | 4 | Additional Data | Appears to be 00 00 01 00 |
+| 0x0020 | 2 | Pixel Count (repeated) | Number of pixels again (e.g., 04 00 for 4 pixels) |
+
+#### Segment Duration Data Structure
+
+Each segment's timing definition follows this structure:
+- Pixel count (04 00) (2 bytes)
+- Constant (01 00 00) (3 bytes)
+- Constant (01 00 00 00) (4 bytes)
+- Constant "CD0" (43 44 30) (3 bytes)
+- Duration (2 bytes)
+- Constant (00 00 64 00 00 00) (6 bytes)
+
+#### RGB Color Data
+
+- RGB data begins at the location marked by offset 0x001A (typically 0x33 for a single segment)
+- RGB values appear in 3-byte format (FF 00 00 for red, 00 FF 00 green, etc.)
+- Each color is repeated 100 times for each pixel
+- For example, a 4-pixel red segment would have FF 00 00 repeated 400 times (4 pixels × 100 repetitions)
+
+#### Footer
+
+- The file ends with a footer: 42 54 00 00 00 ("BT" followed by 3 null bytes)
+
+#### Timing Calculation
+
+The actual duration of each segment is calculated as:
+```
+Real Duration (sec) = Duration Value / Refresh Rate (Hz)
+```
+
+For example:
+- 1 second red @ 1Hz refresh rate: Duration value 01 00 = 1 second
+- 0.1 second red @ 10Hz refresh rate: Duration value 01 00 = 0.1 seconds
+- 0.02 second red @ 50Hz refresh rate: Duration value 01 00 = 0.02 seconds
+- 0.001 second red @ 1000Hz refresh rate: Duration value 01 00 = 0.001 seconds
 
 ### Implementation Details
 
