@@ -1,5 +1,0 @@
-Error extracting page 1: Non-hexadecimal digit found
-
-Error extracting page 2: Non-hexadecimal digit found
-
-Error extracting page 3: Non-hexadecimal digit found
