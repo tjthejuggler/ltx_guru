@@ -36,4 +36,6 @@ ENV/
 # User-specific settings
 .sequence_maker/
 
+# Directories to ignore
 pdf_extractor/
+manual/
