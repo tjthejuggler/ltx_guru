@@ -1,65 +1,58 @@
 """
 Sequence Maker - Undo Manager
 
-This module defines the UndoManager class, which handles undo and redo operations.
+This module defines the UndoManager class, which handles undo and redo operations
+using a snapshot-based approach.
 """
 
 import logging
+import copy
+import json
 from PyQt6.QtCore import QObject, pyqtSignal
 
 
-class UndoAction:
+class TimelineState:
     """
-    Represents an undoable action.
+    Represents a snapshot of the entire timeline state.
     
     Attributes:
-        action_type (str): Type of action.
-        undo_func (callable): Function to call for undo.
-        redo_func (callable): Function to call for redo.
-        params (dict): Parameters for the undo and redo functions.
+        action_type (str): Type of action that created this state.
+        timelines (list): Deep copy of all timelines.
     """
     
-    def __init__(self, action_type, undo_func, redo_func, **params):
+    def __init__(self, action_type, timelines):
         """
-        Initialize an undo action.
+        Initialize a timeline state.
         
         Args:
-            action_type (str): Type of action.
-            undo_func (callable): Function to call for undo.
-            redo_func (callable): Function to call for redo.
-            **params: Parameters for the undo and redo functions.
+            action_type (str): Type of action that created this state.
+            timelines (list): List of timelines to copy.
         """
         self.action_type = action_type
-        self.undo_func = undo_func
-        self.redo_func = redo_func
-        self.params = params
-    
-    def undo(self):
-        """
-        Perform the undo operation.
         
-        Returns:
-            The result of the undo function.
-        """
-        return self.undo_func(**self.params)
-    
-    def redo(self):
-        """
-        Perform the redo operation.
+        # Create a deep copy of all timelines
+        self.timelines = []
+        for timeline in timelines:
+            # Convert to dict and back to create a deep copy
+            timeline_dict = timeline.to_dict()
+            self.timelines.append(timeline_dict)
         
-        Returns:
-            The result of the redo function.
-        """
-        return self.redo_func(**self.params)
+        # Create a unique ID for this state to help with debugging
+        import uuid
+        self.state_id = str(uuid.uuid4())[:8]
+        
+        # Get logger
+        self.logger = logging.getLogger("SequenceMaker.TimelineState")
+        self.logger.debug(f"Created state {self.state_id} of type {action_type} with {len(timelines)} timelines")
     
     def __str__(self):
-        """Return a string representation of the action."""
-        return f"UndoAction({self.action_type})"
+        """Return a string representation of the state."""
+        return f"TimelineState({self.action_type}, id={self.state_id}, timelines={len(self.timelines)})"
 
 
 class UndoManager(QObject):
     """
-    Manages undo and redo operations.
+    Manages undo and redo operations using a snapshot-based approach.
     
     Signals:
         undo_performed: Emitted when an undo operation is performed.
@@ -91,151 +84,118 @@ class UndoManager(QObject):
         self.undo_stack = []
         self.redo_stack = []
         
-        # Group related actions
+        # For backward compatibility
         self.group_active = False
         self.current_group = []
     
-    def add_action(self, action_type, undo_func, redo_func, **params):
+    def save_state(self, action_type):
         """
-        Add an action to the undo stack.
+        Save the current state of all timelines.
         
         Args:
-            action_type (str): Type of action.
-            undo_func (callable): Function to call for undo.
-            redo_func (callable): Function to call for redo.
-            **params: Parameters for the undo and redo functions.
-        """
-        action = UndoAction(action_type, undo_func, redo_func, **params)
+            action_type (str): Type of action that will be performed.
         
-        # If grouping is active, add to current group
-        if self.group_active:
-            self.current_group.append(action)
-            return
+        Returns:
+            TimelineState: The saved state.
+        """
+        if not self.app.project_manager.current_project:
+            self.logger.warning("Cannot save state: No project loaded")
+            return None
+        
+        # Get all timelines
+        timelines = self.app.project_manager.current_project.timelines
+        
+        # Create a new state
+        state = TimelineState(action_type, timelines)
         
         # Add to undo stack
-        self.undo_stack.append(action)
+        self.undo_stack.append(state)
         
         # Limit stack size
         if len(self.undo_stack) > self.max_stack_size:
             self.undo_stack.pop(0)
         
-        # Clear redo stack
-        self.redo_stack.clear()
+        # Clear redo stack - this is critical for proper undo/redo behavior
+        if self.redo_stack:
+            self.logger.debug(f"Clearing redo stack with {len(self.redo_stack)} items")
+            self.redo_stack.clear()
         
         # Emit signals
         self.undo_stack_changed.emit()
         self.redo_stack_changed.emit()
+        
+        return state
     
-    def begin_group(self):
+    def restore_state(self, state):
         """
-        Begin a group of actions that will be undone/redone together.
-        
-        Returns:
-            bool: True if a new group was started, False if a group was already active.
-        """
-        if self.group_active:
-            self.logger.warning("Cannot begin group: Group already active")
-            return False
-        
-        self.group_active = True
-        self.current_group = []
-        
-        return True
-    
-    def end_group(self, action_type="group"):
-        """
-        End the current group of actions.
+        Restore a saved state.
         
         Args:
-            action_type (str, optional): Type of action for the group. Defaults to "group".
+            state (TimelineState): State to restore.
         
         Returns:
-            bool: True if the group was ended, False if no group was active.
+            bool: True if the state was restored, False otherwise.
         """
-        if not self.group_active:
-            self.logger.warning("Cannot end group: No group active")
+        if not self.app.project_manager.current_project:
+            self.logger.warning("Cannot restore state: No project loaded")
             return False
         
-        # If group is empty, just deactivate
-        if not self.current_group:
-            self.group_active = False
-            return True
+        # Get the project
+        project = self.app.project_manager.current_project
         
-        # Create a group action
-        group = self.current_group.copy()
+        # Clear current timelines
+        old_timelines = project.timelines.copy()
+        project.timelines.clear()
         
-        def undo_group(**_):
-            """Undo all actions in the group in reverse order."""
-            for action in reversed(group):
-                action.undo()
-            return True
+        # Restore timelines from state
+        from models.timeline import Timeline
+        for timeline_dict in state.timelines:
+            timeline = Timeline.from_dict(timeline_dict)
+            project.add_timeline(timeline)
         
-        def redo_group(**_):
-            """Redo all actions in the group in order."""
-            for action in group:
-                action.redo()
-            return True
+        # Notify timeline manager of changes
+        for timeline in old_timelines:
+            self.app.timeline_manager.timeline_removed.emit(timeline)
         
-        # Add group action to undo stack
-        self.undo_stack.append(UndoAction(action_type, undo_group, redo_group))
-        
-        # Limit stack size
-        if len(self.undo_stack) > self.max_stack_size:
-            self.undo_stack.pop(0)
-        
-        # Clear redo stack
-        self.redo_stack.clear()
-        
-        # Reset group state
-        self.group_active = False
-        self.current_group = []
-        
-        # Emit signals
-        self.undo_stack_changed.emit()
-        self.redo_stack_changed.emit()
-        
-        return True
-    
-    def cancel_group(self):
-        """
-        Cancel the current group of actions.
-        
-        Returns:
-            bool: True if the group was canceled, False if no group was active.
-        """
-        if not self.group_active:
-            self.logger.warning("Cannot cancel group: No group active")
-            return False
-        
-        # Reset group state
-        self.group_active = False
-        self.current_group = []
+        for timeline in project.timelines:
+            self.app.timeline_manager.timeline_added.emit(timeline)
         
         return True
     
     def undo(self):
         """
-        Undo the last action.
+        Undo the last action by restoring the previous state.
         
         Returns:
             bool: True if an action was undone, False if the undo stack is empty.
         """
-        if not self.undo_stack:
-            self.logger.info("Cannot undo: Undo stack is empty")
+        if len(self.undo_stack) <= 1:
+            self.logger.info("Cannot undo: Not enough states in undo stack")
             return False
         
-        # Get the last action
-        action = self.undo_stack.pop()
+        # Get the current state (top of undo stack)
+        current_state = self.undo_stack.pop()
         
-        # Perform undo
-        self.logger.info(f"Undoing action: {action}")
-        result = action.undo()
+        # Get the previous state (new top of undo stack)
+        previous_state = self.undo_stack[-1]
         
-        # Add to redo stack
-        self.redo_stack.append(action)
+        # Log undo stack state
+        self.logger.debug(f"Undo stack before undo: {[str(s) for s in self.undo_stack]}")
+        self.logger.debug(f"Redo stack before undo: {[str(s) for s in self.redo_stack]}")
+        
+        # Restore the previous state
+        self.logger.info(f"Undoing to state: {previous_state}")
+        result = self.restore_state(previous_state)
+        
+        # Add current state to redo stack
+        self.redo_stack.append(current_state)
+        
+        # Log stack state after undo
+        self.logger.debug(f"Undo stack after undo: {[str(s) for s in self.undo_stack]}")
+        self.logger.debug(f"Redo stack after undo: {[str(s) for s in self.redo_stack]}")
         
         # Emit signals
-        self.undo_performed.emit(action.action_type)
+        self.undo_performed.emit(current_state.action_type)
         self.undo_stack_changed.emit()
         self.redo_stack_changed.emit()
         
@@ -243,7 +203,7 @@ class UndoManager(QObject):
     
     def redo(self):
         """
-        Redo the last undone action.
+        Redo the last undone action by restoring the next state.
         
         Returns:
             bool: True if an action was redone, False if the redo stack is empty.
@@ -252,18 +212,26 @@ class UndoManager(QObject):
             self.logger.info("Cannot redo: Redo stack is empty")
             return False
         
-        # Get the last undone action
-        action = self.redo_stack.pop()
+        # Get the next state (top of redo stack)
+        next_state = self.redo_stack.pop()
         
-        # Perform redo
-        self.logger.info(f"Redoing action: {action}")
-        result = action.redo()
+        # Log stack state before redo
+        self.logger.debug(f"Undo stack before redo: {[str(s) for s in self.undo_stack]}")
+        self.logger.debug(f"Redo stack before redo: {[str(s) for s in self.redo_stack]}")
         
-        # Add to undo stack
-        self.undo_stack.append(action)
+        # Restore the next state
+        self.logger.info(f"Redoing to state: {next_state}")
+        result = self.restore_state(next_state)
+        
+        # Add next state to undo stack
+        self.undo_stack.append(next_state)
+        
+        # Log stack state after redo
+        self.logger.debug(f"Undo stack after redo: {[str(s) for s in self.undo_stack]}")
+        self.logger.debug(f"Redo stack after redo: {[str(s) for s in self.redo_stack]}")
         
         # Emit signals
-        self.redo_performed.emit(action.action_type)
+        self.redo_performed.emit(next_state.action_type)
         self.undo_stack_changed.emit()
         self.redo_stack_changed.emit()
         
@@ -276,7 +244,7 @@ class UndoManager(QObject):
         Returns:
             bool: True if undo is available, False otherwise.
         """
-        return len(self.undo_stack) > 0
+        return len(self.undo_stack) > 1
     
     def can_redo(self):
         """
@@ -294,7 +262,7 @@ class UndoManager(QObject):
         Returns:
             str: Action type, or None if the undo stack is empty.
         """
-        if not self.undo_stack:
+        if len(self.undo_stack) <= 1:
             return None
         
         return self.undo_stack[-1].action_type
@@ -319,3 +287,29 @@ class UndoManager(QObject):
         # Emit signals
         self.undo_stack_changed.emit()
         self.redo_stack_changed.emit()
+    
+    # For backward compatibility
+    def add_action(self, action_type, **params):
+        """
+        Add an action to the undo stack by saving the current state.
+        
+        Args:
+            action_type (str): Type of action.
+            **params: Ignored for backward compatibility.
+        """
+        self.save_state(action_type)
+    
+    def begin_group(self):
+        """For backward compatibility."""
+        self.logger.debug("begin_group called - using save_state instead")
+        return True
+    
+    def end_group(self, action_type="group"):
+        """For backward compatibility."""
+        self.logger.debug("end_group called - using save_state instead")
+        return True
+    
+    def cancel_group(self):
+        """For backward compatibility."""
+        self.logger.debug("cancel_group called - no action needed")
+        return True

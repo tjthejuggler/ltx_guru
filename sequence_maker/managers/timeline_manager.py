@@ -110,6 +110,10 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot add timeline: No project loaded")
             return None
         
+        # Save state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("add_timeline")
+        
         project = self.app.project_manager.current_project
         
         # Generate default name if none provided
@@ -126,15 +130,6 @@ class TimelineManager(QObject):
         
         # Add to project
         project.add_timeline(timeline)
-        
-        # Record for undo
-        if self.undo_manager:
-            self.undo_manager.add_action(
-                "add_timeline",
-                timeline=timeline,
-                undo_func=self.remove_timeline,
-                redo_func=self.add_timeline_object
-            )
         
         # Emit signal
         self.timeline_added.emit(timeline)
@@ -154,6 +149,10 @@ class TimelineManager(QObject):
         if not self.app.project_manager.current_project:
             self.logger.warning("Cannot add timeline: No project loaded")
             return None
+        
+        # Save state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("add_timeline_object")
         
         # Add to project
         self.app.project_manager.current_project.add_timeline(timeline)
@@ -184,16 +183,9 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot remove timeline: Timeline not found in project")
             return False
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            timeline_index = project.timelines.index(timeline)
-            self.undo_manager.add_action(
-                "remove_timeline",
-                timeline=timeline,
-                timeline_index=timeline_index,
-                undo_func=self.insert_timeline,
-                redo_func=self.remove_timeline
-            )
+            self.undo_manager.save_state("remove_timeline")
         
         # Remove from project
         success = project.remove_timeline(timeline)
@@ -223,6 +215,10 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot insert timeline: No project loaded")
             return None
         
+        # Save state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("insert_timeline")
+        
         project = self.app.project_manager.current_project
         
         # Insert at the specified index
@@ -246,6 +242,10 @@ class TimelineManager(QObject):
         if not self.app.project_manager.current_project:
             self.logger.warning("Cannot duplicate timeline: No project loaded")
             return None
+        
+        # Save state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("duplicate_timeline")
         
         # Create a new timeline with the same properties
         new_timeline = Timeline(
@@ -271,15 +271,6 @@ class TimelineManager(QObject):
         # Add to project
         self.app.project_manager.current_project.add_timeline(new_timeline)
         
-        # Record for undo
-        if self.undo_manager:
-            self.undo_manager.add_action(
-                "add_timeline",
-                timeline=new_timeline,
-                undo_func=self.remove_timeline,
-                redo_func=self.add_timeline_object
-            )
-        
         # Emit signal
         self.timeline_added.emit(new_timeline)
         
@@ -300,17 +291,9 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot rename timeline: No timeline provided")
             return False
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            old_name = timeline.name
-            self.undo_manager.add_action(
-                "rename_timeline",
-                timeline=timeline,
-                old_name=old_name,
-                new_name=name,
-                undo_func=lambda t, n: self.rename_timeline(t, n),
-                redo_func=lambda t, n: self.rename_timeline(t, n)
-            )
+            self.undo_manager.save_state("rename_timeline")
         
         # Rename the timeline
         timeline.name = name
@@ -338,6 +321,10 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot add segment: No timeline provided")
             return None
         
+        # Save state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("add_segment")
+        
         # Use timeline default pixels if none provided
         if pixels is None:
             pixels = timeline.default_pixels
@@ -352,16 +339,6 @@ class TimelineManager(QObject):
         
         # Add to timeline
         timeline.add_segment(segment)
-        
-        # Record for undo
-        if self.undo_manager:
-            self.undo_manager.add_action(
-                "add_segment",
-                timeline=timeline,
-                segment=segment,
-                undo_func=self.remove_segment,
-                redo_func=self.add_segment_object
-            )
         
         # Emit signal
         self.segment_added.emit(timeline, segment)
@@ -382,6 +359,10 @@ class TimelineManager(QObject):
         if not timeline:
             self.logger.warning("Cannot add segment: No timeline provided")
             return None
+        
+        # Save state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("add_segment_object")
         
         # Add to timeline
         timeline.add_segment(segment)
@@ -411,15 +392,9 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot remove segment: Segment not found in timeline")
             return False
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            self.undo_manager.add_action(
-                "remove_segment",
-                timeline=timeline,
-                segment=segment,
-                undo_func=self.add_segment_object,
-                redo_func=self.remove_segment
-            )
+            self.undo_manager.save_state("remove_segment")
         
         # Remove from timeline
         success = timeline.remove_segment(segment)
@@ -458,28 +433,9 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot modify segment: Segment not found in timeline")
             return False
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            old_start_time = segment.start_time
-            old_end_time = segment.end_time
-            old_color = segment.color
-            old_pixels = segment.pixels
-            
-            self.undo_manager.add_action(
-                "modify_segment",
-                timeline=timeline,
-                segment=segment,
-                old_start_time=old_start_time,
-                old_end_time=old_end_time,
-                old_color=old_color,
-                old_pixels=old_pixels,
-                new_start_time=start_time if start_time is not None else old_start_time,
-                new_end_time=end_time if end_time is not None else old_end_time,
-                new_color=color if color is not None else old_color,
-                new_pixels=pixels if pixels is not None else old_pixels,
-                undo_func=self._undo_modify_segment,
-                redo_func=self._redo_modify_segment
-            )
+            self.undo_manager.save_state("modify_segment")
         
         # Modify the segment
         modified = False
@@ -506,27 +462,6 @@ class TimelineManager(QObject):
         
         return modified
     
-    def _undo_modify_segment(self, timeline, segment, old_start_time, old_end_time, old_color, old_pixels, **kwargs):
-        """Undo a segment modification."""
-        return self.modify_segment(
-            timeline=timeline,
-            segment=segment,
-            start_time=old_start_time,
-            end_time=old_end_time,
-            color=old_color,
-            pixels=old_pixels
-        )
-    
-    def _redo_modify_segment(self, timeline, segment, new_start_time, new_end_time, new_color, new_pixels, **kwargs):
-        """Redo a segment modification."""
-        return self.modify_segment(
-            timeline=timeline,
-            segment=segment,
-            start_time=new_start_time,
-            end_time=new_end_time,
-            color=new_color,
-            pixels=new_pixels
-        )
     
     def add_effect_to_segment(self, timeline, segment, effect_type, parameters=None):
         """
@@ -553,16 +488,9 @@ class TimelineManager(QObject):
         # Create new effect
         effect = Effect(effect_type=effect_type, parameters=parameters)
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            self.undo_manager.add_action(
-                "add_effect",
-                timeline=timeline,
-                segment=segment,
-                effect=effect,
-                undo_func=self.remove_effect_from_segment,
-                redo_func=self.add_effect_object_to_segment
-            )
+            self.undo_manager.save_state("add_effect")
         
         # Add to segment
         segment.add_effect(effect)
@@ -627,16 +555,9 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot remove effect: Effect not found in segment")
             return False
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            self.undo_manager.add_action(
-                "remove_effect",
-                timeline=timeline,
-                segment=segment,
-                effect=effect,
-                undo_func=self.add_effect_object_to_segment,
-                redo_func=self.remove_effect_from_segment
-            )
+            self.undo_manager.save_state("remove_effect")
         
         # Remove from segment
         success = segment.remove_effect(effect)
@@ -721,18 +642,9 @@ class TimelineManager(QObject):
         segment = timeline.add_color_at_time(self.position, color, pixels)
         self.logger.debug(f"Created segment: {segment}")
         
-        # Record for undo
+        # Save state for undo
         if self.undo_manager:
-            self.undo_manager.add_action(
-                "add_color",
-                timeline=timeline,
-                segment=segment,
-                position=self.position,
-                color=color,
-                pixels=pixels,
-                undo_func=self.remove_segment,
-                redo_func=self.add_segment_object
-            )
+            self.undo_manager.save_state("add_color")
         
         # Emit signal
         self.segment_added.emit(timeline, segment)

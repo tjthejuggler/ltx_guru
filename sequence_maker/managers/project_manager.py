@@ -90,6 +90,10 @@ class ProjectManager(QObject):
         # Emit signal
         self.project_changed.emit()
         
+        # Save initial state for undo
+        if self.app.undo_manager:
+            self.app.undo_manager.save_state("new_project")
+        
         return project
     
     def load_project(self, file_path):
@@ -120,6 +124,10 @@ class ProjectManager(QObject):
             
             # Emit signal
             self.project_loaded.emit(project)
+            
+            # Save initial state for undo
+            if self.app.undo_manager:
+                self.app.undo_manager.save_state("load_project")
             
             return project
         else:

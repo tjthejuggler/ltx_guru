@@ -408,6 +408,20 @@ class TimelineWidget(QWidget):
     
     def keyPressEvent(self, event):
         """Handle key press events."""
+        # Undo (Ctrl+Z)
+        if event.key() == Qt.Key.Key_Z and event.modifiers() == Qt.KeyboardModifier.ControlModifier:
+            self.app.undo_manager.undo()
+            event.accept()
+            return
+        
+        # Redo (Ctrl+Shift+Z or Ctrl+Y)
+        if ((event.key() == Qt.Key.Key_Z and
+             event.modifiers() == (Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.ShiftModifier)) or
+            (event.key() == Qt.Key.Key_Y and event.modifiers() == Qt.KeyboardModifier.ControlModifier)):
+            self.app.undo_manager.redo()
+            event.accept()
+            return
+        
         # Delete key
         if event.key() == Qt.Key.Key_Delete:
             self.delete_selected_segment()
@@ -833,22 +847,34 @@ class TimelineContainer(QWidget):
         # Convert position to time
         time = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
-        # Check each segment
+        # First check for segment edges (prioritize edges over segment bodies)
+        edge_threshold = 5  # pixels
+        
+        # Find segments with edges near the cursor position
+        edge_segments = []
         for segment in segments:
             # Calculate segment rect
             start_x = int(segment.start_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
             end_x = int(segment.end_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
-            # Check if position is near segment edge
-            edge_threshold = 5  # pixels
-            
             # Check left edge
             if abs(pos.x() - start_x) <= edge_threshold:
-                return segment, "left"
+                edge_segments.append((segment, "left", abs(pos.x() - start_x)))
             
             # Check right edge
             if abs(pos.x() - end_x) <= edge_threshold:
-                return segment, "right"
+                edge_segments.append((segment, "right", abs(pos.x() - end_x)))
+        
+        # If we found edges, return the closest one
+        if edge_segments:
+            # Sort by distance (third element in tuple)
+            edge_segments.sort(key=lambda x: x[2])
+            return edge_segments[0][0], edge_segments[0][1]
+        
+        # If no edges found, check if position is inside any segment
+        for segment in segments:
+            start_x = int(segment.start_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
+            end_x = int(segment.end_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
             # Check if position is in segment
             if start_x <= pos.x() <= end_x:
@@ -1002,19 +1028,59 @@ class TimelineContainer(QWidget):
             if self.parent_widget.resize_edge == "left":
                 # Ensure start time is less than end time
                 if new_time < self.parent_widget.selected_segment.end_time:
+                    # Find any segments that end exactly where this segment starts
+                    adjacent_segment = None
+                    for segment in self.parent_widget.selected_timeline.segments:
+                        if segment != self.parent_widget.selected_segment and abs(segment.end_time - self.parent_widget.selected_segment.start_time) < 0.001:
+                            adjacent_segment = segment
+                            break
+                    
+                    # Save state for undo before making any changes
+                    if adjacent_segment and self.app.undo_manager:
+                        self.app.undo_manager.save_state("resize_segments")
+                    
+                    # Update the selected segment
                     self.app.timeline_manager.modify_segment(
                         timeline=self.parent_widget.selected_timeline,
                         segment=self.parent_widget.selected_segment,
                         start_time=new_time
                     )
+                    
+                    # Also update the adjacent segment if it exists
+                    if adjacent_segment:
+                        self.app.timeline_manager.modify_segment(
+                            timeline=self.parent_widget.selected_timeline,
+                            segment=adjacent_segment,
+                            end_time=new_time
+                        )
             else:  # right edge
                 # Ensure end time is greater than start time
                 if new_time > self.parent_widget.selected_segment.start_time:
+                    # Find any segments that start exactly where this segment ends
+                    adjacent_segment = None
+                    for segment in self.parent_widget.selected_timeline.segments:
+                        if segment != self.parent_widget.selected_segment and abs(segment.start_time - self.parent_widget.selected_segment.end_time) < 0.001:
+                            adjacent_segment = segment
+                            break
+                    
+                    # Save state for undo before making any changes
+                    if adjacent_segment and self.app.undo_manager:
+                        self.app.undo_manager.save_state("resize_segments")
+                    
+                    # Update the selected segment
                     self.app.timeline_manager.modify_segment(
                         timeline=self.parent_widget.selected_timeline,
                         segment=self.parent_widget.selected_segment,
                         end_time=new_time
                     )
+                    
+                    # Also update the adjacent segment if it exists
+                    if adjacent_segment:
+                        self.app.timeline_manager.modify_segment(
+                            timeline=self.parent_widget.selected_timeline,
+                            segment=adjacent_segment,
+                            start_time=new_time
+                        )
         
         else:
             # Update cursor based on mouse position
@@ -1074,8 +1140,23 @@ class TimelineContainer(QWidget):
                     # Add segment at position
                     time = event.pos().x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
                     
-                    # Create segment
-                    self.app.timeline_manager.add_segment(
+                    # Save state for undo before making any changes
+                    if self.app.undo_manager:
+                        self.app.undo_manager.save_state("create_segment")
+                    
+                    # Check if there's an existing segment that contains this time
+                    existing_segment = timeline.get_segment_at_time(time)
+                    
+                    # First modify the existing segment to end at the new segment's start time if needed
+                    if existing_segment:
+                        self.app.timeline_manager.modify_segment(
+                            timeline=timeline,
+                            segment=existing_segment,
+                            end_time=time
+                        )
+                    
+                    # Create new segment
+                    new_segment = self.app.timeline_manager.add_segment(
                         timeline=timeline,
                         start_time=time,
                         end_time=time + 1.0,
