@@ -20,7 +20,8 @@ class Config:
             "max_autosave_files": 5,
             "default_project_dir": str(Path.home() / "SequenceMaker"),
             "recent_projects": [],
-            "recent_audio_files": []
+            "recent_audio_files": [],
+            "last_project": ""
         },
         "timeline": {
             "default_duration": 60,  # seconds

@@ -59,9 +59,15 @@ class SequenceMakerApp:
             self.logger.info(f"Loading audio file: {audio_file}")
             self.audio_manager.load_audio(audio_file)
         else:
-            # Create a new untitled project by default
-            self.logger.info("Creating new untitled project")
-            self.project_manager.new_project("Untitled Project")
+            # Try to load the last opened project
+            last_project = self.config.get("general", "last_project")
+            if last_project and os.path.exists(last_project):
+                self.logger.info(f"Loading last project: {last_project}")
+                self.project_manager.load_project(last_project)
+            else:
+                # Create a new untitled project by default
+                self.logger.info("Creating new untitled project")
+                self.project_manager.new_project("Untitled Project")
     
     def _setup_logging(self):
         """Set up logging configuration."""

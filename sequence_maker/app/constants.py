@@ -70,7 +70,7 @@ AUDIO_FORMAT = "mp3"
 # UI constants
 TIMELINE_HEIGHT = 100  # pixels
 TIMELINE_SEGMENT_MIN_WIDTH = 5  # pixels
-BALL_VISUALIZATION_SIZE = 50  # pixels
+BALL_VISUALIZATION_SIZE = 80  # pixels - increased size for better visibility
 ZOOM_STEP = 1.2  # Zoom factor per step
 MAX_ZOOM = 100.0
 MIN_ZOOM = 0.01

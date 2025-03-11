@@ -151,7 +151,40 @@ class BallManager(QObject):
         Returns:
             bool: True if connection process started, False otherwise.
         """
-        return self.start_discovery()
+        # Start passive discovery
+        self.start_discovery()
+        
+        # Show ball scan dialog
+        from ui.dialogs.ball_scan_dialog import BallScanDialog
+        dialog = BallScanDialog(self.app)
+        dialog.ball_selected.connect(self._on_ball_selected)
+        dialog.exec()
+        
+        return True
+    
+    def _on_ball_selected(self, ball_ip, timeline_index):
+        """
+        Handle ball selected from scan dialog.
+        
+        Args:
+            ball_ip (str): IP address of the selected ball.
+            timeline_index (int): Timeline index to assign the ball to.
+        """
+        self.logger.info(f"Ball selected: {ball_ip} for timeline {timeline_index}")
+        
+        # Check if ball already exists
+        if ball_ip in self.balls:
+            ball = self.balls[ball_ip]
+        else:
+            # Create new ball
+            ball = Ball(ball_ip)
+            self.balls[ball_ip] = ball
+            
+            # Emit discovered signal
+            self.ball_discovered.emit(ball)
+        
+        # Assign ball to timeline
+        self.assign_ball_to_timeline(ball, timeline_index)
     
     def disconnect_balls(self):
         """
@@ -416,6 +449,7 @@ class BallManager(QObject):
             while not self.streaming_stop_event.is_set():
                 # Get current position
                 position = self.app.timeline_manager.position
+                self.logger.debug(f"Streaming worker position: {position:.2f}s")
                 
                 # Get timelines
                 timelines = self.app.timeline_manager.get_timelines()
@@ -424,6 +458,7 @@ class BallManager(QObject):
                 for timeline_index, timeline in enumerate(timelines):
                     # Get color at current position
                     color = timeline.get_color_at_time(position)
+                    self.logger.debug(f"Timeline {timeline_index} color at {position:.2f}s: {color}")
                     
                     # Skip if no color defined
                     if not color:
@@ -431,6 +466,12 @@ class BallManager(QObject):
                     
                     # Send color to ball
                     self.send_color_to_timeline(timeline_index, color)
+                
+                # Ensure timeline manager position is updated from audio manager
+                audio_position = self.app.audio_manager.position
+                if abs(position - audio_position) > 0.01:  # If positions differ by more than 10ms
+                    self.logger.debug(f"Syncing timeline position ({position:.2f}s) with audio position ({audio_position:.2f}s)")
+                    self.app.timeline_manager.set_position(audio_position)
                 
                 # Sleep to reduce CPU usage and network traffic
                 time.sleep(0.05)
@@ -440,6 +481,83 @@ class BallManager(QObject):
         
         finally:
             self.logger.info("Color streaming worker stopped")
+    
+    def send_brightness(self, ball, brightness):
+        """
+        Send a brightness command to a ball.
+        
+        Args:
+            ball (Ball): Ball to send the command to.
+            brightness (int): Brightness value (0-15).
+        
+        Returns:
+            bool: True if command sent successfully, False otherwise.
+        """
+        if ball.ip not in self.balls:
+            self.logger.warning(f"Cannot send brightness: Ball {ball.ip} not found")
+            return False
+        
+        try:
+            # Create UDP socket
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            
+            # Create brightness command packet
+            packet = self._create_brightness_packet(brightness)
+            
+            # Send packet
+            sock.sendto(packet, (ball.ip, ball.port))
+            
+            # Close socket
+            sock.close()
+            
+            return True
+        except Exception as e:
+            self.logger.error(f"Error sending brightness to ball: {e}")
+            return False
+    
+    def send_brightness_to_timeline(self, timeline_index, brightness):
+        """
+        Send a brightness command to the ball assigned to a timeline.
+        
+        Args:
+            timeline_index (int): Timeline index.
+            brightness (int): Brightness value (0-15).
+        
+        Returns:
+            bool: True if command sent successfully, False otherwise.
+        """
+        ball = self.get_ball_for_timeline(timeline_index)
+        if not ball:
+            self.logger.warning(f"Cannot send brightness: No ball assigned to timeline {timeline_index}")
+            return False
+        
+        return self.send_brightness(ball, brightness)
+    
+    def _create_brightness_packet(self, brightness):
+        """
+        Create a brightness command packet.
+        
+        Args:
+            brightness (int): Brightness value (0-15).
+        
+        Returns:
+            bytes: Brightness command packet.
+        """
+        # Ensure brightness is in valid range
+        brightness = max(0, min(15, brightness))
+        
+        # Create UDP header
+        udp_header = struct.pack("!bIBH", 66, 0, 0, 0)
+        
+        # Create brightness command data
+        # Byte 0: Command opcode (0x10 for brightness)
+        # Byte 1: Brightness value
+        data = struct.pack("!BB", 0x10, brightness)
+        
+        # Combine header and data
+        packet = udp_header + data
+        
+        return packet
     
     def _create_color_packet(self, color):
         """
@@ -453,15 +571,19 @@ class BallManager(QObject):
         """
         r, g, b = color
         
-        # Create packet
+        # Create UDP header similar to the Python example
         # Byte 0:    66 (ASCII 'B')
-        # Bytes 1-7: 0 (unused)
-        # Byte 8:    Command opcode (0x0A for color)
-        # Bytes 9-11: RGB values
-        packet = struct.pack('B7sB3B', 
-                            66,                     # 'B'
-                            b'\x00\x00\x00\x00\x00\x00\x00',  # 7 zeros
-                            0x0A,                   # Color command
-                            r, g, b)                # RGB values
+        # Bytes 1-4: 32-bit integer (0)
+        # Byte 5:    8-bit integer (0)
+        # Bytes 6-7: 16-bit integer (0)
+        udp_header = struct.pack("!bIBH", 66, 0, 0, 0)
+        
+        # Create color command data
+        # Byte 0:    Command opcode (0x0A for color)
+        # Bytes 1-3: RGB values (doubled for brightness as in the example)
+        data = struct.pack("!BBBB", 0x0A, min(255, r*2), min(255, g*2), min(255, b*2))
+        
+        # Combine header and data
+        packet = udp_header + data
         
         return packet

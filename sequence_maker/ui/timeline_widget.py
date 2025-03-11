@@ -566,8 +566,8 @@ class TimelineContainer(QWidget):
         Args:
             painter: QPainter instance.
         """
-        # Set pen
-        painter.setPen(QPen(QColor(200, 200, 200), 1))
+        # Set pen with brighter color for better visibility on dark background
+        painter.setPen(QPen(QColor(255, 255, 255), 1))
         
         # Calculate grid spacing based on zoom level
         zoom = self.parent_widget.zoom_level
@@ -602,14 +602,29 @@ class TimelineContainer(QWidget):
         x = first_grid_x
         while x < width:
             painter.drawLine(int(x), 0, int(x), height)
-            
-            # Draw time label
+            # Draw time label with better visibility
             time = x / (self.parent_widget.time_scale * zoom)
             if grid_spacing >= 1.0:
                 time_str = f"{int(time)}s"
             else:
                 time_str = f"{time:.2f}s"
             
+            # Use a font with bold weight for better visibility
+            font = painter.font()
+            font.setBold(True)
+            painter.setFont(font)
+            
+            # Draw text with a small background for better contrast
+            text_rect = painter.fontMetrics().boundingRect(time_str)
+            text_rect.moveLeft(int(x) + 2)
+            text_rect.moveTop(2)
+            text_rect.adjust(-2, -1, 2, 1)  # Add some padding
+            
+            # Draw background
+            painter.fillRect(text_rect, QColor(40, 40, 40, 180))
+            
+            # Draw text
+            painter.drawText(int(x) + 2, 14, time_str)
             painter.drawText(int(x) + 2, 10, time_str)
             
             # Move to next grid line
@@ -639,17 +654,17 @@ class TimelineContainer(QWidget):
             # Draw timeline background
             if timeline == self.parent_widget.selected_timeline:
                 # Selected timeline
-                painter.fillRect(timeline_rect, QColor(220, 220, 240))
+                painter.fillRect(timeline_rect, QColor(60, 60, 80))
             else:
-                # Normal timeline
-                painter.fillRect(timeline_rect, QColor(255, 255, 255))
+                # Normal timeline - black background as requested
+                painter.fillRect(timeline_rect, QColor(30, 30, 30))
             
             # Draw timeline border
             painter.setPen(QPen(QColor(180, 180, 180), 1))
             painter.drawRect(timeline_rect)
             
-            # Draw timeline name
-            painter.setPen(QPen(QColor(0, 0, 0), 1))
+            # Draw timeline name with white text for better visibility on dark background
+            painter.setPen(QPen(QColor(255, 255, 255), 1))
             painter.drawText(
                 timeline_rect.adjusted(5, 5, -5, -5),
                 Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop,

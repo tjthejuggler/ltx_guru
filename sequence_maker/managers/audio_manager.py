@@ -92,6 +92,9 @@ class AudioManager(QObject):
             except Exception as e:
                 self.logger.error(f"Error initializing PyAudio: {e}")
                 self.pyaudio = None
+        
+        # Connect position_changed signal to timeline_manager's set_position method
+        self.position_changed.connect(self._update_timeline_position)
     
     def load_audio(self, file_path):
         """
@@ -621,6 +624,18 @@ class AudioManager(QObject):
         data = data.astype(np.float32)
         
         return (data, pyaudio.paContinue)
+    
+    def _update_timeline_position(self, position):
+        """
+        Update the timeline position when the audio position changes.
+        
+        Args:
+            position (float): New position in seconds.
+        """
+        # Only update if the positions are different
+        if abs(self.app.timeline_manager.position - position) > 0.01:  # 10ms threshold
+            self.logger.debug(f"Updating timeline position from audio: {position:.2f}s")
+            self.app.timeline_manager.set_position(position)
     
     def __del__(self):
         """Clean up resources when the object is destroyed."""

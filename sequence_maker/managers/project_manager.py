@@ -114,6 +114,10 @@ class ProjectManager(QObject):
             # Add to recent projects
             self.app.config.add_recent_project(file_path)
             
+            # Save as last project
+            self.app.config.set("general", "last_project", file_path)
+            self.app.config.save()
+            
             # Emit signal
             self.project_loaded.emit(project)
             
@@ -153,6 +157,10 @@ class ProjectManager(QObject):
         if success:
             # Add to recent projects
             self.app.config.add_recent_project(file_path)
+            
+            # Save as last project
+            self.app.config.set("general", "last_project", file_path)
+            self.app.config.save()
             
             # Emit signal
             self.project_saved.emit(file_path)

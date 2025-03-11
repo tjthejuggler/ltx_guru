@@ -7,13 +7,14 @@ This module defines the MainWindow class, which is the main application window.
 import logging
 import os
 import json
+from pathlib import Path
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
     QMenuBar, QMenu, QToolBar, QStatusBar, QFileDialog, QMessageBox,
-    QLabel
+    QLabel, QTextEdit, QPushButton
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSettings
-from PyQt6.QtGui import QAction, QKeySequence, QIcon
+from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont
 
 from ui.timeline_widget import TimelineWidget
 from ui.ball_widget import BallWidget
@@ -336,7 +337,16 @@ class MainWindow(QMainWindow):
         self.timeline_widget = TimelineWidget(self.app, self)
         self.main_layout.addWidget(self.timeline_widget, 3)  # 3 = larger stretch factor
         
-        # Create ball visualization container at the bottom
+        # Create bottom container with splitter for ball visualizations and LLM chat
+        self.bottom_container = QWidget()
+        self.bottom_layout = QHBoxLayout(self.bottom_container)
+        self.bottom_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Create splitter
+        self.bottom_splitter = QSplitter(Qt.Orientation.Horizontal)
+        self.bottom_layout.addWidget(self.bottom_splitter)
+        
+        # Create ball visualization container (left side)
         self.ball_container = QWidget()
         self.ball_layout = QVBoxLayout(self.ball_container)
         self.ball_layout.setContentsMargins(0, 0, 0, 0)
@@ -345,8 +355,45 @@ class MainWindow(QMainWindow):
         self.ball_widget = BallWidget(self.app, self)
         self.ball_layout.addWidget(self.ball_widget)
         
-        # Add ball container to main layout
-        self.main_layout.addWidget(self.ball_container, 1)  # 1 = small stretch factor
+        # Add ball container to splitter
+        self.bottom_splitter.addWidget(self.ball_container)
+        
+        # Create LLM chat container (right side)
+        self.chat_container = QWidget()
+        self.chat_layout = QVBoxLayout(self.chat_container)
+        self.chat_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Create LLM chat title
+        self.chat_title = QLabel("LLM Chat")
+        self.chat_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.chat_layout.addWidget(self.chat_title)
+        
+        # Create chat history
+        self.chat_history = QTextEdit()
+        self.chat_history.setReadOnly(True)
+        self.chat_layout.addWidget(self.chat_history)
+        
+        # Create input area
+        self.chat_input_layout = QHBoxLayout()
+        self.chat_layout.addLayout(self.chat_input_layout)
+        
+        self.chat_input = QTextEdit()
+        self.chat_input.setPlaceholderText("Type your message here...")
+        self.chat_input.setMaximumHeight(60)
+        self.chat_input_layout.addWidget(self.chat_input)
+        
+        self.chat_send_button = QPushButton("Send")
+        self.chat_send_button.clicked.connect(self._on_llm_chat)
+        self.chat_input_layout.addWidget(self.chat_send_button)
+        
+        # Add chat container to splitter
+        self.bottom_splitter.addWidget(self.chat_container)
+        
+        # Set splitter sizes (2/3 for balls, 1/3 for chat)
+        self.bottom_splitter.setSizes([2, 1])
+        
+        # Add bottom container to main layout
+        self.main_layout.addWidget(self.bottom_container, 1)  # 1 = smaller stretch factor
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -613,9 +660,49 @@ class MainWindow(QMainWindow):
     
     def _on_llm_chat(self):
         """Handle LLM Chat action."""
-        from ui.dialogs.llm_chat_dialog import LLMChatDialog
-        dialog = LLMChatDialog(self.app, self)
-        dialog.exec()
+        # Check if this was triggered by the menu action or the send button
+        sender = self.sender()
+        
+        if sender == self.llm_chat_action:
+            # If triggered by menu action, show the dialog
+            from ui.dialogs.llm_chat_dialog import LLMChatDialog
+            dialog = LLMChatDialog(self.app, self)
+            dialog.exec()
+        else:
+            # If triggered by send button, handle the chat input
+            message = self.chat_input.toPlainText().strip()
+            
+            # Check if message is empty
+            if not message:
+                return
+            
+            # Add message to chat history
+            self._add_chat_message("You", message)
+            
+            # Clear input
+            self.chat_input.clear()
+            
+            # For now, just add a placeholder response
+            self._add_chat_message("Assistant", "LLM integration is not yet fully implemented. This is a placeholder response.")
+    
+    def _add_chat_message(self, sender, message):
+        """
+        Add a message to the chat history.
+        
+        Args:
+            sender (str): Message sender.
+            message (str): Message text.
+        """
+        # Format message
+        formatted_message = f"<b>{sender}:</b><br>{message}<br><br>"
+        
+        # Add to chat history
+        self.chat_history.insertHtml(formatted_message)
+        
+        # Scroll to bottom
+        self.chat_history.verticalScrollBar().setValue(
+            self.chat_history.verticalScrollBar().maximum()
+        )
     
     def _on_play(self):
         """Handle Play action."""
@@ -776,12 +863,26 @@ class MainWindow(QMainWindow):
     
     def _check_unsaved_changes(self):
         """
-        Check if there are unsaved changes and prompt the user.
+        Automatically save the current state to a temporary file.
         
         Returns:
-            bool: True if it's safe to proceed, False if the operation should be canceled.
+            bool: Always returns True to allow the operation to proceed.
         """
-        # TODO: Implement check for unsaved changes
+        # Save current state to a special "active" state file
+        if self.app.project_manager.current_project:
+            # Create a special file path for the active state
+            active_state_path = str(Path.home() / ".sequence_maker" / "active_state.smproj")
+            
+            # Save the project to the active state file
+            self.app.project_manager.current_project.save(active_state_path)
+            
+            # Save this as the last project
+            self.app.config.set("general", "last_project", active_state_path)
+            self.app.config.save()
+            
+            self.logger.info(f"Saved active state to: {active_state_path}")
+        
+        # Always return True to allow the operation to proceed
         return True
     
     def keyPressEvent(self, event):
@@ -892,6 +993,15 @@ class MainWindow(QMainWindow):
         if self._check_unsaved_changes():
             # Save window state
             self._save_window_state()
+            
+            # Save current project state if it exists
+            if self.app.project_manager.current_project:
+                if self.app.project_manager.current_project.file_path:
+                    # Save the current project
+                    self.app.project_manager.save_project()
+                else:
+                    # If the project has never been saved, use autosave
+                    self.app.project_manager._perform_autosave()
             
             # Accept the event
             event.accept()
