@@ -409,6 +409,7 @@ class MainWindow(QMainWindow):
         # Connect project manager signals
         self.app.project_manager.project_loaded.connect(self._on_project_loaded)
         self.app.project_manager.project_saved.connect(self._on_project_saved)
+        self.app.project_manager.project_changed.connect(self._on_project_changed)
         
         # Connect undo manager signals
         self.app.undo_manager.undo_stack_changed.connect(self._update_undo_actions)
@@ -444,6 +445,19 @@ class MainWindow(QMainWindow):
         if self._check_unsaved_changes():
             # Create new project
             self.app.project_manager.new_project()
+            
+            # Force UI refresh
+            self.timeline_widget.timeline_container.update_size()
+            self.timeline_widget.timeline_container.update()
+            
+            # Reset position to 0
+            self.app.timeline_manager.set_position(0.0)
+            
+            # Update window title
+            self._update_window_title()
+            
+            # Show status message
+            self.statusbar.showMessage("Created new project", 5000)
     
     def _on_open(self):
         """Handle Open action."""
@@ -464,18 +478,28 @@ class MainWindow(QMainWindow):
             self.app.project_manager.load_project(file_path)
     
     def _on_save(self):
-        """Handle Save action."""
+        """
+        Handle Save action.
+        
+        Returns:
+            bool: True if the project was saved successfully, False otherwise.
+        """
         # If project has no file path, use Save As
         if not self.app.project_manager.current_project or not self.app.project_manager.current_project.file_path:
-            self._on_save_as()
+            return self._on_save_as()
         else:
             # Save project
-            self.app.project_manager.save_project()
+            return self.app.project_manager.save_project()
     
     def _on_save_as(self):
-        """Handle Save As action."""
+        """
+        Handle Save As action.
+        
+        Returns:
+            bool: True if the project was saved successfully, False otherwise.
+        """
         if not self.app.project_manager.current_project:
-            return
+            return False
         
         # Show file dialog
         file_path, _ = QFileDialog.getSaveFileName(
@@ -491,7 +515,10 @@ class MainWindow(QMainWindow):
                 file_path += PROJECT_FILE_EXTENSION
             
             # Save project
-            self.app.project_manager.save_project(file_path)
+            return self.app.project_manager.save_project(file_path)
+        
+        # User cancelled the save dialog
+        return False
     
     def _on_load_audio(self):
         """Handle Load Audio action."""
@@ -567,11 +594,17 @@ class MainWindow(QMainWindow):
                 with open(json_path, 'w') as f:
                     json.dump(json_data, f, indent=2)
                 
-                # Call prg_generator
+                # Call prg_generator with absolute path
                 try:
                     import subprocess
+                    import os
+                    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+                    prg_generator_path = os.path.join(root_dir, "prg_generator.py")
+                    
+                    self.logger.debug(f"Using prg_generator at: {prg_generator_path}")
+                    
                     subprocess.run(
-                        ["python3", "prg_generator.py", json_path, prg_path],
+                        ["python3", prg_generator_path, json_path, prg_path],
                         check=True
                     )
                 except Exception as e:
@@ -714,7 +747,9 @@ class MainWindow(QMainWindow):
     
     def _on_stop(self):
         """Handle Stop action."""
-        self.app.audio_manager.stop()
+        self.logger.debug("Stop button clicked, calling audio_manager.stop()")
+        result = self.app.audio_manager.stop()
+        self.logger.debug(f"audio_manager.stop() returned {result}")
     
     def _on_about(self):
         """Handle About action."""
@@ -756,8 +791,8 @@ class MainWindow(QMainWindow):
     
     def _on_project_loaded(self, project):
         """Handle project loaded signal."""
-        # Update window title
-        self.setWindowTitle(f"Sequence Maker - {project.name}")
+        # Update window title (no star since it was just loaded)
+        self._update_window_title()
         
         # Update status bar
         self.statusbar.showMessage(f"Loaded project: {project.name}", 5000)
@@ -767,9 +802,8 @@ class MainWindow(QMainWindow):
     
     def _on_project_saved(self, file_path):
         """Handle project saved signal."""
-        # Update window title
-        project_name = self.app.project_manager.current_project.name
-        self.setWindowTitle(f"Sequence Maker - {project_name}")
+        # Update window title (no star since it was just saved)
+        self._update_window_title()
         
         # Update status bar
         self.statusbar.showMessage(f"Saved project to: {file_path}", 5000)
@@ -808,13 +842,13 @@ class MainWindow(QMainWindow):
     
     def _open_recent_project(self, project_path):
         """Open a project from the recent projects list."""
-        # Check if file exists
-        if not os.path.exists(project_path):
+        # Check if file exists and is valid
+        if not project_path or project_path == "False" or not os.path.exists(project_path):
             # Show error message
             QMessageBox.warning(
                 self,
                 "File Not Found",
-                f"The project file could not be found:\n{project_path}"
+                f"The project file could not be found or is invalid:\n{project_path}"
             )
             
             # Remove from recent projects
@@ -832,6 +866,7 @@ class MainWindow(QMainWindow):
             return
         
         # Load project
+        self.logger.debug(f"Opening recent project: {project_path}")
         self.app.project_manager.load_project(project_path)
     
     def _clear_recent_projects(self):
@@ -842,6 +877,25 @@ class MainWindow(QMainWindow):
         
         # Update menu
         self._update_recent_projects_menu()
+    
+    def _on_project_changed(self):
+        """Handle project changed signal."""
+        # Update window title to show unsaved changes
+        self._update_window_title()
+    
+    def _update_window_title(self):
+        """Update the window title, adding a star if there are unsaved changes."""
+        if not self.app.project_manager.current_project:
+            self.setWindowTitle("Sequence Maker")
+            return
+        
+        project_name = self.app.project_manager.current_project.name
+        
+        # Add a star if there are unsaved changes
+        if self.app.project_manager.has_unsaved_changes:
+            self.setWindowTitle(f"Sequence Maker - {project_name} *")
+        else:
+            self.setWindowTitle(f"Sequence Maker - {project_name}")
     
     def _update_undo_actions(self):
         """Update undo/redo actions based on undo manager state."""
@@ -863,26 +917,38 @@ class MainWindow(QMainWindow):
     
     def _check_unsaved_changes(self):
         """
-        Automatically save the current state to a temporary file.
+        Check if there are unsaved changes and prompt the user to save if needed.
         
         Returns:
-            bool: Always returns True to allow the operation to proceed.
+            bool: True if the operation should proceed, False if it should be cancelled.
         """
-        # Save current state to a special "active" state file
-        if self.app.project_manager.current_project:
-            # Create a special file path for the active state
-            active_state_path = str(Path.home() / ".sequence_maker" / "active_state.smproj")
-            
-            # Save the project to the active state file
-            self.app.project_manager.current_project.save(active_state_path)
-            
-            # Save this as the last project
-            self.app.config.set("general", "last_project", active_state_path)
-            self.app.config.save()
-            
-            self.logger.info(f"Saved active state to: {active_state_path}")
+        # If no project or no unsaved changes, proceed
+        if not self.app.project_manager.current_project or not self.app.project_manager.has_unsaved_changes:
+            return True
         
-        # Always return True to allow the operation to proceed
+        # Ask user if they want to save changes
+        response = QMessageBox.question(
+            self,
+            "Save Changes",
+            "The current project has unsaved changes. Do you want to save them?",
+            QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel,
+            QMessageBox.StandardButton.Save
+        )
+        
+        if response == QMessageBox.StandardButton.Cancel:
+            # User cancelled, don't proceed
+            return False
+        
+        if response == QMessageBox.StandardButton.Save:
+            # User wants to save
+            if not self.app.project_manager.current_project.file_path:
+                # Project has never been saved, show Save As dialog
+                return self._on_save_as()
+            else:
+                # Project has been saved before, use existing path
+                return self.app.project_manager.save_project()
+        
+        # User chose to discard changes, proceed
         return True
     
     def keyPressEvent(self, event):
@@ -993,15 +1059,6 @@ class MainWindow(QMainWindow):
         if self._check_unsaved_changes():
             # Save window state
             self._save_window_state()
-            
-            # Save current project state if it exists
-            if self.app.project_manager.current_project:
-                if self.app.project_manager.current_project.file_path:
-                    # Save the current project
-                    self.app.project_manager.save_project()
-                else:
-                    # If the project has never been saved, use autosave
-                    self.app.project_manager._perform_autosave()
             
             # Accept the event
             event.accept()

@@ -8,9 +8,9 @@ pattern of color data offset
 6 = 74
 7 = 87
 
-individual duration intros (3 bytes)
-first 2 are always 64 00 ZZ
-ZZ values
+individual duration intros (4 bytes)
+first 2 are always 64 00 ZZ ZZ
+ZZ ZZ values
 1 = 33 00
 2 = 46 00, 72 01
 3 = 59 00, 85 01, B1 02

@@ -51,9 +51,15 @@ class PRGExporter:
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
             
-            # Call prg_generator.py
+            # Call prg_generator.py with absolute path
+            import os
+            root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+            prg_generator_path = os.path.join(root_dir, "prg_generator.py")
+            
+            self.logger.debug(f"Using prg_generator at: {prg_generator_path}")
+            
             result = subprocess.run(
-                ["python3", "prg_generator.py", temp_json_path, file_path],
+                ["python3", prg_generator_path, temp_json_path, file_path],
                 capture_output=True,
                 text=True,
                 check=True

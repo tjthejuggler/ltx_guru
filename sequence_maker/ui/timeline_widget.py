@@ -205,14 +205,17 @@ class TimelineWidget(QWidget):
         if position < 0:
             position = 0
         
+        # Log the position change
+        self.logger.debug(f"Setting position from {self.position:.2f}s to {position:.2f}s")
+        
         # Update position
         self.position = position
         
         # Ensure position marker is visible
         self._ensure_position_visible()
         
-        # Update timeline container
-        self.timeline_container.update()
+        # Force a complete repaint of the timeline container
+        self.timeline_container.force_repaint()
         
         # Emit signal
         self.position_changed.emit(position)
@@ -228,10 +231,20 @@ class TimelineWidget(QWidget):
         # Get current scroll position
         scroll_pos = self.scroll_area.horizontalScrollBar().value()
         
+        # Log for debugging
+        self.logger.debug(f"Ensuring position visible: pos_x={pos_x}, scroll_pos={scroll_pos}, viewport_width={viewport_width}")
+        
+        # If position is 0, always scroll to the beginning
+        if self.position == 0.0:
+            self.logger.debug("Position is 0, scrolling to beginning")
+            self.scroll_area.horizontalScrollBar().setValue(0)
+            return
+        
         # Check if position is outside visible area
         if pos_x < scroll_pos or pos_x > scroll_pos + viewport_width:
             # Scroll to make position visible
             new_scroll_pos = max(0, pos_x - viewport_width / 2)
+            self.logger.debug(f"Position outside visible area, scrolling to {new_scroll_pos}")
             self.scroll_area.horizontalScrollBar().setValue(int(new_scroll_pos))
     
     def select_timeline(self, timeline):
@@ -403,8 +416,11 @@ class TimelineWidget(QWidget):
         # Ensure position marker is visible
         self._ensure_position_visible()
         
-        # Redraw
-        self.timeline_container.update()
+        # Force a complete repaint of the timeline container
+        self.timeline_container.force_repaint()
+        
+        # Log the position change for debugging
+        self.logger.debug(f"Position changed to {position:.2f}s")
     
     def keyPressEvent(self, event):
         """Handle key press events."""
@@ -546,6 +562,17 @@ class TimelineContainer(QWidget):
         
         # Set minimum size
         self.setMinimumSize(width, height)
+    
+    def force_repaint(self):
+        """Force a complete repaint of the timeline container."""
+        self.app.logger.debug("Forcing complete repaint of timeline container")
+        
+        # Schedule a full repaint
+        self.update()
+        
+        # Process pending events to ensure UI updates immediately
+        from PyQt6.QtCore import QCoreApplication
+        QCoreApplication.processEvents()
     
     def paintEvent(self, event):
         """
@@ -755,9 +782,16 @@ class TimelineContainer(QWidget):
         # Calculate position in pixels
         pos_x = int(self.parent_widget.position * self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
-        # Draw position line
-        painter.setPen(QPen(QColor(255, 0, 0), 2))
+        # Log the position for debugging
+        self.app.logger.debug(f"Drawing position marker at x={pos_x} (position={self.parent_widget.position:.2f}s)")
+        
+        # Draw position line with a more visible style
+        painter.setPen(QPen(QColor(255, 0, 0), 3))  # Increased width for better visibility
         painter.drawLine(pos_x, 0, pos_x, self.height())
+        
+        # Draw a small circle at the top of the line for better visibility
+        painter.setBrush(QBrush(QColor(255, 0, 0)))
+        painter.drawEllipse(pos_x - 4, 0, 8, 8)
     
     def _get_color_name(self, color):
         """

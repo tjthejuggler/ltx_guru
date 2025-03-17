@@ -133,12 +133,15 @@ class SequenceMakerApp:
         )
         
         # Connect project signals
+        # Note: We don't connect open_action directly to load_project because
+        # load_project requires a file path parameter, which is handled by _on_open in main_window.py
         self.main_window.new_action.triggered.connect(
             self.project_manager.new_project
         )
-        self.main_window.open_action.triggered.connect(
-            self.project_manager.load_project
-        )
+        # Don't connect open_action directly to load_project
+        # self.main_window.open_action.triggered.connect(
+        #     self.project_manager.load_project
+        # )
         self.main_window.save_action.triggered.connect(
             self.project_manager.save_project
         )

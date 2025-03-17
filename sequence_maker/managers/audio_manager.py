@@ -127,6 +127,10 @@ class AudioManager(QObject):
             # Add to recent audio files
             self.app.config.add_recent_audio(file_path)
             
+            # Ensure position change is properly propagated
+            self.position_changed.emit(self.position)
+            self._update_timeline_position(self.position)
+            
             # Emit signal
             self.audio_loaded.emit(file_path, self.duration)
             
@@ -265,20 +269,24 @@ class AudioManager(QObject):
             bool: True if playback stopped, False otherwise.
         """
         if not self.playing:
+            self.logger.debug("stop() called but not playing, returning False")
             return False
         
         self.logger.info("Stopping audio playback")
         
         # Set stop event
         self.playback_stop_event.set()
+        self.logger.debug("Set playback_stop_event")
         
         # Wait for thread to finish
         if self.playback_thread and self.playback_thread.is_alive():
+            self.logger.debug("Waiting for playback thread to finish")
             self.playback_thread.join(timeout=1.0)
         
         # Close stream if open
         if self.stream:
             try:
+                self.logger.debug("Closing audio stream")
                 self.stream.stop_stream()
                 self.stream.close()
             except Exception as e:
@@ -290,11 +298,25 @@ class AudioManager(QObject):
         self.playing = False
         self.paused = False
         self.position = 0.0
+        self.logger.debug("Reset state: playing=False, paused=False, position=0.0")
         
-        # Emit signals
+        # Directly set the timeline manager position to 0.0
+        self.logger.debug("Directly setting timeline manager position to 0.0")
+        self.app.timeline_manager.set_position(0.0)
+        
+        # Emit signals - ensure position change is properly propagated
+        self.logger.debug("Emitting position_changed signal with position=0.0")
         self.position_changed.emit(self.position)
+        
+        # Force an update to the timeline manager position
+        self.logger.debug("Forcing update to timeline manager position")
+        self._update_timeline_position(self.position)
+        
+        # Emit audio stopped signal
+        self.logger.debug("Emitting audio_stopped signal")
         self.audio_stopped.emit()
         
+        self.logger.debug("stop() completed successfully")
         return True
     
     def seek(self, position):
@@ -318,8 +340,11 @@ class AudioManager(QObject):
         # Update position
         self.position = position
         
-        # Emit signal
+        # Emit signal - ensure position change is properly propagated
         self.position_changed.emit(position)
+        
+        # Force an update to the timeline manager position
+        self._update_timeline_position(position)
         
         return True
     
@@ -492,8 +517,13 @@ class AudioManager(QObject):
                 self.paused = False
                 self.position = 0.0
                 
-                # Emit signals
+                # Emit signals - ensure position change is properly propagated
                 self.position_changed.emit(self.position)
+                
+                # Force an update to the timeline manager position
+                self._update_timeline_position(self.position)
+                
+                # Emit audio stopped signal
                 self.audio_stopped.emit()
         
         except Exception as e:
@@ -559,8 +589,13 @@ class AudioManager(QObject):
                 self.paused = False
                 self.position = 0.0
                 
-                # Emit signals
+                # Emit signals - ensure position change is properly propagated
                 self.position_changed.emit(self.position)
+                
+                # Force an update to the timeline manager position
+                self._update_timeline_position(self.position)
+                
+                # Emit audio stopped signal
                 self.audio_stopped.emit()
         
         except Exception as e:
@@ -632,10 +667,15 @@ class AudioManager(QObject):
         Args:
             position (float): New position in seconds.
         """
-        # Only update if the positions are different
-        if abs(self.app.timeline_manager.position - position) > 0.01:  # 10ms threshold
-            self.logger.debug(f"Updating timeline position from audio: {position:.2f}s")
+        # Log current positions
+        self.logger.debug(f"_update_timeline_position called with position={position:.2f}s, current timeline position={self.app.timeline_manager.position:.2f}s")
+        
+        # Always update if position is 0.0 (stop button was pressed) or positions are different
+        if position == 0.0 or abs(self.app.timeline_manager.position - position) > 0.01:  # 10ms threshold
+            self.logger.debug(f"Updating timeline position to {position:.2f}s")
             self.app.timeline_manager.set_position(position)
+        else:
+            self.logger.debug(f"Positions are similar, not updating timeline position")
     
     def __del__(self):
         """Clean up resources when the object is destroyed."""

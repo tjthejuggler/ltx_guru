@@ -613,9 +613,12 @@ class TimelineManager(QObject):
         if position < 0:
             position = 0
         
+        self.logger.debug(f"TimelineManager.set_position called with position={position:.2f}s, current position={self.position:.2f}s")
+        
         self.position = position
         
         # Emit signal
+        self.logger.debug(f"TimelineManager emitting position_changed signal with position={position:.2f}s")
         self.position_changed.emit(position)
     
     def add_color_at_position(self, timeline_index, color, pixels=None):
@@ -666,3 +669,23 @@ class TimelineManager(QObject):
             return None
         
         return timeline.get_color_at_time(self.position)
+    
+    def update_timelines(self):
+        """
+        Update all timelines in the UI.
+        This should be called when a project is loaded to refresh the timeline display.
+        """
+        self.logger.debug("Updating timelines in UI")
+        
+        # Get all timelines from the current project
+        timelines = self.get_timelines()
+        
+        # Emit signals for each timeline to refresh the UI
+        for timeline in timelines:
+            self.logger.debug(f"Emitting timeline_added signal for timeline: {timeline.name}")
+            self.timeline_added.emit(timeline)
+            
+            # Also emit signals for each segment in the timeline
+            for segment in timeline.segments:
+                self.logger.debug(f"Emitting segment_added signal for segment in timeline {timeline.name}")
+                self.segment_added.emit(timeline, segment)

@@ -35,6 +35,9 @@ class ProjectManager(QObject):
     project_changed = pyqtSignal()
     autosave_completed = pyqtSignal(str)
     
+    # Property to track if project has unsaved changes
+    has_unsaved_changes = False
+    
     def __init__(self, app):
         """
         Initialize the project manager.
@@ -57,6 +60,9 @@ class ProjectManager(QObject):
         self.autosave_dir.mkdir(parents=True, exist_ok=True)
         self.autosave_thread = None
         self.autosave_stop_event = threading.Event()
+        
+        # Connect to our own project_changed signal to update the unsaved changes flag
+        self.project_changed.connect(self._on_project_changed)
     
     def new_project(self, name="Untitled Project"):
         """
@@ -78,7 +84,7 @@ class ProjectManager(QObject):
         project.refresh_rate = self.app.config.get("timeline", "default_refresh_rate")
         project.total_duration = self.app.config.get("timeline", "default_duration")
         
-        # Create default timelines
+        # Create default empty timelines
         default_ball_count = self.app.config.get("timeline", "default_ball_count")
         for i in range(default_ball_count):
             timeline = Timeline(name=f"Ball {i+1}", default_pixels=project.default_pixels)
@@ -87,12 +93,19 @@ class ProjectManager(QObject):
         # Set as current project
         self.current_project = project
         
+        # New projects are considered "clean" (no unsaved changes)
+        self.has_unsaved_changes = False
+        
         # Emit signal
         self.project_changed.emit()
         
         # Save initial state for undo
         if self.app.undo_manager:
             self.app.undo_manager.save_state("new_project")
+        
+        # Force UI update by emitting signals for each timeline
+        for timeline in project.timelines:
+            self.app.timeline_manager.timeline_added.emit(timeline)
         
         return project
     
@@ -108,6 +121,12 @@ class ProjectManager(QObject):
         """
         self.logger.info(f"Loading project from: {file_path}")
         
+        # Check if file_path is valid
+        if not file_path or file_path == "False":
+            self.logger.error(f"Invalid project file path: {file_path}")
+            self.logger.debug(f"Call stack: load_project called with invalid path")
+            return None
+        
         # Load the project
         project = Project.load(file_path)
         
@@ -122,12 +141,19 @@ class ProjectManager(QObject):
             self.app.config.set("general", "last_project", file_path)
             self.app.config.save()
             
+            # Loaded projects start with no unsaved changes
+            self.has_unsaved_changes = False
+            
             # Emit signal
             self.project_loaded.emit(project)
             
             # Save initial state for undo
             if self.app.undo_manager:
                 self.app.undo_manager.save_state("load_project")
+            
+            # Update the timelines in the UI
+            self.logger.debug("Updating timelines after project load")
+            self.app.timeline_manager.update_timelines()
             
             return project
         else:
@@ -169,6 +195,9 @@ class ProjectManager(QObject):
             # Save as last project
             self.app.config.set("general", "last_project", file_path)
             self.app.config.save()
+            
+            # Reset unsaved changes flag
+            self.has_unsaved_changes = False
             
             # Emit signal
             self.project_saved.emit(file_path)
@@ -291,3 +320,13 @@ class ProjectManager(QObject):
             Project: The recovered project, or None if recovery failed.
         """
         return self.load_project(file_path)
+    
+    def _on_project_changed(self):
+        """
+        Handle project changed signal.
+        
+        This method is called whenever the project_changed signal is emitted,
+        which happens when the project is modified in any way. It sets the
+        has_unsaved_changes flag to True.
+        """
+        self.has_unsaved_changes = True
