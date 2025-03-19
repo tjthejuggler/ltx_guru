@@ -102,6 +102,47 @@ def get_color_data_intro(i):
     
     return result
 
+def split_long_segments(segments, max_duration=65535):
+    """
+    Split segments with durations exceeding max_duration into multiple segments.
+    
+    Args:
+        segments: List of (duration, color, pixels) tuples
+        max_duration: Maximum allowed duration (default: 65535, the max value for a 2-byte unsigned short)
+        
+    Returns:
+        New list of segments with long durations split into multiple segments
+    """
+    print("\n[GENERATE_PRG] Checking for segments exceeding maximum duration...")
+    new_segments = []
+    
+    for idx, (duration, color, pixels) in enumerate(segments):
+        if duration <= max_duration:
+            # If duration is within limits, keep the segment as is
+            new_segments.append((duration, color, pixels))
+            continue
+        
+        # If duration exceeds the limit, split it into multiple segments
+        print(f"[GENERATE_PRG] WARNING: Segment {idx} has duration {duration} which exceeds maximum of {max_duration}")
+        print(f"[GENERATE_PRG] Splitting segment {idx} into multiple segments")
+        
+        # Calculate how many segments we need
+        num_segments = (duration + max_duration - 1) // max_duration  # Ceiling division
+        print(f"[GENERATE_PRG] Splitting into {num_segments} segments")
+        
+        # Create segments of equal duration (except possibly the last one)
+        segment_duration = duration // num_segments
+        remainder = duration % num_segments
+        
+        for i in range(num_segments):
+            # Add extra time to early segments if there's a remainder
+            this_duration = segment_duration + (1 if i < remainder else 0)
+            new_segments.append((this_duration, color, pixels))
+            print(f"[GENERATE_PRG] - Created sub-segment {i+1}/{num_segments} with duration {this_duration}")
+    
+    print(f"[GENERATE_PRG] After splitting: {len(segments)} original segments -> {len(new_segments)} final segments")
+    return new_segments
+
 def generate_prg_file(input_json, output_prg):
     print(f"\n[GENERATE_PRG] Starting PRG generation from {input_json} to {output_prg}")
     
@@ -142,6 +183,9 @@ def generate_prg_file(input_json, output_prg):
         print(f"[GENERATE_PRG] - Duration: {duration} (hex: 0x{duration:04X})")
         
         segments.append((duration, color, pixels))
+    
+    # Check for and split segments with durations exceeding 65535
+    segments = split_long_segments(segments)
 
     segment_count = len(segments)
     print(f"\n[GENERATE_PRG] Total segments: {segment_count}")
