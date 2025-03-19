@@ -266,7 +266,7 @@ class Timeline:
         Convert the timeline to a JSON sequence for prg_generator.
         
         Args:
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses 1 Hz.
+            refresh_rate (int, optional): Refresh rate in Hz. If None, uses 100 Hz.
                 This determines the timing resolution:
                 - refresh_rate=1: Each time unit is 1 second
                 - refresh_rate=2: Each time unit is 0.5 seconds
@@ -276,7 +276,7 @@ class Timeline:
             dict: JSON sequence data.
         """
         if refresh_rate is None:
-            refresh_rate = 1
+            refresh_rate = 100  # Default to 100 Hz for 1/100th second precision
         
         # Sort segments by start time
         sorted_segments = sorted(self.segments, key=lambda segment: segment.start_time)

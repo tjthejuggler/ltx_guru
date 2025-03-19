@@ -339,9 +339,40 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
         
+        # Create position input container
+        position_container = QWidget()
+        position_layout = QHBoxLayout(position_container)
+        position_layout.setContentsMargins(0, 0, 0, 0)
+        position_layout.setSpacing(5)
+        
         # Add position label
+        position_label = QLabel("Position:")
+        position_layout.addWidget(position_label)
+        
+        # Add editable time input field with 1/100th second precision
+        from PyQt6.QtWidgets import QLineEdit
+        from PyQt6.QtGui import QDoubleValidator
+        self.time_input = QLineEdit()
+        self.time_input.setFixedWidth(70)
+        self.time_input.setText("0.00")
+        
+        # Set validator to only allow valid time values
+        validator = QDoubleValidator(0.0, 999999.0, 2)  # 2 decimal places for 1/100th precision
+        validator.setNotation(QDoubleValidator.Notation.StandardNotation)
+        self.time_input.setValidator(validator)
+        
+        # Connect signal to update position when edited
+        self.time_input.editingFinished.connect(self._on_time_input_changed)
+        
+        position_layout.addWidget(self.time_input)
+        position_layout.addWidget(QLabel("s"))
+        
+        # Add to status bar
+        self.statusbar.addPermanentWidget(position_container)
+        
+        # Keep the old position label for compatibility
         self.position_label = QLabel("Position: 0.00s")
-        self.statusbar.addPermanentWidget(self.position_label)
+        self.position_label.setVisible(False)  # Hide it since we now have the editable field
     
     def _create_central_widget(self):
         """Create central widget for the main window."""
@@ -784,10 +815,31 @@ class MainWindow(QMainWindow):
         # Open help documentation
         pass
     
+    def _on_time_input_changed(self):
+        """Handle time input field changes."""
+        try:
+            # Get the time value from the input field
+            time_text = self.time_input.text().replace(',', '.')  # Handle locales that use comma as decimal separator
+            time_value = float(time_text)
+            
+            # Update the position
+            self.app.timeline_manager.set_position(time_value)
+            
+            self.logger.debug(f"Time input changed to {time_value:.2f}s")
+        except ValueError as e:
+            # If the input is not a valid number, reset to current position
+            self.logger.error(f"Invalid time input: {e}")
+            self.time_input.setText(f"{self.app.timeline_manager.position:.2f}")
+    
     def _on_position_changed(self, position):
         """Handle position changed signal."""
-        # Update position label
+        # Update position label (hidden but kept for compatibility)
         self.position_label.setText(f"Position: {position:.2f}s")
+        
+        # Update time input field with 1/100th second precision
+        # Only update if the field doesn't have focus to avoid disrupting user input
+        if not self.time_input.hasFocus():
+            self.time_input.setText(f"{position:.2f}")
     
     def _on_audio_loaded(self, file_path, duration):
         """Handle audio loaded signal."""
