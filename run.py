@@ -32,6 +32,25 @@ logger = logging.getLogger("SequenceMaker")
 def main():
     """Run the Sequence Maker application."""
     try:
+        # Set environment variables to help with desktop integration
+        import os
+        
+        # Set Qt platform theme to better integrate with GTK-based desktops
+        os.environ["QT_QPA_PLATFORMTHEME"] = "gtk3"
+        os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+        
+        # Set application class name for window manager
+        os.environ["RESOURCE_NAME"] = "SequenceMaker"
+        
+        # Set icon path
+        icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "sequence_maker/resources/icons/sm_app_icon_better.jpeg")
+        
+        if os.path.exists(icon_path):
+            logger.info(f"Using icon from: {icon_path}")
+        else:
+            logger.warning(f"Icon file not found at: {icon_path}")
+        
         # Clear module cache to ensure fresh imports
         import sys
         import importlib

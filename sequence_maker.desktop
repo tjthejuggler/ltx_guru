@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Sequence Maker
+Comment=A tool for creating color sequences for LTX juggling balls
+Exec=/home/twain/Projects/ltx_guru/launch_sequence_maker.sh
+Icon=/home/twain/Projects/ltx_guru/sequence_maker/resources/icons/sm_app_icon_better.jpeg
+Terminal=false
+Categories=Utility;Development;
+StartupWMClass=SequenceMaker
+StartupNotify=true

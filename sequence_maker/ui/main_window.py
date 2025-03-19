@@ -7,14 +7,17 @@ This module defines the MainWindow class, which is the main application window.
 import logging
 import os
 import json
+import tempfile
 from pathlib import Path
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
     QMenuBar, QMenu, QToolBar, QStatusBar, QFileDialog, QMessageBox,
     QLabel, QTextEdit, QPushButton
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QSettings
-from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont
+from PyQt6.QtCore import Qt, pyqtSignal, QSettings, QSize
+from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont, QPixmap, QImage
+
+from resources.resources import get_icon_path
 
 from ui.timeline_widget import TimelineWidget
 from ui.ball_widget import BallWidget
@@ -52,6 +55,26 @@ class MainWindow(QMainWindow):
         # Set window properties
         self.setWindowTitle("Sequence Maker")
         self.resize(1280, 720)
+        
+        # Set window class name to match desktop entry StartupWMClass
+        self.setWindowIconText("SequenceMaker")
+        self.setObjectName("SequenceMaker")
+        
+        # Set window icon - use the PNG version
+        icon_path = get_icon_path("sm_app_icon_better.jpeg")
+        self.logger.info(f"Setting window icon from: {icon_path}")
+        
+        # Create icon from the PNG with multiple sizes
+        window_icon = QIcon()
+        for size in [16, 24, 32, 48, 64, 128, 256]:
+            window_icon.addPixmap(QPixmap(icon_path).scaled(
+                size, size, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
+        
+        # Set the window icon
+        self.setWindowIcon(window_icon)
+        
+        # Set window icon as a property
+        self.setProperty("windowIcon", window_icon)
         
         # Create UI components
         self._create_actions()

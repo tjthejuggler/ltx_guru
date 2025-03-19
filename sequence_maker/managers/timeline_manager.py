@@ -613,12 +613,12 @@ class TimelineManager(QObject):
         if position < 0:
             position = 0
         
-        self.logger.debug(f"TimelineManager.set_position called with position={position:.2f}s, current position={self.position:.2f}s")
+        self.logger.debug(f"TimelineManager.set_position called with position={position:.3f}s, current position={self.position:.3f}s")
         
         self.position = position
         
         # Emit signal
-        self.logger.debug(f"TimelineManager emitting position_changed signal with position={position:.2f}s")
+        self.logger.debug(f"TimelineManager emitting position_changed signal with position={position:.3f}s")
         self.position_changed.emit(position)
     
     def add_color_at_position(self, timeline_index, color, pixels=None):
@@ -633,7 +633,7 @@ class TimelineManager(QObject):
         Returns:
             TimelineSegment: The new or modified segment, or None if the timeline is invalid.
         """
-        self.logger.debug(f"Adding color {color} at position {self.position} to timeline {timeline_index}")
+        self.logger.debug(f"Adding color {color} at position {self.position:.3f}s to timeline {timeline_index}")
         
         timeline = self.get_timeline(timeline_index)
         if not timeline:
@@ -641,7 +641,7 @@ class TimelineManager(QObject):
             return None
         
         # Add color at current position
-        self.logger.debug(f"Calling timeline.add_color_at_time with position={self.position}, color={color}")
+        self.logger.debug(f"Calling timeline.add_color_at_time with position={self.position:.3f}s, color={color}")
         segment = timeline.add_color_at_time(self.position, color, pixels)
         self.logger.debug(f"Created segment: {segment}")
         

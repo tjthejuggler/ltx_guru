@@ -40,7 +40,7 @@ class Project:
         
         # Project settings
         self.default_pixels = 4
-        self.refresh_rate = 1
+        self.refresh_rate = 100  # 100 Hz for 1/100th second precision
         self.total_duration = 60  # seconds
         
         # Project data

@@ -267,6 +267,10 @@ class Timeline:
         
         Args:
             refresh_rate (int, optional): Refresh rate in Hz. If None, uses 1 Hz.
+                This determines the timing resolution:
+                - refresh_rate=1: Each time unit is 1 second
+                - refresh_rate=2: Each time unit is 0.5 seconds
+                - refresh_rate=100: Each time unit is 0.01 seconds (1/100th of a second)
         
         Returns:
             dict: JSON sequence data.
@@ -281,8 +285,10 @@ class Timeline:
         sequence = {}
         
         for segment in sorted_segments:
-            # Convert time to integer based on refresh rate
-            time_key = str(int(segment.start_time * refresh_rate))
+            # Convert time to time units based on refresh rate
+            # We use round to avoid floating point precision issues
+            time_units = round(segment.start_time * refresh_rate)
+            time_key = str(time_units)
             
             # Add segment to sequence
             sequence[time_key] = {
@@ -290,10 +296,13 @@ class Timeline:
                 "pixels": segment.pixels
             }
         
+        # Calculate end time in time units
+        end_time_units = round(self.get_duration() * refresh_rate)
+        
         return {
             "default_pixels": self.default_pixels,
             "color_format": "rgb",
             "refresh_rate": refresh_rate,
-            "end_time": int(self.get_duration() * refresh_rate),
+            "end_time": end_time_units,
             "sequence": sequence
         }

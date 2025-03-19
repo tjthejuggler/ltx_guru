@@ -232,7 +232,8 @@ class TimelineWidget(QWidget):
         scroll_pos = self.scroll_area.horizontalScrollBar().value()
         
         # Log for debugging
-        self.logger.debug(f"Ensuring position visible: pos_x={pos_x}, scroll_pos={scroll_pos}, viewport_width={viewport_width}")
+        # Show more precision in the position
+        self.logger.debug(f"Ensuring position visible: pos_x={pos_x}, scroll_pos={scroll_pos}, viewport_width={viewport_width}, position={self.position:.3f}s")
         
         # If position is 0, always scroll to the beginning
         if self.position == 0.0:
@@ -420,7 +421,8 @@ class TimelineWidget(QWidget):
         self.timeline_container.force_repaint()
         
         # Log the position change for debugging
-        self.logger.debug(f"Position changed to {position:.2f}s")
+        # Show more precision (1/100th second) in the log
+        self.logger.debug(f"Position changed to {position:.3f}s")
     
     def keyPressEvent(self, event):
         """Handle key press events."""
@@ -466,43 +468,47 @@ class TimelineWidget(QWidget):
         if self.selected_timeline and self.selected_segment:
             if event.key() == Qt.Key.Key_Left:
                 # Move segment left
+                # Use 0.01 increment for finer control (1/100th second precision)
                 self.app.timeline_manager.modify_segment(
                     timeline=self.selected_timeline,
                     segment=self.selected_segment,
-                    start_time=self.selected_segment.start_time - 0.1,
-                    end_time=self.selected_segment.end_time - 0.1
+                    start_time=self.selected_segment.start_time - 0.01,
+                    end_time=self.selected_segment.end_time - 0.01
                 )
                 event.accept()
                 return
             
             if event.key() == Qt.Key.Key_Right:
                 # Move segment right
+                # Use 0.01 increment for finer control (1/100th second precision)
                 self.app.timeline_manager.modify_segment(
                     timeline=self.selected_timeline,
                     segment=self.selected_segment,
-                    start_time=self.selected_segment.start_time + 0.1,
-                    end_time=self.selected_segment.end_time + 0.1
+                    start_time=self.selected_segment.start_time + 0.01,
+                    end_time=self.selected_segment.end_time + 0.01
                 )
                 event.accept()
                 return
             
             if event.key() == Qt.Key.Key_Up:
                 # Increase segment duration (extend end)
+                # Use 0.01 increment for finer control (1/100th second precision)
                 self.app.timeline_manager.modify_segment(
                     timeline=self.selected_timeline,
                     segment=self.selected_segment,
-                    end_time=self.selected_segment.end_time + 0.1
+                    end_time=self.selected_segment.end_time + 0.01
                 )
                 event.accept()
                 return
             
             if event.key() == Qt.Key.Key_Down:
                 # Decrease segment duration (shrink end)
-                if self.selected_segment.end_time - self.selected_segment.start_time > 0.2:
+                # Ensure minimum segment duration of 0.02 seconds
+                if self.selected_segment.end_time - self.selected_segment.start_time > 0.02:
                     self.app.timeline_manager.modify_segment(
                         timeline=self.selected_timeline,
                         segment=self.selected_segment,
-                        end_time=self.selected_segment.end_time - 0.1
+                        end_time=self.selected_segment.end_time - 0.01
                     )
                 event.accept()
                 return
@@ -612,6 +618,9 @@ class TimelineContainer(QWidget):
         
         # Calculate grid spacing based on zoom level
         zoom = self.parent_widget.zoom_level
+        refresh_rate = self.app.project_manager.current_project.refresh_rate
+        
+        # Adjust grid spacing based on zoom level and refresh rate
         if zoom < 0.1:
             # Very zoomed out - show grid every 60 seconds
             grid_spacing = 60.0
@@ -624,9 +633,12 @@ class TimelineContainer(QWidget):
         elif zoom < 10.0:
             # Zoomed in - show grid every 0.1 seconds
             grid_spacing = 0.1
-        else:
+        elif zoom < 50.0:
             # Very zoomed in - show grid every 0.01 seconds
             grid_spacing = 0.01
+        else:
+            # Extremely zoomed in - show grid every 0.001 seconds
+            grid_spacing = 0.001
         
         # Calculate pixel spacing
         pixel_spacing = grid_spacing * self.parent_widget.time_scale * zoom
@@ -645,10 +657,16 @@ class TimelineContainer(QWidget):
             painter.drawLine(int(x), 0, int(x), height)
             # Draw time label with better visibility
             time = x / (self.parent_widget.time_scale * zoom)
+            
+            # Format time string based on precision needed
             if grid_spacing >= 1.0:
                 time_str = f"{int(time)}s"
-            else:
+            elif grid_spacing >= 0.1:
+                time_str = f"{time:.1f}s"
+            elif grid_spacing >= 0.01:
                 time_str = f"{time:.2f}s"
+            else:
+                time_str = f"{time:.3f}s"
             
             # Use a font with bold weight for better visibility
             font = painter.font()
@@ -783,7 +801,8 @@ class TimelineContainer(QWidget):
         pos_x = int(self.parent_widget.position * self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
         # Log the position for debugging
-        self.app.logger.debug(f"Drawing position marker at x={pos_x} (position={self.parent_widget.position:.2f}s)")
+        # Show more precision (1/100th second) in the log
+        self.app.logger.debug(f"Drawing position marker at x={pos_x} (position={self.parent_widget.position:.3f}s)")
         
         # Draw position line with a more visible style
         painter.setPen(QPen(QColor(255, 0, 0), 3))  # Increased width for better visibility
@@ -1190,10 +1209,11 @@ class TimelineContainer(QWidget):
                         )
                     
                     # Create new segment
+                    # Use a shorter default duration (0.1s) for better precision
                     new_segment = self.app.timeline_manager.add_segment(
                         timeline=timeline,
                         start_time=time,
-                        end_time=time + 1.0,
+                        end_time=time + 0.1,
                         color=(255, 0, 0)  # Default to red
                     )
     
