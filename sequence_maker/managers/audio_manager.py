@@ -233,8 +233,11 @@ class AudioManager(QObject):
             )
             self.playback_thread.start()
         
-        # Emit signal
+        # Emit signals
         self.audio_started.emit()
+        
+        # Emit an immediate position update to ensure UI reflects current position
+        self.position_changed.emit(self.position)
         
         return True
     
@@ -670,8 +673,14 @@ class AudioManager(QObject):
         # Log current positions
         self.logger.debug(f"_update_timeline_position called with position={position:.2f}s, current timeline position={self.app.timeline_manager.position:.2f}s")
         
-        # Always update if position is 0.0 (stop button was pressed) or positions are different
-        if position == 0.0 or abs(self.app.timeline_manager.position - position) > 0.01:  # 10ms threshold
+        # Always update if:
+        # - position is 0.0 (stop button was pressed)
+        # - playback just started (self.playing is True and not paused)
+        # - positions are different beyond threshold
+        if (position == 0.0 or
+            (self.playing and not self.paused) or
+            abs(self.app.timeline_manager.position - position) > 0.01):  # 10ms threshold
+            
             self.logger.debug(f"Updating timeline position to {position:.2f}s")
             self.app.timeline_manager.set_position(position)
         else:

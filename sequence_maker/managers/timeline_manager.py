@@ -131,8 +131,11 @@ class TimelineManager(QObject):
         # Add to project
         project.add_timeline(timeline)
         
-        # Emit signal
+        # Emit signals
         self.timeline_added.emit(timeline)
+        
+        # Notify project manager that project has changed
+        self.app.project_manager.project_changed.emit()
         
         return timeline
     
@@ -340,8 +343,11 @@ class TimelineManager(QObject):
         # Add to timeline
         timeline.add_segment(segment)
         
-        # Emit signal
+        # Emit signals
         self.segment_added.emit(timeline, segment)
+        
+        # Notify project manager that project has changed
+        self.app.project_manager.project_changed.emit()
         
         return segment
     
@@ -404,8 +410,11 @@ class TimelineManager(QObject):
             if self.selected_segment == segment:
                 self.clear_selection()
             
-            # Emit signal
+            # Emit signals
             self.segment_removed.emit(timeline, segment)
+            
+            # Notify project manager that project has changed
+            self.app.project_manager.project_changed.emit()
         
         return success
     
@@ -457,8 +466,11 @@ class TimelineManager(QObject):
             modified = True
         
         if modified:
-            # Emit signal
+            # Emit signals
             self.segment_modified.emit(timeline, segment)
+            
+            # Notify project manager that project has changed
+            self.app.project_manager.project_changed.emit()
         
         return modified
     
@@ -649,8 +661,11 @@ class TimelineManager(QObject):
         if self.undo_manager:
             self.undo_manager.save_state("add_color")
         
-        # Emit signal
+        # Emit signals
         self.segment_added.emit(timeline, segment)
+        
+        # Notify project manager that project has changed
+        self.app.project_manager.project_changed.emit()
         
         return segment
     

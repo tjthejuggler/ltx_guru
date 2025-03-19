@@ -498,7 +498,7 @@ class MainWindow(QMainWindow):
         # Check for unsaved changes
         if self._check_unsaved_changes():
             # Create new project
-            self.app.project_manager.new_project()
+            project = self.app.project_manager.new_project()
             
             # Force UI refresh
             self.timeline_widget.timeline_container.update_size()
@@ -509,6 +509,14 @@ class MainWindow(QMainWindow):
             
             # Update window title
             self._update_window_title()
+            
+            # Select the first timeline (Ball 1) if available
+            if project.timelines and len(project.timelines) > 0:
+                self.logger.debug(f"Selecting first timeline: {project.timelines[0].name}")
+                self.timeline_widget.select_timeline(project.timelines[0])
+                
+                # Ensure the timeline widget has focus, not the time input field
+                self.timeline_widget.setFocus()
             
             # Show status message
             self.statusbar.showMessage("Created new project", 5000)
@@ -804,6 +812,12 @@ class MainWindow(QMainWindow):
         self.logger.debug("Stop button clicked, calling audio_manager.stop()")
         result = self.app.audio_manager.stop()
         self.logger.debug(f"audio_manager.stop() returned {result}")
+        
+        # Ensure the timeline position is reset to 0
+        self.app.timeline_manager.set_position(0.0)
+        
+        # Force update of the time input field
+        self.time_input.setText("0.00")
     
     def _on_about(self):
         """Handle About action."""
@@ -837,8 +851,8 @@ class MainWindow(QMainWindow):
         self.position_label.setText(f"Position: {position:.2f}s")
         
         # Update time input field with 1/100th second precision
-        # Only update if the field doesn't have focus to avoid disrupting user input
-        if not self.time_input.hasFocus():
+        # Always update when position is 0 (stop button pressed) or if the field doesn't have focus
+        if position == 0.0 or not self.time_input.hasFocus():
             self.time_input.setText(f"{position:.2f}")
     
     def _on_audio_loaded(self, file_path, duration):
@@ -874,6 +888,14 @@ class MainWindow(QMainWindow):
         
         # Update recent projects menu
         self._update_recent_projects_menu()
+        
+        # Select the first timeline (Ball 1) if available
+        if project.timelines and len(project.timelines) > 0:
+            self.logger.debug(f"Selecting first timeline: {project.timelines[0].name}")
+            self.timeline_widget.select_timeline(project.timelines[0])
+            
+            # Ensure the timeline widget has focus, not the time input field
+            self.timeline_widget.setFocus()
     
     def _on_project_saved(self, file_path):
         """Handle project saved signal."""
@@ -957,6 +979,9 @@ class MainWindow(QMainWindow):
         """Handle project changed signal."""
         # Update window title to show unsaved changes
         self._update_window_title()
+        
+        # Update status bar with a brief message
+        self.statusbar.showMessage("Project modified", 2000)
     
     def _update_window_title(self):
         """Update the window title, adding a star if there are unsaved changes."""
@@ -964,13 +989,23 @@ class MainWindow(QMainWindow):
             self.setWindowTitle("Sequence Maker")
             return
         
-        project_name = self.app.project_manager.current_project.name
+        # Get the project name and file path
+        project = self.app.project_manager.current_project
+        
+        # Use the filename from the file_path if available, otherwise use project name
+        if project.file_path:
+            file_name = os.path.basename(project.file_path)
+            # Remove the extension if present
+            if file_name.endswith(PROJECT_FILE_EXTENSION):
+                file_name = file_name[:-len(PROJECT_FILE_EXTENSION)]
+        else:
+            file_name = project.name
         
         # Add a star if there are unsaved changes
-        if self.app.project_manager.has_unsaved_changes:
-            self.setWindowTitle(f"Sequence Maker - {project_name} *")
-        else:
-            self.setWindowTitle(f"Sequence Maker - {project_name}")
+        unsaved_indicator = "*" if self.app.project_manager.has_unsaved_changes else ""
+        
+        # Set the window title to "file_name* - Sequence Maker" with optional asterisk
+        self.setWindowTitle(f"{file_name}{unsaved_indicator} - Sequence Maker")
     
     def _update_undo_actions(self):
         """Update undo/redo actions based on undo manager state."""
