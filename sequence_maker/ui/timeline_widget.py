@@ -149,21 +149,18 @@ class TimelineWidget(QWidget):
         if not self.app.project_manager.current_project:
             return
         
-        # Get the total duration of the project
-        duration = 0
-        for timeline in self.app.project_manager.current_project.timelines:
-            timeline_duration = timeline.get_duration()
-            if timeline_duration > duration:
-                duration = timeline_duration
+        # Get the sequence length from the project
+        sequence_length = self.app.project_manager.current_project.total_duration
         
-        # Add some padding
-        duration += 5.0
-        
-        # Calculate zoom level to fit the duration
-        if duration > 0:
+        # Calculate zoom level to fit the sequence length
+        if sequence_length > 0:
             viewport_width = self.scroll_area.viewport().width()
-            zoom = viewport_width / (duration * self.time_scale)
+            zoom = viewport_width / (sequence_length * self.time_scale)
             self.set_zoom(zoom)
+            
+            # Ensure the end of the sequence is visible by scrolling to it
+            end_pos_x = int(sequence_length * self.time_scale * self.zoom_level)
+            self.scroll_area.horizontalScrollBar().setValue(max(0, end_pos_x - viewport_width))
     
     def set_zoom(self, zoom):
         """
@@ -700,6 +697,38 @@ class TimelineContainer(QWidget):
             
             # Move to next grid line
             x += pixel_spacing
+        
+        # Draw sequence end time indicator line
+        if self.app.project_manager.current_project:
+            sequence_length = self.app.project_manager.current_project.total_duration
+            end_x = int(sequence_length * self.parent_widget.time_scale * zoom)
+            
+            # Draw a dashed vertical line at the sequence end time
+            dash_pen = QPen(QColor(255, 255, 0, 180), 2)  # Yellow, semi-transparent
+            dash_pen.setStyle(Qt.PenStyle.DashLine)
+            painter.setPen(dash_pen)
+            painter.drawLine(end_x, 0, end_x, height)
+            
+            # Draw a label for the end time
+            end_time_str = self._format_time_as_hms(sequence_length)
+            
+            # Use a font with bold weight for better visibility
+            font = painter.font()
+            font.setBold(True)
+            painter.setFont(font)
+            
+            # Draw text with a small background for better contrast
+            text_rect = painter.fontMetrics().boundingRect(f"End: {end_time_str}")
+            text_rect.moveLeft(end_x - text_rect.width() - 5)
+            text_rect.moveTop(height - 20)
+            text_rect.adjust(-2, -1, 2, 1)  # Add some padding
+            
+            # Draw background
+            painter.fillRect(text_rect, QColor(40, 40, 40, 180))
+            
+            # Draw text
+            painter.setPen(QPen(QColor(255, 255, 0), 1))
+            painter.drawText(end_x - text_rect.width() - 3, height - 8, f"End: {end_time_str}")
     
     def _draw_time_grid_partial(self, painter, update_rect):
         """
@@ -1006,6 +1035,22 @@ class TimelineContainer(QWidget):
         # Use a fully opaque color for the circle to make it stand out
         painter.setBrush(QBrush(QColor(255, 0, 0)))
         painter.drawEllipse(pos_x - 4, 20, 8, 8)  # Position circle at y=20
+    
+    def _format_time_as_hms(self, seconds):
+        """
+        Format time in seconds as hours:minutes:seconds.
+        
+        Args:
+            seconds (float): Time in seconds.
+            
+        Returns:
+            str: Formatted time string (HH:MM:SS).
+        """
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
     
     def _get_color_name(self, color):
         """

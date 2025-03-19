@@ -92,20 +92,6 @@ class AudioWidget(QWidget):
         self.title_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.top_layout.addWidget(self.title_label)
         
-        # Create sequence length input
-        self.sequence_length_label = QLabel("Sequence Length (s):")
-        self.top_layout.addWidget(self.sequence_length_label)
-        
-        from PyQt6.QtWidgets import QLineEdit
-        from PyQt6.QtGui import QIntValidator
-        
-        self.sequence_length_input = QLineEdit()
-        self.sequence_length_input.setValidator(QIntValidator(1, 3600))  # 1 second to 1 hour
-        self.sequence_length_input.setText("60")  # Default to 60 seconds
-        self.sequence_length_input.setMaximumWidth(60)
-        self.sequence_length_input.editingFinished.connect(self._on_sequence_length_changed)
-        self.top_layout.addWidget(self.sequence_length_input)
-        
         # Create visualization type combo box
         self.visualization_combo = QComboBox()
         self.visualization_combo.addItems(["Waveform", "Spectrum", "Beats", "Energy"])
@@ -284,9 +270,6 @@ class AudioWidget(QWidget):
         
         # Update position label
         self._update_position_label(0)
-        
-        # Update sequence length to match audio duration
-        self.sequence_length_input.setText(str(int(duration)))
     
     def _on_audio_started(self):
         """Handle audio started signal."""
@@ -360,25 +343,6 @@ class AudioWidget(QWidget):
         
         # Update label
         self.position_label.setText(f"{position_str} / {duration_str}")
-    
-    def _on_sequence_length_changed(self):
-        """
-        Handle sequence length text input changed.
-        """
-        # Get the value from the text input
-        value_text = self.sequence_length_input.text()
-        
-        # Convert to integer
-        try:
-            value = int(value_text)
-        except ValueError:
-            # If not a valid integer, set to default
-            value = 60
-            self.sequence_length_input.setText(str(value))
-        
-        # Notify the project manager about the sequence length change
-        if self.app.project_manager.current_project:
-            self.app.project_manager.current_project.total_duration = value
     
     def _format_time(self, seconds):
         """

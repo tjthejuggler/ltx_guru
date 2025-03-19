@@ -339,6 +339,11 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
         
+        # Import widgets
+        from PyQt6.QtWidgets import QLineEdit
+        from PyQt6.QtGui import QRegularExpressionValidator
+        from PyQt6.QtCore import QRegularExpression
+        
         # Create position input container
         position_container = QWidget()
         position_layout = QHBoxLayout(position_container)
@@ -349,26 +354,52 @@ class MainWindow(QMainWindow):
         position_label = QLabel("Position:")
         position_layout.addWidget(position_label)
         
-        # Add editable time input field with 1/100th second precision
-        from PyQt6.QtWidgets import QLineEdit
-        from PyQt6.QtGui import QDoubleValidator
+        # Add editable time input field with HH:MM:SS format
         self.time_input = QLineEdit()
-        self.time_input.setFixedWidth(70)
-        self.time_input.setText("0.00")
+        self.time_input.setFixedWidth(100)
+        self.time_input.setText("00:00:00")
         
-        # Set validator to only allow valid time values
-        validator = QDoubleValidator(0.0, 999999.0, 2)  # 2 decimal places for 1/100th precision
-        validator.setNotation(QDoubleValidator.Notation.StandardNotation)
+        # Set validator to only allow valid time values in HH:MM:SS format
+        time_regex = QRegularExpression("^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$")
+        validator = QRegularExpressionValidator(time_regex)
         self.time_input.setValidator(validator)
         
         # Connect signal to update position when edited
         self.time_input.editingFinished.connect(self._on_time_input_changed)
         
         position_layout.addWidget(self.time_input)
-        position_layout.addWidget(QLabel("s"))
         
         # Add to status bar
         self.statusbar.addPermanentWidget(position_container)
+        
+        # Create sequence length input container
+        length_container = QWidget()
+        length_layout = QHBoxLayout(length_container)
+        length_layout.setContentsMargins(0, 0, 0, 0)
+        length_layout.setSpacing(5)
+        
+        # Add sequence length label
+        length_label = QLabel("Sequence Length:")
+        length_layout.addWidget(length_label)
+        
+        # Add editable sequence length input field with HH:MM:SS format
+        self.length_input = QLineEdit()
+        self.length_input.setFixedWidth(100)
+        self.length_input.setText("00:01:00")  # Default 1 minute
+        
+        # Set validator to only allow valid time values in HH:MM:SS format
+        self.length_input.setValidator(validator)  # Reuse the same validator
+        
+        length_layout.addWidget(self.length_input)
+        
+        # Add Apply button
+        self.apply_length_button = QPushButton("Apply")
+        self.apply_length_button.setToolTip("Apply the sequence length")
+        self.apply_length_button.clicked.connect(self._on_apply_sequence_length)
+        length_layout.addWidget(self.apply_length_button)
+        
+        # Add to status bar
+        self.statusbar.addPermanentWidget(length_container)
         
         # Keep the old position label for compatibility
         self.position_label = QLabel("Position: 0.00s")
@@ -506,6 +537,9 @@ class MainWindow(QMainWindow):
             
             # Reset position to 0
             self.app.timeline_manager.set_position(0.0)
+            
+            # Update sequence length input
+            self._format_length_input(project.total_duration)
             
             # Update window title
             self._update_window_title()
@@ -817,7 +851,7 @@ class MainWindow(QMainWindow):
         self.app.timeline_manager.set_position(0.0)
         
         # Force update of the time input field
-        self.time_input.setText("0.00")
+        self._format_time_input(0.0)
     
     def _on_about(self):
         """Handle About action."""
@@ -832,33 +866,58 @@ class MainWindow(QMainWindow):
     def _on_time_input_changed(self):
         """Handle time input field changes."""
         try:
-            # Get the time value from the input field
-            time_text = self.time_input.text().replace(',', '.')  # Handle locales that use comma as decimal separator
-            time_value = float(time_text)
+            # Get the time value from the input field in HH:MM:SS format
+            time_text = self.time_input.text()
+            
+            # Parse the time components
+            hours, minutes, seconds = map(int, time_text.split(':'))
+            
+            # Convert to seconds
+            time_value = hours * 3600 + minutes * 60 + seconds
             
             # Update the position
             self.app.timeline_manager.set_position(time_value)
             
-            self.logger.debug(f"Time input changed to {time_value:.2f}s")
-        except ValueError as e:
-            # If the input is not a valid number, reset to current position
+            self.logger.debug(f"Time input changed to {time_text} ({time_value}s)")
+        except (ValueError, AttributeError) as e:
+            # If the input is not valid, reset to current position
             self.logger.error(f"Invalid time input: {e}")
-            self.time_input.setText(f"{self.app.timeline_manager.position:.2f}")
+            self._format_time_input(self.app.timeline_manager.position)
+    
+    def _format_time_input(self, seconds):
+        """Format time in seconds as HH:MM:SS and update the time input field."""
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        
+        formatted_time = f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        self.time_input.setText(formatted_time)
     
     def _on_position_changed(self, position):
         """Handle position changed signal."""
         # Update position label (hidden but kept for compatibility)
         self.position_label.setText(f"Position: {position:.2f}s")
         
-        # Update time input field with 1/100th second precision
+        # Update time input field with HH:MM:SS format
         # Always update when position is 0 (stop button pressed) or if the field doesn't have focus
         if position == 0.0 or not self.time_input.hasFocus():
-            self.time_input.setText(f"{position:.2f}")
+            self._format_time_input(position)
     
     def _on_audio_loaded(self, file_path, duration):
         """Handle audio loaded signal."""
         # Update status bar
         self.statusbar.showMessage(f"Loaded audio: {os.path.basename(file_path)}", 5000)
+        
+        # Update sequence length input to match audio duration
+        if self.app.project_manager.current_project:
+            # Update project's total duration
+            self.app.project_manager.current_project.total_duration = duration
+            
+            # Update sequence length input
+            self._format_length_input(duration)
+            
+            # Mark project as changed
+            self.app.project_manager.project_changed.emit()
     
     def _on_audio_started(self):
         """Handle audio started signal."""
@@ -878,6 +937,114 @@ class MainWindow(QMainWindow):
         self.play_action.setVisible(True)
         self.pause_action.setVisible(False)
     
+    def _on_apply_sequence_length(self):
+        """Handle Apply button click for sequence length."""
+        if not self.app.project_manager.current_project:
+            return
+        
+        try:
+            # Get the time value from the input field in HH:MM:SS format
+            time_text = self.length_input.text()
+            
+            # Parse the time components
+            hours, minutes, seconds = map(int, time_text.split(':'))
+            
+            # Convert to seconds
+            new_length = hours * 3600 + minutes * 60 + seconds
+            
+            # Get the current sequence length
+            current_length = self.app.project_manager.current_project.total_duration
+            
+            # Check if the new length is shorter than the current length
+            if new_length < current_length:
+                # Show warning message
+                response = QMessageBox.warning(
+                    self,
+                    "Shorten Sequence",
+                    f"Shortening the sequence from {self._format_seconds_to_hms(current_length)} to {time_text} "
+                    f"will remove all segments after {time_text}. This cannot be undone.\n\n"
+                    f"Do you want to continue?",
+                    QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel,
+                    QMessageBox.StandardButton.Cancel
+                )
+                
+                if response == QMessageBox.StandardButton.Cancel:
+                    # User cancelled, reset the input field
+                    self._format_length_input(current_length)
+                    return
+                
+                # User confirmed, remove segments after the new length
+                self._remove_segments_after(new_length)
+            
+            # Update the project's total duration
+            self.app.project_manager.current_project.total_duration = new_length
+            
+            # Mark project as changed
+            self.app.project_manager.project_changed.emit()
+            
+            # Update the timeline view to show the new end marker
+            self.timeline_widget.timeline_container.update()
+            
+            # Show status message
+            self.statusbar.showMessage(f"Sequence length updated to {time_text}", 5000)
+            
+        except (ValueError, AttributeError) as e:
+            # If the input is not valid, reset to current length
+            self.logger.error(f"Invalid length input: {e}")
+            if self.app.project_manager.current_project:
+                self._format_length_input(self.app.project_manager.current_project.total_duration)
+    
+    def _remove_segments_after(self, time):
+        """
+        Remove all segments that extend beyond the specified time.
+        
+        Args:
+            time (float): Time in seconds.
+        """
+        if not self.app.project_manager.current_project:
+            return
+        
+        # Save state for undo
+        if self.app.undo_manager:
+            self.app.undo_manager.save_state("shorten_sequence")
+        
+        # Process each timeline
+        for timeline in self.app.project_manager.current_project.timelines:
+            # Find segments that start after the specified time
+            segments_to_remove = [segment for segment in timeline.segments if segment.start_time >= time]
+            
+            # Remove these segments
+            for segment in segments_to_remove:
+                timeline.remove_segment(segment)
+            
+            # Find segments that extend beyond the specified time
+            segments_to_modify = [segment for segment in timeline.segments if segment.start_time < time < segment.end_time]
+            
+            # Truncate these segments
+            for segment in segments_to_modify:
+                segment.end_time = time
+    
+    def _format_seconds_to_hms(self, seconds):
+        """
+        Format time in seconds as HH:MM:SS.
+        
+        Args:
+            seconds (float): Time in seconds.
+            
+        Returns:
+            str: Formatted time string (HH:MM:SS).
+        """
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        
+        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+    
+    def _format_length_input(self, seconds):
+        """Format time in seconds as HH:MM:SS and update the length input field."""
+        formatted_time = self._format_seconds_to_hms(seconds)
+        self.length_input.setText(formatted_time)
+    
     def _on_project_loaded(self, project):
         """Handle project loaded signal."""
         # Update window title (no star since it was just loaded)
@@ -888,6 +1055,9 @@ class MainWindow(QMainWindow):
         
         # Update recent projects menu
         self._update_recent_projects_menu()
+        
+        # Update sequence length input
+        self._format_length_input(project.total_duration)
         
         # Select the first timeline (Ball 1) if available
         if project.timelines and len(project.timelines) > 0:
