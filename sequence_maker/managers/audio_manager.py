@@ -511,8 +511,8 @@ class AudioManager(QObject):
                     # Emit position signal
                     self.position_changed.emit(self.position)
                 
-                # Sleep to reduce CPU usage
-                time.sleep(0.05)
+                # Sleep to reduce CPU usage - reduced from 0.05 to 0.016 (~60 FPS)
+                time.sleep(0.016)
             
             # Reset state if not stopped manually
             if not self.playback_stop_event.is_set():
@@ -578,8 +578,8 @@ class AudioManager(QObject):
                         self.logger.info("Reached end of audio")
                         break
                 
-                # Sleep to reduce CPU usage
-                time.sleep(0.05)
+                # Sleep to reduce CPU usage - reduced from 0.05 to 0.016 (~60 FPS)
+                time.sleep(0.016)
             
             # Close stream
             self.stream.stop_stream()
@@ -679,12 +679,16 @@ class AudioManager(QObject):
         # - positions are different beyond threshold
         if (position == 0.0 or
             (self.playing and not self.paused) or
-            abs(self.app.timeline_manager.position - position) > 0.01):  # 10ms threshold
+            abs(self.app.timeline_manager.position - position) > 0.005):  # Reduced from 10ms to 5ms threshold
             
-            self.logger.debug(f"Updating timeline position to {position:.2f}s")
+            # Only log occasionally to reduce overhead
+            if position % 1.0 < 0.02:  # Log approximately once per second
+                self.logger.debug(f"Updating timeline position to {position:.2f}s")
             self.app.timeline_manager.set_position(position)
         else:
-            self.logger.debug(f"Positions are similar, not updating timeline position")
+            # Only log occasionally
+            if position % 1.0 < 0.02:
+                self.logger.debug(f"Positions are similar, not updating timeline position")
     
     def __del__(self):
         """Clean up resources when the object is destroyed."""

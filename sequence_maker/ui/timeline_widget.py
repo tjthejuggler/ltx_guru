@@ -411,18 +411,27 @@ class TimelineWidget(QWidget):
     
     def _on_position_changed(self, position):
         """Handle position changed signal."""
+        # Store old position for partial redraw
+        old_position = self.position
+        
         # Update position
         self.position = position
         
         # Ensure position marker is visible
         self._ensure_position_visible()
         
-        # Force a complete repaint of the timeline container
-        self.timeline_container.force_repaint()
+        # Calculate old and new position in pixels
+        old_pos_x = int(old_position * self.time_scale * self.zoom_level)
+        new_pos_x = int(position * self.time_scale * self.zoom_level)
         
-        # Log the position change for debugging
-        # Show more precision (1/100th second) in the log
-        self.logger.debug(f"Position changed to {position:.3f}s")
+        # Only log occasionally to reduce overhead
+        if position % 1.0 < 0.02:  # Log approximately once per second
+            self.logger.debug(f"Position changed to {position:.3f}s")
+        
+        # For smoother animation, we'll use a simpler approach:
+        # Just force a complete repaint of the timeline container
+        # This is more reliable and avoids artifacts with time markers
+        self.timeline_container.force_repaint()
     
     def keyPressEvent(self, event):
         """Handle key press events."""
@@ -576,9 +585,9 @@ class TimelineContainer(QWidget):
         # Schedule a full repaint
         self.update()
         
-        # Process pending events to ensure UI updates immediately
-        from PyQt6.QtCore import QCoreApplication
-        QCoreApplication.processEvents()
+        # NOTE: Removed processEvents call as it can cause choppy animation
+        # from PyQt6.QtCore import QCoreApplication
+        # QCoreApplication.processEvents()
     
     def paintEvent(self, event):
         """
@@ -594,16 +603,20 @@ class TimelineContainer(QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         
-        # Draw background
-        painter.fillRect(event.rect(), QColor(240, 240, 240))
+        # Get the update rect
+        update_rect = event.rect()
         
-        # Draw time grid
+        # Always do a full repaint to avoid artifacts
+        # First clear the background
+        painter.fillRect(update_rect, QColor(240, 240, 240))
+        
+        # Draw the time grid
         self._draw_time_grid(painter)
         
-        # Draw timelines
+        # Draw the timelines
         self._draw_timelines(painter)
         
-        # Draw position marker
+        # Draw the position marker on top
         self._draw_position_marker(painter)
     
     def _draw_time_grid(self, painter):
@@ -682,9 +695,91 @@ class TimelineContainer(QWidget):
             # Draw background
             painter.fillRect(text_rect, QColor(40, 40, 40, 180))
             
-            # Draw text
+            # Draw text (only once)
             painter.drawText(int(x) + 2, 14, time_str)
-            painter.drawText(int(x) + 2, 10, time_str)
+            
+            # Move to next grid line
+            x += pixel_spacing
+    
+    def _draw_time_grid_partial(self, painter, update_rect):
+        """
+        Draw only the part of the time grid that intersects with the update rect.
+        
+        Args:
+            painter: QPainter instance.
+            update_rect: The rectangle to update.
+        """
+        # First clear the background in the update rect to prevent artifacts
+        painter.fillRect(update_rect, QColor(240, 240, 240))
+        
+        # Set pen with brighter color for better visibility on dark background
+        painter.setPen(QPen(QColor(255, 255, 255), 1))
+        
+        # Calculate grid spacing based on zoom level
+        zoom = self.parent_widget.zoom_level
+        refresh_rate = self.app.project_manager.current_project.refresh_rate
+        
+        # Adjust grid spacing based on zoom level and refresh rate
+        if zoom < 0.1:
+            grid_spacing = 60.0
+        elif zoom < 0.5:
+            grid_spacing = 10.0
+        elif zoom < 2.0:
+            grid_spacing = 1.0
+        elif zoom < 10.0:
+            grid_spacing = 0.1
+        elif zoom < 50.0:
+            grid_spacing = 0.01
+        else:
+            grid_spacing = 0.001
+        
+        # Calculate pixel spacing
+        pixel_spacing = grid_spacing * self.parent_widget.time_scale * zoom
+        
+        # Get dimensions
+        height = self.height()
+        
+        # Calculate first grid line that intersects with the update rect
+        first_time = update_rect.left() / (self.parent_widget.time_scale * zoom)
+        first_grid_time = math.floor(first_time / grid_spacing) * grid_spacing
+        first_grid_x = int(first_grid_time * self.parent_widget.time_scale * zoom)
+        
+        # Draw grid lines that intersect with the update rect
+        x = first_grid_x
+        while x <= update_rect.right():
+            # Only draw if within the update rect
+            if update_rect.left() <= x <= update_rect.right():
+                painter.drawLine(int(x), 0, int(x), height)
+                
+                # Draw time label with better visibility
+                time = x / (self.parent_widget.time_scale * zoom)
+                
+                # Format time string based on precision needed
+                if grid_spacing >= 1.0:
+                    time_str = f"{int(time)}s"
+                elif grid_spacing >= 0.1:
+                    time_str = f"{time:.1f}s"
+                elif grid_spacing >= 0.01:
+                    time_str = f"{time:.2f}s"
+                else:
+                    time_str = f"{time:.3f}s"
+                
+                # Use a font with bold weight for better visibility
+                font = painter.font()
+                font.setBold(True)
+                painter.setFont(font)
+                
+                # Draw text with a small background for better contrast
+                text_rect = painter.fontMetrics().boundingRect(time_str)
+                text_rect.moveLeft(int(x) + 2)
+                text_rect.moveTop(2)
+                text_rect.adjust(-2, -1, 2, 1)  # Add some padding
+                
+                # Draw background
+                painter.fillRect(text_rect, QColor(40, 40, 40, 180))
+                
+                # Draw text
+                painter.drawText(int(x) + 2, 14, time_str)
             
             # Move to next grid line
             x += pixel_spacing
@@ -735,6 +830,102 @@ class TimelineContainer(QWidget):
             
             # Move to next timeline
             y += self.parent_widget.timeline_height + self.parent_widget.timeline_spacing
+    
+    def _draw_timelines_partial(self, painter, update_rect):
+        """
+        Draw only the parts of timelines that intersect with the update rect.
+        
+        Args:
+            painter: QPainter instance.
+            update_rect: The rectangle to update.
+        """
+        # Get timelines
+        timelines = self.app.project_manager.current_project.timelines
+        
+        # Draw each timeline
+        y = self.parent_widget.timeline_spacing
+        for timeline in timelines:
+            # Calculate timeline rect
+            timeline_rect = QRect(
+                0,
+                y,
+                self.width(),
+                self.parent_widget.timeline_height
+            )
+            
+            # Check if timeline intersects with update rect
+            if timeline_rect.intersects(update_rect):
+                # Calculate the intersection rect
+                intersection = timeline_rect.intersected(update_rect)
+                
+                # Draw timeline background for the intersection
+                if timeline == self.parent_widget.selected_timeline:
+                    # Selected timeline
+                    painter.fillRect(intersection, QColor(60, 60, 80))
+                else:
+                    # Normal timeline
+                    painter.fillRect(intersection, QColor(30, 30, 30))
+                
+                # Draw segments that intersect with the update rect
+                self._draw_segments_partial(painter, timeline, timeline_rect, update_rect)
+            
+            # Move to next timeline
+            y += self.parent_widget.timeline_height + self.parent_widget.timeline_spacing
+    
+    def _draw_segments_partial(self, painter, timeline, timeline_rect, update_rect):
+        """
+        Draw only the segments of a timeline that intersect with the update rect.
+        
+        Args:
+            painter: QPainter instance.
+            timeline: Timeline to draw segments for.
+            timeline_rect: Rectangle of the timeline.
+            update_rect: The rectangle to update.
+        """
+        # Get segments
+        segments = timeline.segments
+        
+        # Draw each segment
+        for segment in segments:
+            # Calculate segment rect
+            start_x = int(segment.start_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
+            end_x = int(segment.end_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
+            width = max(self.parent_widget.min_segment_width, end_x - start_x)
+            
+            segment_rect = QRect(
+                start_x,
+                timeline_rect.top() + 20,
+                width,
+                timeline_rect.height() - 30
+            )
+            
+            # Check if segment intersects with update rect
+            if segment_rect.intersects(update_rect):
+                # Draw segment background
+                r, g, b = segment.color
+                segment_color = QColor(r, g, b)
+                
+                # Create gradient
+                from PyQt6.QtCore import QPointF
+                gradient = QLinearGradient(
+                    QPointF(segment_rect.topLeft()),
+                    QPointF(segment_rect.bottomLeft())
+                )
+                gradient.setColorAt(0, segment_color.lighter(120))
+                gradient.setColorAt(1, segment_color)
+                
+                # Fill segment
+                painter.fillRect(segment_rect, gradient)
+                
+                # Draw segment border
+                if segment == self.parent_widget.selected_segment:
+                    # Selected segment
+                    painter.setPen(QPen(QColor(0, 0, 0), 2))
+                else:
+                    # Normal segment
+                    painter.setPen(QPen(QColor(0, 0, 0), 1))
+                
+                painter.drawRect(segment_rect)
     
     def _draw_segments(self, painter, timeline, timeline_rect):
         """
@@ -800,17 +991,21 @@ class TimelineContainer(QWidget):
         # Calculate position in pixels
         pos_x = int(self.parent_widget.position * self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
-        # Log the position for debugging
-        # Show more precision (1/100th second) in the log
-        self.app.logger.debug(f"Drawing position marker at x={pos_x} (position={self.parent_widget.position:.3f}s)")
+        # Log the position for debugging (reduced logging frequency)
+        if self.parent_widget.position % 0.5 < 0.02:  # Log only every ~0.5 seconds
+            self.app.logger.debug(f"Drawing position marker at x={pos_x} (position={self.parent_widget.position:.3f}s)")
         
-        # Draw position line with a more visible style
-        painter.setPen(QPen(QColor(255, 0, 0), 3))  # Increased width for better visibility
-        painter.drawLine(pos_x, 0, pos_x, self.height())
+        # Create a semi-transparent red color for the line to avoid obscuring time labels
+        line_color = QColor(255, 0, 0, 200)  # Added alpha channel (200/255 opacity)
+        
+        # Draw position line with a more visible style, but start below the time labels
+        painter.setPen(QPen(line_color, 3))  # Increased width for better visibility
+        painter.drawLine(pos_x, 20, pos_x, self.height())  # Start at y=20 to avoid time labels
         
         # Draw a small circle at the top of the line for better visibility
+        # Use a fully opaque color for the circle to make it stand out
         painter.setBrush(QBrush(QColor(255, 0, 0)))
-        painter.drawEllipse(pos_x - 4, 0, 8, 8)
+        painter.drawEllipse(pos_x - 4, 20, 8, 8)  # Position circle at y=20
     
     def _get_color_name(self, color):
         """
