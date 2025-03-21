@@ -119,7 +119,6 @@ class LyricsManager(QObject):
         if dialog.exec():
             return dialog.get_lyrics()
         return None
-    
     def process_audio(self, audio_path):
         """
         Process audio to extract and align lyrics.
@@ -130,7 +129,12 @@ class LyricsManager(QObject):
         Returns:
             bool: True if processing was successful, False otherwise.
         """
+        # Ensure we have an absolute path
+        import os
+        audio_path = os.path.abspath(audio_path)
+        
         self.logger.info(f"Processing audio for lyrics: {audio_path}")
+        print(f"[LyricsManager] Processing audio for lyrics: {audio_path}")
         print(f"[LyricsManager] Processing audio for lyrics: {audio_path}")
         
         # Update status
@@ -265,7 +269,6 @@ class LyricsManager(QObject):
         
         print(f"[LyricsManager] API keys check result: {'All present' if result else 'Some missing'}")
         return result
-    
     def _identify_song(self, audio_path):
         """
         Identify song using ACRCloud.
@@ -282,9 +285,43 @@ class LyricsManager(QObject):
             import hmac
             import time
             import requests
+            import os
+            from pathlib import Path
+            
+            # Log the audio path for debugging
+            self.logger.info(f"Attempting to identify song from file: {audio_path}")
+            
+            # Check if file exists
+            if not os.path.exists(audio_path):
+                self.logger.error(f"File does not exist: {audio_path}")
+                
+                # Try to resolve the path using Path
+                path_obj = Path(audio_path)
+                if not path_obj.exists():
+                    self.logger.error(f"Path object also cannot find file: {path_obj}")
+                    
+                    # Try to get the absolute path
+                    abs_path = os.path.abspath(audio_path)
+                    self.logger.error(f"Absolute path: {abs_path}")
+                    
+                    if not os.path.exists(abs_path):
+                        self.logger.error(f"File does not exist at absolute path either")
+                        return None, None
+                    else:
+                        audio_path = abs_path
+                        self.logger.info(f"Using absolute path: {audio_path}")
+                else:
+                    audio_path = str(path_obj.resolve())
+                    self.logger.info(f"Using resolved path: {audio_path}")
             
             # Read audio file
-            with open(audio_path, 'rb') as f:
+            try:
+                with open(audio_path, 'rb') as f:
+                    sample_bytes = f.read(10 * 1024 * 1024)  # Read up to 10MB
+                    self.logger.info(f"Successfully read {len(sample_bytes)} bytes from file")
+            except Exception as e:
+                self.logger.error(f"Error reading file: {e}")
+                return None, None
                 sample_bytes = f.read(10 * 1024 * 1024)  # Read up to 10MB
             
             # Prepare request
@@ -379,23 +416,57 @@ class LyricsManager(QObject):
             list: List of WordTimestamp objects or None if alignment failed.
         """
         try:
+            # Ensure we have an absolute path
+            import os
+            audio_path = os.path.abspath(audio_path)
+            
+            self.logger.info(f"Aligning lyrics for audio file: {audio_path}")
+            print(f"[LyricsManager] Aligning lyrics for audio file: {audio_path}")
+            
+            # Verify the file exists
+            if not os.path.exists(audio_path):
+                self.logger.error(f"Audio file does not exist: {audio_path}")
+                print(f"[LyricsManager] Audio file does not exist: {audio_path}")
+                return None
+            
             # Check if Gentle Docker container is running
             if not self._check_gentle_container():
                 # Start Gentle Docker container
+                self.logger.info("Gentle container not running, attempting to start it")
+                print("[LyricsManager] Gentle container not running, attempting to start it")
+                
                 if not self._start_gentle_container():
                     self.logger.error("Could not start Gentle Docker container")
+                    print("[LyricsManager] Could not start Gentle Docker container")
                     return None
             
             # Send request to Gentle
-            files = {
-                'audio': open(audio_path, 'rb'),
-                'transcript': (None, lyrics_text)
-            }
-            
-            response = requests.post(
-                'http://localhost:8765/transcriptions?async=false',
-                files=files
-            )
+            try:
+                self.logger.info("Opening audio file for Gentle alignment")
+                print("[LyricsManager] Opening audio file for Gentle alignment")
+                
+                with open(audio_path, 'rb') as audio_file:
+                    files = {
+                        'audio': audio_file,
+                        'transcript': (None, lyrics_text)
+                    }
+                    
+                    self.logger.info("Sending request to Gentle API")
+                    print("[LyricsManager] Sending request to Gentle API")
+                    
+                    response = requests.post(
+                        'http://localhost:8765/transcriptions?async=false',
+                        files=files,
+                        timeout=120  # Increase timeout to 2 minutes
+                    )
+            except FileNotFoundError as e:
+                self.logger.error(f"Error opening audio file: {e}")
+                print(f"[LyricsManager] Error opening audio file: {e}")
+                return None
+            except requests.RequestException as e:
+                self.logger.error(f"Error communicating with Gentle API: {e}")
+                print(f"[LyricsManager] Error communicating with Gentle API: {e}")
+                return None
             
             # Check if request was successful
             if response.status_code != 200:
@@ -441,7 +512,6 @@ class LyricsManager(QObject):
             return response.status_code == 200
         except:
             return False
-    
     def _start_gentle_container(self):
         """
         Start Gentle Docker container.
@@ -461,20 +531,46 @@ class LyricsManager(QObject):
             self.logger.info(f"Using start_gentle.py script at: {start_gentle_script}")
             print(f"[LyricsManager] Using start_gentle.py script at: {start_gentle_script}")
             
-            # Run the start_gentle.py script
-            result = subprocess.run(
-                [sys.executable, start_gentle_script],
-                check=False,
-                capture_output=True,
-                text=True
-            )
+            # Check if the script exists
+            if not os.path.exists(start_gentle_script):
+                self.logger.error(f"start_gentle.py script not found at: {start_gentle_script}")
+                print(f"[LyricsManager] start_gentle.py script not found at: {start_gentle_script}")
+                return False
             
-            # Log the output
-            self.logger.info(f"start_gentle.py output: {result.stdout}")
-            print(f"[LyricsManager] start_gentle.py output: {result.stdout}")
+            # Log the command we're about to run
+            cmd = [sys.executable, start_gentle_script]
+            self.logger.info(f"Running command: {' '.join(cmd)}")
+            print(f"[LyricsManager] Running command: {' '.join(cmd)}")
             
-            if result.stderr:
-                self.logger.error(f"start_gentle.py error: {result.stderr}")
+            # Run the start_gentle.py script with a timeout
+            try:
+                result = subprocess.run(
+                    cmd,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=60  # Add a timeout of 60 seconds
+                )
+                
+                # Log the output
+                self.logger.info(f"start_gentle.py output: {result.stdout}")
+                print(f"[LyricsManager] start_gentle.py output: {result.stdout}")
+                
+                if result.stderr:
+                    self.logger.error(f"start_gentle.py error: {result.stderr}")
+                    print(f"[LyricsManager] start_gentle.py error: {result.stderr}")
+                
+                # Log the return code
+                self.logger.info(f"start_gentle.py return code: {result.returncode}")
+                print(f"[LyricsManager] start_gentle.py return code: {result.returncode}")
+                
+                if result.returncode != 0:
+                    self.logger.error(f"start_gentle.py failed with return code: {result.returncode}")
+                    print(f"[LyricsManager] start_gentle.py failed with return code: {result.returncode}")
+            except subprocess.TimeoutExpired:
+                self.logger.error("start_gentle.py timed out after 60 seconds")
+                print("[LyricsManager] start_gentle.py timed out after 60 seconds")
+                return False
                 print(f"[LyricsManager] start_gentle.py error: {result.stderr}")
             
             # Check if container is running
