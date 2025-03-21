@@ -117,23 +117,27 @@ class AudioManager(QObject):
             # Stop any current playback
             self.stop()
             
+            # Ensure we use absolute path
+            abs_file_path = os.path.abspath(file_path)
+            self.logger.info(f"Using absolute audio file path: {abs_file_path}")
+            
             # Load audio file
-            self.audio_data, self.sample_rate = librosa.load(file_path, sr=None)
-            self.audio_file = file_path
+            self.audio_data, self.sample_rate = librosa.load(abs_file_path, sr=None)
+            self.audio_file = abs_file_path
             self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
             
             # Reset position
             self.position = 0.0
             
-            # Add to recent audio files
-            self.app.config.add_recent_audio(file_path)
+            # Add to recent audio files (use absolute path)
+            self.app.config.add_recent_audio(abs_file_path)
             
             # Ensure position change is properly propagated
             self.position_changed.emit(self.position)
             self._update_timeline_position(self.position)
             
-            # Emit signal
-            self.audio_loaded.emit(file_path, self.duration)
+            # Emit signal with absolute path
+            self.audio_loaded.emit(abs_file_path, self.duration)
             
             # Start analysis in a separate thread
             threading.Thread(target=self._analyze_audio, daemon=True).start()
@@ -174,7 +178,14 @@ class AudioManager(QObject):
             
             # Load the audio data from the temporary file
             self.audio_data, self.sample_rate = librosa.load(temp_path, sr=None)
-            self.audio_file = project.audio_file
+            
+            # Ensure we store the absolute path of the audio file
+            if project.audio_file:
+                self.audio_file = os.path.abspath(project.audio_file)
+                self.logger.info(f"Using absolute audio file path: {self.audio_file}")
+            else:
+                self.audio_file = project.audio_file  # Could be None for embedded audio
+                
             self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
             
             # Remove the temporary file
@@ -190,8 +201,9 @@ class AudioManager(QObject):
             self.position_changed.emit(self.position)
             self._update_timeline_position(self.position)
             
-            # Emit signal
-            self.audio_loaded.emit(project.audio_file or "Embedded Audio", self.duration)
+            # Emit signal with absolute path
+            audio_path_to_emit = self.audio_file or "Embedded Audio"
+            self.audio_loaded.emit(audio_path_to_emit, self.duration)
             
             # Start analysis in a separate thread
             threading.Thread(target=self._analyze_audio, daemon=True).start()

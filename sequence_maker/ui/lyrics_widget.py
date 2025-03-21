@@ -216,7 +216,49 @@ class LyricsWidget(QWidget):
         # Update the lyrics text
         if lyrics_data and hasattr(lyrics_data, 'lyrics_text') and lyrics_data.lyrics_text:
             print(f"[LyricsWidget] Lyrics text available: {len(lyrics_data.lyrics_text)} characters")
-            self.lyrics_text.setText(lyrics_data.lyrics_text)
+            
+            # Check if we have word timestamps
+            if hasattr(lyrics_data, 'word_timestamps') and lyrics_data.word_timestamps:
+                print(f"[LyricsWidget] Word timestamps available: {len(lyrics_data.word_timestamps)} words")
+                
+                # Create a formatted text with timestamps
+                formatted_text = ""
+                
+                # Group words by lines for better display
+                lines = lyrics_data.lyrics_text.split('\n')
+                word_index = 0
+                total_words = len(lyrics_data.word_timestamps)
+                
+                for line in lines:
+                    if line.strip():  # Skip empty lines
+                        line_with_timestamps = ""
+                        words = line.split()
+                        
+                        for word in words:
+                            if word_index < total_words:
+                                timestamp = lyrics_data.word_timestamps[word_index]
+                                # Format: word (start-end)
+                                line_with_timestamps += f"{timestamp.word} ({timestamp.start:.2f}-{timestamp.end:.2f}) "
+                                word_index += 1
+                            else:
+                                line_with_timestamps += f"{word} "
+                        
+                        formatted_text += line_with_timestamps.strip() + "\n"
+                    else:
+                        formatted_text += "\n"
+                
+                # Log some of the timestamps for debugging
+                if total_words > 0:
+                    sample_size = min(5, total_words)
+                    print(f"[LyricsWidget] Sample timestamps (first {sample_size} words):")
+                    for i in range(sample_size):
+                        ts = lyrics_data.word_timestamps[i]
+                        print(f"[LyricsWidget]   Word: '{ts.word}', Start: {ts.start:.2f}, End: {ts.end:.2f}")
+                
+                self.lyrics_text.setText(formatted_text)
+            else:
+                print("[LyricsWidget] No word timestamps available")
+                self.lyrics_text.setText(lyrics_data.lyrics_text)
         else:
             print("[LyricsWidget] No lyrics text available")
             self.lyrics_text.setText("No lyrics available.")

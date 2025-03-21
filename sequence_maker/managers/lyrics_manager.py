@@ -537,41 +537,71 @@ class LyricsManager(QObject):
                 print(f"[LyricsManager] start_gentle.py script not found at: {start_gentle_script}")
                 return False
             
+            # Create a log file path for the script output
+            import tempfile
+            log_file_path = os.path.join(tempfile.gettempdir(), "gentle_startup.log")
+            self.logger.info(f"Script output will be logged to: {log_file_path}")
+            print(f"[LyricsManager] Script output will be logged to: {log_file_path}")
+            
             # Log the command we're about to run
-            cmd = [sys.executable, start_gentle_script]
-            self.logger.info(f"Running command: {' '.join(cmd)}")
-            print(f"[LyricsManager] Running command: {' '.join(cmd)}")
+            # Use shell=True and redirect output to a file
+            cmd = f"{sys.executable} {start_gentle_script} > {log_file_path} 2>&1"
+            self.logger.info(f"Running command: {cmd}")
+            print(f"[LyricsManager] Running command: {cmd}")
             
             # Run the start_gentle.py script with a timeout
             try:
-                result = subprocess.run(
+                # Run with shell=True to ensure proper environment and output redirection
+                process = subprocess.Popen(
                     cmd,
-                    check=False,
-                    capture_output=True,
-                    text=True,
-                    timeout=60  # Add a timeout of 60 seconds
+                    shell=True,
+                    text=True
                 )
                 
-                # Log the output
-                self.logger.info(f"start_gentle.py output: {result.stdout}")
-                print(f"[LyricsManager] start_gentle.py output: {result.stdout}")
+                # Wait for the process with timeout
+                try:
+                    process.wait(timeout=60)
+                    
+                    # Read the log file
+                    try:
+                        with open(log_file_path, 'r') as log_file:
+                            log_content = log_file.read()
+                        
+                        # Log the output
+                        self.logger.info(f"start_gentle.py output: {log_content}")
+                        print(f"[LyricsManager] start_gentle.py output: {log_content}")
+                    except Exception as e:
+                        self.logger.error(f"Error reading log file: {e}")
+                        print(f"[LyricsManager] Error reading log file: {e}")
+                    
+                    # Log the return code
+                    self.logger.info(f"start_gentle.py return code: {process.returncode}")
+                    print(f"[LyricsManager] start_gentle.py return code: {process.returncode}")
+                    
+                    if process.returncode != 0:
+                        self.logger.error(f"start_gentle.py failed with return code: {process.returncode}")
+                        print(f"[LyricsManager] start_gentle.py failed with return code: {process.returncode}")
                 
-                if result.stderr:
-                    self.logger.error(f"start_gentle.py error: {result.stderr}")
-                    print(f"[LyricsManager] start_gentle.py error: {result.stderr}")
-                
-                # Log the return code
-                self.logger.info(f"start_gentle.py return code: {result.returncode}")
-                print(f"[LyricsManager] start_gentle.py return code: {result.returncode}")
-                
-                if result.returncode != 0:
-                    self.logger.error(f"start_gentle.py failed with return code: {result.returncode}")
-                    print(f"[LyricsManager] start_gentle.py failed with return code: {result.returncode}")
-            except subprocess.TimeoutExpired:
-                self.logger.error("start_gentle.py timed out after 60 seconds")
-                print("[LyricsManager] start_gentle.py timed out after 60 seconds")
+                except subprocess.TimeoutExpired:
+                    # Kill the process if it times out
+                    process.kill()
+                    
+                    # Read the log file to see what happened before timeout
+                    try:
+                        with open(log_file_path, 'r') as log_file:
+                            log_content = log_file.read()
+                        
+                        self.logger.error(f"start_gentle.py timed out after 60 seconds. Last output: {log_content}")
+                        print(f"[LyricsManager] start_gentle.py timed out after 60 seconds. Last output: {log_content}")
+                    except Exception as e:
+                        self.logger.error(f"Error reading log file after timeout: {e}")
+                        print(f"[LyricsManager] Error reading log file after timeout: {e}")
+                    
+                    return False
+            except Exception as e:
+                self.logger.error(f"Error running start_gentle.py: {e}")
+                print(f"[LyricsManager] Error running start_gentle.py: {e}")
                 return False
-                print(f"[LyricsManager] start_gentle.py error: {result.stderr}")
             
             # Check if container is running
             if self._check_gentle_container():
