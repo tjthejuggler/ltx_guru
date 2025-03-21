@@ -107,6 +107,31 @@ class LyricsWidget(QWidget):
         """Connect signals to slots."""
         # Connect timeline manager signals
         self.app.timeline_manager.position_changed.connect(self._on_position_changed)
+        
+        # Connect project manager signals to update lyrics when a project is loaded
+        self.app.project_manager.project_loaded.connect(self._on_project_loaded)
+    
+    def _on_project_loaded(self, project):
+        """
+        Handle project loaded signal.
+        
+        Args:
+            project: The loaded project.
+        """
+        print("[LyricsWidget] Project loaded, updating lyrics display")
+        self.logger.info("Project loaded, updating lyrics display")
+        
+        # Check if the project has lyrics data
+        if project and hasattr(project, 'lyrics') and project.lyrics:
+            print(f"[LyricsWidget] Project has lyrics data: {project.lyrics.song_name}")
+            self.logger.info(f"Project has lyrics data: {project.lyrics.song_name}")
+            
+            # Update the lyrics display with the project's lyrics data
+            self.update_lyrics(project.lyrics)
+        else:
+            print("[LyricsWidget] Project has no lyrics data")
+            self.logger.info("Project has no lyrics data")
+            self.lyrics_text.setText("No lyrics available.")
     
     def _on_position_changed(self, position):
         """

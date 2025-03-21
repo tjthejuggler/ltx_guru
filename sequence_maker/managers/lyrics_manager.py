@@ -47,6 +47,9 @@ class LyricsManager(QObject):
         
         # Load API keys from config
         self._load_api_keys()
+        
+        # Connect to project loaded signal
+        self.app.project_manager.project_loaded.connect(self._on_project_loaded)
     
     def set_lyrics_widget(self, lyrics_widget):
         """
@@ -59,6 +62,45 @@ class LyricsManager(QObject):
         
         # Connect status signal to widget
         self.status_updated.connect(self.lyrics_widget.update_status)
+    
+    def _on_project_loaded(self, project):
+        """
+        Handle project loaded signal.
+        
+        Args:
+            project: The loaded project.
+        """
+        self.logger.info("Project loaded, checking for lyrics data")
+        print("[LyricsManager] Project loaded, checking for lyrics data")
+        
+        # Check if the project has lyrics data
+        if project and hasattr(project, 'lyrics') and project.lyrics:
+            self.logger.info(f"Project has lyrics data: {project.lyrics.song_name}")
+            print(f"[LyricsManager] Project has lyrics data: {project.lyrics.song_name}")
+            
+            # Check if there are word timestamps
+            if hasattr(project.lyrics, 'word_timestamps') and project.lyrics.word_timestamps:
+                self.logger.info(f"Project has {len(project.lyrics.word_timestamps)} word timestamps")
+                print(f"[LyricsManager] Project has {len(project.lyrics.word_timestamps)} word timestamps")
+                
+                # Log some sample timestamps for debugging
+                if len(project.lyrics.word_timestamps) > 0:
+                    sample_size = min(5, len(project.lyrics.word_timestamps))
+                    self.logger.info(f"Sample timestamps (first {sample_size} words):")
+                    print(f"[LyricsManager] Sample timestamps (first {sample_size} words):")
+                    for i in range(sample_size):
+                        ts = project.lyrics.word_timestamps[i]
+                        self.logger.info(f"  Word: '{ts.word}', Start: {ts.start:.2f}, End: {ts.end:.2f}")
+                        print(f"[LyricsManager]   Word: '{ts.word}', Start: {ts.start:.2f}, End: {ts.end:.2f}")
+            else:
+                self.logger.info("Project has no word timestamps")
+                print("[LyricsManager] Project has no word timestamps")
+            
+            # Emit signal to update the lyrics widget
+            self.lyrics_processed.emit(project.lyrics)
+        else:
+            self.logger.info("Project has no lyrics data")
+            print("[LyricsManager] Project has no lyrics data")
     
     def update_status(self, status_text, step=None):
         """
