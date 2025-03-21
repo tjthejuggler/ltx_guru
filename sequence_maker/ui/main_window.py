@@ -22,6 +22,7 @@ from resources.resources import get_icon_path
 from ui.timeline_widget import TimelineWidget
 from ui.ball_widget import BallWidget
 from ui.audio_widget import AudioWidget
+from ui.lyrics_widget import LyricsWidget
 from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
@@ -208,9 +209,13 @@ class MainWindow(QMainWindow):
         self.connect_balls_action = QAction("&Connect to Balls", self)
         self.connect_balls_action.setStatusTip("Connect to LTX balls")
         self.connect_balls_action.triggered.connect(self._on_connect_balls)
-        
         self.llm_chat_action = QAction("&LLM Chat...", self)
         self.llm_chat_action.setStatusTip("Open LLM chat interface")
+        self.llm_chat_action.triggered.connect(self._on_llm_chat)
+        
+        self.process_lyrics_action = QAction("Process &Lyrics", self)
+        self.process_lyrics_action.setStatusTip("Process audio to extract and align lyrics")
+        self.process_lyrics_action.triggered.connect(self._on_process_lyrics)
         self.llm_chat_action.triggered.connect(self._on_llm_chat)
         
         # Playback actions
@@ -294,6 +299,7 @@ class MainWindow(QMainWindow):
         self.tools_menu.addAction(self.key_mapping_action)
         self.tools_menu.addAction(self.connect_balls_action)
         self.tools_menu.addAction(self.llm_chat_action)
+        self.tools_menu.addAction(self.process_lyrics_action)
         
         # Playback menu
         self.playback_menu = self.menubar.addMenu("&Playback")
@@ -414,9 +420,13 @@ class MainWindow(QMainWindow):
         # Create main layout
         self.main_layout = QVBoxLayout(self.central_widget)
         
-        # Create audio widget (placed above timelines)
+        # Create audio widget (placed above lyrics and timelines)
         self.audio_widget = AudioWidget(self.app, self)
         self.main_layout.addWidget(self.audio_widget, 1)  # 1 = small stretch factor
+        
+        # Create lyrics widget (placed between audio and timeline)
+        self.lyrics_widget = LyricsWidget(self.app, self)
+        self.main_layout.addWidget(self.lyrics_widget, 1)  # 1 = small stretch factor
         
         # Create timeline widget
         self.timeline_widget = TimelineWidget(self.app, self)
@@ -499,6 +509,10 @@ class MainWindow(QMainWindow):
         # Connect undo manager signals
         self.app.undo_manager.undo_stack_changed.connect(self._update_undo_actions)
         self.app.undo_manager.redo_stack_changed.connect(self._update_undo_actions)
+        
+        # Connect lyrics manager signals
+        if hasattr(self.app, 'lyrics_manager'):
+            self.app.lyrics_manager.lyrics_processed.connect(self.lyrics_widget.update_lyrics)
     
     def _restore_window_state(self):
         """Restore window state from settings."""
@@ -814,6 +828,43 @@ class MainWindow(QMainWindow):
             # For now, just add a placeholder response
             self._add_chat_message("Assistant", "LLM integration is not yet fully implemented. This is a placeholder response.")
     
+    def _on_process_lyrics(self):
+        """Handle Process Lyrics action."""
+        print("[MainWindow] Process Lyrics action triggered")
+        self.logger.info("Process Lyrics action triggered")
+        
+        # Check if audio is loaded
+        if not self.app.audio_manager.audio_file:
+            print("[MainWindow] No audio file loaded")
+            QMessageBox.warning(
+                self,
+                "No Audio Loaded",
+                "Please load an audio file before processing lyrics."
+            )
+            return
+        
+        print(f"[MainWindow] Audio file: {self.app.audio_manager.audio_file}")
+        
+        # Check if lyrics manager exists
+        if not hasattr(self.app, 'lyrics_manager'):
+            print("[MainWindow] No lyrics manager found")
+            QMessageBox.warning(
+                self,
+                "Lyrics Manager Not Found",
+                "The lyrics manager is not available."
+            )
+            return
+        
+        # Update status in lyrics widget
+        self.lyrics_widget.update_status("Starting lyrics processing...", 0)
+        
+        # Process audio to extract and align lyrics
+        print("[MainWindow] Calling lyrics_manager.process_audio")
+        self.app.lyrics_manager.process_audio(self.app.audio_manager.audio_file)
+        
+        # Show status message
+        self.statusbar.showMessage("Processing audio for lyrics alignment...", 5000)
+    
     def _add_chat_message(self, sender, message):
         """
         Add a message to the chat history.
@@ -915,6 +966,10 @@ class MainWindow(QMainWindow):
             
             # Update sequence length input
             self._format_length_input(duration)
+            
+            # Update project's audio file and data
+            self.logger.info(f"Updating project audio data from file: {file_path}")
+            self.app.project_manager.current_project.set_audio(file_path)
             
             # Mark project as changed
             self.app.project_manager.project_changed.emit()

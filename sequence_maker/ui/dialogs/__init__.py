@@ -9,3 +9,4 @@ from .key_mapping_dialog import KeyMappingDialog
 from .about_dialog import AboutDialog
 from .llm_chat_dialog import LLMChatDialog
 from .ball_scan_dialog import BallScanDialog
+from .lyrics_input_dialog import LyricsInputDialog

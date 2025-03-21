@@ -1,0 +1,6 @@
+{
+    "acr_access_key": "YOUR_ACR_ACCESS_KEY",
+    "acr_secret_key": "YOUR_ACR_SECRET_KEY",
+    "acr_host": "YOUR_ACR_HOST",
+    "genius_api_key": "YOUR_GENIUS_API_KEY"
+}

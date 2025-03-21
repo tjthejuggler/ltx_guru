@@ -8,6 +8,7 @@ import os
 import logging
 import threading
 import time
+import tempfile
 import numpy as np
 from pathlib import Path
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -140,6 +141,64 @@ class AudioManager(QObject):
             return True
         except Exception as e:
             self.logger.error(f"Error loading audio file: {e}")
+            return False
+    
+    def load_audio_from_project(self, project):
+        """
+        Load audio data from a project.
+        
+        Args:
+            project: The project containing audio data.
+        
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if not AUDIO_AVAILABLE:
+            self.logger.warning("Cannot load audio: Audio libraries not available")
+            return False
+        
+        if not project.audio_data:
+            self.logger.info("No audio data in project")
+            return False
+        
+        self.logger.info(f"Loading audio from project: {project.name}")
+        
+        try:
+            # Stop any current playback
+            self.stop()
+            
+            # Create a temporary file to write the audio data to
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+                temp_path = temp_file.name
+                temp_file.write(project.audio_data)
+            
+            # Load the audio data from the temporary file
+            self.audio_data, self.sample_rate = librosa.load(temp_path, sr=None)
+            self.audio_file = project.audio_file
+            self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
+            
+            # Remove the temporary file
+            try:
+                os.unlink(temp_path)
+            except Exception as e:
+                self.logger.warning(f"Could not remove temporary file {temp_path}: {e}")
+            
+            # Reset position
+            self.position = 0.0
+            
+            # Ensure position change is properly propagated
+            self.position_changed.emit(self.position)
+            self._update_timeline_position(self.position)
+            
+            # Emit signal
+            self.audio_loaded.emit(project.audio_file or "Embedded Audio", self.duration)
+            
+            # Start analysis in a separate thread
+            threading.Thread(target=self._analyze_audio, daemon=True).start()
+            
+            return True
+        except Exception as e:
+            self.logger.error(f"Error loading audio from project: {e}")
             return False
     
     def _analyze_audio(self):

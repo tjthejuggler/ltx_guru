@@ -12,6 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 from app.constants import APP_VERSION, PROJECT_FILE_EXTENSION
+from models.lyrics import Lyrics
 
 
 class Project:
@@ -47,7 +48,6 @@ class Project:
         self.timelines = []
         self.key_mappings = {}
         self.effects = {}
-        
         # Audio data
         self.audio_file = None
         self.audio_data = None
@@ -60,7 +60,11 @@ class Project:
             }
         }
         
+        # Lyrics data
+        self.lyrics = Lyrics()
+        
         # File path (None for new projects)
+        self.file_path = None
         self.file_path = None
     
     def to_dict(self):
@@ -103,7 +107,8 @@ class Project:
                 "duration": self.audio_duration,
                 "data": audio_data_b64
             },
-            "visualizations": self.visualizations
+            "visualizations": self.visualizations,
+            "lyrics": self.lyrics.to_dict() if self.lyrics else {}
         }
     
     @classmethod
@@ -156,6 +161,10 @@ class Project:
                 "beats": {"color": [255, 0, 0], "threshold": 0.5}
             }
         })
+        
+        # Set lyrics data
+        if "lyrics" in data:
+            project.lyrics = Lyrics.from_dict(data["lyrics"])
         
         return project
     
@@ -276,3 +285,28 @@ class Project:
             except Exception as e:
                 self.logger.error(f"Error reading audio file: {e}")
                 self.audio_data = None
+    
+    def set_lyrics(self, song_name=None, artist_name=None, lyrics_text=None, word_timestamps=None):
+        """
+        Set the project's lyrics data.
+        
+        Args:
+            song_name (str, optional): Song name. Defaults to None.
+            artist_name (str, optional): Artist name. Defaults to None.
+            lyrics_text (str, optional): Lyrics text. Defaults to None.
+            word_timestamps (list, optional): List of word timestamps. Defaults to None.
+        """
+        if not hasattr(self, 'lyrics') or self.lyrics is None:
+            self.lyrics = Lyrics()
+            
+        if song_name is not None:
+            self.lyrics.song_name = song_name
+            
+        if artist_name is not None:
+            self.lyrics.artist_name = artist_name
+            
+        if lyrics_text is not None:
+            self.lyrics.lyrics_text = lyrics_text
+            
+        if word_timestamps is not None:
+            self.lyrics.word_timestamps = word_timestamps

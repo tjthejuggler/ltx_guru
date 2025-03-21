@@ -35,7 +35,10 @@ ENV/
 
 # User-specific settings
 .sequence_maker/
+**/api_keys.json
 
 # Directories to ignore
 pdf_extractor/
 manual/
+gentle_docker/
+gentle_output/

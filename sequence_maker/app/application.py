@@ -23,6 +23,7 @@ from managers.audio_manager import AudioManager
 from managers.ball_manager import BallManager
 from managers.llm_manager import LLMManager
 from managers.undo_manager import UndoManager
+from managers.lyrics_manager import LyricsManager
 from resources.resources import get_icon_path
 
 # Create a custom style that forces our icon to be used
@@ -158,7 +159,6 @@ class SequenceMakerApp:
     def _init_managers(self):
         """Initialize all application managers."""
         self.logger.info("Initializing application managers")
-        
         # Create managers
         self.project_manager = ProjectManager(self)
         self.timeline_manager = TimelineManager(self)
@@ -166,8 +166,10 @@ class SequenceMakerApp:
         self.ball_manager = BallManager(self)
         self.llm_manager = LLMManager(self)
         self.undo_manager = UndoManager(self)
+        self.lyrics_manager = LyricsManager(self)
         
         # Connect managers as needed
+        self.timeline_manager.set_undo_manager(self.undo_manager)
         self.timeline_manager.set_undo_manager(self.undo_manager)
     
     def _init_ui(self):
@@ -212,10 +214,18 @@ class SequenceMakerApp:
             self.project_manager.save_project
         )
         
+        # Connect project_loaded signal to load audio from project
+        self.project_manager.project_loaded.connect(
+            self.audio_manager.load_audio_from_project
+        )
+        
         # Connect ball control signals
         self.main_window.connect_balls_action.triggered.connect(
             self.ball_manager.connect_balls
         )
+        
+        # Connect lyrics manager to lyrics widget
+        self.lyrics_manager.set_lyrics_widget(self.main_window.lyrics_widget)
     
     def run(self):
         """Run the application main loop."""

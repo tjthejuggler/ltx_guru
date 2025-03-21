@@ -474,7 +474,8 @@ class AudioVisualization(QWidget):
                         # Draw vertical line for waveform value
                         y1 = center_y - value * center_y * 0.9
                         y2 = center_y + value * center_y * 0.9
-                        painter.drawLine(i, y1, i, y2)
+                        # Convert numpy.float32 values to integers
+                        painter.drawLine(i, int(y1), i, int(y2))
     
     def _draw_spectrum(self, painter):
         """
