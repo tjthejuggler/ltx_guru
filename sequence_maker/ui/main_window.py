@@ -12,7 +12,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
     QMenuBar, QMenu, QToolBar, QStatusBar, QFileDialog, QMessageBox,
-    QLabel, QTextEdit, QPushButton
+    QLabel, QTextEdit, QPushButton, QSizePolicy
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSettings, QSize
 from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont, QPixmap, QImage
@@ -27,7 +27,7 @@ from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
 
-from app.constants import PROJECT_FILE_EXTENSION, AUDIO_FILE_EXTENSIONS
+from app.constants import PROJECT_FILE_EXTENSION, AUDIO_FILE_EXTENSIONS, BALL_VISUALIZATION_SIZE
 
 
 class MainWindow(QMainWindow):
@@ -334,6 +334,12 @@ class MainWindow(QMainWindow):
         self.view_toolbar.addAction(self.zoom_out_action)
         self.view_toolbar.addAction(self.zoom_fit_action)
         
+        # Add LLM Chat button to view toolbar
+        self.llm_chat_toolbar_button = QPushButton("LLM Chat")
+        self.llm_chat_toolbar_button.setToolTip("Open LLM chat interface")
+        self.llm_chat_toolbar_button.clicked.connect(self._on_llm_chat)
+        self.view_toolbar.addWidget(self.llm_chat_toolbar_button)
+        
         # Playback toolbar
         self.playback_toolbar = self.addToolBar("Playback")
         self.playback_toolbar.addAction(self.play_action)
@@ -345,6 +351,18 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
         
+        # Create ball widget directly in the status bar
+        self.ball_widget = BallWidget(self.app, self)
+        self.ball_widget.setFixedHeight(BALL_VISUALIZATION_SIZE)
+        
+        # Add ball widget to the left side of the status bar
+        self.statusbar.addWidget(self.ball_widget)
+        
+        # Add a spacer to push everything else to the right
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self.statusbar.addWidget(spacer)
+        
         # Import widgets
         from PyQt6.QtWidgets import QLineEdit
         from PyQt6.QtGui import QRegularExpressionValidator
@@ -353,17 +371,19 @@ class MainWindow(QMainWindow):
         # Create position input container
         position_container = QWidget()
         position_layout = QHBoxLayout(position_container)
-        position_layout.setContentsMargins(0, 0, 0, 0)
-        position_layout.setSpacing(5)
+        position_layout.setContentsMargins(5, 0, 5, 0)
+        position_layout.setSpacing(2)
         
-        # Add position label
-        position_label = QLabel("Position:")
+        # Add position label (more compact)
+        position_label = QLabel("Pos:")
+        position_label.setFixedWidth(30)
         position_layout.addWidget(position_label)
         
         # Add editable time input field with HH:MM:SS format
         self.time_input = QLineEdit()
-        self.time_input.setFixedWidth(100)
+        self.time_input.setFixedWidth(70)
         self.time_input.setText("00:00:00")
+        self.time_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Set validator to only allow valid time values in HH:MM:SS format
         time_regex = QRegularExpression("^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$")
@@ -381,26 +401,29 @@ class MainWindow(QMainWindow):
         # Create sequence length input container
         length_container = QWidget()
         length_layout = QHBoxLayout(length_container)
-        length_layout.setContentsMargins(0, 0, 0, 0)
-        length_layout.setSpacing(5)
+        length_layout.setContentsMargins(5, 0, 5, 0)
+        length_layout.setSpacing(2)
         
-        # Add sequence length label
-        length_label = QLabel("Sequence Length:")
+        # Add sequence length label (more compact)
+        length_label = QLabel("Length:")
+        length_label.setFixedWidth(50)
         length_layout.addWidget(length_label)
         
         # Add editable sequence length input field with HH:MM:SS format
         self.length_input = QLineEdit()
-        self.length_input.setFixedWidth(100)
+        self.length_input.setFixedWidth(70)
         self.length_input.setText("00:01:00")  # Default 1 minute
+        self.length_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Set validator to only allow valid time values in HH:MM:SS format
         self.length_input.setValidator(validator)  # Reuse the same validator
         
         length_layout.addWidget(self.length_input)
         
-        # Add Apply button
+        # Add Apply button (more compact)
         self.apply_length_button = QPushButton("Apply")
         self.apply_length_button.setToolTip("Apply the sequence length")
+        self.apply_length_button.setFixedWidth(60)
         self.apply_length_button.clicked.connect(self._on_apply_sequence_length)
         length_layout.addWidget(self.apply_length_button)
         
@@ -432,63 +455,7 @@ class MainWindow(QMainWindow):
         self.timeline_widget = TimelineWidget(self.app, self)
         self.main_layout.addWidget(self.timeline_widget, 3)  # 3 = larger stretch factor
         
-        # Create bottom container with splitter for ball visualizations and LLM chat
-        self.bottom_container = QWidget()
-        self.bottom_layout = QHBoxLayout(self.bottom_container)
-        self.bottom_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Create splitter
-        self.bottom_splitter = QSplitter(Qt.Orientation.Horizontal)
-        self.bottom_layout.addWidget(self.bottom_splitter)
-        
-        # Create ball visualization container (left side)
-        self.ball_container = QWidget()
-        self.ball_layout = QVBoxLayout(self.ball_container)
-        self.ball_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Create ball widget
-        self.ball_widget = BallWidget(self.app, self)
-        self.ball_layout.addWidget(self.ball_widget)
-        
-        # Add ball container to splitter
-        self.bottom_splitter.addWidget(self.ball_container)
-        
-        # Create LLM chat container (right side)
-        self.chat_container = QWidget()
-        self.chat_layout = QVBoxLayout(self.chat_container)
-        self.chat_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Create LLM chat title
-        self.chat_title = QLabel("LLM Chat")
-        self.chat_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.chat_layout.addWidget(self.chat_title)
-        
-        # Create chat history
-        self.chat_history = QTextEdit()
-        self.chat_history.setReadOnly(True)
-        self.chat_layout.addWidget(self.chat_history)
-        
-        # Create input area
-        self.chat_input_layout = QHBoxLayout()
-        self.chat_layout.addLayout(self.chat_input_layout)
-        
-        self.chat_input = QTextEdit()
-        self.chat_input.setPlaceholderText("Type your message here...")
-        self.chat_input.setMaximumHeight(60)
-        self.chat_input_layout.addWidget(self.chat_input)
-        
-        self.chat_send_button = QPushButton("Send")
-        self.chat_send_button.clicked.connect(self._on_llm_chat)
-        self.chat_input_layout.addWidget(self.chat_send_button)
-        
-        # Add chat container to splitter
-        self.bottom_splitter.addWidget(self.chat_container)
-        
-        # Set splitter sizes (2/3 for balls, 1/3 for chat)
-        self.bottom_splitter.setSizes([2, 1])
-        
-        # Add bottom container to main layout
-        self.main_layout.addWidget(self.bottom_container, 1)  # 1 = smaller stretch factor
+        # Ball visualization will be added to the status bar
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -803,30 +770,10 @@ class MainWindow(QMainWindow):
     
     def _on_llm_chat(self):
         """Handle LLM Chat action."""
-        # Check if this was triggered by the menu action or the send button
-        sender = self.sender()
-        
-        if sender == self.llm_chat_action:
-            # If triggered by menu action, show the dialog
-            from ui.dialogs.llm_chat_dialog import LLMChatDialog
-            dialog = LLMChatDialog(self.app, self)
-            dialog.exec()
-        else:
-            # If triggered by send button, handle the chat input
-            message = self.chat_input.toPlainText().strip()
-            
-            # Check if message is empty
-            if not message:
-                return
-            
-            # Add message to chat history
-            self._add_chat_message("You", message)
-            
-            # Clear input
-            self.chat_input.clear()
-            
-            # For now, just add a placeholder response
-            self._add_chat_message("Assistant", "LLM integration is not yet fully implemented. This is a placeholder response.")
+        # Open the LLM chat dialog
+        from ui.dialogs.llm_chat_dialog import LLMChatDialog
+        dialog = LLMChatDialog(self.app, self)
+        dialog.exec()
     
     def _on_process_lyrics(self):
         """Handle Process Lyrics action."""
@@ -865,24 +812,6 @@ class MainWindow(QMainWindow):
         # Show status message
         self.statusbar.showMessage("Processing audio for lyrics alignment...", 5000)
     
-    def _add_chat_message(self, sender, message):
-        """
-        Add a message to the chat history.
-        
-        Args:
-            sender (str): Message sender.
-            message (str): Message text.
-        """
-        # Format message
-        formatted_message = f"<b>{sender}:</b><br>{message}<br><br>"
-        
-        # Add to chat history
-        self.chat_history.insertHtml(formatted_message)
-        
-        # Scroll to bottom
-        self.chat_history.verticalScrollBar().setValue(
-            self.chat_history.verticalScrollBar().maximum()
-        )
     
     def _on_play(self):
         """Handle Play action."""

@@ -99,16 +99,7 @@ class TimelineWidget(QWidget):
         self.toolbar = QToolBar()
         self.main_layout.addWidget(self.toolbar)
         
-        # Add timeline controls to toolbar
-        self.add_timeline_button = QPushButton("Add Timeline")
-        self.add_timeline_button.setToolTip("Add a new timeline")
-        self.add_timeline_button.clicked.connect(self._on_add_timeline)
-        self.toolbar.addWidget(self.add_timeline_button)
-        
-        self.remove_timeline_button = QPushButton("Remove Timeline")
-        self.remove_timeline_button.setToolTip("Remove the selected timeline")
-        self.remove_timeline_button.clicked.connect(self._on_remove_timeline)
-        self.toolbar.addWidget(self.remove_timeline_button)
+        # Timeline controls are now handled through the Timeline menu in the main window
         
         # Create scroll area
         self.scroll_area = QScrollArea()
@@ -572,8 +563,9 @@ class TimelineContainer(QWidget):
         height = (timeline_count * (self.parent_widget.timeline_height + self.parent_widget.timeline_spacing) +
                  self.parent_widget.timeline_spacing)
         
-        # Set minimum size
+        # Set minimum and maximum size to exactly fit the timelines
         self.setMinimumSize(width, height)
+        self.setMaximumHeight(height)  # Prevent extra white space
     
     def force_repaint(self):
         """Force a complete repaint of the timeline container."""

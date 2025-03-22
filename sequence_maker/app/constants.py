@@ -68,9 +68,9 @@ AUDIO_BUFFER_SIZE = 1024
 AUDIO_FORMAT = "mp3"
 
 # UI constants
-TIMELINE_HEIGHT = 100  # pixels
+TIMELINE_HEIGHT = 70  # pixels - reduced height for more compact display
 TIMELINE_SEGMENT_MIN_WIDTH = 5  # pixels
-BALL_VISUALIZATION_SIZE = 80  # pixels - increased size for better visibility
+BALL_VISUALIZATION_SIZE = 40  # pixels - further reduced size to save more space
 ZOOM_STEP = 1.2  # Zoom factor per step
 MAX_ZOOM = 100.0
 MIN_ZOOM = 0.01

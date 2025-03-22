@@ -105,6 +105,13 @@ class AudioWidget(QWidget):
         self.load_button.clicked.connect(self._on_load_clicked)
         self.top_layout.addWidget(self.load_button)
         
+        # Create process lyrics button
+        self.process_lyrics_button = QPushButton("Process Lyrics")
+        self.process_lyrics_button.setMaximumWidth(100)
+        self.process_lyrics_button.setToolTip("Process audio to extract and align lyrics")
+        self.process_lyrics_button.clicked.connect(self._on_process_lyrics_clicked)
+        self.top_layout.addWidget(self.process_lyrics_button)
+        
         # Create playback controls
         self.play_button = QPushButton("▶")
         self.play_button.setMaximumWidth(30)
@@ -172,6 +179,31 @@ class AudioWidget(QWidget):
         if file_path:
             # Load audio
             self.app.audio_manager.load_audio(file_path)
+    
+    def _on_process_lyrics_clicked(self):
+        """Handle Process Lyrics button click."""
+        # Check if audio is loaded
+        if not self.app.audio_manager.audio_file:
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(
+                self,
+                "No Audio Loaded",
+                "Please load an audio file before processing lyrics."
+            )
+            return
+        
+        # Check if lyrics manager exists
+        if not hasattr(self.app, 'lyrics_manager'):
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(
+                self,
+                "Lyrics Manager Not Found",
+                "The lyrics manager is not available."
+            )
+            return
+        
+        # Process audio to extract and align lyrics
+        self.app.lyrics_manager.process_audio(self.app.audio_manager.audio_file)
     
     def _on_play_clicked(self):
         """Handle Play button click."""

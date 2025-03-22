@@ -40,11 +40,11 @@ class BallWidget(QWidget):
         self.logger = logging.getLogger("SequenceMaker.BallWidget")
         self.app = app
         
-        # Widget properties
+        # Widget properties - extremely compact for status bar
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
-        self.setMinimumHeight(BALL_VISUALIZATION_SIZE + 30)  # Reduced minimum height
-        self.setMaximumHeight(BALL_VISUALIZATION_SIZE + 80)  # Add maximum height
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        self.setMinimumHeight(BALL_VISUALIZATION_SIZE)
+        self.setMaximumHeight(BALL_VISUALIZATION_SIZE)
         
         # Ball properties
         self.ball_size = BALL_VISUALIZATION_SIZE
@@ -71,53 +71,14 @@ class BallWidget(QWidget):
         self.main_layout.setContentsMargins(0, 0, 0, 0)  # Remove margins
         self.main_layout.setSpacing(0)  # Remove spacing
         
-        # Create ball container
-        self.ball_container = QWidget()
-        self.ball_layout = QHBoxLayout(self.ball_container)
-        self.ball_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.ball_layout.setContentsMargins(5, 5, 5, 5)  # Minimal margins
+        # Create ball container - no scroll area, just direct layout
+        self.ball_layout = QHBoxLayout()
+        self.ball_layout.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.ball_layout.setContentsMargins(2, 2, 2, 2)  # Minimal margins
+        self.ball_layout.setSpacing(2)  # Minimal spacing
+        self.main_layout.addLayout(self.ball_layout)
         
-        # Create scroll area
-        self.scroll_area = QScrollArea()
-        self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setWidget(self.ball_container)
-        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-        self.scroll_area.setMinimumHeight(BALL_VISUALIZATION_SIZE + 10)  # Ensure minimum height
-        self.scroll_area.setMaximumHeight(BALL_VISUALIZATION_SIZE + 20)  # Limit maximum height
-        self.main_layout.addWidget(self.scroll_area, 1)  # Add stretch factor
-        
-        # Create control buttons
-        self.control_layout = QHBoxLayout()
-        self.main_layout.addLayout(self.control_layout)
-        
-        self.connect_button = QPushButton("Connect to Balls")
-        self.connect_button.clicked.connect(self._on_connect_clicked)
-        self.control_layout.addWidget(self.connect_button)
-        
-        self.stream_button = QPushButton("Stream Colors")
-        self.stream_button.clicked.connect(self._on_stream_clicked)
-        self.stream_button.setEnabled(False)
-        self.control_layout.addWidget(self.stream_button)
-        
-        # Create brightness control
-        self.brightness_layout = QHBoxLayout()
-        self.main_layout.addLayout(self.brightness_layout)
-        
-        self.brightness_label = QLabel("Brightness:")
-        self.brightness_layout.addWidget(self.brightness_label)
-        
-        self.brightness_slider = QSlider(Qt.Orientation.Horizontal)
-        self.brightness_slider.setRange(0, 15)  # 0-15 brightness range
-        self.brightness_slider.setValue(8)  # Default to mid brightness
-        self.brightness_slider.setTickPosition(QSlider.TickPosition.TicksBelow)
-        self.brightness_slider.setTickInterval(1)
-        self.brightness_slider.valueChanged.connect(self._on_brightness_changed)
-        self.brightness_slider.setEnabled(False)  # Disabled until balls are connected
-        self.brightness_layout.addWidget(self.brightness_slider)
-        
-        self.brightness_value_label = QLabel("8")
-        self.brightness_layout.addWidget(self.brightness_value_label)
+        # Control buttons removed to save space - functionality moved to menu actions
         
         # Create ball widgets
         self._create_ball_widgets()
@@ -151,10 +112,7 @@ class BallWidget(QWidget):
             self.logger.info(f"Creating ball widgets for {len(timelines)} timelines")
             
             if not timelines:
-                # If no timelines exist, create a placeholder message
-                placeholder = QLabel("No timelines available. Add timelines to see ball visualizations.")
-                placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-                self.ball_layout.addWidget(placeholder)
+                # If no timelines exist, don't show anything
                 return
             
             for i, timeline in enumerate(timelines):
@@ -180,11 +138,6 @@ class BallWidget(QWidget):
                 # Force update to ensure the ball is redrawn
                 item.widget().update()
                 self.logger.debug(f"Updated ball {i}")
-                
-        # Ensure the ball container is visible
-        if self.ball_container.isHidden():
-            self.ball_container.show()
-            self.logger.debug("Made ball container visible")
     
     def _on_connect_clicked(self):
         """Handle Connect to Balls button click."""
@@ -195,7 +148,6 @@ class BallWidget(QWidget):
         if self.app.ball_manager.balls:
             self.connect_button.setText("Connected")
             self.stream_button.setEnabled(True)
-            self.brightness_slider.setEnabled(True)
             
             # Show a summary of connected balls
             self._show_connected_balls_summary()
@@ -224,21 +176,6 @@ class BallWidget(QWidget):
         # Show message box
         from PyQt6.QtWidgets import QMessageBox
         QMessageBox.information(self, "Connected Balls", summary)
-    
-    def _on_brightness_changed(self, value):
-        """
-        Handle brightness slider value change.
-        
-        Args:
-            value (int): New brightness value.
-        """
-        # Update brightness value label
-        self.brightness_value_label.setText(str(value))
-        
-        # Send brightness to all connected balls
-        for ball in self.app.ball_manager.balls.values():
-            if ball.timeline_index >= 0:  # Only send to balls assigned to timelines
-                self.app.ball_manager.send_brightness(ball, value)
     
     def _enable_stream_button(self):
         """Enable the Stream Colors button."""
@@ -324,12 +261,8 @@ class BallWidget(QWidget):
         Args:
             ball: Discovered ball.
         """
-        # Enable stream button and brightness slider
-        self.stream_button.setEnabled(True)
-        self.brightness_slider.setEnabled(True)
-        
-        # Update connect button
-        self.connect_button.setText("Connected")
+        # Automatically start streaming when balls are connected
+        self.app.ball_manager.start_streaming()
     
     def _on_ball_lost(self, ball):
         """
@@ -410,21 +343,14 @@ class BallVisualization(QFrame):
         self.setFrameShape(QFrame.Shape.Box)
         self.setFrameShadow(QFrame.Shadow.Raised)
         self.setLineWidth(1)
-        self.setFixedSize(BALL_VISUALIZATION_SIZE + 20, BALL_VISUALIZATION_SIZE + 40)
+        self.setFixedSize(BALL_VISUALIZATION_SIZE, BALL_VISUALIZATION_SIZE)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         
-        # Create layout
-        self.layout = QVBoxLayout(self)
+        # No layout or labels needed - just show the ball
+        self.setToolTip(f"Ball {timeline_index + 1}")
         
-        # Create label
-        self.label = QLabel(f"Ball {timeline_index + 1}")
-        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.label)
-        
-        # Create status label
-        self.status_label = QLabel("Not connected")
-        self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.layout.addWidget(self.status_label)
+        # Enable mouse tracking for hover events
+        self.setMouseTracking(True)
         
         # Effect properties
         self.strobe_state = False
@@ -443,7 +369,7 @@ class BallVisualization(QFrame):
     
     def sizeHint(self):
         """Get the preferred size of the widget."""
-        return QSize(BALL_VISUALIZATION_SIZE + 20, BALL_VISUALIZATION_SIZE + 40)
+        return QSize(BALL_VISUALIZATION_SIZE, BALL_VISUALIZATION_SIZE)
     
     def paintEvent(self, event):
         """
@@ -623,22 +549,19 @@ class BallVisualization(QFrame):
         return None
     
     def _update_status(self):
-        """Update the status label."""
+        """Update the ball status and tooltip."""
         # Check if a ball is assigned to this timeline
         ball = self.app.ball_manager.get_ball_for_timeline(self.timeline_index)
         
         if ball:
-            # Update the label with the ball's IP address
-            self.status_label.setText(f"Connected: {ball.ip}")
-            
-            # Update the ball label to include the IP
-            self.label.setText(f"Ball {self.timeline_index + 1} ({ball.ip})")
+            # Update the tooltip with the ball's IP address
+            self.setToolTip(f"Ball {self.timeline_index + 1} - Connected to {ball.ip}")
             
             # Set a green border to indicate connection
             self.setStyleSheet("QFrame { border: 2px solid green; border-radius: 5px; }")
         else:
-            self.status_label.setText("Not connected")
-            self.label.setText(f"Ball {self.timeline_index + 1}")
+            # Update tooltip for disconnected state
+            self.setToolTip(f"Ball {self.timeline_index + 1} - Not connected")
             self.setStyleSheet("")  # Reset style
     
     def _toggle_strobe(self):

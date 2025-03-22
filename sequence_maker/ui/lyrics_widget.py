@@ -52,20 +52,7 @@ class LyricsWidget(QWidget):
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         
-        # Create header layout
-        self.header_layout = QHBoxLayout()
-        self.main_layout.addLayout(self.header_layout)
-        
-        # Create title label
-        self.title_label = QLabel("Lyrics")
-        self.title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.header_layout.addWidget(self.title_label)
-        
-        # Create process button
-        self.process_button = QPushButton("Process Lyrics")
-        self.process_button.setToolTip("Process audio to extract and align lyrics")
-        self.process_button.clicked.connect(self._on_process_button_clicked)
-        self.header_layout.addWidget(self.process_button)
+        # Header layout removed to save space
         
         # Create status layout
         self.status_layout = QHBoxLayout()
