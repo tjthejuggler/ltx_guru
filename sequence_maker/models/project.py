@@ -43,6 +43,7 @@ class Project:
         self.default_pixels = 4
         self.refresh_rate = 100  # 100 Hz for 1/100th second precision
         self.total_duration = 60  # seconds
+        self.zoom_level = 1.0  # Default zoom level
         
         # Project data
         self.timelines = []
@@ -96,14 +97,16 @@ class Project:
             "settings": {
                 "defaultPixels": self.default_pixels,
                 "refreshRate": self.refresh_rate,
-                "totalDuration": self.total_duration
+                "totalDuration": self.total_duration,
+                "zoomLevel": self.zoom_level
             },
             "keyMappings": self.key_mappings,
             "effects": self.effects,
             "timelines": timeline_dicts,
             "audio": {
                 "embedded": bool(self.audio_data),
-                "filename": os.path.basename(self.audio_file) if self.audio_file else None,
+                "filename": self.audio_file if self.audio_file else None,  # Store full path
+                "filepath": self.audio_file if self.audio_file else None,  # Add full path for backward compatibility
                 "duration": self.audio_duration,
                 "data": audio_data_b64
             },
@@ -136,6 +139,7 @@ class Project:
         project.default_pixels = data["settings"]["defaultPixels"]
         project.refresh_rate = data["settings"]["refreshRate"]
         project.total_duration = data["settings"]["totalDuration"]
+        project.zoom_level = data["settings"].get("zoomLevel", 1.0)  # Default to 1.0 if not present
         
         # Set data
         project.key_mappings = data["keyMappings"]
@@ -150,7 +154,8 @@ class Project:
         audio = data.get("audio", {})
         if audio.get("embedded") and audio.get("data"):
             project.audio_data = base64.b64decode(audio["data"])
-            project.audio_file = audio.get("filename")
+            # Use filepath if available (for backward compatibility), otherwise use filename
+            project.audio_file = audio.get("filepath") or audio.get("filename")
             project.audio_duration = audio.get("duration", 0)
         
         # Set visualizations
@@ -272,11 +277,18 @@ class Project:
         
         Args:
             file_path (str): Path to the audio file.
-            audio_data (bytes, optional): Audio file data. If None, the file will be read.
+            audio_data (bytes or numpy.ndarray, optional): Audio file data. If None, the file will be read.
+                If a numpy array is provided, the file will be read instead.
         """
         self.audio_file = file_path
         
-        if audio_data:
+        # Handle the case where audio_data is a NumPy array
+        import numpy as np
+        if isinstance(audio_data, np.ndarray):
+            self.logger.warning("NumPy array provided as audio_data, reading file instead")
+            audio_data = None
+        
+        if audio_data is not None:
             self.audio_data = audio_data
         else:
             try:

@@ -166,6 +166,8 @@ class AudioManager(QObject):
             return False
         
         self.logger.info(f"Loading audio from project: {project.name}")
+        self.logger.debug(f"Audio file path: {project.audio_file}")
+        self.logger.debug(f"Audio data size: {len(project.audio_data) if project.audio_data else 0} bytes")
         
         try:
             # Stop any current playback

@@ -14,7 +14,7 @@ from PyQt6.QtWidgets import (
     QMenuBar, QMenu, QToolBar, QStatusBar, QFileDialog, QMessageBox,
     QLabel, QTextEdit, QPushButton, QSizePolicy
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QSettings, QSize
+from PyQt6.QtCore import Qt, pyqtSignal, QSettings, QSize, QTimer
 from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont, QPixmap, QImage
 
 from resources.resources import get_icon_path
@@ -535,6 +535,11 @@ class MainWindow(QMainWindow):
             
             # Show status message
             self.statusbar.showMessage("Created new project", 5000)
+            
+            # Set a default zoom level for new projects
+            self.logger.debug("Setting default zoom level for new project")
+            project.zoom_level = 1.0  # Default zoom level
+            self.timeline_widget.set_zoom(project.zoom_level)
     
     def _on_open(self):
         """Handle Open action."""
@@ -744,6 +749,14 @@ class MainWindow(QMainWindow):
     def _on_zoom_fit(self):
         """Handle Zoom Fit action."""
         self.timeline_widget.zoom_fit()
+        
+        # Save the zoom level to the project
+        if self.app.project_manager.current_project:
+            self.logger.debug(f"Saving zoom level to project: {self.timeline_widget.zoom_level}")
+            self.app.project_manager.current_project.zoom_level = self.timeline_widget.zoom_level
+            
+            # Mark project as changed
+            self.app.project_manager.project_changed.emit()
     
     def _on_add_timeline(self):
         """Handle Add Timeline action."""
@@ -895,6 +908,37 @@ class MainWindow(QMainWindow):
             
             # Update sequence length input
             self._format_length_input(duration)
+            
+            # Save audio data to project
+            if self.app.audio_manager.audio_data is not None:
+                # Ensure we use absolute path
+                abs_file_path = os.path.abspath(file_path)
+                self.logger.debug(f"Saving audio data to project: {abs_file_path}")
+                
+                try:
+                    # Read the audio file as bytes instead of using the NumPy array
+                    with open(abs_file_path, 'rb') as f:
+                        audio_bytes = f.read()
+                    
+                    # Save the bytes data to the project
+                    self.app.project_manager.current_project.set_audio(
+                        abs_file_path,  # Use absolute path
+                        audio_bytes
+                    )
+                    self.app.project_manager.current_project.audio_duration = duration
+                    
+                    # Log the size of the audio data for debugging
+                    self.logger.debug(f"Audio data size: {len(audio_bytes)} bytes")
+                    
+                    # Mark project as changed
+                    self.app.project_manager.project_changed.emit()
+                    
+                    # Force an immediate save to ensure audio is persisted
+                    if self.app.project_manager.current_project.file_path:
+                        self.logger.debug("Forcing immediate save to persist audio")
+                        self.app.project_manager.save_project()
+                except Exception as e:
+                    self.logger.error(f"Error saving audio to project: {e}")
             
             # Update project's audio file and data
             self.logger.info(f"Updating project audio data from file: {file_path}")
@@ -1049,10 +1093,23 @@ class MainWindow(QMainWindow):
             self.timeline_widget.select_timeline(project.timelines[0])
             
             # Ensure the timeline widget has focus, not the time input field
-            self.timeline_widget.setFocus()
+        
+        # Load audio from project if available
+        if project.audio_data:
+            self.logger.debug("Loading audio from project")
+            self.app.audio_manager.load_audio_from_project(project)
+        
+        # Set the zoom level from the project
+        self.logger.debug(f"Setting zoom level from project: {project.zoom_level}")
+        self.timeline_widget.set_zoom(project.zoom_level)
     
     def _on_project_saved(self, file_path):
         """Handle project saved signal."""
+        # Save the current zoom level to the project
+        if self.app.project_manager.current_project:
+            self.logger.debug(f"Saving zoom level to project: {self.timeline_widget.zoom_level}")
+            self.app.project_manager.current_project.zoom_level = self.timeline_widget.zoom_level
+        
         # Update window title (no star since it was just saved)
         self._update_window_title()
         

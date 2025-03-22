@@ -340,9 +340,9 @@ class BallVisualization(QFrame):
         self.timeline_index = timeline_index
         
         # Widget properties
-        self.setFrameShape(QFrame.Shape.Box)
-        self.setFrameShadow(QFrame.Shadow.Raised)
-        self.setLineWidth(1)
+        self.setFrameShape(QFrame.Shape.NoFrame)  # Remove the box frame
+        self.setFrameShadow(QFrame.Shadow.Plain)  # Remove the raised shadow
+        self.setLineWidth(0)  # Remove the line width
         self.setFixedSize(BALL_VISUALIZATION_SIZE, BALL_VISUALIZATION_SIZE)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         
@@ -407,52 +407,72 @@ class BallVisualization(QFrame):
             painter: QPainter instance.
             color: RGB color tuple.
         """
-        # Calculate ball rect
-        ball_rect = self.rect().adjusted(10, 20, -10, -20)
+        # Calculate ball rect - use more of the available space
+        ball_rect = self.rect().adjusted(5, 5, -5, -5)
         
         # Create gradient
         center = ball_rect.center()
         gradient = QRadialGradient(
-            center.x(), center.y(),
-            ball_rect.width() / 2
+            center.x(), center.y() - ball_rect.height() * 0.1,  # Offset center slightly upward for better 3D effect
+            ball_rect.width() * 0.6  # Larger radius for smoother gradient
         )
         
         # Set gradient colors
         if color:
             r, g, b = color
-            # Enhanced 3D effect with more pronounced highlights and shadows
-            gradient.setColorAt(0.0, QColor(min(255, r + 80), min(255, g + 80), min(255, b + 80)))
-            gradient.setColorAt(0.5, QColor(r, g, b))
-            gradient.setColorAt(1.0, QColor(max(0, r - 80), max(0, g - 80), max(0, b - 80)))
+            # More pronounced 3D effect with brighter highlights and deeper shadows
+            gradient.setColorAt(0.0, QColor(min(255, r + 120), min(255, g + 120), min(255, b + 120)))  # Brighter highlight
+            gradient.setColorAt(0.4, QColor(r, g, b))  # Main color
+            gradient.setColorAt(0.8, QColor(max(0, r - 60), max(0, g - 60), max(0, b - 60)))  # Darker shadow
+            gradient.setColorAt(1.0, QColor(max(0, r - 100), max(0, g - 100), max(0, b - 100)))  # Deepest shadow
         else:
             # Default to gray if no color, with enhanced 3D effect
-            gradient.setColorAt(0.0, QColor(240, 240, 240))
-            gradient.setColorAt(0.5, QColor(180, 180, 180))
-            gradient.setColorAt(1.0, QColor(100, 100, 100))
+            gradient.setColorAt(0.0, QColor(255, 255, 255))
+            gradient.setColorAt(0.4, QColor(180, 180, 180))
+            gradient.setColorAt(0.8, QColor(120, 120, 120))
+            gradient.setColorAt(1.0, QColor(80, 80, 80))
         
-        # Draw ball with a thin border for definition
+        # Draw ball with a subtle border for definition
         painter.setBrush(QBrush(gradient))
-        painter.setPen(QPen(QColor(60, 60, 60, 100), 1))
+        painter.setPen(QPen(QColor(40, 40, 40, 80), 1))
         painter.drawEllipse(ball_rect)
         
-        # Draw highlight (more pronounced)
+        # Draw main highlight to create a realistic 3D sphere effect
         highlight_rect = ball_rect.adjusted(
-            int(ball_rect.width() / 5),
-            int(ball_rect.height() / 5),
-            -int(ball_rect.width() / 2),
-            -int(ball_rect.height() / 2)
+            int(ball_rect.width() * 0.2),
+            int(ball_rect.height() * 0.1),
+            -int(ball_rect.width() * 0.5),
+            -int(ball_rect.height() * 0.5)
         )
         highlight_center = highlight_rect.center()
         highlight_gradient = QRadialGradient(
             highlight_center.x(), highlight_center.y(),
-            highlight_rect.width() / 2
+            highlight_rect.width() * 0.7
         )
-        highlight_gradient.setColorAt(0.0, QColor(255, 255, 255, 220))
-        highlight_gradient.setColorAt(1.0, QColor(255, 255, 255, 0))
+        highlight_gradient.setColorAt(0.0, QColor(255, 255, 255, 230))  # More opaque center
+        highlight_gradient.setColorAt(0.5, QColor(255, 255, 255, 100))  # Semi-transparent middle
+        highlight_gradient.setColorAt(1.0, QColor(255, 255, 255, 0))    # Transparent edge
         
         painter.setBrush(QBrush(highlight_gradient))
         painter.setPen(QPen(Qt.PenStyle.NoPen))
         painter.drawEllipse(highlight_rect)
+        
+        # Add a small secondary highlight for extra realism
+        small_highlight_rect = ball_rect.adjusted(
+            int(ball_rect.width() * 0.6),
+            int(ball_rect.height() * 0.6),
+            -int(ball_rect.width() * 0.8),
+            -int(ball_rect.height() * 0.8)
+        )
+        small_highlight_gradient = QRadialGradient(
+            small_highlight_rect.center().x(), small_highlight_rect.center().y(),
+            small_highlight_rect.width() * 0.7
+        )
+        small_highlight_gradient.setColorAt(0.0, QColor(255, 255, 255, 180))
+        small_highlight_gradient.setColorAt(1.0, QColor(255, 255, 255, 0))
+        
+        painter.setBrush(QBrush(small_highlight_gradient))
+        painter.drawEllipse(small_highlight_rect)
     
     def _get_current_color(self):
         """
@@ -557,8 +577,8 @@ class BallVisualization(QFrame):
             # Update the tooltip with the ball's IP address
             self.setToolTip(f"Ball {self.timeline_index + 1} - Connected to {ball.ip}")
             
-            # Set a green border to indicate connection
-            self.setStyleSheet("QFrame { border: 2px solid green; border-radius: 5px; }")
+            # Set a green border to indicate connection - make it fully circular
+            self.setStyleSheet(f"QFrame {{ border: 2px solid green; border-radius: {BALL_VISUALIZATION_SIZE // 2}px; }}")
         else:
             # Update tooltip for disconnected state
             self.setToolTip(f"Ball {self.timeline_index + 1} - Not connected")
