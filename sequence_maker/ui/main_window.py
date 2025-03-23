@@ -351,33 +351,43 @@ class MainWindow(QMainWindow):
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
         
-        # Create ball widget directly in the status bar
+        # Import widgets
+        from PyQt6.QtWidgets import QLineEdit, QFrame
+        from PyQt6.QtGui import QRegularExpressionValidator
+        from PyQt6.QtCore import QRegularExpression
+        
+        # Create a container widget for the entire status bar to ensure consistent layout
+        status_container = QWidget()
+        status_layout = QHBoxLayout(status_container)
+        status_layout.setContentsMargins(5, 0, 5, 0)
+        status_layout.setSpacing(10)
+        
+        # Create ball widget
         self.ball_widget = BallWidget(self.app, self)
         self.ball_widget.setFixedHeight(BALL_VISUALIZATION_SIZE)
-        
-        # Add ball widget to the left side of the status bar
-        self.statusbar.addWidget(self.ball_widget)
+        status_layout.addWidget(self.ball_widget)
         
         # Add a spacer to push everything else to the right
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-        self.statusbar.addWidget(spacer)
+        status_layout.addWidget(spacer)
         
-        # Import widgets
-        from PyQt6.QtWidgets import QLineEdit
-        from PyQt6.QtGui import QRegularExpressionValidator
-        from PyQt6.QtCore import QRegularExpression
+        # Create cursor position label
+        self.cursor_position_label = QLabel("Cursor: --:--:--")
+        self.cursor_position_label.setFixedWidth(120)
+        self.cursor_position_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        status_layout.addWidget(self.cursor_position_label)
         
-        # Create position input container
-        position_container = QWidget()
-        position_layout = QHBoxLayout(position_container)
-        position_layout.setContentsMargins(5, 0, 5, 0)
-        position_layout.setSpacing(2)
+        # Add vertical separator
+        separator1 = QFrame()
+        separator1.setFrameShape(QFrame.Shape.VLine)
+        separator1.setFrameShadow(QFrame.Shadow.Sunken)
+        status_layout.addWidget(separator1)
         
-        # Add position label (more compact)
+        # Add position label and input
         position_label = QLabel("Pos:")
         position_label.setFixedWidth(30)
-        position_layout.addWidget(position_label)
+        status_layout.addWidget(position_label)
         
         # Add editable time input field with HH:MM:SS format
         self.time_input = QLineEdit()
@@ -392,22 +402,18 @@ class MainWindow(QMainWindow):
         
         # Connect signal to update position when edited
         self.time_input.editingFinished.connect(self._on_time_input_changed)
+        status_layout.addWidget(self.time_input)
         
-        position_layout.addWidget(self.time_input)
+        # Add vertical separator
+        separator2 = QFrame()
+        separator2.setFrameShape(QFrame.Shape.VLine)
+        separator2.setFrameShadow(QFrame.Shadow.Sunken)
+        status_layout.addWidget(separator2)
         
-        # Add to status bar
-        self.statusbar.addPermanentWidget(position_container)
-        
-        # Create sequence length input container
-        length_container = QWidget()
-        length_layout = QHBoxLayout(length_container)
-        length_layout.setContentsMargins(5, 0, 5, 0)
-        length_layout.setSpacing(2)
-        
-        # Add sequence length label (more compact)
+        # Add sequence length label and input
         length_label = QLabel("Length:")
         length_label.setFixedWidth(50)
-        length_layout.addWidget(length_label)
+        status_layout.addWidget(length_label)
         
         # Add editable sequence length input field with HH:MM:SS format
         self.length_input = QLineEdit()
@@ -417,22 +423,21 @@ class MainWindow(QMainWindow):
         
         # Set validator to only allow valid time values in HH:MM:SS format
         self.length_input.setValidator(validator)  # Reuse the same validator
-        
-        length_layout.addWidget(self.length_input)
+        status_layout.addWidget(self.length_input)
         
         # Add Apply button (more compact)
         self.apply_length_button = QPushButton("Apply")
         self.apply_length_button.setToolTip("Apply the sequence length")
         self.apply_length_button.setFixedWidth(60)
         self.apply_length_button.clicked.connect(self._on_apply_sequence_length)
-        length_layout.addWidget(self.apply_length_button)
+        status_layout.addWidget(self.apply_length_button)
         
-        # Add to status bar
-        self.statusbar.addPermanentWidget(length_container)
+        # Add the status container to the status bar
+        self.statusbar.addPermanentWidget(status_container)
         
-        # Keep the old position label for compatibility
+        # Create a hidden position label for compatibility with old code
         self.position_label = QLabel("Position: 0.00s")
-        self.position_label.setVisible(False)  # Hide it since we now have the editable field
+        self.position_label.setVisible(False)
     
     def _create_central_widget(self):
         """Create central widget for the main window."""
@@ -886,10 +891,23 @@ class MainWindow(QMainWindow):
         formatted_time = f"{hours:02d}:{minutes:02d}:{secs:02d}"
         self.time_input.setText(formatted_time)
     
+    def update_cursor_position(self, seconds):
+        """Update the cursor position label with the given time in seconds."""
+        if seconds < 0:
+            seconds = 0
+            
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        secs = int(seconds % 60)
+        
+        formatted_time = f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        self.cursor_position_label.setText(f"Cursor: {formatted_time}")
+    
     def _on_position_changed(self, position):
         """Handle position changed signal."""
         # Update position label (hidden but kept for compatibility)
-        self.position_label.setText(f"Position: {position:.2f}s")
+        if hasattr(self, 'position_label'):
+            self.position_label.setText(f"Position: {position:.2f}s")
         
         # Update time input field with HH:MM:SS format
         # Always update when position is 0 (stop button pressed) or if the field doesn't have focus

@@ -532,11 +532,14 @@ class TimelineContainer(QWidget):
         
         self.parent_widget = parent
         self.app = parent.app
-        
         # Widget properties
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         
+        # Enable mouse tracking for cursor position updates
+        self.setMouseTracking(True)
+        
+        # Update size
         # Update size
         self.update_size()
     
@@ -1273,10 +1276,16 @@ class TimelineContainer(QWidget):
         Args:
             event: Mouse event.
         """
+        # Calculate cursor time position for all cases
+        cursor_time = event.pos().x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
+        
+        # Update cursor position in main window
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
+            self.app.main_window.update_cursor_position(cursor_time)
+            
         if self.parent_widget.dragging_position:
             # Update position
-            time = event.pos().x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
-            self.parent_widget.set_position(time)
+            self.parent_widget.set_position(cursor_time)
         
         elif self.parent_widget.dragging_segment:
             # Calculate time difference
@@ -1389,6 +1398,23 @@ class TimelineContainer(QWidget):
             else:
                 # Mouse not over timeline
                 self.setCursor(Qt.CursorShape.ArrowCursor)
+    
+    def leaveEvent(self, event):
+        """
+        Handle mouse leave events.
+        
+        Args:
+            event: Leave event.
+        """
+        # Clear cursor position when mouse leaves the widget
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
+            self.app.main_window.cursor_position_label.setText("Cursor: --:--:--")
+        
+        # Reset cursor
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        
+        # Call parent implementation
+        super().leaveEvent(event)
     
     def mouseReleaseEvent(self, event):
         """

@@ -685,8 +685,15 @@ class AudioVisualization(QWidget):
             # Clamp time to valid range
             if time < 0:
                 time = 0
-            if self.parent_widget.duration > 0 and time > self.parent_widget.duration:
-                time = self.parent_widget.duration
+                
+            # Get duration from audio manager to avoid attribute errors
+            audio_duration = self.app.audio_manager.duration if hasattr(self.app, 'audio_manager') else 0
+            if audio_duration > 0 and time > audio_duration:
+                time = audio_duration
+            
+            # Update cursor position in main window
+            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
+                self.app.main_window.update_cursor_position(time)
             
             # Set position in timeline manager (this will update all linked components)
             self.app.timeline_manager.set_position(time)
@@ -697,11 +704,48 @@ class AudioVisualization(QWidget):
             # Set cursor to indicate dragging
             self.setCursor(Qt.CursorShape.ClosedHandCursor)
         else:
+            # Calculate time position from mouse x-coordinate
+            timeline_widget = self.app.main_window.timeline_widget
+            zoom_level = timeline_widget.zoom_level
+            time_scale = timeline_widget.time_scale
+            
+            time = event.pos().x() / (time_scale * zoom_level)
+            
+            # Clamp time to valid range
+            if time < 0:
+                time = 0
+                
+            # Get duration from audio manager to avoid attribute errors
+            audio_duration = self.app.audio_manager.duration if hasattr(self.app, 'audio_manager') else 0
+            if audio_duration > 0 and time > audio_duration:
+                time = audio_duration
+                
+            # Update cursor position in main window
+            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
+                self.app.main_window.update_cursor_position(time)
+                
             # Change cursor to indicate the visualization is clickable
             self.setCursor(Qt.CursorShape.PointingHandCursor)
         
         # Accept the event
         event.accept()
+    
+    def leaveEvent(self, event):
+        """
+        Handle mouse leave events.
+        
+        Args:
+            event: Leave event.
+        """
+        # Clear cursor position when mouse leaves the widget
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
+            self.app.main_window.cursor_position_label.setText("Cursor: --:--:--")
+        
+        # Reset cursor
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        
+        # Call parent implementation
+        super().leaveEvent(event)
     
     def mousePressEvent(self, event):
         """

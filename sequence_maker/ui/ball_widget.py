@@ -46,6 +46,9 @@ class BallWidget(QWidget):
         self.setMinimumHeight(BALL_VISUALIZATION_SIZE)
         self.setMaximumHeight(BALL_VISUALIZATION_SIZE)
         
+        # Enable mouse tracking to get mouseMoveEvent even when no button is pressed
+        self.setMouseTracking(True)
+        
         # Ball properties
         self.ball_size = BALL_VISUALIZATION_SIZE
         self.ball_spacing = 20
@@ -295,6 +298,31 @@ class BallWidget(QWidget):
                     ball_viz.update()
                     break
     
+    def mouseMoveEvent(self, event):
+        """
+        Handle mouse move events.
+        
+        Args:
+            event: Mouse event.
+        """
+        # We don't want to update the cursor position time when hovering over the simulated balls
+        # Just call the parent implementation
+        super().mouseMoveEvent(event)
+        
+        # Call parent implementation
+        super().mouseMoveEvent(event)
+    
+    def leaveEvent(self, event):
+        """
+        Handle mouse leave events.
+        
+        Args:
+            event: Leave event.
+        """
+        # We don't want to clear the cursor position when leaving the simulated balls
+        # Just call the parent implementation
+        super().leaveEvent(event)
+    
     def _on_ball_unassigned(self, ball):
         """
         Handle ball unassigned signal.
@@ -349,7 +377,7 @@ class BallVisualization(QFrame):
         # No layout or labels needed - just show the ball
         self.setToolTip(f"Ball {timeline_index + 1}")
         
-        # Enable mouse tracking for hover events
+        # Enable mouse tracking for hover events and cursor position updates
         self.setMouseTracking(True)
         
         # Effect properties
@@ -642,6 +670,10 @@ class BallVisualization(QFrame):
         self.fade_timer.stop()
         self.strobe_state = False
         self.fade_progress = 0.0
+    # We don't need a custom mouseMoveEvent for BallVisualization anymore
+    
+    # We don't need a custom leaveEvent for BallVisualization anymore
+    # We don't need a custom leaveEvent for BallVisualization anymore
     
     def mousePressEvent(self, event):
         """
