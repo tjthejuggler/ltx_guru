@@ -1196,6 +1196,9 @@ class TimelineContainer(QWidget):
                             segment.start_time if edge == "left" else segment.end_time
                         )
                         
+                        # Start drag operation in timeline manager to handle undo/redo properly
+                        self.app.timeline_manager.start_drag_operation()
+                        
                         # Set cursor
                         self.setCursor(Qt.CursorShape.SizeHorCursor)
                     else:
@@ -1203,6 +1206,9 @@ class TimelineContainer(QWidget):
                         self.parent_widget.dragging_segment = True
                         self.parent_widget.drag_start_pos = event.pos()
                         self.parent_widget.drag_start_time = segment.start_time
+                        
+                        # Start drag operation in timeline manager to handle undo/redo properly
+                        self.app.timeline_manager.start_drag_operation()
                         
                         # Set cursor
                         self.setCursor(Qt.CursorShape.ClosedHandCursor)
@@ -1320,9 +1326,7 @@ class TimelineContainer(QWidget):
                             adjacent_segment = segment
                             break
                     
-                    # Save state for undo before making any changes
-                    if adjacent_segment and self.app.undo_manager:
-                        self.app.undo_manager.save_state("resize_segments")
+                    # We don't need to save state here anymore as it's handled by start_drag_operation and end_drag_operation
                     
                     # Update the selected segment
                     self.app.timeline_manager.modify_segment(
@@ -1348,9 +1352,7 @@ class TimelineContainer(QWidget):
                             adjacent_segment = segment
                             break
                     
-                    # Save state for undo before making any changes
-                    if adjacent_segment and self.app.undo_manager:
-                        self.app.undo_manager.save_state("resize_segments")
+                    # We don't need to save state here anymore as it's handled by start_drag_operation and end_drag_operation
                     
                     # Update the selected segment
                     self.app.timeline_manager.modify_segment(
@@ -1395,10 +1397,18 @@ class TimelineContainer(QWidget):
         Args:
             event: Mouse event.
         """
+        # Check if we were dragging or resizing a segment
+        was_dragging = self.parent_widget.dragging_segment
+        was_resizing = self.parent_widget.resizing_segment
+        
         # Reset dragging flags
         self.parent_widget.dragging_position = False
         self.parent_widget.dragging_segment = False
         self.parent_widget.resizing_segment = False
+        
+        # End drag operation in timeline manager if we were dragging or resizing
+        if was_dragging or was_resizing:
+            self.app.timeline_manager.end_drag_operation()
         
         # Reset cursor
         self.setCursor(Qt.CursorShape.ArrowCursor)

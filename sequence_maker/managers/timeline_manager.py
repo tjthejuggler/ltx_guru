@@ -58,6 +58,9 @@ class TimelineManager(QObject):
         
         # Undo manager
         self.undo_manager = None
+        
+        # Flag to track if we're in the middle of a drag operation
+        self.is_dragging = False
     
     def set_undo_manager(self, undo_manager):
         """
@@ -442,8 +445,8 @@ class TimelineManager(QObject):
             self.logger.warning("Cannot modify segment: Segment not found in timeline")
             return False
         
-        # Save state for undo
-        if self.undo_manager:
+        # Save state for undo only if we're not in the middle of a drag operation
+        if self.undo_manager and not self.is_dragging:
             self.undo_manager.save_state("modify_segment")
         
         # Modify the segment
@@ -684,6 +687,38 @@ class TimelineManager(QObject):
             return None
         
         return timeline.get_color_at_time(self.position)
+    
+    def start_drag_operation(self):
+        """
+        Start a drag operation.
+        
+        This method should be called before starting a drag operation to prevent
+        creating multiple undo states during the drag.
+        """
+        # Save the initial state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("drag_segment")
+        
+        # Set the dragging flag
+        self.is_dragging = True
+        
+        self.logger.debug("Started drag operation")
+    
+    def end_drag_operation(self):
+        """
+        End a drag operation.
+        
+        This method should be called after a drag operation is complete to save
+        the final state for undo.
+        """
+        # Clear the dragging flag
+        self.is_dragging = False
+        
+        # Save the final state for undo
+        if self.undo_manager:
+            self.undo_manager.save_state("drag_segment_complete")
+        
+        self.logger.debug("Ended drag operation")
     
     def update_timelines(self):
         """
