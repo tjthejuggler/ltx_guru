@@ -718,6 +718,9 @@ class LyricsWidget(QWidget):
                         print("[LyricsWidget] Regenerating timestamps for edited lyrics")
                         self.logger.info("Regenerating timestamps for edited lyrics")
                         
+                        # Ask user if they want to use conservative alignment
+                        use_conservative = self._show_conservative_alignment_dialog()
+                        
                         # Update status
                         self.update_status("Processing edited lyrics...", 0)
                         
@@ -730,14 +733,18 @@ class LyricsWidget(QWidget):
                         
                         # Then, align the lyrics with the audio
                         if hasattr(self.app.lyrics_manager, 'align_lyrics_directly'):
+                            print(f"[LyricsWidget] Calling align_lyrics_directly (conservative={use_conservative})")
                             self.app.lyrics_manager.align_lyrics_directly(
                                 self.app.audio_manager.audio_file,
-                                edited_lyrics
+                                edited_lyrics,
+                                conservative=use_conservative
                             )
                         else:
                             # Fallback to process_audio if align_lyrics_directly doesn't exist
+                            print(f"[LyricsWidget] Falling back to process_audio (conservative={use_conservative})")
                             self.app.lyrics_manager.process_audio(
-                                self.app.audio_manager.audio_file
+                                self.app.audio_manager.audio_file,
+                                conservative=use_conservative
                             )
                     else:
                         # Just update the display with the edited lyrics
@@ -812,12 +819,18 @@ class LyricsWidget(QWidget):
             self.logger.error("No lyrics manager found")
             return
         
+        # Ask user if they want to use conservative alignment
+        use_conservative = self._show_conservative_alignment_dialog()
+        
         # Update status
         self.update_status("Starting lyrics processing...", 0)
         
-        # Process audio
-        print("[LyricsWidget] Calling lyrics_manager.process_audio")
-        self.app.lyrics_manager.process_audio(self.app.audio_manager.audio_file)
+        # Process audio with conservative parameter
+        print(f"[LyricsWidget] Calling lyrics_manager.process_audio (conservative={use_conservative})")
+        self.app.lyrics_manager.process_audio(
+            self.app.audio_manager.audio_file,
+            conservative=use_conservative
+        )
         
         # Emit signal
         print("[LyricsWidget] Emitting process_clicked signal")
@@ -851,6 +864,28 @@ class LyricsWidget(QWidget):
         self.status_label.setText("Ready")
         self.progress_bar.setValue(0)
         self.progress_bar.setVisible(False)
+        
+    def _show_conservative_alignment_dialog(self):
+        """
+        Show a dialog asking if the user wants to use conservative alignment.
+        
+        Returns:
+            bool: True if conservative alignment should be used, False otherwise.
+        """
+        from PyQt6.QtWidgets import QMessageBox
+        
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Alignment Options")
+        msg_box.setText("Do you want to use conservative alignment?")
+        msg_box.setInformativeText(
+            "Conservative alignment instructs Gentle to stay as close as possible to your provided lyrics "
+            "and avoid skipping words. This often significantly improves accuracy."
+        )
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg_box.setDefaultButton(QMessageBox.StandardButton.Yes)
+        
+        result = msg_box.exec()
+        return result == QMessageBox.StandardButton.Yes
     
     def update_lyrics(self, lyrics_data):
         """

@@ -161,7 +161,7 @@ class LyricsManager(QObject):
         if dialog.exec():
             return dialog.get_lyrics()
         return None
-    def align_lyrics_directly(self, audio_path, lyrics):
+    def align_lyrics_directly(self, audio_path, lyrics, conservative=False):
         """
         Align lyrics directly without going through song identification.
         
@@ -171,6 +171,9 @@ class LyricsManager(QObject):
         Args:
             audio_path (str): Path to the audio file.
             lyrics: Lyrics object with updated text.
+            conservative (bool): Whether to use conservative alignment.
+                                When True, Gentle will stay as close as possible to the
+                                provided lyrics and avoid skipping words.
             
         Returns:
             bool: True if alignment was successful, False otherwise.
@@ -189,7 +192,7 @@ class LyricsManager(QObject):
             # Align lyrics using Gentle
             self.update_status("Aligning lyrics using Gentle...", 3)
             print("[LyricsManager] Aligning lyrics using Gentle...")
-            word_timestamps = self._align_lyrics(audio_path, lyrics.lyrics_text)
+            word_timestamps = self._align_lyrics(audio_path, lyrics.lyrics_text, conservative)
             
             if not word_timestamps:
                 self.logger.error("Could not align lyrics")
@@ -229,12 +232,15 @@ class LyricsManager(QObject):
             traceback.print_exc()
             return False
     
-    def process_audio(self, audio_path):
+    def process_audio(self, audio_path, conservative=False):
         """
         Process audio to extract and align lyrics.
         
         Args:
             audio_path (str): Path to the audio file.
+            conservative (bool): Whether to use conservative alignment.
+                                When True, Gentle will stay as close as possible to the
+                                provided lyrics and avoid skipping words.
             
         Returns:
             bool: True if processing was successful, False otherwise.
@@ -306,7 +312,7 @@ class LyricsManager(QObject):
             # Step 3: Align lyrics using Gentle
             self.update_status("Aligning lyrics using Gentle...", 3)
             print("[LyricsManager] Step 3: Aligning lyrics using Gentle...")
-            word_timestamps = self._align_lyrics(audio_path, lyrics_text)
+            word_timestamps = self._align_lyrics(audio_path, lyrics_text, conservative)
             
             if not word_timestamps:
                 self.logger.error("Could not align lyrics")
@@ -514,13 +520,16 @@ class LyricsManager(QObject):
             self.logger.error(f"Error getting lyrics: {e}")
             return None
     
-    def _align_lyrics(self, audio_path, lyrics_text):
+    def _align_lyrics(self, audio_path, lyrics_text, conservative=False):
         """
         Align lyrics using Gentle.
         
         Args:
             audio_path (str): Path to the audio file.
             lyrics_text (str): Lyrics text.
+            conservative (bool): Whether to use conservative alignment.
+                                When True, Gentle will stay as close as possible to the
+                                provided lyrics and avoid skipping words.
             
         Returns:
             list: List of WordTimestamp objects or None if alignment failed.
@@ -564,8 +573,15 @@ class LyricsManager(QObject):
                     self.logger.info("Sending request to Gentle API")
                     print("[LyricsManager] Sending request to Gentle API")
                     
+                    # Build the URL with parameters
+                    url = 'http://localhost:8765/transcriptions?async=false'
+                    if conservative:
+                        url += '&conservative=true'
+                        self.logger.info("Using conservative alignment mode")
+                        print("[LyricsManager] Using conservative alignment mode")
+                    
                     response = requests.post(
-                        'http://localhost:8765/transcriptions?async=false',
+                        url,
                         files=files,
                         timeout=120  # Increase timeout to 2 minutes
                     )
