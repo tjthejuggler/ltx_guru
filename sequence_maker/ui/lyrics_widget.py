@@ -5,12 +5,111 @@ This module defines the LyricsWidget class, which displays and manages lyrics.
 """
 
 import logging
+import json
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QScrollArea, QTextEdit, QSplitter, QProgressBar
+    QScrollArea, QTextEdit, QSplitter, QProgressBar,
+    QDialog, QDialogButtonBox
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize, QRectF, QPoint
 from PyQt6.QtGui import QFont, QPainter, QColor, QPen, QFontMetrics
+
+class LyricsEditDialog(QDialog):
+    """
+    Dialog for editing lyrics in JSON format.
+    
+    This dialog allows the user to edit the lyrics data in JSON format,
+    which can be useful for manual corrections or adjustments.
+    
+    Attributes:
+        lyrics_data: The lyrics data to edit.
+    """
+    
+    def __init__(self, lyrics_data, parent=None):
+        """
+        Initialize the lyrics edit dialog.
+        
+        Args:
+            lyrics_data: The lyrics data to edit.
+            parent: The parent widget.
+        """
+        super().__init__(parent)
+        
+        self.lyrics_data = lyrics_data
+        self.setWindowTitle("Edit Lyrics")
+        self.setMinimumSize(800, 600)
+        
+        # Create layout
+        layout = QVBoxLayout(self)
+        
+        # Create text editor
+        self.text_editor = QTextEdit()
+        self.text_editor.setFont(QFont("Courier New", 10))  # Monospace font for JSON
+        layout.addWidget(self.text_editor)
+        
+        # Create button box
+        button_box = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        layout.addWidget(button_box)
+        
+        # Load lyrics data into text editor
+        self._load_lyrics_data()
+    
+    def _load_lyrics_data(self):
+        """Load the lyrics data into the text editor."""
+        if not self.lyrics_data:
+            self.text_editor.setText("{}")
+            return
+        
+        # Convert lyrics data to JSON
+        lyrics_dict = self.lyrics_data.to_dict()
+        
+        # Format timestamps for better readability
+        if "word_timestamps" in lyrics_dict:
+            for word_ts in lyrics_dict["word_timestamps"]:
+                if "start" in word_ts:
+                    start_min, start_sec = divmod(word_ts["start"], 60)
+                    word_ts["start_formatted"] = f"{int(start_min):02d}:{start_sec:05.2f}"
+                if "end" in word_ts:
+                    end_min, end_sec = divmod(word_ts["end"], 60)
+                    word_ts["end_formatted"] = f"{int(end_min):02d}:{end_sec:05.2f}"
+        
+        # Convert to formatted JSON
+        json_text = json.dumps(lyrics_dict, indent=2)
+        self.text_editor.setText(json_text)
+    
+    def get_edited_lyrics(self):
+        """
+        Get the edited lyrics data.
+        
+        Returns:
+            The edited lyrics data, or None if the JSON is invalid.
+        """
+        try:
+            # Get JSON text from editor
+            json_text = self.text_editor.toPlainText()
+            
+            # Parse JSON
+            lyrics_dict = json.loads(json_text)
+            
+            # Remove formatted timestamps
+            if "word_timestamps" in lyrics_dict:
+                for word_ts in lyrics_dict["word_timestamps"]:
+                    if "start_formatted" in word_ts:
+                        del word_ts["start_formatted"]
+                    if "end_formatted" in word_ts:
+                        del word_ts["end_formatted"]
+            
+            # Create new lyrics object from dictionary
+            from models.lyrics import Lyrics
+            lyrics = Lyrics.from_dict(lyrics_dict)
+            
+            return lyrics
+        except Exception as e:
+            print(f"Error parsing lyrics JSON: {e}")
+            return None
+
 
 class LyricsDisplayWidget(QWidget):
     """
@@ -117,7 +216,10 @@ class LyricsDisplayWidget(QWidget):
                         word_width = word_metrics.horizontalAdvance(timestamp.word)
                         
                         # Calculate timestamp width
-                        time_text = f"{timestamp.start:.2f}-{timestamp.end:.2f}"
+                        # Format time as mm:ss
+                        start_min, start_sec = divmod(timestamp.start, 60)
+                        end_min, end_sec = divmod(timestamp.end, 60)
+                        time_text = f"{int(start_min):02d}:{start_sec:05.2f}-{int(end_min):02d}:{end_sec:05.2f}"
                         time_width = time_metrics.horizontalAdvance(time_text)
                         
                         # Use the larger of the two widths
@@ -179,7 +281,10 @@ class LyricsDisplayWidget(QWidget):
             
             # Draw timestamp above the word
             painter.setFont(self.time_font)
-            time_text = f"{timestamp.start:.2f}-{timestamp.end:.2f}"
+            # Format time as mm:ss
+            start_min, start_sec = divmod(timestamp.start, 60)
+            end_min, end_sec = divmod(timestamp.end, 60)
+            time_text = f"{int(start_min):02d}:{start_sec:05.2f}-{int(end_min):02d}:{end_sec:05.2f}"
             painter.setPen(QPen(QColor(100, 100, 100)))  # Gray color for timestamps
             painter.drawText(time_rect, Qt.AlignmentFlag.AlignCenter, time_text)
             
@@ -259,9 +364,13 @@ class LyricsWidget(QWidget):
         
         # Header layout removed to save space
         
+        # Create header layout
+        self.header_layout = QHBoxLayout()
+        self.main_layout.addLayout(self.header_layout)
+        
         # Create status layout
         self.status_layout = QHBoxLayout()
-        self.main_layout.addLayout(self.status_layout)
+        self.header_layout.addLayout(self.status_layout, 1)  # Give status layout stretch factor
         
         # Create status label
         self.status_label = QLabel("Ready")
@@ -273,6 +382,13 @@ class LyricsWidget(QWidget):
         self.progress_bar.setValue(0)
         self.progress_bar.setVisible(False)
         self.status_layout.addWidget(self.progress_bar)
+        
+        # Create edit button
+        self.edit_button = QPushButton("Edit Lyrics")
+        self.edit_button.setToolTip("Edit lyrics in JSON format")
+        self.edit_button.clicked.connect(self._on_edit_button_clicked)
+        self.edit_button.setEnabled(False)  # Disable until lyrics are loaded
+        self.header_layout.addWidget(self.edit_button)
         
         # Create lyrics display area
         self.lyrics_scroll = QScrollArea()
@@ -344,6 +460,40 @@ class LyricsWidget(QWidget):
         
         # Set the timeline position
         self.app.timeline_manager.set_position(position)
+    
+    def _on_edit_button_clicked(self):
+        """Handle Edit Lyrics button click."""
+        print("[LyricsWidget] Edit Lyrics button clicked")
+        self.logger.info("Edit Lyrics button clicked")
+        
+        # Check if we have lyrics data
+        if not hasattr(self.app.project_manager.current_project, 'lyrics') or not self.app.project_manager.current_project.lyrics:
+            print("[LyricsWidget] No lyrics data to edit")
+            self.logger.warning("No lyrics data to edit")
+            return
+        
+        # Create and show the edit dialog
+        dialog = LyricsEditDialog(self.app.project_manager.current_project.lyrics, self)
+        result = dialog.exec()
+        
+        # If the user accepted the changes, update the lyrics
+        if result == QDialog.DialogCode.Accepted:
+            edited_lyrics = dialog.get_edited_lyrics()
+            if edited_lyrics:
+                print("[LyricsWidget] Updating lyrics with edited data")
+                self.logger.info("Updating lyrics with edited data")
+                
+                # Update the project's lyrics
+                self.app.project_manager.current_project.lyrics = edited_lyrics
+                
+                # Update the display
+                self.update_lyrics(edited_lyrics)
+                
+                # Mark the project as modified
+                self.app.project_manager.project_changed.emit()
+            else:
+                print("[LyricsWidget] Failed to parse edited lyrics")
+                self.logger.warning("Failed to parse edited lyrics")
     
     def _on_process_button_clicked(self):
         """Handle Process Lyrics button click."""
@@ -435,10 +585,19 @@ class LyricsWidget(QWidget):
                 
                 # Set the lyrics data in the custom display widget
                 self.lyrics_display.set_lyrics(lyrics_data)
+                
+                # Enable the edit button
+                self.edit_button.setEnabled(True)
             else:
                 print("[LyricsWidget] No word timestamps available")
                 # Create a simple lyrics object with just the text
                 self.lyrics_display.set_lyrics(lyrics_data)
+                
+                # Enable the edit button
+                self.edit_button.setEnabled(True)
         else:
             print("[LyricsWidget] No lyrics text available")
             self.lyrics_display.set_lyrics(None)
+            
+            # Disable the edit button
+            self.edit_button.setEnabled(False)
