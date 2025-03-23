@@ -161,6 +161,74 @@ class LyricsManager(QObject):
         if dialog.exec():
             return dialog.get_lyrics()
         return None
+    def align_lyrics_directly(self, audio_path, lyrics):
+        """
+        Align lyrics directly without going through song identification.
+        
+        This method is used when the user edits lyrics and wants to realign them
+        without going through the song identification process again.
+        
+        Args:
+            audio_path (str): Path to the audio file.
+            lyrics: Lyrics object with updated text.
+            
+        Returns:
+            bool: True if alignment was successful, False otherwise.
+        """
+        # Ensure we have an absolute path
+        import os
+        audio_path = os.path.abspath(audio_path)
+        
+        self.logger.info(f"Directly aligning lyrics for: {audio_path}")
+        print(f"[LyricsManager] Directly aligning lyrics for: {audio_path}")
+        
+        # Update status
+        self.update_status("Aligning edited lyrics...", 2)
+        
+        try:
+            # Align lyrics using Gentle
+            self.update_status("Aligning lyrics using Gentle...", 3)
+            print("[LyricsManager] Aligning lyrics using Gentle...")
+            word_timestamps = self._align_lyrics(audio_path, lyrics.lyrics_text)
+            
+            if not word_timestamps:
+                self.logger.error("Could not align lyrics")
+                print("[LyricsManager] Could not align lyrics")
+                self.update_status("Error: Could not align lyrics", None)
+                return False
+            
+            self.logger.info(f"Aligned {len(word_timestamps)} words")
+            print(f"[LyricsManager] Aligned {len(word_timestamps)} words")
+            
+            # Update the lyrics object with new timestamps
+            lyrics.word_timestamps = word_timestamps
+            
+            # Update project
+            if self.app.project_manager.current_project:
+                self.app.project_manager.current_project.lyrics = lyrics
+                
+                # Mark project as changed
+                self.app.project_manager.project_changed.emit()
+                print("[LyricsManager] Project updated with aligned lyrics")
+            
+            # Update status
+            self.update_status("Lyrics alignment completed successfully", None)
+            
+            # Emit signal
+            print("[LyricsManager] Emitting lyrics_processed signal")
+            self.lyrics_processed.emit(lyrics)
+            
+            print("[LyricsManager] Lyrics alignment completed successfully")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Error aligning lyrics: {e}")
+            print(f"[LyricsManager] Error aligning lyrics: {e}")
+            self.update_status(f"Error: {str(e)}", None)
+            import traceback
+            traceback.print_exc()
+            return False
+    
     def process_audio(self, audio_path):
         """
         Process audio to extract and align lyrics.

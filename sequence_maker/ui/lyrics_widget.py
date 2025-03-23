@@ -21,26 +21,49 @@ class LyricsEditDialog(QDialog):
     This dialog allows the user to edit the lyrics data in JSON format,
     which can be useful for manual corrections or adjustments.
     
+    The dialog has two modes:
+    - Lyrics mode: Edit only the lyrics text
+    - Timestamps mode: Edit both lyrics text and timestamps
+    
     Attributes:
         lyrics_data: The lyrics data to edit.
+        mode: The edit mode ("lyrics" or "timestamps").
     """
     
-    def __init__(self, lyrics_data, parent=None):
+    def __init__(self, lyrics_data, mode="timestamps", parent=None):
         """
         Initialize the lyrics edit dialog.
         
         Args:
             lyrics_data: The lyrics data to edit.
+            mode: The edit mode ("lyrics" or "timestamps").
             parent: The parent widget.
         """
         super().__init__(parent)
         
         self.lyrics_data = lyrics_data
-        self.setWindowTitle("Edit Lyrics")
+        self.mode = mode
+        
+        # Set window title based on mode
+        if mode == "lyrics":
+            self.setWindowTitle("Edit Lyrics Text")
+        else:
+            self.setWindowTitle("Edit Lyrics Timestamps")
+        
         self.setMinimumSize(800, 600)
         
         # Create layout
         layout = QVBoxLayout(self)
+        
+        # Add instructions label
+        if mode == "lyrics":
+            instructions = "Edit the lyrics text only. Timestamps will be regenerated when you click OK."
+        else:
+            instructions = "Edit both lyrics text and timestamps. Format: MM:SS.ss"
+        
+        instruction_label = QLabel(instructions)
+        instruction_label.setWordWrap(True)
+        layout.addWidget(instruction_label)
         
         # Create text editor
         self.text_editor = QTextEdit()
@@ -65,18 +88,68 @@ class LyricsEditDialog(QDialog):
         # Convert lyrics data to JSON
         lyrics_dict = self.lyrics_data.to_dict()
         
-        # Format timestamps for better readability
-        if "word_timestamps" in lyrics_dict:
-            for word_ts in lyrics_dict["word_timestamps"]:
-                if "start" in word_ts:
-                    start_min, start_sec = divmod(word_ts["start"], 60)
-                    word_ts["start_formatted"] = f"{int(start_min):02d}:{start_sec:05.2f}"
-                if "end" in word_ts:
-                    end_min, end_sec = divmod(word_ts["end"], 60)
-                    word_ts["end_formatted"] = f"{int(end_min):02d}:{end_sec:05.2f}"
+        if self.mode == "lyrics":
+            # For lyrics mode, only include the lyrics text
+            simplified_dict = {
+                "song_name": lyrics_dict.get("song_name", ""),
+                "artist_name": lyrics_dict.get("artist_name", ""),
+                "lyrics_text": lyrics_dict.get("lyrics_text", "")
+            }
+            
+            # Create a custom formatted JSON string with proper newlines
+            # Start with the opening brace
+            json_text = "{\n"
+            
+            # Add song_name with proper indentation
+            json_text += '  "song_name": ' + json.dumps(simplified_dict["song_name"]) + ",\n"
+            
+            # Add artist_name with proper indentation
+            json_text += '  "artist_name": ' + json.dumps(simplified_dict["artist_name"]) + ",\n"
+            
+            # Add lyrics_text with proper indentation, but handle newlines specially
+            lyrics_text = simplified_dict["lyrics_text"]
+            # Replace literal \n with actual newlines
+            lyrics_text = lyrics_text.replace("\\n", "\n")
+            
+            # Format the lyrics text as a JSON string but with actual newlines
+            lyrics_json = json.dumps(lyrics_text)
+            # Remove the surrounding quotes
+            lyrics_json = lyrics_json[1:-1]
+            # Replace escaped newlines with actual newlines and proper indentation
+            lyrics_json = lyrics_json.replace("\\n", "\n    ")
+            
+            # Add the formatted lyrics text to the JSON
+            json_text += '  "lyrics_text": "' + lyrics_json + '"\n'
+            
+            # Close the JSON object
+            json_text += "}"
+        else:
+            # For timestamps mode, only include the word timestamps with formatted timestamps
+            word_timestamps = []
+            if "word_timestamps" in lyrics_dict:
+                for word_ts in lyrics_dict["word_timestamps"]:
+                    ts_entry = {
+                        "word": word_ts.get("word", ""),
+                        "start": word_ts.get("start", 0.0),
+                        "end": word_ts.get("end", 0.0)
+                    }
+                    
+                    # Add formatted timestamps for readability
+                    if "start" in word_ts:
+                        start_min, start_sec = divmod(word_ts["start"], 60)
+                        ts_entry["start_formatted"] = f"{int(start_min):02d}:{start_sec:05.2f}"
+                    if "end" in word_ts:
+                        end_min, end_sec = divmod(word_ts["end"], 60)
+                        ts_entry["end_formatted"] = f"{int(end_min):02d}:{end_sec:05.2f}"
+                    
+                    word_timestamps.append(ts_entry)
+            
+            # Only include the word timestamps for the timestamps mode
+            timestamps_dict = {"word_timestamps": word_timestamps}
+            
+            # Convert to formatted JSON
+            json_text = json.dumps(timestamps_dict, indent=2)
         
-        # Convert to formatted JSON
-        json_text = json.dumps(lyrics_dict, indent=2)
         self.text_editor.setText(json_text)
     
     def get_edited_lyrics(self):
@@ -90,24 +163,132 @@ class LyricsEditDialog(QDialog):
             # Get JSON text from editor
             json_text = self.text_editor.toPlainText()
             
-            # Parse JSON
-            lyrics_dict = json.loads(json_text)
+            if self.mode == "lyrics":
+                try:
+                    # Try to parse the JSON normally first
+                    edited_dict = json.loads(json_text)
+                except json.JSONDecodeError:
+                    # If that fails, we might have our custom format with actual newlines
+                    # Let's try to parse it manually
+                    import re
+                    edited_dict = {}
+                    
+                    # Extract song_name
+                    song_name_match = re.search(r'"song_name":\s*"([^"]*)"', json_text)
+                    if song_name_match:
+                        edited_dict["song_name"] = song_name_match.group(1)
+                    
+                    # Extract artist_name
+                    artist_name_match = re.search(r'"artist_name":\s*"([^"]*)"', json_text)
+                    if artist_name_match:
+                        edited_dict["artist_name"] = artist_name_match.group(1)
+                    
+                    # Extract lyrics_text - this is trickier because it can contain newlines
+                    # We'll look for the start of the lyrics_text field and then extract until the closing quote
+                    lyrics_start_match = re.search(r'"lyrics_text":\s*"', json_text)
+                    if lyrics_start_match:
+                        start_pos = lyrics_start_match.end()
+                        # Find the closing quote that's not escaped
+                        lyrics_text = ""
+                        i = start_pos
+                        while i < len(json_text):
+                            if json_text[i] == '"' and (i == 0 or json_text[i-1] != '\\'):
+                                break
+                            lyrics_text += json_text[i]
+                            i += 1
+                        
+                        # Replace any escaped quotes
+                        lyrics_text = lyrics_text.replace('\\"', '"')
+                        edited_dict["lyrics_text"] = lyrics_text
+            else:
+                # For timestamps mode, parse JSON normally
+                edited_dict = json.loads(json_text)
             
-            # Remove formatted timestamps
-            if "word_timestamps" in lyrics_dict:
-                for word_ts in lyrics_dict["word_timestamps"]:
-                    if "start_formatted" in word_ts:
-                        del word_ts["start_formatted"]
-                    if "end_formatted" in word_ts:
-                        del word_ts["end_formatted"]
-            
-            # Create new lyrics object from dictionary
-            from models.lyrics import Lyrics
-            lyrics = Lyrics.from_dict(lyrics_dict)
-            
-            return lyrics
+            if self.mode == "lyrics":
+                # For lyrics mode, we only update the lyrics text
+                if self.lyrics_data:
+                    # Create a copy of the original lyrics
+                    from models.lyrics import Lyrics
+                    lyrics = Lyrics.from_dict(self.lyrics_data.to_dict())
+                    
+                    # Update only the text fields
+                    lyrics.song_name = edited_dict.get("song_name", lyrics.song_name)
+                    lyrics.artist_name = edited_dict.get("artist_name", lyrics.artist_name)
+                    
+                    # Get the new lyrics text
+                    new_lyrics_text = edited_dict.get("lyrics_text", lyrics.lyrics_text)
+                    
+                    # Store the original lyrics text to check if it changed
+                    # Normalize both texts for comparison (replace all whitespace sequences with a single space)
+                    import re
+                    self.original_lyrics_text = lyrics.lyrics_text
+                    normalized_original = re.sub(r'\s+', ' ', self.original_lyrics_text.strip())
+                    normalized_new = re.sub(r'\s+', ' ', new_lyrics_text.strip())
+                    self.lyrics_text_changed = (normalized_new != normalized_original)
+                    
+                    print(f"[LyricsWidget] Original lyrics: '{normalized_original}'")
+                    print(f"[LyricsWidget] New lyrics: '{normalized_new}'")
+                    print(f"[LyricsWidget] Lyrics changed: {self.lyrics_text_changed}")
+                    
+                    # Update the lyrics text
+                    lyrics.lyrics_text = new_lyrics_text
+                    
+                    # Clear timestamps only if lyrics text changed
+                    if self.lyrics_text_changed:
+                        lyrics.word_timestamps = []
+                    
+                    return lyrics
+                else:
+                    # Create new lyrics with just the text
+                    from models.lyrics import Lyrics
+                    lyrics = Lyrics()
+                    lyrics.song_name = edited_dict.get("song_name", "")
+                    lyrics.artist_name = edited_dict.get("artist_name", "")
+                    lyrics.lyrics_text = edited_dict.get("lyrics_text", "")
+                    
+                    # For new lyrics, only consider them changed if they're not empty
+                    self.original_lyrics_text = ""
+                    import re
+                    normalized_new = re.sub(r'\s+', ' ', edited_dict.get("lyrics_text", "").strip())
+                    self.lyrics_text_changed = (normalized_new != "")
+                    
+                    print(f"[LyricsWidget] New lyrics (new object): '{normalized_new}'")
+                    print(f"[LyricsWidget] Lyrics changed (new object): {self.lyrics_text_changed}")
+                    
+                    return lyrics
+            else:
+                # For timestamps mode, we update the word timestamps
+                if self.lyrics_data:
+                    # Create a copy of the original lyrics
+                    from models.lyrics import Lyrics
+                    lyrics = Lyrics.from_dict(self.lyrics_data.to_dict())
+                    
+                    # Update only the word timestamps
+                    if "word_timestamps" in edited_dict:
+                        # Remove formatted timestamps
+                        word_timestamps = []
+                        for word_ts in edited_dict["word_timestamps"]:
+                            ts_dict = {
+                                "word": word_ts.get("word", ""),
+                                "start": word_ts.get("start", 0.0),
+                                "end": word_ts.get("end", 0.0)
+                            }
+                            word_timestamps.append(ts_dict)
+                        
+                        # Create new WordTimestamp objects
+                        from models.lyrics import WordTimestamp
+                        lyrics.word_timestamps = [
+                            WordTimestamp.from_dict(ts_dict) for ts_dict in word_timestamps
+                        ]
+                    
+                    return lyrics
+                else:
+                    # Should not happen for timestamps mode
+                    return None
         except Exception as e:
             print(f"Error parsing lyrics JSON: {e}")
+            import traceback
+            traceback.print_exc()
             return None
 
 
@@ -140,6 +321,7 @@ class LyricsDisplayWidget(QWidget):
         self.app = app
         self.lyrics_data = None
         self.current_position = 0.0
+        self.scroll_area = None  # Will be set by LyricsWidget
         
         # Word display properties
         self.word_font = QFont("Arial", 14)  # Larger font for words
@@ -179,6 +361,24 @@ class LyricsDisplayWidget(QWidget):
             position (float): Current playback position in seconds.
         """
         self.current_position = position
+        
+        # Find the current word to scroll to it
+        current_word_rect = None
+        for timestamp, word_rect, time_rect in self.word_rects:
+            if timestamp.start <= position <= timestamp.end:
+                current_word_rect = word_rect
+                break
+        
+        # If we found a current word, ensure it's visible in the scroll area
+        if current_word_rect and hasattr(self, 'scroll_area'):
+            # Get the center of the word rectangle
+            center_x = current_word_rect.x() + current_word_rect.width() / 2
+            center_y = current_word_rect.y() + current_word_rect.height() / 2
+            
+            # Ensure the word is visible with some margin
+            margin = 50  # Pixels of margin around the word
+            self.scroll_area.ensureVisible(int(center_x), int(center_y), margin, margin)
+        
         self.update()  # Redraw to update highlighting
     
     def update_layout(self):
@@ -383,12 +583,23 @@ class LyricsWidget(QWidget):
         self.progress_bar.setVisible(False)
         self.status_layout.addWidget(self.progress_bar)
         
-        # Create edit button
-        self.edit_button = QPushButton("Edit Lyrics")
-        self.edit_button.setToolTip("Edit lyrics in JSON format")
-        self.edit_button.clicked.connect(self._on_edit_button_clicked)
-        self.edit_button.setEnabled(False)  # Disable until lyrics are loaded
-        self.header_layout.addWidget(self.edit_button)
+        # Create buttons layout
+        self.buttons_layout = QHBoxLayout()
+        self.header_layout.addLayout(self.buttons_layout)
+        
+        # Create edit lyrics button
+        self.edit_lyrics_button = QPushButton("Edit Lyrics")
+        self.edit_lyrics_button.setToolTip("Edit lyrics text (timestamps will be regenerated)")
+        self.edit_lyrics_button.clicked.connect(self._on_edit_lyrics_button_clicked)
+        self.edit_lyrics_button.setEnabled(False)  # Disable until lyrics are loaded
+        self.buttons_layout.addWidget(self.edit_lyrics_button)
+        
+        # Create edit timestamps button
+        self.edit_timestamps_button = QPushButton("Edit Timestamps")
+        self.edit_timestamps_button.setToolTip("Edit lyrics timestamps")
+        self.edit_timestamps_button.clicked.connect(self._on_edit_timestamps_button_clicked)
+        self.edit_timestamps_button.setEnabled(False)  # Disable until lyrics are loaded
+        self.buttons_layout.addWidget(self.edit_timestamps_button)
         
         # Create lyrics display area
         self.lyrics_scroll = QScrollArea()
@@ -400,6 +611,9 @@ class LyricsWidget(QWidget):
         # Create custom lyrics display widget
         self.lyrics_display = LyricsDisplayWidget(self.app)
         self.lyrics_scroll.setWidget(self.lyrics_display)
+        
+        # Store a reference to the scroll area in the display widget
+        self.lyrics_display.scroll_area = self.lyrics_scroll
         
         # Set minimum height
         self.setMinimumHeight(100)
@@ -460,8 +674,7 @@ class LyricsWidget(QWidget):
         
         # Set the timeline position
         self.app.timeline_manager.set_position(position)
-    
-    def _on_edit_button_clicked(self):
+    def _on_edit_lyrics_button_clicked(self):
         """Handle Edit Lyrics button click."""
         print("[LyricsWidget] Edit Lyrics button clicked")
         self.logger.info("Edit Lyrics button clicked")
@@ -472,8 +685,8 @@ class LyricsWidget(QWidget):
             self.logger.warning("No lyrics data to edit")
             return
         
-        # Create and show the edit dialog
-        dialog = LyricsEditDialog(self.app.project_manager.current_project.lyrics, self)
+        # Create and show the edit dialog in lyrics mode
+        dialog = LyricsEditDialog(self.app.project_manager.current_project.lyrics, "lyrics", self)
         result = dialog.exec()
         
         # If the user accepted the changes, update the lyrics
@@ -486,13 +699,98 @@ class LyricsWidget(QWidget):
                 # Update the project's lyrics
                 self.app.project_manager.current_project.lyrics = edited_lyrics
                 
+                # Check if lyrics text has changed
+                lyrics_changed = getattr(dialog, 'lyrics_text_changed', False)
+                
+                # If lyrics have changed and we have a lyrics manager and audio file
+                if lyrics_changed and hasattr(self.app, 'lyrics_manager') and self.app.audio_manager.audio_file:
+                    # Ask user if they want to reprocess the lyrics
+                    from PyQt6.QtWidgets import QMessageBox
+                    response = QMessageBox.question(
+                        self,
+                        "Reprocess Lyrics",
+                        "The lyrics text has changed. Do you want to reprocess the lyrics to update the timestamps?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                        QMessageBox.StandardButton.Yes
+                    )
+                    
+                    if response == QMessageBox.StandardButton.Yes:
+                        print("[LyricsWidget] Regenerating timestamps for edited lyrics")
+                        self.logger.info("Regenerating timestamps for edited lyrics")
+                        
+                        # Update status
+                        self.update_status("Processing edited lyrics...", 0)
+                        
+                        # Skip song identification and go directly to lyrics alignment
+                        # We'll implement this by setting the lyrics directly in the project
+                        # and then calling the alignment function
+                        
+                        # First, update the project's lyrics
+                        self.app.project_manager.current_project.lyrics = edited_lyrics
+                        
+                        # Then, align the lyrics with the audio
+                        if hasattr(self.app.lyrics_manager, 'align_lyrics_directly'):
+                            self.app.lyrics_manager.align_lyrics_directly(
+                                self.app.audio_manager.audio_file,
+                                edited_lyrics
+                            )
+                        else:
+                            # Fallback to process_audio if align_lyrics_directly doesn't exist
+                            self.app.lyrics_manager.process_audio(
+                                self.app.audio_manager.audio_file
+                            )
+                    else:
+                        # Just update the display with the edited lyrics
+                        self.update_lyrics(edited_lyrics)
+                else:
+                    # Just update the display with the edited lyrics
+                    self.update_lyrics(edited_lyrics)
+                
+                # Mark the project as modified
+                self.app.project_manager.project_changed.emit()
+            else:
+                print("[LyricsWidget] Failed to parse edited lyrics")
+                self.logger.warning("Failed to parse edited lyrics")
+    
+    def _on_edit_timestamps_button_clicked(self):
+        """Handle Edit Timestamps button click."""
+        print("[LyricsWidget] Edit Timestamps button clicked")
+        self.logger.info("Edit Timestamps button clicked")
+        
+        # Check if we have lyrics data
+        if not hasattr(self.app.project_manager.current_project, 'lyrics') or not self.app.project_manager.current_project.lyrics:
+            print("[LyricsWidget] No lyrics data to edit")
+            self.logger.warning("No lyrics data to edit")
+            return
+        
+        # Check if we have timestamps
+        if not hasattr(self.app.project_manager.current_project.lyrics, 'word_timestamps') or not self.app.project_manager.current_project.lyrics.word_timestamps:
+            print("[LyricsWidget] No timestamps to edit")
+            self.logger.warning("No timestamps to edit")
+            return
+        
+        # Create and show the edit dialog in timestamps mode
+        dialog = LyricsEditDialog(self.app.project_manager.current_project.lyrics, "timestamps", self)
+        result = dialog.exec()
+        
+        # If the user accepted the changes, update the lyrics
+        if result == QDialog.DialogCode.Accepted:
+            edited_lyrics = dialog.get_edited_lyrics()
+            if edited_lyrics:
+                print("[LyricsWidget] Updating lyrics with edited timestamps")
+                self.logger.info("Updating lyrics with edited timestamps")
+                
+                # Update the project's lyrics
+                self.app.project_manager.current_project.lyrics = edited_lyrics
+                
                 # Update the display
                 self.update_lyrics(edited_lyrics)
                 
                 # Mark the project as modified
                 self.app.project_manager.project_changed.emit()
             else:
-                print("[LyricsWidget] Failed to parse edited lyrics")
+                print("[LyricsWidget] Failed to parse edited timestamps")
+                self.logger.warning("Failed to parse edited timestamps")
                 self.logger.warning("Failed to parse edited lyrics")
     
     def _on_process_button_clicked(self):
@@ -586,18 +884,21 @@ class LyricsWidget(QWidget):
                 # Set the lyrics data in the custom display widget
                 self.lyrics_display.set_lyrics(lyrics_data)
                 
-                # Enable the edit button
-                self.edit_button.setEnabled(True)
+                # Enable both edit buttons
+                self.edit_lyrics_button.setEnabled(True)
+                self.edit_timestamps_button.setEnabled(True)
             else:
                 print("[LyricsWidget] No word timestamps available")
                 # Create a simple lyrics object with just the text
                 self.lyrics_display.set_lyrics(lyrics_data)
                 
-                # Enable the edit button
-                self.edit_button.setEnabled(True)
+                # Enable only the lyrics edit button
+                self.edit_lyrics_button.setEnabled(True)
+                self.edit_timestamps_button.setEnabled(False)
         else:
             print("[LyricsWidget] No lyrics text available")
             self.lyrics_display.set_lyrics(None)
             
-            # Disable the edit button
-            self.edit_button.setEnabled(False)
+            # Disable both edit buttons
+            self.edit_lyrics_button.setEnabled(False)
+            self.edit_timestamps_button.setEnabled(False)
