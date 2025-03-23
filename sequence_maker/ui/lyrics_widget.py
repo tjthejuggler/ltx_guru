@@ -9,7 +9,212 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QScrollArea, QTextEdit, QSplitter, QProgressBar
 )
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
+from PyQt6.QtCore import Qt, pyqtSignal, QSize, QRectF, QPoint
+from PyQt6.QtGui import QFont, QPainter, QColor, QPen, QFontMetrics
+
+class LyricsDisplayWidget(QWidget):
+    """
+    Custom widget for displaying lyrics with timestamps.
+    
+    This widget displays lyrics with word-level timestamps, with the timestamps
+    in a smaller font above each word. Words are clickable to move the playback
+    position to that word's timestamp.
+    
+    Attributes:
+        app: The main application instance.
+        parent: The parent widget.
+    """
+    
+    # Signal emitted when a timestamp is clicked
+    timestamp_clicked = pyqtSignal(float)
+    
+    def __init__(self, app, parent=None):
+        """
+        Initialize the lyrics display widget.
+        
+        Args:
+            app: The main application instance.
+            parent: The parent widget.
+        """
+        super().__init__(parent)
+        
+        self.app = app
+        self.lyrics_data = None
+        self.current_position = 0.0
+        
+        # Word display properties
+        self.word_font = QFont("Arial", 14)  # Larger font for words
+        self.time_font = QFont("Arial", 8)   # Smaller font for timestamps
+        self.word_spacing = 10               # Horizontal space between words
+        self.line_spacing = 40               # Vertical space between lines
+        self.time_height = 15                # Height for timestamp display
+        self.highlight_color = QColor(255, 255, 0, 100)  # Yellow with transparency
+        
+        # Layout data
+        self.word_rects = []  # List of (word_timestamp, rect) tuples for hit testing
+        self.content_height = 0
+        
+        # Enable mouse tracking for hover effects
+        self.setMouseTracking(True)
+        
+        # Set focus policy to receive key events
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+    
+    def set_lyrics(self, lyrics_data):
+        """
+        Set the lyrics data to display.
+        
+        Args:
+            lyrics_data: Lyrics data object.
+        """
+        self.lyrics_data = lyrics_data
+        self.word_rects = []
+        self.update_layout()
+        self.update()
+    
+    def set_position(self, position):
+        """
+        Set the current playback position.
+        
+        Args:
+            position (float): Current playback position in seconds.
+        """
+        self.current_position = position
+        self.update()  # Redraw to update highlighting
+    
+    def update_layout(self):
+        """Calculate layout for all words and timestamps."""
+        if not self.lyrics_data or not hasattr(self.lyrics_data, 'word_timestamps'):
+            self.content_height = 0
+            return
+        
+        self.word_rects = []
+        
+        # Get font metrics for measurement
+        word_metrics = QFontMetrics(self.word_font)
+        time_metrics = QFontMetrics(self.time_font)
+        
+        # Group words by lines
+        lines = self.lyrics_data.lyrics_text.split('\n')
+        word_index = 0
+        total_words = len(self.lyrics_data.word_timestamps)
+        
+        x = 10  # Starting x position
+        y = 30  # Starting y position (allowing space for the first timestamp)
+        
+        max_width = 0
+        
+        for line in lines:
+            if line.strip():  # Skip empty lines
+                words = line.split()
+                line_start_x = x
+                
+                for word in words:
+                    if word_index < total_words:
+                        timestamp = self.lyrics_data.word_timestamps[word_index]
+                        
+                        # Calculate word width
+                        word_width = word_metrics.horizontalAdvance(timestamp.word)
+                        
+                        # Calculate timestamp width
+                        time_text = f"{timestamp.start:.2f}-{timestamp.end:.2f}"
+                        time_width = time_metrics.horizontalAdvance(time_text)
+                        
+                        # Use the larger of the two widths
+                        item_width = max(word_width, time_width)
+                        
+                        # Create rectangles for the word and timestamp
+                        word_rect = QRectF(x, y, item_width, word_metrics.height())
+                        time_rect = QRectF(x, y - self.time_height, item_width, self.time_height)
+                        
+                        # Store the word timestamp and its rectangle for hit testing
+                        self.word_rects.append((timestamp, word_rect, time_rect))
+                        
+                        # Move to the next word position
+                        x += item_width + self.word_spacing
+                        word_index += 1
+                    else:
+                        # If we've run out of timestamps, just display the word
+                        word_width = word_metrics.horizontalAdvance(word)
+                        x += word_width + self.word_spacing
+                
+                # Track maximum width
+                max_width = max(max_width, x)
+                
+                # Move to the next line
+                x = line_start_x
+                y += self.line_spacing
+            else:
+                # Empty line, just add some space
+                y += self.line_spacing // 2
+        
+        # Set the content height
+        self.content_height = y + 20  # Add some padding at the bottom
+        
+        # Set minimum size based on content
+        self.setMinimumSize(max_width + 20, self.content_height)
+    
+    def paintEvent(self, event):
+        """
+        Paint the lyrics display.
+        
+        Args:
+            event: Paint event.
+        """
+        if not self.lyrics_data or not hasattr(self.lyrics_data, 'word_timestamps'):
+            return
+        
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.TextAntialiasing)
+        
+        # Draw each word and its timestamp
+        for timestamp, word_rect, time_rect in self.word_rects:
+            # Check if this word is the current word
+            is_current = timestamp.start <= self.current_position <= timestamp.end
+            
+            # Highlight current word
+            if is_current:
+                painter.fillRect(word_rect, self.highlight_color)
+            
+            # Draw timestamp above the word
+            painter.setFont(self.time_font)
+            time_text = f"{timestamp.start:.2f}-{timestamp.end:.2f}"
+            painter.setPen(QPen(QColor(100, 100, 100)))  # Gray color for timestamps
+            painter.drawText(time_rect, Qt.AlignmentFlag.AlignCenter, time_text)
+            
+            # Draw the word
+            painter.setFont(self.word_font)
+            painter.setPen(QPen(QColor(0, 0, 0)))  # Black color for words
+            painter.drawText(word_rect, Qt.AlignmentFlag.AlignCenter, timestamp.word)
+    
+    def mousePressEvent(self, event):
+        """
+        Handle mouse press events.
+        
+        Args:
+            event: Mouse event.
+        """
+        # Check if a timestamp was clicked
+        pos = event.position()
+        for timestamp, word_rect, time_rect in self.word_rects:
+            # Check if click is within the word or timestamp rect
+            if word_rect.contains(pos) or time_rect.contains(pos):
+                # Emit signal with the start time of the word
+                self.timestamp_clicked.emit(timestamp.start)
+                break
+        
+        super().mousePressEvent(event)
+    
+    def sizeHint(self):
+        """
+        Get the suggested size for the widget.
+        
+        Returns:
+            QSize: Suggested size.
+        """
+        return QSize(600, self.content_height)
+
 
 class LyricsWidget(QWidget):
     """
@@ -76,16 +281,9 @@ class LyricsWidget(QWidget):
         self.lyrics_scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.main_layout.addWidget(self.lyrics_scroll)
         
-        # Create lyrics container
-        self.lyrics_container = QWidget()
-        self.lyrics_layout = QVBoxLayout(self.lyrics_container)
-        self.lyrics_scroll.setWidget(self.lyrics_container)
-        
-        # Create lyrics text display
-        self.lyrics_text = QTextEdit()
-        self.lyrics_text.setReadOnly(True)
-        self.lyrics_text.setPlaceholderText("No lyrics available. Process audio to extract lyrics.")
-        self.lyrics_layout.addWidget(self.lyrics_text)
+        # Create custom lyrics display widget
+        self.lyrics_display = LyricsDisplayWidget(self.app)
+        self.lyrics_scroll.setWidget(self.lyrics_display)
         
         # Set minimum height
         self.setMinimumHeight(100)
@@ -97,6 +295,9 @@ class LyricsWidget(QWidget):
         
         # Connect project manager signals to update lyrics when a project is loaded
         self.app.project_manager.project_loaded.connect(self._on_project_loaded)
+        
+        # Connect lyrics display signals
+        self.lyrics_display.timestamp_clicked.connect(self._on_timestamp_clicked)
     
     def _on_project_loaded(self, project):
         """
@@ -118,7 +319,8 @@ class LyricsWidget(QWidget):
         else:
             print("[LyricsWidget] Project has no lyrics data")
             self.logger.info("Project has no lyrics data")
-            self.lyrics_text.setText("No lyrics available.")
+            # Clear the lyrics display
+            self.lyrics_display.set_lyrics(None)
     
     def _on_position_changed(self, position):
         """
@@ -127,31 +329,21 @@ class LyricsWidget(QWidget):
         Args:
             position (float): Current playback position in seconds.
         """
-        # Update highlighted word based on position
-        self._highlight_current_word(position)
+        # Update the lyrics display with the new position
+        self.lyrics_display.set_position(position)
     
-    def _highlight_current_word(self, position):
+    def _on_timestamp_clicked(self, position):
         """
-        Highlight the current word based on playback position.
+        Handle timestamp clicked signal.
         
         Args:
-            position (float): Current playback position in seconds.
+            position (float): Position in seconds to seek to.
         """
-        # Check if we have lyrics data
-        if not hasattr(self.app.project_manager.current_project, 'lyrics') or not self.app.project_manager.current_project.lyrics:
-            return
+        print(f"[LyricsWidget] Timestamp clicked: {position:.2f}s")
+        self.logger.info(f"Timestamp clicked: {position:.2f}s")
         
-        # Get the current word
-        current_word = None
-        for word in self.app.project_manager.current_project.lyrics.word_timestamps:
-            if word.start <= position <= word.end:
-                current_word = word
-                break
-        
-        # If we found a current word, highlight it
-        if current_word:
-            # TODO: Implement highlighting logic
-            pass
+        # Set the timeline position
+        self.app.timeline_manager.set_position(position)
     
     def _on_process_button_clicked(self):
         """Handle Process Lyrics button click."""
@@ -225,7 +417,7 @@ class LyricsWidget(QWidget):
         # Reset status
         self.reset_status()
         
-        # Update the lyrics text
+        # Update the lyrics display
         if lyrics_data and hasattr(lyrics_data, 'lyrics_text') and lyrics_data.lyrics_text:
             print(f"[LyricsWidget] Lyrics text available: {len(lyrics_data.lyrics_text)} characters")
             
@@ -233,44 +425,20 @@ class LyricsWidget(QWidget):
             if hasattr(lyrics_data, 'word_timestamps') and lyrics_data.word_timestamps:
                 print(f"[LyricsWidget] Word timestamps available: {len(lyrics_data.word_timestamps)} words")
                 
-                # Create a formatted text with timestamps
-                formatted_text = ""
-                
-                # Group words by lines for better display
-                lines = lyrics_data.lyrics_text.split('\n')
-                word_index = 0
-                total_words = len(lyrics_data.word_timestamps)
-                
-                for line in lines:
-                    if line.strip():  # Skip empty lines
-                        line_with_timestamps = ""
-                        words = line.split()
-                        
-                        for word in words:
-                            if word_index < total_words:
-                                timestamp = lyrics_data.word_timestamps[word_index]
-                                # Format: word (start-end)
-                                line_with_timestamps += f"{timestamp.word} ({timestamp.start:.2f}-{timestamp.end:.2f}) "
-                                word_index += 1
-                            else:
-                                line_with_timestamps += f"{word} "
-                        
-                        formatted_text += line_with_timestamps.strip() + "\n"
-                    else:
-                        formatted_text += "\n"
-                
                 # Log some of the timestamps for debugging
-                if total_words > 0:
-                    sample_size = min(5, total_words)
+                if len(lyrics_data.word_timestamps) > 0:
+                    sample_size = min(5, len(lyrics_data.word_timestamps))
                     print(f"[LyricsWidget] Sample timestamps (first {sample_size} words):")
                     for i in range(sample_size):
                         ts = lyrics_data.word_timestamps[i]
                         print(f"[LyricsWidget]   Word: '{ts.word}', Start: {ts.start:.2f}, End: {ts.end:.2f}")
                 
-                self.lyrics_text.setText(formatted_text)
+                # Set the lyrics data in the custom display widget
+                self.lyrics_display.set_lyrics(lyrics_data)
             else:
                 print("[LyricsWidget] No word timestamps available")
-                self.lyrics_text.setText(lyrics_data.lyrics_text)
+                # Create a simple lyrics object with just the text
+                self.lyrics_display.set_lyrics(lyrics_data)
         else:
             print("[LyricsWidget] No lyrics text available")
-            self.lyrics_text.setText("No lyrics available.")
+            self.lyrics_display.set_lyrics(None)
