@@ -141,15 +141,7 @@ class AudioWidget(QWidget):
         self.visualization.setMaximumHeight(120)
         self.main_layout.addWidget(self.visualization)
         
-        # Create position slider
-        self.position_slider = QSlider(Qt.Orientation.Horizontal)
-        self.position_slider.setRange(0, 1000)
-        self.position_slider.setValue(0)
-        self.position_slider.setTracking(False)
-        self.position_slider.setMaximumHeight(15)
-        self.position_slider.sliderMoved.connect(self._on_position_slider_moved)
-        self.position_slider.sliderReleased.connect(self._on_position_slider_released)
-        self.main_layout.addWidget(self.position_slider)
+        # Position slider removed as per user request - we'll use the red position marker instead
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -160,6 +152,9 @@ class AudioWidget(QWidget):
         self.app.audio_manager.audio_stopped.connect(self._on_audio_stopped)
         self.app.audio_manager.position_changed.connect(self._on_position_changed)
         self.app.audio_manager.analysis_completed.connect(self._on_analysis_completed)
+        
+        # Connect timeline manager signals to ensure position sync with ball timelines
+        self.app.timeline_manager.position_changed.connect(self._on_position_changed)
     
     def update_visualization(self):
         """Update the audio visualization."""
@@ -229,29 +224,7 @@ class AudioWidget(QWidget):
         # Emit signal
         self.stop_clicked.emit()
     
-    def _on_position_slider_moved(self, value):
-        """
-        Handle position slider moved.
-        
-        Args:
-            value (int): Slider value (0-1000).
-        """
-        # Calculate position
-        position = value / 1000.0 * self.duration
-        
-        # Update position label
-        self._update_position_label(position)
-    
-    def _on_position_slider_released(self):
-        """Handle position slider released."""
-        # Calculate position
-        position = self.position_slider.value() / 1000.0 * self.duration
-        
-        # Seek to position
-        self.app.audio_manager.seek(position)
-        
-        # Emit signal
-        self.position_changed.emit(position)
+    # Position slider methods removed as the slider has been removed
     
     def _on_volume_changed(self, value):
         """
@@ -282,7 +255,6 @@ class AudioWidget(QWidget):
         
         # Update visualization
         self.visualization.update()
-    
     def _on_audio_loaded(self, file_path, duration):
         """
         Handle audio loaded signal.
@@ -297,10 +269,10 @@ class AudioWidget(QWidget):
         
         # Update UI
         self.title_label.setText(f"Audio: {os.path.basename(file_path)}")
-        self.position_slider.setEnabled(True)
         self.play_button.setEnabled(True)
         
         # Update position label
+        self._update_position_label(0)
         self._update_position_label(0)
     
     def _on_audio_started(self):
@@ -329,7 +301,6 @@ class AudioWidget(QWidget):
         
         # Reset position
         self.position = 0
-        self.position_slider.setValue(0)
         
         # Update position label
         self._update_position_label(0)
@@ -343,11 +314,6 @@ class AudioWidget(QWidget):
         """
         # Update position
         self.position = position
-        
-        # Update position slider
-        if self.duration > 0:
-            slider_value = int(position / self.duration * 1000)
-            self.position_slider.setValue(slider_value)
         
         # Update position label
         self._update_position_label(position)
@@ -412,8 +378,14 @@ class AudioVisualization(QWidget):
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setMinimumHeight(100)
         
+        # Enable mouse tracking for hover events
+        self.setMouseTracking(True)
+        
         # Analysis data
         self.analysis_data = None
+        
+        # Dragging state
+        self.dragging_position = False
     
     def set_analysis_data(self, analysis_data):
         """
@@ -665,9 +637,16 @@ class AudioVisualization(QWidget):
         # Calculate position in pixels using timeline's scale
         pos_x = int(position * time_scale * zoom_level)
         
-        # Draw position line
-        painter.setPen(QPen(QColor(255, 0, 0), 2))
+        # Create a semi-transparent red color for the line to match timeline marker
+        line_color = QColor(255, 0, 0, 200)  # Added alpha channel (200/255 opacity)
+        
+        # Draw position line with a more visible style
+        painter.setPen(QPen(line_color, 3))  # Increased width for better visibility
         painter.drawLine(pos_x, 0, pos_x, self.height())
+        
+        # Draw a small circle at the top of the line for better visibility
+        painter.setBrush(QBrush(QColor(255, 0, 0)))
+        painter.drawEllipse(pos_x - 4, 0, 8, 8)
     
     def _draw_placeholder(self, painter, text):
         """
@@ -686,3 +665,97 @@ class AudioVisualization(QWidget):
             Qt.AlignmentFlag.AlignCenter,
             text
         )
+    
+    def mouseMoveEvent(self, event):
+        """
+        Handle mouse move events for dragging and cursor changes.
+        
+        Args:
+            event: Mouse event.
+        """
+        if self.dragging_position:
+            # Get timeline zoom level and time scale
+            timeline_widget = self.app.main_window.timeline_widget
+            zoom_level = timeline_widget.zoom_level
+            time_scale = timeline_widget.time_scale
+            
+            # Calculate time position from mouse x-coordinate
+            time = event.pos().x() / (time_scale * zoom_level)
+            
+            # Clamp time to valid range
+            if time < 0:
+                time = 0
+            if self.parent_widget.duration > 0 and time > self.parent_widget.duration:
+                time = self.parent_widget.duration
+            
+            # Set position in timeline manager (this will update all linked components)
+            self.app.timeline_manager.set_position(time)
+            
+            # Also seek the audio to this position
+            self.app.audio_manager.seek(time)
+            
+            # Set cursor to indicate dragging
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+        else:
+            # Change cursor to indicate the visualization is clickable
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+        
+        # Accept the event
+        event.accept()
+    
+    def mousePressEvent(self, event):
+        """
+        Handle mouse press events to set the position when clicked.
+        
+        Args:
+            event: Mouse event.
+        """
+        if event.button() == Qt.MouseButton.LeftButton:
+            # Get timeline zoom level and time scale
+            timeline_widget = self.app.main_window.timeline_widget
+            zoom_level = timeline_widget.zoom_level
+            time_scale = timeline_widget.time_scale
+            
+            # Calculate time position from click x-coordinate
+            time = event.pos().x() / (time_scale * zoom_level)
+            
+            # Clamp time to valid range
+            if time < 0:
+                time = 0
+            if self.parent_widget.duration > 0 and time > self.parent_widget.duration:
+                time = self.parent_widget.duration
+            
+            # Set position in timeline manager (this will update all linked components)
+            self.app.timeline_manager.set_position(time)
+            
+            # Also seek the audio to this position
+            self.app.audio_manager.seek(time)
+            
+            # Start dragging
+            self.dragging_position = True
+            
+            # Accept the event
+            event.accept()
+        else:
+            # Pass other buttons to parent
+            super().mousePressEvent(event)
+    
+    def mouseReleaseEvent(self, event):
+        """
+        Handle mouse release events to end dragging.
+        
+        Args:
+            event: Mouse event.
+        """
+        if event.button() == Qt.MouseButton.LeftButton and self.dragging_position:
+            # End dragging
+            self.dragging_position = False
+            
+            # Reset cursor
+            self.setCursor(Qt.CursorShape.PointingHandCursor)
+            
+            # Accept the event
+            event.accept()
+        else:
+            # Pass other buttons to parent
+            super().mouseReleaseEvent(event)

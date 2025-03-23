@@ -443,13 +443,13 @@ class MainWindow(QMainWindow):
         # Create main layout
         self.main_layout = QVBoxLayout(self.central_widget)
         
-        # Create audio widget (placed above lyrics and timelines)
-        self.audio_widget = AudioWidget(self.app, self)
-        self.main_layout.addWidget(self.audio_widget, 1)  # 1 = small stretch factor
-        
-        # Create lyrics widget (placed between audio and timeline)
+        # Create lyrics widget (placed at the top)
         self.lyrics_widget = LyricsWidget(self.app, self)
         self.main_layout.addWidget(self.lyrics_widget, 1)  # 1 = small stretch factor
+        
+        # Create audio widget (placed directly above timeline)
+        self.audio_widget = AudioWidget(self.app, self)
+        self.main_layout.addWidget(self.audio_widget, 1)  # 1 = small stretch factor
         
         # Create timeline widget
         self.timeline_widget = TimelineWidget(self.app, self)
