@@ -24,6 +24,7 @@ from managers.ball_manager import BallManager
 from managers.llm_manager import LLMManager
 from managers.undo_manager import UndoManager
 from managers.lyrics_manager import LyricsManager
+from managers.autosave_manager import AutosaveManager
 from resources.resources import get_icon_path
 
 # Create a custom style that forces our icon to be used
@@ -167,9 +168,9 @@ class SequenceMakerApp:
         self.llm_manager = LLMManager(self)
         self.undo_manager = UndoManager(self)
         self.lyrics_manager = LyricsManager(self)
+        self.autosave_manager = AutosaveManager(self)
         
         # Connect managers as needed
-        self.timeline_manager.set_undo_manager(self.undo_manager)
         self.timeline_manager.set_undo_manager(self.undo_manager)
     
     def _init_ui(self):

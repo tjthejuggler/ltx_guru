@@ -17,6 +17,7 @@ from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QColor
 
 from api.app_context_api import AppContextAPI
+from ui.dialogs.ambiguity_resolution_dialog import AmbiguityResolutionDialog
 
 
 class LLMChatDialog(QDialog):
@@ -55,8 +56,9 @@ class LLMChatDialog(QDialog):
         # Load chat history from project
         self._load_chat_history()
         
-        # Connect token usage signal
+        # Connect signals
         self.app.llm_manager.token_usage_updated.connect(self._on_token_usage_updated)
+        self.app.llm_manager.llm_ambiguity.connect(self._on_llm_ambiguity)
     
     def _create_ui(self):
         """Create the user interface."""
@@ -537,3 +539,72 @@ class LLMChatDialog(QDialog):
             "LLM Error",
             f"An error occurred while communicating with the LLM:\n{error_message}"
         )
+    
+    def _on_llm_ambiguity(self, prompt, suggestions):
+        """
+        Handle LLM ambiguity.
+        
+        Args:
+            prompt (str): The original prompt.
+            suggestions (list): List of suggested clarifications.
+        """
+        self.logger.info(f"Handling ambiguity for prompt: {prompt}")
+        self.logger.info(f"Suggestions: {suggestions}")
+        
+        # Hide progress bar
+        self.progress_bar.setVisible(False)
+        
+        # Disable stop button
+        self.stop_button.setEnabled(False)
+        
+        # Create and show ambiguity resolution dialog
+        dialog = AmbiguityResolutionDialog(prompt, suggestions, self)
+        
+        # Connect resolution signal
+        dialog.resolution_selected.connect(self._on_ambiguity_resolved)
+        
+        # Show dialog
+        dialog.exec()
+    
+    def _on_ambiguity_resolved(self, resolution):
+        """
+        Handle ambiguity resolution.
+        
+        Args:
+            resolution (str): The selected or custom resolution.
+        """
+        self.logger.info(f"Ambiguity resolved with: {resolution}")
+        
+        # Add resolution to chat history
+        self._add_message("You (clarification)", resolution)
+        
+        # Enable input
+        self.input_text.setEnabled(True)
+        self.send_button.setEnabled(True)
+        
+        # Get system message
+        selected_timelines = []
+        for item in self.timeline_list.selectedItems():
+            timeline_index = item.data(Qt.ItemDataRole.UserRole)
+            selected_timelines.append(timeline_index)
+        
+        system_message = self._create_system_message(selected_timelines)
+        
+        # Show progress bar
+        self.progress_bar.setVisible(True)
+        
+        # Disable input and enable stop button
+        self.input_text.setEnabled(False)
+        self.send_button.setEnabled(False)
+        self.stop_button.setEnabled(True)
+        
+        # Connect signals
+        self.app.llm_manager.llm_response_received.connect(self._on_llm_response)
+        self.app.llm_manager.llm_error.connect(self._on_llm_error)
+        self.app.llm_manager.llm_ready.connect(self._on_llm_ready)
+        
+        # Get confirmation mode
+        confirmation_mode = self.confirmation_mode_combo.currentData()
+        
+        # Send clarification to LLM
+        self.app.llm_manager.send_request(resolution, system_message, confirmation_mode=confirmation_mode)

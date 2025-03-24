@@ -27,6 +27,8 @@ class ProjectManager(QObject):
         project_saved: Emitted when a project is saved.
         project_changed: Emitted when the project is modified.
         autosave_completed: Emitted when an autosave is completed.
+        version_saved: Emitted when a version is saved.
+        version_restored: Emitted when a version is restored.
     """
     
     # Signals
@@ -34,6 +36,8 @@ class ProjectManager(QObject):
     project_saved = pyqtSignal(str)
     project_changed = pyqtSignal()
     autosave_completed = pyqtSignal(str)
+    version_saved = pyqtSignal(str)
+    version_restored = pyqtSignal(str)
     
     # Property to track if project has unsaved changes
     has_unsaved_changes = False
@@ -320,6 +324,60 @@ class ProjectManager(QObject):
             Project: The recovered project, or None if recovery failed.
         """
         return self.load_project(file_path)
+    
+    def load_from_dict(self, data):
+        """
+        Load a project from a dictionary.
+        
+        Args:
+            data (dict): Project data as a dictionary.
+        
+        Returns:
+            Project: The loaded project, or None if loading failed.
+        """
+        from models.project import Project
+        
+        try:
+            # Create project from dictionary
+            project = Project.from_dict(data)
+            
+            # If the original project had a file path, preserve it
+            if self.current_project and self.current_project.file_path:
+                project.file_path = self.current_project.file_path
+            
+            return project
+        except Exception as e:
+            self.logger.error(f"Error loading project from dictionary: {e}")
+            return None
+    
+    def set_current_project(self, project):
+        """
+        Set the current project.
+        
+        Args:
+            project: The project to set as current.
+        
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if not project:
+            self.logger.warning("Cannot set None as current project")
+            return False
+        
+        # Set as current project
+        self.current_project = project
+        
+        # Reset unsaved changes flag
+        self.has_unsaved_changes = False
+        
+        # Emit signal
+        self.project_loaded.emit(project)
+        
+        # Update the timelines in the UI
+        self.logger.debug("Updating timelines after setting current project")
+        self.app.timeline_manager.update_timelines()
+        
+        return True
     
     def _on_project_changed(self):
         """

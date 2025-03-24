@@ -44,14 +44,18 @@ This document tracks the implementation status of the LLM integration for Sequen
    - Current implementation uses a modal dialog
    - Need to implement a floating, non-modal window that can remain open while using the application
 
-2. ❌ **Autosave & Version Control**
-   - Need to implement automatic project state saves before and after LLM operations
-   - Need to implement version history view for easy rollback
+2. ✅ **Autosave & Version Control**
+   - Implemented automatic project state saves before and after LLM operations
+   - Implemented version history view for easy rollback
+   - Added `AutosaveManager` class to handle automatic project state saves
+   - Added version history tracking to `ProjectManager`
+   - Created UI for browsing and restoring previous versions
 
-3. ❌ **Error Handling, Logging, and Diagnostics**
-   - Basic error handling is implemented
-   - Need to enhance with more detailed logging and diagnostics
-   - Need to implement ambiguity resolution for unclear instructions
+3. ✅ **Error Handling and Ambiguity Resolution**
+   - Implemented ambiguity detection in LLM responses
+   - Added `AmbiguityResolutionDialog` for user clarification
+   - Integrated with `LLMChatDialog` for seamless user experience
+   - Added comprehensive tests for ambiguity handling
 
 4. ❌ **Audio Analysis Integration**
    - Need to integrate audio analysis tools for beat detection and musical feature extraction
@@ -59,25 +63,20 @@ This document tracks the implementation status of the LLM integration for Sequen
 
 ## Next Steps (Implementation Priority)
 
-1. **Autosave & Version Control**
-   - Implement `AutosaveManager` class to handle automatic project state saves
-   - Add version history tracking to `ProjectManager`
-   - Create UI for browsing and restoring previous versions
-
-2. **Enhanced Error Handling**
-   - Implement more detailed logging for LLM operations
-   - Add ambiguity resolution for unclear instructions
-   - Create error recovery mechanisms
-
-3. **Audio Analysis Integration**
+1. **Audio Analysis Integration**
    - Integrate audio analysis library (e.g., librosa)
    - Extract beat, rhythm, and intensity information
    - Make this data available to the LLM via `AppContextAPI`
 
-4. **Floating Chat Window**
+2. **Floating Chat Window**
    - Convert `LLMChatDialog` from modal dialog to floating window
    - Allow it to remain open while using the application
    - Add minimize/maximize functionality
+
+3. **Enhanced Logging and Diagnostics**
+   - Implement more detailed logging for LLM operations
+   - Add performance metrics tracking
+   - Create diagnostic tools for troubleshooting
 
 ## Implementation Details for Next Steps
 

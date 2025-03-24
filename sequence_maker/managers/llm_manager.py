@@ -38,6 +38,7 @@ class LLMManager(QObject):
     llm_action_requested = pyqtSignal(str, dict)  # action_type, parameters
     token_usage_updated = pyqtSignal(int, float)  # tokens, cost
     llm_interrupted = pyqtSignal()
+    llm_ambiguity = pyqtSignal(str, list)  # prompt, suggestions
     
     def __init__(self, app):
         """
@@ -166,6 +167,9 @@ class LLMManager(QObject):
             # Reset interrupt flag
             self.interrupt_requested = False
             
+            # Save project state before LLM operation
+            self._save_version_before_operation(prompt)
+            
             # Prepare request based on provider
             if self.provider == "openai":
                 response = self._send_openai_request(prompt, system_message, temperature, max_tokens)
@@ -189,17 +193,26 @@ class LLMManager(QObject):
                 # Track token usage
                 self.track_token_usage(response)
                 
-                # Parse actions from response
-                actions = self.parse_actions(response_text)
-                
-                # Emit action signals if actions were found
-                for action in actions:
-                    action_type = action.get("action")
-                    parameters = action.get("parameters", {})
-                    self.llm_action_requested.emit(action_type, parameters)
-                
-                # Emit response signal
-                self.llm_response_received.emit(response_text, response)
+                # Check for ambiguity in the response
+                if not self._handle_ambiguity(prompt, response_text):
+                    # If not ambiguous, proceed with normal processing
+                    
+                    # Parse actions from response
+                    actions = self.parse_actions(response_text)
+                    
+                    # Emit action signals if actions were found
+                    for action in actions:
+                        action_type = action.get("action")
+                        parameters = action.get("parameters", {})
+                        self.llm_action_requested.emit(action_type, parameters)
+                    
+                    # Save project state after LLM operation
+                    self._save_version_after_operation(response_text)
+                    
+                    # Emit response signal
+                    self.llm_response_received.emit(response_text, response)
+                # Note: If ambiguous, the _handle_ambiguity method will emit the llm_ambiguity signal
+                # and the dialog will handle it
             else:
                 self.llm_error.emit("No response from LLM")
         
@@ -214,6 +227,33 @@ class LLMManager(QObject):
             
             # Emit ready signal
             self.llm_ready.emit()
+    
+    def _save_version_before_operation(self, prompt):
+        """
+        Save project state before an LLM operation.
+        
+        Args:
+            prompt (str): User prompt.
+        """
+        if hasattr(self.app, 'autosave_manager'):
+            # Truncate prompt if too long
+            short_prompt = prompt[:30] + "..." if len(prompt) > 30 else prompt
+            reason = f"Before LLM: {short_prompt}"
+            self.app.autosave_manager.save_version(reason)
+    
+    def _save_version_after_operation(self, response_text):
+        """
+        Save project state after an LLM operation.
+        
+        Args:
+            response_text (str): LLM response text.
+        """
+        if hasattr(self.app, 'autosave_manager'):
+            # Extract first line of response
+            first_line = response_text.split('\n')[0]
+            short_response = first_line[:30] + "..." if len(first_line) > 30 else first_line
+            reason = f"After LLM: {short_response}"
+            self.app.autosave_manager.save_version(reason)
     
     def _send_openai_request(self, prompt, system_message, temperature, max_tokens):
         """
@@ -369,6 +409,80 @@ class LLMManager(QObject):
         except Exception as e:
             self.logger.error(f"Error extracting response text: {e}")
             return "Error extracting response"
+            
+    def _handle_ambiguity(self, prompt, response_text):
+        """
+        Handle ambiguous instructions.
+        
+        Args:
+            prompt (str): The original prompt.
+            response_text (str): The LLM response text.
+            
+        Returns:
+            bool: True if ambiguity was detected and handled, False otherwise.
+        """
+        # Check for ambiguity markers in response
+        ambiguity_markers = ["ambiguous", "unclear", "not clear", "could mean", "multiple interpretations",
+                            "need more information", "please clarify", "could you clarify",
+                            "need clarification", "not specific enough"]
+        
+        is_ambiguous = False
+        for marker in ambiguity_markers:
+            if marker in response_text.lower():
+                is_ambiguous = True
+                break
+                
+        if is_ambiguous:
+            # Log ambiguity
+            self.logger.warning(f"Ambiguous instruction: {prompt}")
+            
+            # Extract suggestions from response
+            suggestions = self._extract_suggestions(response_text)
+            
+            # Emit ambiguity signal
+            self.llm_ambiguity.emit(prompt, suggestions)
+            
+            return True
+        
+        return False
+    
+    def _extract_suggestions(self, response_text):
+        """
+        Extract suggestions from an ambiguous response.
+        
+        Args:
+            response_text (str): The LLM response text.
+            
+        Returns:
+            list: List of suggested clarifications.
+        """
+        suggestions = []
+        
+        # Look for numbered or bulleted lists
+        import re
+        
+        # Match numbered lists (1. Option one)
+        numbered_pattern = r"\d+\.\s+(.*?)(?=\n\d+\.|\n\n|$)"
+        numbered_matches = re.findall(numbered_pattern, response_text, re.DOTALL)
+        
+        # Match bulleted lists (- Option one or * Option one)
+        bulleted_pattern = r"[-*]\s+(.*?)(?=\n[-*]|\n\n|$)"
+        bulleted_matches = re.findall(bulleted_pattern, response_text, re.DOTALL)
+        
+        # Combine matches
+        matches = numbered_matches + bulleted_matches
+        
+        # Add unique suggestions
+        for match in matches:
+            suggestion = match.strip()
+            if suggestion and suggestion not in suggestions:
+                suggestions.append(suggestion)
+        
+        # If no suggestions were found, create a default one
+        if not suggestions:
+            suggestions.append("Please provide more specific instructions.")
+        
+        return suggestions
     
     def parse_color_sequence(self, response_text):
         """
