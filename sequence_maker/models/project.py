@@ -72,6 +72,12 @@ class Project:
             "interactions": []
         }
         
+        # LLM customization data
+        self.llm_custom_instructions = ""
+        self.llm_presets = []
+        self.llm_task_templates = []
+        self.llm_active_preset = "Default"
+        
         # File path (None for new projects)
         self.file_path = None
     
@@ -120,7 +126,13 @@ class Project:
             "visualizations": self.visualizations,
             "lyrics": self.lyrics.to_dict() if self.lyrics else {},
             "chat_history": self.chat_history,
-            "llm_metadata": self.llm_metadata
+            "llm_metadata": self.llm_metadata,
+            "llm_customization": {
+                "custom_instructions": self.llm_custom_instructions,
+                "presets": self.llm_presets,
+                "task_templates": self.llm_task_templates,
+                "active_preset": self.llm_active_preset
+            }
         }
     
     @classmethod
@@ -187,6 +199,13 @@ class Project:
             "estimated_cost": 0.0,
             "interactions": []
         })
+        
+        # Set LLM customization data
+        llm_customization = data.get("llm_customization", {})
+        project.llm_custom_instructions = llm_customization.get("custom_instructions", "")
+        project.llm_presets = llm_customization.get("presets", [])
+        project.llm_task_templates = llm_customization.get("task_templates", [])
+        project.llm_active_preset = llm_customization.get("active_preset", "Default")
         
         return project
     

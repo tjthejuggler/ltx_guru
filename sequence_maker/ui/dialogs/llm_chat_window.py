@@ -80,13 +80,14 @@ class LLMChatWindow(QWidget):
         
         self.header_layout.addStretch()
         
-        # Create model selection
-        self.model_label = QLabel("Model:")
-        self.header_layout.addWidget(self.model_label)
+        # Create preset selection
+        self.preset_label = QLabel("Preset:")
+        self.header_layout.addWidget(self.preset_label)
         
-        self.model_combo = QComboBox()
-        self.model_combo.addItem("Default")
-        self.header_layout.addWidget(self.model_combo)
+        self.preset_combo = QComboBox()
+        self.preset_combo.addItem("Default")
+        self.preset_combo.currentIndexChanged.connect(self._on_preset_changed)
+        self.header_layout.addWidget(self.preset_combo)
         
         # Add confirmation mode selection
         self.confirmation_mode_label = QLabel("Confirmation Mode:")
@@ -133,6 +134,26 @@ class LLMChatWindow(QWidget):
         self.chat_history_text.setReadOnly(True)
         self.chat_layout.addWidget(self.chat_history_text)
         
+        # Add template selection
+        self.template_layout = QHBoxLayout()
+        self.chat_layout.addLayout(self.template_layout)
+        
+        self.template_label = QLabel("Template:")
+        self.template_layout.addWidget(self.template_label)
+        
+        self.template_combo = QComboBox()
+        self.template_combo.addItem("None")
+        self.template_combo.currentIndexChanged.connect(self._on_template_changed)
+        self.template_layout.addWidget(self.template_combo)
+        
+        self.template_layout.addStretch()
+        
+        # Add custom instructions button
+        self.custom_instructions_button = QPushButton("Custom Instructions")
+        self.custom_instructions_button.clicked.connect(self._on_custom_instructions)
+        self.template_layout.addWidget(self.custom_instructions_button)
+        
+        # Add input layout
         self.input_layout = QHBoxLayout()
         self.chat_layout.addLayout(self.input_layout)
         
@@ -207,6 +228,51 @@ class LLMChatWindow(QWidget):
             
             # Update the chat history display
             self._update_chat_history()
+            
+            # Load presets and templates
+            self._load_presets()
+            self._load_templates()
+    
+    def _load_presets(self):
+        """Load LLM presets from the current project."""
+        if self.app.project_manager.current_project:
+            # Clear preset combo
+            self.preset_combo.clear()
+            
+            # Add default preset
+            self.preset_combo.addItem("Default")
+            
+            # Get presets from project
+            presets_data = getattr(self.app.project_manager.current_project, "llm_presets", [])
+            
+            # Add presets to combo box
+            for preset_data in presets_data:
+                name = preset_data.get("name", "Unnamed")
+                if name != "Default":  # Skip default preset as it's already added
+                    self.preset_combo.addItem(name)
+            
+            # Set active preset
+            active_preset = getattr(self.app.project_manager.current_project, "llm_active_preset", "Default")
+            index = self.preset_combo.findText(active_preset)
+            if index >= 0:
+                self.preset_combo.setCurrentIndex(index)
+    
+    def _load_templates(self):
+        """Load LLM task templates from the current project."""
+        if self.app.project_manager.current_project:
+            # Clear template combo
+            self.template_combo.clear()
+            
+            # Add "None" option
+            self.template_combo.addItem("None")
+            
+            # Get templates from project
+            templates_data = getattr(self.app.project_manager.current_project, "llm_task_templates", [])
+            
+            # Add templates to combo box
+            for template_data in templates_data:
+                name = template_data.get("name", "Unnamed")
+                self.template_combo.addItem(name)
     
     def _save_chat_history(self):
         """Save chat history to the current project."""
@@ -252,6 +318,51 @@ class LLMChatWindow(QWidget):
             # Enable input
             self.input_text.setEnabled(True)
             self.send_button.setEnabled(True)
+    
+    def _on_preset_changed(self, index):
+        """
+        Handle preset selection change.
+        
+        Args:
+            index (int): Selected index.
+        """
+        if index >= 0 and self.preset_combo.count() > 0:
+            preset_name = self.preset_combo.itemText(index)
+            self.logger.info(f"Selected preset: {preset_name}")
+            
+            # Update active preset in project
+            if self.app.project_manager.current_project:
+                self.app.project_manager.current_project.llm_active_preset = preset_name
+                self.app.project_manager.project_changed.emit()
+    
+    def _on_template_changed(self, index):
+        """
+        Handle template selection change.
+        
+        Args:
+            index (int): Selected index.
+        """
+        if index > 0 and self.template_combo.count() > 0:  # Skip "None" option
+            template_name = self.template_combo.itemText(index)
+            self.logger.info(f"Selected template: {template_name}")
+            
+            # Find template
+            if self.app.project_manager.current_project:
+                templates_data = getattr(self.app.project_manager.current_project, "llm_task_templates", [])
+                
+                for template_data in templates_data:
+                    if template_data.get("name") == template_name:
+                        # Set prompt in input field
+                        self.input_text.setText(template_data.get("prompt", ""))
+                        break
+    
+    def _on_custom_instructions(self):
+        """Handle Custom Instructions button click."""
+        from ui.dialogs.custom_instructions_dialog import CustomInstructionsDialog
+        
+        # Create and show dialog
+        dialog = CustomInstructionsDialog(self.app, self)
+        dialog.exec()
     
     def _check_llm_configuration(self):
         """Check if LLM is configured."""
@@ -351,10 +462,32 @@ class LLMChatWindow(QWidget):
         # Determine if we should use streaming
         use_streaming = True  # Default to streaming for better user experience
         
+        # Get preset parameters if a preset is selected
+        temperature = None
+        max_tokens = None
+        
+        if self.app.project_manager.current_project:
+            preset_name = self.preset_combo.currentText()
+            if preset_name != "Default":
+                # Find preset in project
+                presets_data = getattr(self.app.project_manager.current_project, "llm_presets", [])
+                for preset_data in presets_data:
+                    if preset_data.get("name") == preset_name:
+                        # Get preset parameters
+                        temperature = preset_data.get("temperature")
+                        max_tokens = preset_data.get("max_tokens")
+                        
+                        # Update active preset in project
+                        self.app.project_manager.current_project.llm_active_preset = preset_name
+                        self.app.project_manager.project_changed.emit()
+                        break
+        
         # Send request to LLM
         self.app.llm_manager.send_request(
             prompt=message,
             system_message=system_message,
+            temperature=temperature,
+            max_tokens=max_tokens,
             use_functions=True,
             stream=use_streaming
         )
@@ -376,6 +509,12 @@ class LLMChatWindow(QWidget):
             "You can directly manipulate timelines, create segments, and change colors based on user instructions. "
             "Your responses should be clear and specific, describing exact colors and timings."
         )
+        
+        # Add custom instructions if available
+        if self.app.project_manager.current_project:
+            custom_instructions = getattr(self.app.project_manager.current_project, "llm_custom_instructions", "")
+            if custom_instructions:
+                system_message += f"\n\nCustom Instructions:\n{custom_instructions}"
         
         # Get application context
         app_context = self.context_api.get_full_context()
@@ -758,6 +897,10 @@ class LLMChatWindow(QWidget):
         """
         # Update UI when shown
         self._populate_timeline_list()
+        
+        # Load presets and templates
+        self._load_presets()
+        self._load_templates()
         
         # Call parent method
         super().showEvent(event)

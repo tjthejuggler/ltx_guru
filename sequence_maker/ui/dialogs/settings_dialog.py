@@ -221,7 +221,6 @@ class SettingsDialog(QDialog):
         self.port_spin = QSpinBox()
         self.port_spin.setRange(1024, 65535)
         self.ball_layout.addRow("UDP Port:", self.port_spin)
-    
     def _create_llm_tab(self):
         """Create the LLM settings tab."""
         # Create tab widget
@@ -272,6 +271,13 @@ class SettingsDialog(QDialog):
         self.llm_max_tokens_spin.setValue(1000)
         model_params_layout.addRow("Max Tokens:", self.llm_max_tokens_spin)
         
+        # Add presets button
+        presets_button_layout = QHBoxLayout()
+        self.manage_presets_button = QPushButton("Manage Presets")
+        self.manage_presets_button.clicked.connect(self._on_manage_presets_clicked)
+        presets_button_layout.addWidget(self.manage_presets_button)
+        model_params_layout.addRow("Presets:", presets_button_layout)
+        
         self.llm_layout.addWidget(model_params_group)
         
         # Create user interface group
@@ -281,6 +287,19 @@ class SettingsDialog(QDialog):
         self.llm_confirmation_mode_combo = QComboBox()
         self.llm_confirmation_mode_combo.addItems(["Full Confirmation", "Selective Confirmation", "Full Automation"])
         ui_layout.addRow("Default Confirmation Mode:", self.llm_confirmation_mode_combo)
+        
+        # Add customization buttons
+        customization_layout = QHBoxLayout()
+        
+        self.custom_instructions_button = QPushButton("Custom Instructions")
+        self.custom_instructions_button.clicked.connect(self._on_custom_instructions_clicked)
+        customization_layout.addWidget(self.custom_instructions_button)
+        
+        self.task_templates_button = QPushButton("Task Templates")
+        self.task_templates_button.clicked.connect(self._on_task_templates_clicked)
+        customization_layout.addWidget(self.task_templates_button)
+        
+        ui_layout.addRow("Customization:", customization_layout)
         
         self.llm_layout.addWidget(ui_group)
         
@@ -301,6 +320,7 @@ class SettingsDialog(QDialog):
         self.llm_layout.addWidget(token_usage_group)
         
         # Add stretch to push everything to the top
+        self.llm_layout.addStretch()
         self.llm_layout.addStretch()
     
     def _load_settings(self):
@@ -504,6 +524,30 @@ class SettingsDialog(QDialog):
             # Update labels
             self.llm_token_usage_label.setText("0 tokens used")
             self.llm_cost_label.setText("$0.00")
+    
+    def _on_manage_presets_clicked(self):
+        """Handle Manage Presets button click."""
+        from ui.dialogs.llm_presets_dialog import LLMPresetsDialog
+        
+        # Create and show dialog
+        dialog = LLMPresetsDialog(self.app, self)
+        dialog.exec()
+    
+    def _on_custom_instructions_clicked(self):
+        """Handle Custom Instructions button click."""
+        from ui.dialogs.custom_instructions_dialog import CustomInstructionsDialog
+        
+        # Create and show dialog
+        dialog = CustomInstructionsDialog(self.app, self)
+        dialog.exec()
+    
+    def _on_task_templates_clicked(self):
+        """Handle Task Templates button click."""
+        from ui.dialogs.task_templates_dialog import TaskTemplatesDialog
+        
+        # Create and show dialog
+        dialog = TaskTemplatesDialog(self.app, self)
+        dialog.exec()
     
     def accept(self):
         """Handle dialog acceptance."""
