@@ -5,6 +5,9 @@ This module defines the LLMChatDialog class, which provides an interface for int
 """
 
 import logging
+import os
+import json
+from datetime import datetime
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QTextEdit, QComboBox, QProgressBar, QMessageBox,
@@ -12,6 +15,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QColor
+
+from api.app_context_api import AppContextAPI
 
 
 class LLMChatDialog(QDialog):
@@ -35,6 +40,9 @@ class LLMChatDialog(QDialog):
         self.setMinimumWidth(800)
         self.setMinimumHeight(600)
         
+        # Create APIs
+        self.context_api = AppContextAPI(app)
+        
         # Chat properties
         self.chat_history = []
         
@@ -43,6 +51,12 @@ class LLMChatDialog(QDialog):
         
         # Check if LLM is configured
         self._check_llm_configuration()
+        
+        # Load chat history from project
+        self._load_chat_history()
+        
+        # Connect token usage signal
+        self.app.llm_manager.token_usage_updated.connect(self._on_token_usage_updated)
     
     def _create_ui(self):
         """Create the user interface."""
@@ -67,6 +81,21 @@ class LLMChatDialog(QDialog):
         self.model_combo = QComboBox()
         self.model_combo.addItem("Default")
         self.header_layout.addWidget(self.model_combo)
+        
+        # Add confirmation mode selection
+        self.confirmation_mode_label = QLabel("Confirmation Mode:")
+        self.header_layout.addWidget(self.confirmation_mode_label)
+        
+        self.confirmation_mode_combo = QComboBox()
+        self.confirmation_mode_combo.addItem("Full Confirmation", "full")
+        self.confirmation_mode_combo.addItem("Selective Confirmation", "selective")
+        self.confirmation_mode_combo.addItem("Full Automation", "auto")
+        self.confirmation_mode_combo.setCurrentIndex(0)  # Default to full confirmation
+        self.header_layout.addWidget(self.confirmation_mode_combo)
+        
+        # Add token usage display
+        self.token_usage_label = QLabel("Tokens: 0 (Cost: $0.00)")
+        self.header_layout.addWidget(self.token_usage_label)
         
         # Create splitter
         self.splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -110,6 +139,11 @@ class LLMChatDialog(QDialog):
         self.send_button.clicked.connect(self._on_send_clicked)
         self.input_layout.addWidget(self.send_button)
         
+        self.stop_button = QPushButton("Stop")
+        self.stop_button.setEnabled(False)
+        self.stop_button.clicked.connect(self._on_stop_clicked)
+        self.input_layout.addWidget(self.stop_button)
+        
         self.splitter.addWidget(self.chat_widget)
         
         # Create progress bar
@@ -148,6 +182,69 @@ class LLMChatDialog(QDialog):
             item = QListWidgetItem(f"Ball {i+1}: {timeline.name}")
             item.setData(Qt.ItemDataRole.UserRole, i)
             self.timeline_list.addItem(item)
+    
+    def _load_chat_history(self):
+        """Load chat history from the current project."""
+        if self.app.project_manager.current_project and hasattr(self.app.project_manager.current_project, "chat_history"):
+            # Convert the project's chat history format to our format
+            project_history = self.app.project_manager.current_project.chat_history
+            
+            # Clear current chat history
+            self.chat_history = []
+            
+            # Add each message from the project
+            for message in project_history:
+                sender = message.get("sender", "Unknown")
+                text = message.get("message", "")
+                self.chat_history.append((sender, text))
+            
+            # Update the chat history display
+            self._update_chat_history()
+    
+    def _save_chat_history(self):
+        """Save chat history to the current project."""
+        if self.app.project_manager.current_project:
+            # Convert our chat history format to the project's format
+            project_history = []
+            
+            for sender, message in self.chat_history:
+                project_history.append({
+                    "sender": sender,
+                    "message": message,
+                    "timestamp": datetime.now().isoformat()
+                })
+            
+            # Update the project's chat history
+            self.app.project_manager.current_project.chat_history = project_history
+            
+            # Mark the project as changed
+            self.app.project_manager.project_changed.emit()
+    
+    def _on_token_usage_updated(self, tokens, cost):
+        """
+        Handle token usage update.
+        
+        Args:
+            tokens (int): Number of tokens used.
+            cost (float): Estimated cost.
+        """
+        self.token_usage_label.setText(f"Tokens: {tokens} (Cost: ${cost:.2f})")
+    
+    def _on_stop_clicked(self):
+        """Handle Stop button click."""
+        # Interrupt the LLM request
+        if self.app.llm_manager.interrupt():
+            self.logger.info("LLM request interrupted by user")
+            
+            # Disable stop button
+            self.stop_button.setEnabled(False)
+            
+            # Hide progress bar
+            self.progress_bar.setVisible(False)
+            
+            # Enable input
+            self.input_text.setEnabled(True)
+            self.send_button.setEnabled(True)
     
     def _check_llm_configuration(self):
         """Check if LLM is configured."""
@@ -191,16 +288,21 @@ class LLMChatDialog(QDialog):
         # Show progress bar
         self.progress_bar.setVisible(True)
         
-        # Disable input
+        # Disable input and enable stop button
         self.input_text.setEnabled(False)
         self.send_button.setEnabled(False)
+        self.stop_button.setEnabled(True)
         
         # Connect signals
         self.app.llm_manager.llm_response_received.connect(self._on_llm_response)
         self.app.llm_manager.llm_error.connect(self._on_llm_error)
+        self.app.llm_manager.llm_ready.connect(self._on_llm_ready)
+        
+        # Get confirmation mode
+        confirmation_mode = self.confirmation_mode_combo.currentData()
         
         # Send request to LLM
-        self.app.llm_manager.send_request(message, system_message)
+        self.app.llm_manager.send_request(message, system_message, confirmation_mode=confirmation_mode)
     
     def _create_system_message(self, selected_timelines):
         """
@@ -216,8 +318,12 @@ class LLMChatDialog(QDialog):
         system_message = (
             "You are an assistant that helps create color sequences for juggling balls. "
             "You can analyze music and suggest color patterns that match the rhythm, mood, and style of the music. "
+            "You can directly manipulate timelines, create segments, and change colors based on user instructions. "
             "Your responses should be clear and specific, describing exact colors and timings."
         )
+        
+        # Get application context
+        app_context = self.context_api.get_full_context()
         
         # Add information about the project
         if self.app.project_manager.current_project:
@@ -234,6 +340,12 @@ class LLMChatDialog(QDialog):
                 system_message += f"\n- Ball {i+1}: {timeline.name}"
                 if i in selected_timelines:
                     system_message += " (selected)"
+                
+                # Add segment information for selected timelines
+                if i in selected_timelines and timeline.segments:
+                    system_message += "\n  Segments:"
+                    for j, segment in enumerate(timeline.segments):
+                        system_message += f"\n  - Segment {j}: {segment.start_time}s to {segment.end_time}s, Color: {segment.color}"
         
         # Add information about audio
         if self.app.audio_manager.audio_file:
@@ -287,6 +399,9 @@ class LLMChatDialog(QDialog):
         
         # Update chat history text
         self._update_chat_history()
+        
+        # Save chat history to project
+        self._save_chat_history()
     
     def _update_chat_history(self):
         """Update the chat history text."""
@@ -331,6 +446,9 @@ class LLMChatDialog(QDialog):
         # Hide progress bar
         self.progress_bar.setVisible(False)
         
+        # Disable stop button
+        self.stop_button.setEnabled(False)
+        
         # Enable input
         self.input_text.setEnabled(True)
         self.send_button.setEnabled(True)
@@ -338,7 +456,10 @@ class LLMChatDialog(QDialog):
         # Add response to chat history
         self._add_message("Assistant", response_text)
         
-        # Parse color sequence
+        # Get confirmation mode
+        confirmation_mode = self.confirmation_mode_combo.currentData()
+        
+        # Parse color sequence (legacy support)
         sequence = self.app.llm_manager.parse_color_sequence(response_text)
         
         # Check if sequence was parsed
@@ -354,26 +475,40 @@ class LLMChatDialog(QDialog):
                 if len(self.app.project_manager.current_project.timelines) > 0:
                     selected_timelines = [0]
             
-            # Ask if user wants to apply the sequence
-            if selected_timelines:
-                result = QMessageBox.question(
-                    self,
-                    "Apply Sequence",
-                    f"Do you want to apply the suggested sequence to the selected timeline(s)?",
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                )
-                
-                if result == QMessageBox.StandardButton.Yes:
-                    # Apply sequence to each selected timeline
-                    for timeline_index in selected_timelines:
-                        self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
-                    
-                    # Show success message
-                    QMessageBox.information(
+            # Check confirmation mode
+            if confirmation_mode == "full" or confirmation_mode == "selective":
+                # Ask if user wants to apply the sequence
+                if selected_timelines:
+                    result = QMessageBox.question(
                         self,
-                        "Sequence Applied",
-                        f"The sequence has been applied to {len(selected_timelines)} timeline(s)."
+                        "Apply Sequence",
+                        f"Do you want to apply the suggested sequence to the selected timeline(s)?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
+                    
+                    if result == QMessageBox.StandardButton.Yes:
+                        # Apply sequence to each selected timeline
+                        for timeline_index in selected_timelines:
+                            self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                        
+                        # Show success message
+                        QMessageBox.information(
+                            self,
+                            "Sequence Applied",
+                            f"The sequence has been applied to {len(selected_timelines)} timeline(s)."
+                        )
+            else:  # Auto mode
+                # Apply sequence to each selected timeline automatically
+                for timeline_index in selected_timelines:
+                    self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                
+                # Add info message to chat
+                self._add_message("System", f"Sequence automatically applied to {len(selected_timelines)} timeline(s).")
+    
+    def _on_llm_ready(self):
+        """Handle LLM ready signal."""
+        # Disconnect signal
+        self.app.llm_manager.llm_ready.disconnect(self._on_llm_ready)
     
     def _on_llm_error(self, error_message):
         """
@@ -388,6 +523,9 @@ class LLMChatDialog(QDialog):
         
         # Hide progress bar
         self.progress_bar.setVisible(False)
+        
+        # Disable stop button
+        self.stop_button.setEnabled(False)
         
         # Enable input
         self.input_text.setEnabled(True)

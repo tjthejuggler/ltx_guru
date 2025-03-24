@@ -8,7 +8,9 @@ import logging
 import json
 import threading
 import time
+import os
 import requests
+from datetime import datetime
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from app.constants import DEFAULT_LLM_TEMPERATURE, DEFAULT_LLM_MAX_TOKENS
@@ -23,6 +25,9 @@ class LLMManager(QObject):
         llm_error: Emitted when an error occurs during LLM communication.
         llm_thinking: Emitted when the LLM is processing a request.
         llm_ready: Emitted when the LLM is ready for a new request.
+        llm_action_requested: Emitted when the LLM requests an action.
+        token_usage_updated: Emitted when token usage is updated.
+        llm_interrupted: Emitted when an LLM request is interrupted.
     """
     
     # Signals
@@ -30,6 +35,9 @@ class LLMManager(QObject):
     llm_error = pyqtSignal(str)  # error_message
     llm_thinking = pyqtSignal()
     llm_ready = pyqtSignal()
+    llm_action_requested = pyqtSignal(str, dict)  # action_type, parameters
+    token_usage_updated = pyqtSignal(int, float)  # tokens, cost
+    llm_interrupted = pyqtSignal()
     
     def __init__(self, app):
         """
@@ -53,6 +61,27 @@ class LLMManager(QObject):
         # Request state
         self.is_processing = False
         self.request_thread = None
+        self.interrupt_requested = False
+        
+        # Token tracking
+        self.token_usage = 0
+        self.estimated_cost = 0.0
+        self.token_prices = {
+            "openai": {
+                "gpt-3.5-turbo": 0.0015,  # per 1K tokens
+                "gpt-4": 0.03,  # per 1K tokens
+            },
+            "anthropic": {
+                "claude-2": 0.01,  # per 1K tokens
+                "claude-instant": 0.0025,  # per 1K tokens
+            },
+            "local": {
+                "default": 0.0  # Local models are free
+            }
+        }
+        
+        # Action handlers
+        self.action_handlers = {}
     
     def is_configured(self):
         """
@@ -134,18 +163,40 @@ class LLMManager(QObject):
             max_tokens (int): Maximum tokens in the response.
         """
         try:
+            # Reset interrupt flag
+            self.interrupt_requested = False
+            
             # Prepare request based on provider
             if self.provider == "openai":
                 response = self._send_openai_request(prompt, system_message, temperature, max_tokens)
             elif self.provider == "anthropic":
                 response = self._send_anthropic_request(prompt, system_message, temperature, max_tokens)
+            elif self.provider == "local":
+                response = self._send_local_model_request(prompt, system_message, temperature, max_tokens)
             else:
                 raise ValueError(f"Unsupported LLM provider: {self.provider}")
+            
+            # Check if interrupt was requested
+            if self.interrupt_requested:
+                self.logger.info("LLM request was interrupted")
+                return
             
             # Process response
             if response:
                 # Extract response text
                 response_text = self._extract_response_text(response)
+                
+                # Track token usage
+                self.track_token_usage(response)
+                
+                # Parse actions from response
+                actions = self.parse_actions(response_text)
+                
+                # Emit action signals if actions were found
+                for action in actions:
+                    action_type = action.get("action")
+                    parameters = action.get("parameters", {})
+                    self.llm_action_requested.emit(action_type, parameters)
                 
                 # Emit response signal
                 self.llm_response_received.emit(response_text, response)
@@ -159,6 +210,7 @@ class LLMManager(QObject):
         finally:
             # Reset processing state
             self.is_processing = False
+            self.interrupt_requested = False
             
             # Emit ready signal
             self.llm_ready.emit()
@@ -252,6 +304,47 @@ class LLMManager(QObject):
         
         except Exception as e:
             self.logger.error(f"Error in Anthropic request: {e}")
+            raise
+    
+    def _send_local_model_request(self, prompt, system_message, temperature, max_tokens):
+        """
+        Send a request to a local LLM model.
+        
+        Args:
+            prompt (str): User prompt.
+            system_message (str): System message.
+            temperature (float): Temperature parameter.
+            max_tokens (int): Maximum tokens in the response.
+        
+        Returns:
+            dict: API response, or None if the request failed.
+        """
+        self.logger.info("Sending request to local model")
+        
+        try:
+            # Get local model endpoint from config
+            endpoint = self.app.config.get("llm", "local_endpoint")
+            
+            # Prepare request
+            headers = {"Content-Type": "application/json"}
+            data = {
+                "prompt": prompt,
+                "system": system_message,
+                "temperature": temperature,
+                "max_tokens": max_tokens
+            }
+            
+            # Send request
+            response = requests.post(endpoint, headers=headers, json=data, timeout=60)
+            
+            # Check for errors
+            response.raise_for_status()
+            
+            # Parse response
+            return response.json()
+        
+        except Exception as e:
+            self.logger.error(f"Error in local model request: {e}")
             raise
     
     def _extract_response_text(self, response):
@@ -348,6 +441,133 @@ class LLMManager(QObject):
             json_blocks.extend(matches)
         
         return json_blocks
+    
+    def register_action_handler(self, action_type, handler):
+        """
+        Register a handler for a specific action type.
+        
+        Args:
+            action_type (str): Action type.
+            handler (callable): Function to handle the action.
+        """
+        self.logger.info(f"Registering handler for action type: {action_type}")
+        self.action_handlers[action_type] = handler
+    
+    def execute_action(self, action_type, parameters):
+        """
+        Execute an action.
+        
+        Args:
+            action_type (str): Action type.
+            parameters (dict): Action parameters.
+        
+        Returns:
+            dict: Result of the action.
+        """
+        if action_type in self.action_handlers:
+            self.logger.info(f"Executing action: {action_type}")
+            return self.action_handlers[action_type](parameters)
+        else:
+            self.logger.warning(f"No handler for action type: {action_type}")
+            return {"success": False, "error": f"Unknown action type: {action_type}"}
+    
+    def track_token_usage(self, response):
+        """
+        Track token usage and cost from API response.
+        
+        Args:
+            response (dict): API response.
+        """
+        try:
+            # Extract token usage from response based on provider
+            if self.provider == "openai":
+                prompt_tokens = response.get("usage", {}).get("prompt_tokens", 0)
+                completion_tokens = response.get("usage", {}).get("completion_tokens", 0)
+                total_tokens = prompt_tokens + completion_tokens
+            elif self.provider == "anthropic":
+                total_tokens = response.get("usage", {}).get("total_tokens", 0)
+            else:
+                total_tokens = 0
+                
+            # Update token usage
+            self.token_usage += total_tokens
+            
+            # Calculate cost
+            model_price = self.token_prices.get(self.provider, {}).get(self.model, 0)
+            cost = (total_tokens / 1000) * model_price
+            self.estimated_cost += cost
+            
+            # Emit signal
+            self.token_usage_updated.emit(total_tokens, cost)
+            
+            # Store in project metadata
+            if self.app.project_manager.current_project:
+                if not hasattr(self.app.project_manager.current_project, "llm_metadata"):
+                    self.app.project_manager.current_project.llm_metadata = {
+                        "token_usage": 0,
+                        "estimated_cost": 0.0,
+                        "interactions": []
+                    }
+                
+                self.app.project_manager.current_project.llm_metadata["token_usage"] += total_tokens
+                self.app.project_manager.current_project.llm_metadata["estimated_cost"] += cost
+                self.app.project_manager.current_project.llm_metadata["interactions"].append({
+                    "timestamp": datetime.now().isoformat(),
+                    "tokens": total_tokens,
+                    "cost": cost,
+                    "model": self.model,
+                    "provider": self.provider
+                })
+                
+                # Mark project as changed
+                self.app.project_manager.project_changed.emit()
+                
+            self.logger.info(f"Tracked token usage: {total_tokens} tokens, ${cost:.4f}")
+        except Exception as e:
+            self.logger.error(f"Error tracking token usage: {e}")
+    
+    def interrupt(self):
+        """
+        Interrupt the current LLM request.
+        
+        Returns:
+            bool: True if an interrupt was requested, False if no request is in progress.
+        """
+        if not self.is_processing:
+            return False
+        
+        self.logger.info("Interrupting LLM request")
+        self.interrupt_requested = True
+        self.llm_interrupted.emit()
+        return True
+    
+    def parse_actions(self, response_text):
+        """
+        Parse actions from LLM response.
+        
+        Args:
+            response_text (str): LLM response text.
+        
+        Returns:
+            list: List of action objects.
+        """
+        actions = []
+        
+        # Look for JSON blocks in the response
+        json_blocks = self._extract_json_blocks(response_text)
+        
+        for json_block in json_blocks:
+            try:
+                data = json.loads(json_block)
+                
+                # Check if it's a valid action
+                if "action" in data and "parameters" in data:
+                    actions.append(data)
+            except Exception as e:
+                self.logger.debug(f"Failed to parse JSON block as action: {e}")
+                continue
+        
+        return actions
     
     def _parse_sequence_from_text(self, text):
         """

@@ -229,27 +229,79 @@ class SettingsDialog(QDialog):
         self.tab_widget.addTab(self.llm_tab, "LLM Integration")
         
         # Create layout
-        self.llm_layout = QFormLayout(self.llm_tab)
+        self.llm_layout = QVBoxLayout(self.llm_tab)
         
-        # Create settings
+        # Create general LLM settings group
+        general_llm_group = QGroupBox("General Settings")
+        general_llm_layout = QFormLayout(general_llm_group)
+        
         self.llm_enabled_check = QCheckBox("Enable LLM Integration")
-        self.llm_layout.addRow(self.llm_enabled_check)
+        general_llm_layout.addRow(self.llm_enabled_check)
         
         self.llm_provider_combo = QComboBox()
-        self.llm_provider_combo.addItems(["OpenAI", "Anthropic"])
-        self.llm_layout.addRow("Provider:", self.llm_provider_combo)
+        self.llm_provider_combo.addItems(["OpenAI", "Anthropic", "Local"])
+        self.llm_provider_combo.currentTextChanged.connect(self._on_llm_provider_changed)
+        general_llm_layout.addRow("Provider:", self.llm_provider_combo)
         
         self.llm_api_key_edit = QLineEdit()
         self.llm_api_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
-        self.llm_layout.addRow("API Key:", self.llm_api_key_edit)
+        general_llm_layout.addRow("API Key:", self.llm_api_key_edit)
         
         self.llm_model_edit = QLineEdit()
-        self.llm_layout.addRow("Model:", self.llm_model_edit)
+        general_llm_layout.addRow("Model:", self.llm_model_edit)
+        
+        self.llm_local_endpoint_edit = QLineEdit()
+        self.llm_local_endpoint_edit.setPlaceholderText("http://localhost:8000/v1/completions")
+        general_llm_layout.addRow("Local Endpoint:", self.llm_local_endpoint_edit)
+        
+        self.llm_layout.addWidget(general_llm_group)
+        
+        # Create model parameters group
+        model_params_group = QGroupBox("Model Parameters")
+        model_params_layout = QFormLayout(model_params_group)
         
         self.llm_temperature_spin = QDoubleSpinBox()
         self.llm_temperature_spin.setRange(0.0, 2.0)
         self.llm_temperature_spin.setSingleStep(0.1)
-        self.llm_layout.addRow("Temperature:", self.llm_temperature_spin)
+        self.llm_temperature_spin.setValue(0.7)
+        model_params_layout.addRow("Temperature:", self.llm_temperature_spin)
+        
+        self.llm_max_tokens_spin = QSpinBox()
+        self.llm_max_tokens_spin.setRange(100, 8000)
+        self.llm_max_tokens_spin.setSingleStep(100)
+        self.llm_max_tokens_spin.setValue(1000)
+        model_params_layout.addRow("Max Tokens:", self.llm_max_tokens_spin)
+        
+        self.llm_layout.addWidget(model_params_group)
+        
+        # Create user interface group
+        ui_group = QGroupBox("User Interface")
+        ui_layout = QFormLayout(ui_group)
+        
+        self.llm_confirmation_mode_combo = QComboBox()
+        self.llm_confirmation_mode_combo.addItems(["Full Confirmation", "Selective Confirmation", "Full Automation"])
+        ui_layout.addRow("Default Confirmation Mode:", self.llm_confirmation_mode_combo)
+        
+        self.llm_layout.addWidget(ui_group)
+        
+        # Create token usage group
+        token_usage_group = QGroupBox("Token Usage")
+        token_usage_layout = QFormLayout(token_usage_group)
+        
+        self.llm_token_usage_label = QLabel("0 tokens used")
+        token_usage_layout.addRow("Current Session:", self.llm_token_usage_label)
+        
+        self.llm_cost_label = QLabel("$0.00")
+        token_usage_layout.addRow("Estimated Cost:", self.llm_cost_label)
+        
+        self.llm_reset_usage_button = QPushButton("Reset Usage Statistics")
+        self.llm_reset_usage_button.clicked.connect(self._on_reset_usage_clicked)
+        token_usage_layout.addRow(self.llm_reset_usage_button)
+        
+        self.llm_layout.addWidget(token_usage_group)
+        
+        # Add stretch to push everything to the top
+        self.llm_layout.addStretch()
     
     def _load_settings(self):
         """Load settings from the application configuration."""
@@ -297,6 +349,25 @@ class SettingsDialog(QDialog):
         self.llm_api_key_edit.setText(self.app.config.get("llm", "api_key"))
         self.llm_model_edit.setText(self.app.config.get("llm", "model"))
         self.llm_temperature_spin.setValue(self.app.config.get("llm", "temperature"))
+        self.llm_max_tokens_spin.setValue(self.app.config.get("llm", "max_tokens", 1000))
+        self.llm_local_endpoint_edit.setText(self.app.config.get("llm", "local_endpoint", ""))
+        
+        # Set confirmation mode
+        confirmation_mode = self.app.config.get("llm", "confirmation_mode", "full_confirmation")
+        confirmation_mode = confirmation_mode.replace("_", " ").title()
+        index = self.llm_confirmation_mode_combo.findText(confirmation_mode)
+        if index >= 0:
+            self.llm_confirmation_mode_combo.setCurrentIndex(index)
+        
+        # Update token usage display
+        if self.app.llm_manager:
+            tokens = self.app.llm_manager.token_usage
+            cost = self.app.llm_manager.estimated_cost
+            self.llm_token_usage_label.setText(f"{tokens} tokens used")
+            self.llm_cost_label.setText(f"${cost:.2f}")
+        
+        # Update visibility based on provider
+        self._on_llm_provider_changed(self.llm_provider_combo.currentText())
     
     def _save_settings(self):
         """Save settings to the application configuration."""
@@ -342,6 +413,9 @@ class SettingsDialog(QDialog):
         self.app.config.set("llm", "api_key", self.llm_api_key_edit.text())
         self.app.config.set("llm", "model", self.llm_model_edit.text())
         self.app.config.set("llm", "temperature", self.llm_temperature_spin.value())
+        self.app.config.set("llm", "max_tokens", self.llm_max_tokens_spin.value())
+        self.app.config.set("llm", "local_endpoint", self.llm_local_endpoint_edit.text())
+        self.app.config.set("llm", "confirmation_mode", self.llm_confirmation_mode_combo.currentText().lower().replace(" ", "_"))
         
         # Save configuration
         self.app.config.save()
@@ -395,6 +469,41 @@ class SettingsDialog(QDialog):
             self.beats_color_button.setStyleSheet(
                 f"background-color: rgb({color.red()}, {color.green()}, {color.blue()})"
             )
+    
+    def _on_llm_provider_changed(self, provider):
+        """
+        Handle LLM provider change.
+        
+        Args:
+            provider (str): Selected provider.
+        """
+        # Show/hide API key field based on provider
+        show_api_key = provider != "Local"
+        self.llm_api_key_edit.setVisible(show_api_key)
+        self.llm_layout.labelForField(self.llm_api_key_edit).setVisible(show_api_key)
+        
+        # Show/hide local endpoint field based on provider
+        show_local_endpoint = provider == "Local"
+        self.llm_local_endpoint_edit.setVisible(show_local_endpoint)
+        self.llm_layout.labelForField(self.llm_local_endpoint_edit).setVisible(show_local_endpoint)
+        
+        # Update model field placeholder based on provider
+        if provider == "OpenAI":
+            self.llm_model_edit.setPlaceholderText("gpt-4-turbo")
+        elif provider == "Anthropic":
+            self.llm_model_edit.setPlaceholderText("claude-3-opus-20240229")
+        else:  # Local
+            self.llm_model_edit.setPlaceholderText("local-model")
+    
+    def _on_reset_usage_clicked(self):
+        """Handle Reset Usage Statistics button click."""
+        # Reset token usage in LLM manager
+        if self.app.llm_manager:
+            self.app.llm_manager.reset_token_usage()
+            
+            # Update labels
+            self.llm_token_usage_label.setText("0 tokens used")
+            self.llm_cost_label.setText("$0.00")
     
     def accept(self):
         """Handle dialog acceptance."""

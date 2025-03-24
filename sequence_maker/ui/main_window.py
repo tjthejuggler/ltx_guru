@@ -26,6 +26,11 @@ from ui.lyrics_widget import LyricsWidget
 from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
+from ui.dialogs.llm_chat_dialog import LLMChatDialog
+
+from api.app_context_api import AppContextAPI
+from api.timeline_action_api import TimelineActionAPI
+from api.audio_action_api import AudioActionAPI
 
 from app.constants import PROJECT_FILE_EXTENSION, AUDIO_FILE_EXTENSIONS, BALL_VISUALIZATION_SIZE
 
@@ -611,6 +616,18 @@ class MainWindow(QMainWindow):
         # Connect lyrics manager signals
         if hasattr(self.app, 'lyrics_manager'):
             self.app.lyrics_manager.lyrics_processed.connect(self.lyrics_widget.update_lyrics)
+        
+        # Initialize LLM API classes
+        if hasattr(self.app, 'llm_manager') and self.app.llm_manager.is_configured():
+            self.logger.info("Initializing LLM API classes")
+            
+            # Create API instances
+            self.app_context_api = AppContextAPI(self.app)
+            self.timeline_action_api = TimelineActionAPI(self.app)
+            self.audio_action_api = AudioActionAPI(self.app)
+            
+            # Connect LLM manager signals
+            self.app.llm_manager.llm_action_requested.connect(self._on_llm_action_requested)
     
     def _restore_window_state(self):
         """Restore window state from settings."""
@@ -912,10 +929,25 @@ class MainWindow(QMainWindow):
         """Handle Connect to Balls action."""
         self.app.ball_manager.connect_balls()
     
+    def _on_llm_action_requested(self, action_type, parameters):
+        """
+        Handle LLM action requests.
+        
+        Args:
+            action_type (str): Type of action requested.
+            parameters (dict): Parameters for the action.
+        """
+        self.logger.info(f"LLM action requested: {action_type}")
+        
+        # Log the action for debugging
+        self.logger.debug(f"LLM action parameters: {parameters}")
+        
+        # Update status bar
+        self.statusbar.showMessage(f"LLM action: {action_type}", 3000)
+    
     def _on_llm_chat(self):
         """Handle LLM Chat action."""
         # Open the LLM chat dialog
-        from ui.dialogs.llm_chat_dialog import LLMChatDialog
         dialog = LLMChatDialog(self.app, self)
         dialog.exec()
     

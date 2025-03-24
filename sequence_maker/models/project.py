@@ -64,8 +64,15 @@ class Project:
         # Lyrics data
         self.lyrics = Lyrics()
         
+        # LLM data
+        self.chat_history = []
+        self.llm_metadata = {
+            "token_usage": 0,
+            "estimated_cost": 0.0,
+            "interactions": []
+        }
+        
         # File path (None for new projects)
-        self.file_path = None
         self.file_path = None
     
     def to_dict(self):
@@ -111,7 +118,9 @@ class Project:
                 "data": audio_data_b64
             },
             "visualizations": self.visualizations,
-            "lyrics": self.lyrics.to_dict() if self.lyrics else {}
+            "lyrics": self.lyrics.to_dict() if self.lyrics else {},
+            "chat_history": self.chat_history,
+            "llm_metadata": self.llm_metadata
         }
     
     @classmethod
@@ -170,6 +179,14 @@ class Project:
         # Set lyrics data
         if "lyrics" in data:
             project.lyrics = Lyrics.from_dict(data["lyrics"])
+        
+        # Set LLM data
+        project.chat_history = data.get("chat_history", [])
+        project.llm_metadata = data.get("llm_metadata", {
+            "token_usage": 0,
+            "estimated_cost": 0.0,
+            "interactions": []
+        })
         
         return project
     
