@@ -26,7 +26,7 @@ from ui.lyrics_widget import LyricsWidget
 from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
-from ui.dialogs.llm_chat_dialog import LLMChatDialog
+from ui.dialogs.llm_chat_window import LLMChatWindow
 from ui.dialogs.version_history_dialog import VersionHistoryDialog
 
 from api.app_context_api import AppContextAPI
@@ -46,7 +46,6 @@ class MainWindow(QMainWindow):
         ball_widget: Widget for displaying ball visualizations.
         audio_widget: Widget for displaying audio visualizations.
     """
-    
     def __init__(self, app):
         """
         Initialize the main window.
@@ -66,6 +65,10 @@ class MainWindow(QMainWindow):
         # Create APIs
         self.context_api = AppContextAPI(app)
         self.timeline_action_api = TimelineActionAPI(app)
+        self.audio_action_api = AudioActionAPI(app)
+        
+        # Create LLM chat window
+        self.llm_chat_window = None  # Will be created after UI setup
         self.audio_action_api = AudioActionAPI(app)
         
         # Create actions
@@ -98,6 +101,9 @@ class MainWindow(QMainWindow):
         self.cursor_timer = QTimer(self)
         self.cursor_timer.timeout.connect(self._update_cursor_position)
         self.cursor_timer.start(50)  # Update every 50ms
+        
+        # Create LLM chat window
+        self._create_llm_chat_window()
         
         # Initialize UI state
         self._update_ui()
@@ -460,11 +466,26 @@ class MainWindow(QMainWindow):
             clear_action.triggered.connect(self._on_clear_recent_projects)
             self.recent_projects_menu.addAction(clear_action)
     
+    def _create_llm_chat_window(self):
+        """Create the LLM chat window."""
+        if self.llm_chat_window is None:
+            self.llm_chat_window = LLMChatWindow(self.app, self)
+            
+            # Hide by default
+            self.llm_chat_window.hide()
+    
     def _on_llm_chat(self):
         """Handle LLM Chat action."""
-        # Open the LLM chat dialog
-        dialog = LLMChatDialog(self.app, self)
-        dialog.exec()
+        # Create the LLM chat window if it doesn't exist
+        if self.llm_chat_window is None:
+            self._create_llm_chat_window()
+        
+        # Show the chat window if it's hidden, otherwise bring it to front
+        if self.llm_chat_window.isHidden():
+            self.llm_chat_window.show()
+        else:
+            self.llm_chat_window.raise_()
+            self.llm_chat_window.activateWindow()
     
     def _on_version_history(self):
         """Handle Version History action."""

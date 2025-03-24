@@ -6,6 +6,7 @@ application state data.
 """
 
 import logging
+import numpy as np
 from datetime import datetime
 
 
@@ -129,7 +130,8 @@ class AppContextAPI:
         if self.app.audio_manager.beat_times is not None:
             beat_times = self.app.audio_manager.beat_times.tolist()
         
-        return {
+        # Create base context
+        context = {
             "file": self.app.audio_manager.audio_file,
             "duration": self.app.audio_manager.duration,
             "sample_rate": self.app.audio_manager.sample_rate,
@@ -140,6 +142,52 @@ class AppContextAPI:
             "is_paused": self.app.audio_manager.paused,
             "current_position": self.app.audio_manager.position
         }
+        
+        # Add enhanced audio analysis data if available
+        
+        # Add onset strength
+        if hasattr(self.app.audio_manager, "onset_strength") and self.app.audio_manager.onset_strength is not None:
+            # Convert to list and include a sample (first 10 values)
+            onset_strength = self.app.audio_manager.onset_strength.tolist()
+            context["onset_strength_sample"] = onset_strength[:10]
+            context["onset_strength_mean"] = float(np.mean(onset_strength))
+            context["onset_strength_max"] = float(np.max(onset_strength))
+        
+        # Add spectral contrast
+        if hasattr(self.app.audio_manager, "spectral_contrast") and self.app.audio_manager.spectral_contrast is not None:
+            # Include mean values for each band
+            spectral_contrast = self.app.audio_manager.spectral_contrast
+            context["spectral_contrast_mean"] = [float(np.mean(band)) for band in spectral_contrast]
+        
+        # Add spectral centroid
+        if hasattr(self.app.audio_manager, "spectral_centroid") and self.app.audio_manager.spectral_centroid is not None:
+            centroid = self.app.audio_manager.spectral_centroid
+            context["spectral_centroid_mean"] = float(np.mean(centroid))
+            context["spectral_centroid_std"] = float(np.std(centroid))
+        
+        # Add spectral rolloff
+        if hasattr(self.app.audio_manager, "spectral_rolloff") and self.app.audio_manager.spectral_rolloff is not None:
+            rolloff = self.app.audio_manager.spectral_rolloff
+            context["spectral_rolloff_mean"] = float(np.mean(rolloff))
+        
+        # Add chroma features
+        if hasattr(self.app.audio_manager, "chroma") and self.app.audio_manager.chroma is not None:
+            chroma = self.app.audio_manager.chroma
+            # Calculate mean activation for each pitch class
+            context["chroma_means"] = [float(np.mean(pitch_class)) for pitch_class in chroma]
+        
+        # Add RMS energy
+        if hasattr(self.app.audio_manager, "rms_energy") and self.app.audio_manager.rms_energy is not None:
+            energy = self.app.audio_manager.rms_energy
+            context["rms_energy_mean"] = float(np.mean(energy))
+            context["rms_energy_std"] = float(np.std(energy))
+        
+        # Add zero crossing rate
+        if hasattr(self.app.audio_manager, "zero_crossing_rate") and self.app.audio_manager.zero_crossing_rate is not None:
+            zcr = self.app.audio_manager.zero_crossing_rate
+            context["zero_crossing_rate_mean"] = float(np.mean(zcr))
+        
+        return context
     
     def get_lyrics_context(self):
         """

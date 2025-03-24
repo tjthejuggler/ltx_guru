@@ -42,6 +42,7 @@ class AudioManager(QObject):
     audio_stopped = pyqtSignal()
     position_changed = pyqtSignal(float)  # position
     analysis_completed = pyqtSignal(dict)  # analysis_data
+    audio_analyzed = pyqtSignal()  # Emitted when advanced audio analysis is completed
     
     def __init__(self, app):
         """
@@ -71,6 +72,15 @@ class AudioManager(QObject):
         self.beat_times = None
         self.tempo = None
         self.spectrum = None
+        
+        # Enhanced audio analysis
+        self.onset_strength = None
+        self.spectral_contrast = None
+        self.spectral_centroid = None
+        self.spectral_rolloff = None
+        self.chroma = None
+        self.rms_energy = None
+        self.zero_crossing_rate = None
         
         # Playback state
         self.playing = False
@@ -247,10 +257,13 @@ class AudioManager(QObject):
                 "spectrum": self.spectrum
             }
             
-            self.logger.info("Audio analysis completed")
+            self.logger.info("Basic audio analysis completed")
             
             # Emit signal
             self.analysis_completed.emit(analysis_data)
+            
+            # Perform enhanced audio analysis
+            self.analyze_audio()
         except Exception as e:
             self.logger.error(f"Error analyzing audio: {e}")
     
@@ -762,6 +775,49 @@ class AudioManager(QObject):
             # Only log occasionally
             if position % 1.0 < 0.02:
                 self.logger.debug(f"Positions are similar, not updating timeline position")
+    
+    def analyze_audio(self):
+        """Analyze audio file to extract advanced musical features."""
+        if not AUDIO_AVAILABLE or self.audio_data is None:
+            return
+            
+        try:
+            self.logger.info("Performing enhanced audio analysis...")
+            
+            # Extract tempo (already done in _analyze_audio, but we'll ensure it's available)
+            if self.tempo is None and self.audio_data is not None:
+                tempo, beat_frames = librosa.beat.beat_track(y=self.audio_data, sr=self.sample_rate)
+                self.tempo = tempo
+                self.beat_times = librosa.frames_to_time(beat_frames, sr=self.sample_rate)
+            
+            # Extract onset strength (already done in _analyze_audio as self.beats, but we'll store it separately)
+            self.onset_strength = librosa.onset.onset_strength(y=self.audio_data, sr=self.sample_rate)
+            
+            # Extract spectral contrast (measure of the difference between peaks and valleys in the spectrum)
+            self.spectral_contrast = librosa.feature.spectral_contrast(y=self.audio_data, sr=self.sample_rate)
+            
+            # Extract spectral centroid (indicates where the "center of mass" of the spectrum is)
+            self.spectral_centroid = librosa.feature.spectral_centroid(y=self.audio_data, sr=self.sample_rate)[0]
+            
+            # Extract spectral rolloff (frequency below which 85% of the spectral energy is contained)
+            self.spectral_rolloff = librosa.feature.spectral_rolloff(y=self.audio_data, sr=self.sample_rate)[0]
+            
+            # Extract chroma features (representation of the 12 different pitch classes)
+            self.chroma = librosa.feature.chroma_stft(y=self.audio_data, sr=self.sample_rate)
+            
+            # Extract RMS energy (volume over time)
+            self.rms_energy = librosa.feature.rms(y=self.audio_data)[0]
+            
+            # Extract zero crossing rate (useful for distinguishing voiced from unvoiced speech)
+            self.zero_crossing_rate = librosa.feature.zero_crossing_rate(self.audio_data)[0]
+            
+            self.logger.info("Enhanced audio analysis completed")
+            
+            # Emit signal
+            self.audio_analyzed.emit()
+            
+        except Exception as e:
+            self.logger.error(f"Error performing enhanced audio analysis: {e}")
     
     def __del__(self):
         """Clean up resources when the object is destroyed."""

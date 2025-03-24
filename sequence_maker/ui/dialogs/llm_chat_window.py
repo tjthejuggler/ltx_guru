@@ -1,7 +1,7 @@
 """
-Sequence Maker - LLM Chat Dialog
+Sequence Maker - LLM Chat Window
 
-This module defines the LLMChatDialog class, which provides an interface for interacting with LLMs.
+This module defines the LLMChatWindow class, which provides a floating interface for interacting with LLMs.
 """
 
 import logging
@@ -9,9 +9,9 @@ import os
 import json
 from datetime import datetime
 from PyQt6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QTextEdit, QComboBox, QProgressBar, QMessageBox,
-    QSplitter, QWidget, QListWidget, QListWidgetItem
+    QSplitter, QListWidget, QListWidgetItem
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QColor
@@ -20,12 +20,12 @@ from api.app_context_api import AppContextAPI
 from ui.dialogs.ambiguity_resolution_dialog import AmbiguityResolutionDialog
 
 
-class LLMChatDialog(QDialog):
-    """Dialog for interacting with LLMs."""
+class LLMChatWindow(QWidget):
+    """Floating window for interacting with LLMs."""
     
     def __init__(self, app, parent=None):
         """
-        Initialize the LLM chat dialog.
+        Initialize the LLM chat window.
         
         Args:
             app: The main application instance.
@@ -33,13 +33,14 @@ class LLMChatDialog(QDialog):
         """
         super().__init__(parent)
         
-        self.logger = logging.getLogger("SequenceMaker.LLMChatDialog")
+        self.logger = logging.getLogger("SequenceMaker.LLMChatWindow")
         self.app = app
         
-        # Set dialog properties
+        # Set window properties
         self.setWindowTitle("LLM Chat")
-        self.setMinimumWidth(800)
-        self.setMinimumHeight(600)
+        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.Tool)
+        self.setMinimumWidth(600)
+        self.setMinimumHeight(400)
         
         # Create APIs
         self.context_api = AppContextAPI(app)
@@ -160,9 +161,10 @@ class LLMChatDialog(QDialog):
         
         self.button_layout.addStretch()
         
-        self.close_button = QPushButton("Close")
-        self.close_button.clicked.connect(self.accept)
-        self.button_layout.addWidget(self.close_button)
+        # Add minimize button
+        self.minimize_button = QPushButton("Minimize")
+        self.minimize_button.clicked.connect(self.hide)
+        self.button_layout.addWidget(self.minimize_button)
         
         # Set splitter sizes
         self.splitter.setSizes([200, 600])
@@ -640,3 +642,27 @@ class LLMChatDialog(QDialog):
         
         # Send clarification to LLM
         self.app.llm_manager.send_request(resolution, system_message, confirmation_mode=confirmation_mode)
+    
+    def closeEvent(self, event):
+        """
+        Handle window close event.
+        
+        Args:
+            event: Close event.
+        """
+        # Hide instead of close
+        event.ignore()
+        self.hide()
+    
+    def showEvent(self, event):
+        """
+        Handle window show event.
+        
+        Args:
+            event: Show event.
+        """
+        # Update UI when shown
+        self._populate_timeline_list()
+        
+        # Call parent method
+        super().showEvent(event)

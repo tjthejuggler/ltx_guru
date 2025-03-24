@@ -393,130 +393,132 @@ class VersionHistoryDialog(QDialog):
 3. ✅ Integrated with `LLMChatDialog`
 4. ✅ Added tests for ambiguity detection and resolution
 
-### 2.3. Phase 3: Audio Analysis Integration (NEXT PRIORITY)
-1. Update `AudioManager` with analysis methods
-2. Update `AppContextAPI` to include analysis data
-3. Test audio analysis and data extraction
-4. Integrate with LLM system messages
+### 2.3. Phase 3: Audio Analysis Integration (COMPLETED)
+1. ✅ Updated `AudioManager` with analysis methods
+2. ✅ Updated `AppContextAPI` to include analysis data
+3. ✅ Added tests for audio analysis and data extraction
+4. ✅ Integrated with LLM system messages
 
-### 2.4. Phase 4: Floating Chat Window (1-2 days)
+### 2.4. Phase 4: Floating Chat Window (NEXT PRIORITY)
 1. Create `LLMChatWindow` class
 2. Update `MainWindow` to use floating window
 3. Test window functionality
 
-## 3. Next Implementation: Audio Analysis Integration
+## 3. Next Implementation: Floating Chat Window
 
-The next phase to implement is Audio Analysis Integration. This will involve:
+The next phase to implement is the Floating Chat Window. This will involve:
 
-1. Updating the `AudioManager` class with methods to analyze audio files
-2. Extracting musical features such as beats, tempo, rhythm, and intensity
-3. Making this data available to the LLM via the `AppContextAPI`
-4. Enhancing the system messages to include audio analysis data
+1. Converting the `LLMChatDialog` from a modal dialog to a floating window
+2. Allowing the chat window to remain open while using the application
+3. Adding minimize/maximize functionality
+4. Ensuring proper integration with the main window
 
-This implementation will improve the LLM's ability to generate color sequences that match the music by providing detailed information about the audio's musical characteristics.
+This implementation will improve the user experience by allowing users to interact with the LLM while continuing to work on their project, rather than having to close the dialog each time.
 
-### 3.1. AudioManager Enhancement
+### 3.1. LLMChatWindow Class
 
-The `AudioManager` class will be enhanced with methods to analyze audio files using the librosa library:
+The new `LLMChatWindow` class will be created to replace the current `LLMChatDialog`:
 
 ```python
-def analyze_audio(self):
-    """Analyze audio file to extract musical features."""
-    if not self.audio_file:
-        return
+from PyQt6.QtWidgets import (
+    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
+    QTextEdit, QComboBox, QProgressBar, QMessageBox,
+    QSplitter, QListWidget, QListWidgetItem
+)
+from PyQt6.QtCore import Qt, pyqtSignal, QSize
+from PyQt6.QtGui import QFont, QColor
+
+class LLMChatWindow(QWidget):
+    """Floating window for interacting with LLMs."""
+    
+    def __init__(self, app, parent=None):
+        """
+        Initialize the LLM chat window.
         
-    try:
-        import librosa
+        Args:
+            app: The main application instance.
+            parent: Parent widget.
+        """
+        super().__init__(parent)
         
-        # Load audio file
-        y, sr = librosa.load(self.audio_file)
+        self.logger = logging.getLogger("SequenceMaker.LLMChatWindow")
+        self.app = app
         
-        # Extract tempo
-        tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-        self.tempo = tempo
+        # Set window properties
+        self.setWindowTitle("LLM Chat")
+        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.Tool)
+        self.setMinimumWidth(600)
+        self.setMinimumHeight(400)
         
-        # Extract beat times
-        beat_times = librosa.frames_to_time(beat_frames, sr=sr)
-        self.beat_times = beat_times
+        # Create APIs
+        self.context_api = AppContextAPI(app)
         
-        # Extract onset strength
-        onset_env = librosa.onset.onset_strength(y=y, sr=sr)
-        self.onset_strength = onset_env
+        # Chat properties
+        self.chat_history = []
         
-        # Extract spectral contrast
-        contrast = librosa.feature.spectral_contrast(y=y, sr=sr)
-        self.spectral_contrast = contrast
+        # Create UI
+        self._create_ui()
         
-        # Emit signal
-        self.audio_analyzed.emit()
+        # Check if LLM is configured
+        self._check_llm_configuration()
         
-    except Exception as e:
-        self.logger.error(f"Error analyzing audio: {e}")
+        # Load chat history from project
+        self._load_chat_history()
+        
+        # Connect signals
+        self.app.llm_manager.token_usage_updated.connect(self._on_token_usage_updated)
+        self.app.llm_manager.llm_ambiguity.connect(self._on_llm_ambiguity)
 ```
 
-### 3.2. AppContextAPI Enhancement
+### 3.2. MainWindow Integration
 
-The `AppContextAPI` class will be updated to include the audio analysis data:
+The `MainWindow` class will be updated to use the new floating window:
 
 ```python
-def get_audio_context(self):
-    """
-    Get audio context data.
+# Add to MainWindow class
+def _create_llm_chat_window(self):
+    """Create the LLM chat window."""
+    self.llm_chat_window = LLMChatWindow(self.app, self)
     
-    Returns:
-        dict: Audio context data.
-    """
-    context = {}
-    
-    if self.app.audio_manager.audio_file:
-        context["file"] = os.path.basename(self.app.audio_manager.audio_file)
-        context["duration"] = self.app.audio_manager.duration
-        context["tempo"] = self.app.audio_manager.tempo
-        
-        # Add beat times
-        if self.app.audio_manager.beat_times is not None:
-            context["beat_times"] = self.app.audio_manager.beat_times.tolist()
-        
-        # Add onset strength
-        if hasattr(self.app.audio_manager, "onset_strength"):
-            context["onset_strength"] = self.app.audio_manager.onset_strength.tolist()
-        
-        # Add spectral contrast
-        if hasattr(self.app.audio_manager, "spectral_contrast"):
-            context["spectral_contrast"] = self.app.audio_manager.spectral_contrast.tolist()
-    
-    return context
+    # Hide by default
+    self.llm_chat_window.hide()
+
+def _on_llm_chat_action_triggered(self):
+    """Handle LLM chat action triggered."""
+    # Show the chat window if it's hidden, otherwise bring it to front
+    if self.llm_chat_window.isHidden():
+        self.llm_chat_window.show()
+    else:
+        self.llm_chat_window.raise_()
+        self.llm_chat_window.activateWindow()
 ```
 
-### 3.3. System Message Enhancement
+### 3.3. Window Management
 
-The system message in `LLMChatDialog` will be enhanced to include the audio analysis data:
+The `LLMChatWindow` class will include methods for window management:
 
 ```python
-# Add detailed audio analysis information
-if self.app.audio_manager.audio_file:
-    system_message += f"\n\nAudio file: {os.path.basename(self.app.audio_manager.audio_file)}"
-    system_message += f"\nAudio duration: {self.app.audio_manager.duration} seconds"
-    system_message += f"\nTempo: {self.app.audio_manager.tempo} BPM"
+def closeEvent(self, event):
+    """
+    Handle window close event.
     
-    # Add information about beats if available
-    if self.app.audio_manager.beat_times is not None:
-        beat_count = len(self.app.audio_manager.beat_times)
-        system_message += f"\nDetected beats: {beat_count}"
-        
-        # Add some beat times as examples
-        if beat_count > 0:
-            system_message += "\nBeat times (seconds): "
-            beat_times = self.app.audio_manager.beat_times[:10]  # First 10 beats
-            system_message += ", ".join(f"{time:.2f}" for time in beat_times)
-            if beat_count > 10:
-                system_message += f", ... (and {beat_count - 10} more)"
+    Args:
+        event: Close event.
+    """
+    # Hide instead of close
+    event.ignore()
+    self.hide()
     
-    # Add information about onset strength if available
-    if hasattr(self.app.audio_manager, "onset_strength"):
-        system_message += "\nOnset strength analysis is available"
+def showEvent(self, event):
+    """
+    Handle window show event.
     
-    # Add information about spectral contrast if available
-    if hasattr(self.app.audio_manager, "spectral_contrast"):
-        system_message += "\nSpectral contrast analysis is available"
+    Args:
+        event: Show event.
+    """
+    # Update UI when shown
+    self._populate_timeline_list()
+    
+    # Call parent method
+    super().showEvent(event)
 ```

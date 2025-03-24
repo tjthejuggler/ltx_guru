@@ -40,9 +40,11 @@ This document tracks the implementation status of the LLM integration for Sequen
 
 ## Components Requiring Further Implementation
 
-1. ❌ **Floating LLM Chat Window**
-   - Current implementation uses a modal dialog
-   - Need to implement a floating, non-modal window that can remain open while using the application
+1. ✅ **Floating LLM Chat Window**
+   - Implemented a floating, non-modal window that can remain open while using the application
+   - Created `LLMChatWindow` class that inherits from `QWidget` instead of `QDialog`
+   - Updated `MainWindow` to manage the floating window lifecycle
+   - Added minimize functionality to allow users to hide/show the window as needed
 
 2. ✅ **Autosave & Version Control**
    - Implemented automatic project state saves before and after LLM operations
@@ -57,26 +59,29 @@ This document tracks the implementation status of the LLM integration for Sequen
    - Integrated with `LLMChatDialog` for seamless user experience
    - Added comprehensive tests for ambiguity handling
 
-4. ❌ **Audio Analysis Integration**
-   - Need to integrate audio analysis tools for beat detection and musical feature extraction
-   - Need to make this data available to the LLM for better music-driven suggestions
+4. ✅ **Audio Analysis Integration**
+   - Enhanced `AudioManager` with advanced audio analysis methods
+   - Added extraction of musical features (onset strength, spectral contrast, etc.)
+   - Made analysis data available to the LLM via `AppContextAPI`
+   - Enhanced system messages to include audio analysis data
+   - Added tests for audio analysis functionality
 
 ## Next Steps (Implementation Priority)
 
-1. **Audio Analysis Integration**
-   - Integrate audio analysis library (e.g., librosa)
-   - Extract beat, rhythm, and intensity information
-   - Make this data available to the LLM via `AppContextAPI`
-
-2. **Floating Chat Window**
-   - Convert `LLMChatDialog` from modal dialog to floating window
-   - Allow it to remain open while using the application
-   - Add minimize/maximize functionality
-
-3. **Enhanced Logging and Diagnostics**
+1. **Enhanced Logging and Diagnostics**
    - Implement more detailed logging for LLM operations
    - Add performance metrics tracking
    - Create diagnostic tools for troubleshooting
+
+2. **Function Calling Integration**
+   - Implement OpenAI function calling for more structured interactions
+   - Create function schemas for common operations
+   - Add support for streaming responses
+
+3. **User Customization**
+   - Allow users to define custom instructions for the LLM
+   - Add support for saving and loading LLM presets
+   - Implement user-defined templates for common tasks
 
 ## Implementation Details for Next Steps
 
@@ -139,42 +144,78 @@ def _handle_ambiguity(self, prompt, response):
     return False
 ```
 
-### 3. Audio Analysis Integration
+### 3. Audio Analysis Integration (COMPLETED)
 
 ```python
-# Add to AudioManager
+# Added to AudioManager
 def analyze_audio(self):
-    """Analyze audio file to extract musical features."""
-    if not self.audio_file:
+    """Analyze audio file to extract advanced musical features."""
+    if not AUDIO_AVAILABLE or self.audio_data is None:
         return
         
     try:
-        import librosa
+        self.logger.info("Performing enhanced audio analysis...")
         
-        # Load audio file
-        y, sr = librosa.load(self.audio_file)
+        # Extract tempo (already done in _analyze_audio, but we'll ensure it's available)
+        if self.tempo is None and self.audio_data is not None:
+            tempo, beat_frames = librosa.beat.beat_track(y=self.audio_data, sr=self.sample_rate)
+            self.tempo = tempo
+            self.beat_times = librosa.frames_to_time(beat_frames, sr=self.sample_rate)
         
-        # Extract tempo
-        tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
-        self.tempo = tempo
+        # Extract onset strength (already done in _analyze_audio as self.beats, but we'll store it separately)
+        self.onset_strength = librosa.onset.onset_strength(y=self.audio_data, sr=self.sample_rate)
         
-        # Extract beat times
-        beat_times = librosa.frames_to_time(beat_frames, sr=sr)
-        self.beat_times = beat_times
+        # Extract spectral contrast (measure of the difference between peaks and valleys in the spectrum)
+        self.spectral_contrast = librosa.feature.spectral_contrast(y=self.audio_data, sr=self.sample_rate)
         
-        # Extract onset strength
-        onset_env = librosa.onset.onset_strength(y=y, sr=sr)
-        self.onset_strength = onset_env
+        # Extract spectral centroid (indicates where the "center of mass" of the spectrum is)
+        self.spectral_centroid = librosa.feature.spectral_centroid(y=self.audio_data, sr=self.sample_rate)[0]
         
-        # Extract spectral contrast
-        contrast = librosa.feature.spectral_contrast(y=y, sr=sr)
-        self.spectral_contrast = contrast
+        # Extract spectral rolloff (frequency below which 85% of the spectral energy is contained)
+        self.spectral_rolloff = librosa.feature.spectral_rolloff(y=self.audio_data, sr=self.sample_rate)[0]
+        
+        # Extract chroma features (representation of the 12 different pitch classes)
+        self.chroma = librosa.feature.chroma_stft(y=self.audio_data, sr=self.sample_rate)
+        
+        # Extract RMS energy (volume over time)
+        self.rms_energy = librosa.feature.rms(y=self.audio_data)[0]
+        
+        # Extract zero crossing rate (useful for distinguishing voiced from unvoiced speech)
+        self.zero_crossing_rate = librosa.feature.zero_crossing_rate(self.audio_data)[0]
+        
+        self.logger.info("Enhanced audio analysis completed")
         
         # Emit signal
         self.audio_analyzed.emit()
         
     except Exception as e:
-        self.logger.error(f"Error analyzing audio: {e}")
+        self.logger.error(f"Error performing enhanced audio analysis: {e}")
+
+# Enhanced AppContextAPI.get_audio_context() to include analysis data
+def get_audio_context(self):
+    """Get audio context data."""
+    context = {}
+    
+    if self.app.audio_manager.audio_file:
+        context["file"] = os.path.basename(self.app.audio_manager.audio_file)
+        context["duration"] = self.app.audio_manager.duration
+        context["tempo"] = self.app.audio_manager.tempo
+        
+        # Add beat times
+        if self.app.audio_manager.beat_times is not None:
+            context["beat_times"] = self.app.audio_manager.beat_times.tolist()
+        
+        # Add onset strength
+        if hasattr(self.app.audio_manager, "onset_strength"):
+            context["onset_strength"] = self.app.audio_manager.onset_strength.tolist()
+        
+        # Add spectral contrast
+        if hasattr(self.app.audio_manager, "spectral_contrast"):
+            context["spectral_contrast"] = self.app.audio_manager.spectral_contrast.tolist()
+            
+        # Add other analysis features...
+    
+    return context
 ```
 
 ### 4. Floating Chat Window
