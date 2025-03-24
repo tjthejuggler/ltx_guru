@@ -82,9 +82,11 @@ class TimelineWidget(QWidget):
         self.copied_segment = None
         self.dragging_segment = False
         self.resizing_segment = False
+        self.dragging_boundary = False  # New state for dragging boundaries
         self.resize_edge = None  # "left" or "right"
         self.drag_start_pos = None
         self.drag_start_time = None
+        self.drag_boundary_segments = (None, None)  # (left_segment, right_segment) for boundary dragging
         
         # Create UI
         self._create_ui()
@@ -1303,9 +1305,22 @@ class TimelineContainer(QWidget):
                 if segment:
                     # Check if clicking on a boundary between segments
                     if boundary_info:
-                        # Select the boundary
+                        # Don't select the boundary on single click, just start dragging it
                         time, left_segment, right_segment = boundary_info
-                        self.parent_widget.select_boundary(timeline, time, left_segment, right_segment)
+                        
+                        # Start dragging boundary
+                        self.parent_widget.dragging_boundary = True
+                        self.parent_widget.drag_start_pos = event.pos()
+                        self.parent_widget.drag_start_time = time
+                        
+                        # Store boundary segments for dragging
+                        self.parent_widget.drag_boundary_segments = (left_segment, right_segment)
+                        
+                        # Start drag operation in timeline manager to handle undo/redo properly
+                        self.app.timeline_manager.start_drag_operation()
+                        
+                        # Set cursor
+                        self.setCursor(Qt.CursorShape.SizeHorCursor)
                     else:
                         # Select segment
                         self.parent_widget.select_segment(timeline, segment)
@@ -1408,6 +1423,85 @@ class TimelineContainer(QWidget):
             # Update position
             self.parent_widget.set_position(cursor_time)
         
+        elif self.parent_widget.dragging_boundary:
+            # Calculate time difference
+            time_diff = (
+                event.pos().x() - self.parent_widget.drag_start_pos.x()
+            ) / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
+            
+            # Calculate new time
+            new_time = self.parent_widget.drag_start_time + time_diff
+            
+            # Ensure time is not negative
+            if new_time < 0:
+                new_time = 0
+            
+            try:
+                # Get the boundary segments from the drag property
+                left_segment, right_segment = self.parent_widget.drag_boundary_segments
+                
+                # Ensure the new time is valid
+                # Use a more relaxed condition to allow dragging
+                if left_segment and right_segment:
+                    # Only constrain by the start of left segment and end of right segment
+                    if left_segment.start_time < new_time < right_segment.end_time:
+                        # Update left segment end time
+                        self.app.timeline_manager.modify_segment(
+                            timeline=self.parent_widget.selected_timeline,
+                            segment=left_segment,
+                            end_time=new_time
+                        )
+                        
+                        # Update right segment start time
+                        self.app.timeline_manager.modify_segment(
+                            timeline=self.parent_widget.selected_timeline,
+                            segment=right_segment,
+                            start_time=new_time
+                        )
+                        
+                        # If the boundary is selected, update its time
+                        if self.parent_widget.selected_boundary:
+                            self.parent_widget.selected_boundary_time = new_time
+                            
+                            # Update boundary editor if visible
+                            if (hasattr(self.app, 'main_window') and
+                                hasattr(self.app.main_window, 'boundary_time_input') and
+                                hasattr(self.app.main_window, '_format_seconds_to_hms') and
+                                hasattr(self.app.main_window, 'boundary_editor_container') and
+                                self.app.main_window.boundary_editor_container.isVisible()):
+                                
+                                # Format time
+                                time_str = self.app.main_window._format_seconds_to_hms(
+                                    new_time, include_hundredths=True, hide_hours_if_zero=True)
+                                
+                                # Update input field
+                                self.app.main_window.boundary_time_input.setText(time_str)
+                                
+                                # Update stored boundary time in main window
+                                if hasattr(self.app.main_window, 'boundary_editor_time'):
+                                    self.app.main_window.boundary_editor_time = new_time
+                    
+                    # Force a redraw to update the boundary position
+                    self.update()
+            except Exception as e:
+                print(f"Error during boundary drag: {e}")
+                
+                # Update boundary editor in real-time
+                if (hasattr(self.app, 'main_window') and
+                    hasattr(self.app.main_window, 'boundary_time_input') and
+                    hasattr(self.app.main_window, '_format_seconds_to_hms')):
+                    
+                    # Format time
+                    time_str = self.app.main_window._format_seconds_to_hms(
+                        new_time, include_hundredths=True, hide_hours_if_zero=True)
+                    
+                    # Update input field
+                    self.app.main_window.boundary_time_input.setText(time_str)
+                    
+                    # Update stored boundary time in main window
+                    if hasattr(self.app.main_window, 'boundary_editor_time'):
+                        self.app.main_window.boundary_editor_time = new_time
+            
         elif self.parent_widget.dragging_segment:
             # Calculate time difference
             time_diff = (
@@ -1571,18 +1665,44 @@ class TimelineContainer(QWidget):
         Args:
             event: Mouse event.
         """
-        # Check if we were dragging or resizing a segment
+        # Check if we were dragging or resizing a segment or boundary
         was_dragging = self.parent_widget.dragging_segment
         was_resizing = self.parent_widget.resizing_segment
+        was_dragging_boundary = self.parent_widget.dragging_boundary
         
         # Reset dragging flags
         self.parent_widget.dragging_position = False
         self.parent_widget.dragging_segment = False
         self.parent_widget.resizing_segment = False
+        self.parent_widget.dragging_boundary = False
+        self.parent_widget.drag_boundary_segments = (None, None)
         
         # End drag operation in timeline manager if we were dragging or resizing
-        if was_dragging or was_resizing:
+        if was_dragging or was_resizing or was_dragging_boundary:
             self.app.timeline_manager.end_drag_operation()
+            
+            # If we were dragging a boundary, make sure the boundary editor is updated
+            if was_dragging_boundary and self.parent_widget.selected_boundary:
+                try:
+                    # Force a redraw to update the boundary position
+                    self.update()
+                    
+                    # Update the boundary editor if it exists
+                    if (hasattr(self.app, 'main_window') and
+                        hasattr(self.app.main_window, 'show_boundary_editor')):
+                        
+                        time = self.parent_widget.selected_boundary_time
+                        left_segment, right_segment = self.parent_widget.selected_boundary_segments
+                        
+                        # Update the boundary editor with the new time
+                        self.app.main_window.show_boundary_editor(
+                            self.parent_widget.selected_timeline,
+                            time,
+                            left_segment,
+                            right_segment
+                        )
+                except Exception as e:
+                    print(f"Error updating boundary after drag: {e}")
         
         # Reset cursor
         self.setCursor(Qt.CursorShape.ArrowCursor)
@@ -1600,11 +1720,17 @@ class TimelineContainer(QWidget):
             
             if timeline:
                 # Get segment at position
-                segment, edge = self._get_segment_at_pos(timeline, event.pos())
+                segment, edge, boundary_info = self._get_segment_at_pos(timeline, event.pos())
                 
                 if segment:
-                    # Emit signal
-                    self.parent_widget.segment_double_clicked.emit(timeline, segment)
+                    # Check if double-clicking on a boundary between segments
+                    if boundary_info:
+                        # Select the boundary on double-click
+                        time, left_segment, right_segment = boundary_info
+                        self.parent_widget.select_boundary(timeline, time, left_segment, right_segment)
+                    else:
+                        # Emit signal for regular segment double-click
+                        self.parent_widget.segment_double_clicked.emit(timeline, segment)
                 else:
                     # Add segment at position
                     time = event.pos().x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
