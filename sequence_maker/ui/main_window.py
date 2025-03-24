@@ -373,8 +373,8 @@ class MainWindow(QMainWindow):
         status_layout.addWidget(spacer)
         
         # Create cursor position label
-        self.cursor_position_label = QLabel("Cursor: --:--:--")
-        self.cursor_position_label.setFixedWidth(120)
+        self.cursor_position_label = QLabel("Cursor: 00:00.00")
+        self.cursor_position_label.setFixedWidth(140)
         self.cursor_position_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         status_layout.addWidget(self.cursor_position_label)
         
@@ -392,13 +392,19 @@ class MainWindow(QMainWindow):
         # Add editable time input field with HH:MM:SS format
         self.time_input = QLineEdit()
         self.time_input.setFixedWidth(70)
-        self.time_input.setText("00:00:00")
+        self.time_input.setText("00:00.00")
         self.time_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        # Set validator to only allow valid time values in HH:MM:SS format
-        time_regex = QRegularExpression("^([0-9]{2}):([0-5][0-9]):([0-5][0-9])$")
+        # Set validator to allow valid time values in MM:SS.SS or HH:MM:SS.SS format
+        # This regex allows either:
+        # - MM:SS.SS (e.g., 05:30.75)
+        # - HH:MM:SS.SS (e.g., 01:05:30.75)
+        time_regex = QRegularExpression("^(([0-9]{2}):)?([0-5][0-9]):([0-5][0-9]\\.[0-9]{2})$")
         validator = QRegularExpressionValidator(time_regex)
         self.time_input.setValidator(validator)
+        
+        # Update width to accommodate the new format
+        self.time_input.setFixedWidth(90)
         
         # Connect signal to update position when edited
         self.time_input.editingFinished.connect(self._on_time_input_changed)
@@ -864,11 +870,24 @@ class MainWindow(QMainWindow):
     def _on_time_input_changed(self):
         """Handle time input field changes."""
         try:
-            # Get the time value from the input field in HH:MM:SS format
+            # Get the time value from the input field
             time_text = self.time_input.text()
             
-            # Parse the time components
-            hours, minutes, seconds = map(int, time_text.split(':'))
+            # Parse the time components based on format
+            parts = time_text.split(':')
+            
+            if len(parts) == 2:
+                # Format is MM:SS.SS
+                minutes = int(parts[0])
+                seconds = float(parts[1])
+                hours = 0
+            elif len(parts) == 3:
+                # Format is HH:MM:SS.SS
+                hours = int(parts[0])
+                minutes = int(parts[1])
+                seconds = float(parts[2])
+            else:
+                raise ValueError(f"Invalid time format: {time_text}")
             
             # Convert to seconds
             time_value = hours * 3600 + minutes * 60 + seconds
@@ -883,24 +902,18 @@ class MainWindow(QMainWindow):
             self._format_time_input(self.app.timeline_manager.position)
     
     def _format_time_input(self, seconds):
-        """Format time in seconds as HH:MM:SS and update the time input field."""
-        hours = int(seconds // 3600)
-        minutes = int((seconds % 3600) // 60)
-        secs = int(seconds % 60)
-        
-        formatted_time = f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        """Format time in seconds and update the time input field."""
+        # Format with hundredths of a second and hide hours if zero
+        formatted_time = self._format_seconds_to_hms(seconds, include_hundredths=True, hide_hours_if_zero=True)
         self.time_input.setText(formatted_time)
     
     def update_cursor_position(self, seconds):
         """Update the cursor position label with the given time in seconds."""
         if seconds < 0:
             seconds = 0
-            
-        hours = int(seconds // 3600)
-        minutes = int((seconds % 3600) // 60)
-        secs = int(seconds % 60)
         
-        formatted_time = f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        # Format with hundredths of a second and hide hours if zero
+        formatted_time = self._format_seconds_to_hms(seconds, include_hundredths=True, hide_hours_if_zero=True)
         self.cursor_position_label.setText(f"Cursor: {formatted_time}")
     
     def _on_position_changed(self, position):
@@ -1070,21 +1083,39 @@ class MainWindow(QMainWindow):
             for segment in segments_to_modify:
                 segment.end_time = time
     
-    def _format_seconds_to_hms(self, seconds):
+    def _format_seconds_to_hms(self, seconds, include_hundredths=False, hide_hours_if_zero=False):
         """
-        Format time in seconds as HH:MM:SS.
+        Format time in seconds as HH:MM:SS or MM:SS.SS.
         
         Args:
             seconds (float): Time in seconds.
+            include_hundredths (bool): Whether to include hundredths of a second.
+            hide_hours_if_zero (bool): Whether to hide hours if they are zero.
             
         Returns:
-            str: Formatted time string (HH:MM:SS).
+            str: Formatted time string.
         """
         hours = int(seconds // 3600)
         minutes = int((seconds % 3600) // 60)
-        secs = int(seconds % 60)
+        secs = seconds % 60
         
-        return f"{hours:02d}:{minutes:02d}:{secs:02d}"
+        if include_hundredths:
+            # Format with hundredths of a second
+            if hide_hours_if_zero and hours == 0:
+                # Format as MM:SS.SS
+                return f"{minutes:02d}:{secs:05.2f}"
+            else:
+                # Format as HH:MM:SS.SS
+                return f"{hours:02d}:{minutes:02d}:{secs:05.2f}"
+        else:
+            # Format without hundredths (original format)
+            secs_int = int(secs)
+            if hide_hours_if_zero and hours == 0:
+                # Format as MM:SS
+                return f"{minutes:02d}:{secs_int:02d}"
+            else:
+                # Format as HH:MM:SS
+                return f"{hours:02d}:{minutes:02d}:{secs_int:02d}"
     
     def _format_length_input(self, seconds):
         """Format time in seconds as HH:MM:SS and update the length input field."""
