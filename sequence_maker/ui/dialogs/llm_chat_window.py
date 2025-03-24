@@ -47,6 +47,7 @@ class LLMChatWindow(QWidget):
         
         # Chat properties
         self.chat_history = []
+        self.current_streaming_response = ""
         
         # Create UI
         self._create_ui()
@@ -60,6 +61,8 @@ class LLMChatWindow(QWidget):
         # Connect signals
         self.app.llm_manager.token_usage_updated.connect(self._on_token_usage_updated)
         self.app.llm_manager.llm_ambiguity.connect(self._on_llm_ambiguity)
+        self.app.llm_manager.llm_response_chunk.connect(self._on_response_chunk)
+        self.app.llm_manager.llm_function_called.connect(self._on_function_called)
     
     def _create_ui(self):
         """Create the user interface."""
@@ -265,6 +268,43 @@ class LLMChatWindow(QWidget):
             self.input_text.setEnabled(False)
             self.send_button.setEnabled(False)
     
+    def _on_response_chunk(self, chunk):
+        """
+        Handle a chunk of streaming response.
+        
+        Args:
+            chunk (str): Response chunk.
+        """
+        # Append chunk to current response
+        self.current_streaming_response += chunk
+        
+        # Update chat history text
+        if len(self.chat_history) > 0 and self.chat_history[-1][0] == "Assistant (streaming)":
+            # Update existing streaming message
+            self.chat_history[-1] = ("Assistant (streaming)", self.current_streaming_response)
+        else:
+            # Add new streaming message
+            self.chat_history.append(("Assistant (streaming)", self.current_streaming_response))
+        
+        # Update display
+        self._update_chat_history()
+    
+    def _on_function_called(self, function_name, arguments, result):
+        """
+        Handle a function call.
+        
+        Args:
+            function_name (str): Name of the function.
+            arguments (dict): Function arguments.
+            result (dict): Result of the function call.
+        """
+        # Display function call
+        self._display_function_call(function_name, arguments, result)
+        
+        # Add to chat history
+        function_description = f"Function call: {function_name}\nArguments: {json.dumps(arguments, indent=2)}\nResult: {json.dumps(result, indent=2)}"
+        self._add_message("System", function_description)
+    
     def _on_send_clicked(self):
         """Handle Send button click."""
         # Get message
@@ -279,6 +319,9 @@ class LLMChatWindow(QWidget):
         
         # Clear input
         self.input_text.clear()
+        
+        # Reset streaming response
+        self.current_streaming_response = ""
         
         # Get selected timelines
         selected_timelines = []
@@ -305,8 +348,16 @@ class LLMChatWindow(QWidget):
         # Get confirmation mode
         confirmation_mode = self.confirmation_mode_combo.currentData()
         
+        # Determine if we should use streaming
+        use_streaming = True  # Default to streaming for better user experience
+        
         # Send request to LLM
-        self.app.llm_manager.send_request(message, system_message, confirmation_mode=confirmation_mode)
+        self.app.llm_manager.send_request(
+            prompt=message,
+            system_message=system_message,
+            use_functions=True,
+            stream=use_streaming
+        )
     
     def _create_system_message(self, selected_timelines):
         """
@@ -439,6 +490,40 @@ class LLMChatWindow(QWidget):
         # Save chat history to project
         self._save_chat_history()
     
+    def _display_function_call(self, function_name, arguments, result):
+        """
+        Display a function call in the chat window.
+        
+        Args:
+            function_name (str): Name of the function.
+            arguments (dict): Function arguments.
+            result (dict): Result of the function call.
+        """
+        # Create function call HTML
+        html = f"""
+        <div style="background-color: #f0f0f0; padding: 10px; border-radius: 5px; margin: 5px 0;">
+            <div style="font-weight: bold; color: #0066cc;">Function Call: {function_name.replace('_', ' ')}</div>
+            <div style="margin: 5px 0; padding: 5px; background-color: #ffffff; border-radius: 3px;">
+                <pre style="margin: 0; white-space: pre-wrap;">{json.dumps(arguments, indent=2)}</pre>
+            </div>
+            <div style="margin-top: 5px;">
+                <div style="font-weight: bold; color: #009900;">Result:</div>
+                <div style="padding: 5px; background-color: #ffffff; border-radius: 3px;">
+                    <pre style="margin: 0; white-space: pre-wrap;">{json.dumps(result, indent=2)}</pre>
+                </div>
+            </div>
+        </div>
+        """
+        
+        # Add to chat history text
+        self.chat_history_text.insertHtml(html)
+        self.chat_history_text.append("")  # Empty line
+        
+        # Scroll to bottom
+        self.chat_history_text.verticalScrollBar().setValue(
+            self.chat_history_text.verticalScrollBar().maximum()
+        )
+    
     def _update_chat_history(self):
         """Update the chat history text."""
         # Clear text
@@ -489,8 +574,18 @@ class LLMChatWindow(QWidget):
         self.input_text.setEnabled(True)
         self.send_button.setEnabled(True)
         
-        # Add response to chat history
-        self._add_message("Assistant", response_text)
+        # If we were streaming, update the last message
+        if len(self.chat_history) > 0 and self.chat_history[-1][0] == "Assistant (streaming)":
+            # Replace streaming message with final message
+            self.chat_history[-1] = ("Assistant", response_text)
+            # Update display
+            self._update_chat_history()
+        else:
+            # Add response to chat history
+            self._add_message("Assistant", response_text)
+        
+        # Reset streaming response
+        self.current_streaming_response = ""
         
         # Get confirmation mode
         confirmation_mode = self.confirmation_mode_combo.currentData()

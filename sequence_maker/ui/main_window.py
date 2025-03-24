@@ -29,6 +29,7 @@ from ui.dialogs.about_dialog import AboutDialog
 from ui.dialogs.llm_chat_window import LLMChatWindow
 from ui.dialogs.version_history_dialog import VersionHistoryDialog
 from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
+from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
 
 from api.app_context_api import AppContextAPI
 from api.timeline_action_api import TimelineActionAPI
@@ -497,6 +498,7 @@ class MainWindow(QMainWindow):
         """Handle LLM Diagnostics action."""
         # Create and show the LLM diagnostics dialog
         dialog = LLMDiagnosticsDialog(self.app, self)
+        dialog.exec()
         dialog.exec()
     
     def _on_version_history(self):

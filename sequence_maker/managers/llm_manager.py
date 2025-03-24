@@ -39,6 +39,8 @@ class LLMManager(QObject):
     token_usage_updated = pyqtSignal(int, float)  # tokens, cost
     llm_interrupted = pyqtSignal()
     llm_ambiguity = pyqtSignal(str, list)  # prompt, suggestions
+    llm_response_chunk = pyqtSignal(str)  # response_chunk
+    llm_function_called = pyqtSignal(str, dict, dict)  # function_name, arguments, result
     
     def __init__(self, app):
         """
@@ -83,6 +85,206 @@ class LLMManager(QObject):
         
         # Action handlers
         self.action_handlers = {}
+        
+        # Function definitions
+        self.timeline_functions = [
+            {
+                "name": "create_segment",
+                "description": "Create a new segment in a timeline",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timeline_index": {
+                            "type": "integer",
+                            "description": "Index of the timeline to add the segment to"
+                        },
+                        "start_time": {
+                            "type": "number",
+                            "description": "Start time of the segment in seconds"
+                        },
+                        "end_time": {
+                            "type": "number",
+                            "description": "End time of the segment in seconds"
+                        },
+                        "color": {
+                            "type": "array",
+                            "description": "RGB color values (0-255)",
+                            "items": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 255
+                            },
+                            "minItems": 3,
+                            "maxItems": 3
+                        }
+                    },
+                    "required": ["timeline_index", "start_time", "end_time", "color"]
+                }
+            },
+            {
+                "name": "delete_segment",
+                "description": "Delete a segment from a timeline",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timeline_index": {
+                            "type": "integer",
+                            "description": "Index of the timeline containing the segment"
+                        },
+                        "segment_index": {
+                            "type": "integer",
+                            "description": "Index of the segment to delete"
+                        }
+                    },
+                    "required": ["timeline_index", "segment_index"]
+                }
+            },
+            {
+                "name": "modify_segment",
+                "description": "Modify an existing segment in a timeline",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timeline_index": {
+                            "type": "integer",
+                            "description": "Index of the timeline containing the segment"
+                        },
+                        "segment_index": {
+                            "type": "integer",
+                            "description": "Index of the segment to modify"
+                        },
+                        "properties": {
+                            "type": "object",
+                            "properties": {
+                                "start_time": {
+                                    "type": "number",
+                                    "description": "New start time of the segment in seconds"
+                                },
+                                "end_time": {
+                                    "type": "number",
+                                    "description": "New end time of the segment in seconds"
+                                },
+                                "color": {
+                                    "type": "array",
+                                    "description": "New RGB color values (0-255)",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 255
+                                    },
+                                    "minItems": 3,
+                                    "maxItems": 3
+                                }
+                            }
+                        }
+                    },
+                    "required": ["timeline_index", "segment_index", "properties"]
+                }
+            },
+            {
+                "name": "clear_timeline",
+                "description": "Clear all segments from a timeline",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timeline_index": {
+                            "type": "integer",
+                            "description": "Index of the timeline to clear"
+                        }
+                    },
+                    "required": ["timeline_index"]
+                }
+            },
+            {
+                "name": "create_segments_batch",
+                "description": "Create multiple segments in a timeline in a single operation",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timeline_index": {
+                            "type": "integer",
+                            "description": "Index of the timeline to add segments to"
+                        },
+                        "segments": {
+                            "type": "array",
+                            "description": "List of segment definitions",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "start_time": {
+                                        "type": "number",
+                                        "description": "Start time of the segment in seconds"
+                                    },
+                                    "end_time": {
+                                        "type": "number",
+                                        "description": "End time of the segment in seconds"
+                                    },
+                                    "color": {
+                                        "type": "array",
+                                        "description": "RGB color values (0-255)",
+                                        "items": {
+                                            "type": "integer",
+                                            "minimum": 0,
+                                            "maximum": 255
+                                        },
+                                        "minItems": 3,
+                                        "maxItems": 3
+                                    }
+                                },
+                                "required": ["start_time", "end_time", "color"]
+                            }
+                        }
+                    },
+                    "required": ["timeline_index", "segments"]
+                }
+            }
+        ]
+        
+        self.audio_functions = [
+            {
+                "name": "play_audio",
+                "description": "Play the loaded audio file",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "start_time": {
+                            "type": "number",
+                            "description": "Start time in seconds (optional)"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "pause_audio",
+                "description": "Pause audio playback",
+                "parameters": {
+                    "type": "object",
+                    "properties": {}
+                }
+            },
+            {
+                "name": "stop_audio",
+                "description": "Stop audio playback",
+                "parameters": {
+                    "type": "object",
+                    "properties": {}
+                }
+            },
+            {
+                "name": "seek_audio",
+                "description": "Seek to a specific position in the audio",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "position": {
+                            "type": "number",
+                            "description": "Position in seconds"
+                        }
+                    },
+                    "required": ["position"]
+                }
+            }
+        ]
     
     def is_configured(self):
         """
@@ -98,7 +300,21 @@ class LLMManager(QObject):
             self.model
         )
     
-    def send_request(self, prompt, system_message=None, temperature=None, max_tokens=None):
+    def _get_available_functions(self):
+        """
+        Get the list of available functions for function calling.
+        
+        Returns:
+            list: List of function definitions.
+        """
+        # Combine all function definitions
+        functions = []
+        functions.extend(self.timeline_functions)
+        functions.extend(self.audio_functions)
+        
+        return functions
+    
+    def send_request(self, prompt, system_message=None, temperature=None, max_tokens=None, use_functions=True, stream=False):
         """
         Send a request to the language model.
         
@@ -107,6 +323,8 @@ class LLMManager(QObject):
             system_message (str, optional): System message. If None, uses a default message.
             temperature (float, optional): Temperature parameter. If None, uses the configured value.
             max_tokens (int, optional): Maximum tokens in the response. If None, uses the default value.
+            use_functions (bool, optional): Whether to use function calling. Default is True.
+            stream (bool, optional): Whether to use streaming responses. Default is False.
         
         Returns:
             bool: True if the request was sent, False otherwise.
@@ -146,7 +364,7 @@ class LLMManager(QObject):
         # Start request thread
         self.request_thread = threading.Thread(
             target=self._request_worker,
-            args=(prompt, system_message, temperature, max_tokens),
+            args=(prompt, system_message, temperature, max_tokens, use_functions, stream),
             daemon=True
         )
         self.request_thread.start()
@@ -221,7 +439,75 @@ class LLMManager(QObject):
             
         self.logger.info(f"Tracked performance metrics: {duration:.2f} seconds, {tokens} tokens")
 
-    def _request_worker(self, prompt, system_message, temperature, max_tokens):
+    def _send_openai_streaming_request(self, prompt, system_message, temperature, max_tokens):
+        """
+        Send a streaming request to the OpenAI API.
+        
+        Args:
+            prompt (str): User prompt.
+            system_message (str): System message.
+            temperature (float): Temperature parameter.
+            max_tokens (int): Maximum tokens in the response.
+        
+        Yields:
+            str: Chunks of the response text.
+        """
+        self.logger.info("Sending streaming request to OpenAI API")
+        
+        try:
+            # Prepare request
+            url = "https://api.openai.com/v1/chat/completions"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self.api_key}"
+            }
+            data = {
+                "model": self.model,
+                "messages": [
+                    {"role": "system", "content": system_message},
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "stream": True
+            }
+            
+            # Send request
+            response = requests.post(url, headers=headers, json=data, stream=True, timeout=60)
+            
+            # Check for errors
+            response.raise_for_status()
+            
+            # Process streaming response
+            for line in response.iter_lines():
+                if line:
+                    # Remove "data: " prefix
+                    line = line.decode("utf-8")
+                    if line.startswith("data: "):
+                        line = line[6:]
+                    
+                    # Skip "[DONE]" message
+                    if line == "[DONE]":
+                        break
+                    
+                    try:
+                        # Parse JSON
+                        chunk = json.loads(line)
+                        
+                        # Extract content
+                        delta = chunk.get("choices", [{}])[0].get("delta", {})
+                        content = delta.get("content", "")
+                        
+                        if content:
+                            yield content
+                    except json.JSONDecodeError:
+                        continue
+        
+        except Exception as e:
+            self.logger.error(f"Error in OpenAI streaming request: {e}")
+            yield f"Error: {str(e)}"
+
+    def _request_worker(self, prompt, system_message, temperature, max_tokens, use_functions=True, stream=False):
         """
         Worker thread for sending requests to the language model.
         
@@ -230,6 +516,8 @@ class LLMManager(QObject):
             system_message (str): System message.
             temperature (float): Temperature parameter.
             max_tokens (int): Maximum tokens in the response.
+            use_functions (bool): Whether to use function calling.
+            stream (bool): Whether to use streaming responses.
         """
         try:
             # Reset interrupt flag
@@ -244,9 +532,49 @@ class LLMManager(QObject):
             # Record start time for performance metrics
             start_time = time.time()
             
+            # Prepare functions if needed
+            functions = None
+            if use_functions and self.provider == "openai":
+                functions = self._get_available_functions()
+            
+            # Handle streaming requests
+            if stream and self.provider == "openai":
+                # Emit streaming start signal
+                self.llm_thinking.emit()
+                
+                # Initialize response text
+                response_text = ""
+                
+                # Send streaming request
+                for chunk in self._send_openai_streaming_request(prompt, system_message, temperature, max_tokens):
+                    # Append chunk to response text
+                    response_text += chunk
+                    
+                    # Emit chunk signal
+                    self.llm_response_chunk.emit(chunk)
+                    
+                    # Check if interrupt was requested
+                    if self.interrupt_requested:
+                        self.logger.info("LLM streaming request was interrupted")
+                        return
+                
+                # Create a mock response for token tracking
+                response = {
+                    "choices": [{"message": {"content": response_text}}],
+                    "usage": {"prompt_tokens": len(prompt) // 4, "completion_tokens": len(response_text) // 4}
+                }
+                
+                # Record end time for performance metrics
+                end_time = time.time()
+                
+                # Process response as normal
+                self._process_response(response, response_text, prompt, start_time, end_time)
+                
+                return
+            
             # Prepare request based on provider
             if self.provider == "openai":
-                response = self._send_openai_request(prompt, system_message, temperature, max_tokens)
+                response = self._send_openai_request(prompt, system_message, temperature, max_tokens, functions)
             elif self.provider == "anthropic":
                 response = self._send_anthropic_request(prompt, system_message, temperature, max_tokens)
             elif self.provider == "local":
@@ -264,38 +592,35 @@ class LLMManager(QObject):
             
             # Process response
             if response:
+                # Check for function call
+                if use_functions and self.provider == "openai":
+                    message = response.get("choices", [{}])[0].get("message", {})
+                    if "function_call" in message:
+                        # Handle function call
+                        result = self._handle_function_call(response)
+                        
+                        # Extract response text (function call description)
+                        function_name = message["function_call"]["name"]
+                        arguments = json.loads(message["function_call"]["arguments"])
+                        
+                        # Create a human-readable description of the function call
+                        response_text = f"I'll {function_name.replace('_', ' ')} with the following parameters:\n"
+                        response_text += json.dumps(arguments, indent=2)
+                        response_text += f"\n\nResult: {json.dumps(result, indent=2)}"
+                        
+                        # Process response
+                        self._process_response(response, response_text, prompt, start_time, end_time)
+                        
+                        # Emit function call signal
+                        self.llm_function_called.emit(function_name, arguments, result)
+                        
+                        return
+                
                 # Extract response text
                 response_text = self._extract_response_text(response)
                 
-                # Track token usage
-                self.track_token_usage(response)
-                
-                # Track performance metrics
-                prompt_length = len(prompt)
-                response_length = len(response_text)
-                tokens = self._get_token_count_from_response(response)
-                self._track_performance_metrics(start_time, end_time, prompt_length, response_length, tokens)
-                
-                # Check for ambiguity in the response
-                if not self._handle_ambiguity(prompt, response_text):
-                    # If not ambiguous, proceed with normal processing
-                    
-                    # Parse actions from response
-                    actions = self.parse_actions(response_text)
-                    
-                    # Emit action signals if actions were found
-                    for action in actions:
-                        action_type = action.get("action")
-                        parameters = action.get("parameters", {})
-                        self.llm_action_requested.emit(action_type, parameters)
-                    
-                    # Save project state after LLM operation
-                    self._save_version_after_operation(response_text)
-                    
-                    # Emit response signal
-                    self.llm_response_received.emit(response_text, response)
-                # Note: If ambiguous, the _handle_ambiguity method will emit the llm_ambiguity signal
-                # and the dialog will handle it
+                # Process response
+                self._process_response(response, response_text, prompt, start_time, end_time)
             else:
                 self.llm_error.emit("No response from LLM")
         
@@ -310,6 +635,45 @@ class LLMManager(QObject):
             
             # Emit ready signal
             self.llm_ready.emit()
+    
+    def _process_response(self, response, response_text, prompt, start_time, end_time):
+        """
+        Process an LLM response.
+        
+        Args:
+            response (dict): API response.
+            response_text (str): Extracted response text.
+            prompt (str): Original prompt.
+            start_time (float): Request start time.
+            end_time (float): Request end time.
+        """
+        # Track token usage
+        self.track_token_usage(response)
+        
+        # Track performance metrics
+        prompt_length = len(prompt)
+        response_length = len(response_text)
+        tokens = self._get_token_count_from_response(response)
+        self._track_performance_metrics(start_time, end_time, prompt_length, response_length, tokens)
+        
+        # Check for ambiguity in the response
+        if not self._handle_ambiguity(prompt, response_text):
+            # If not ambiguous, proceed with normal processing
+            
+            # Parse actions from response
+            actions = self.parse_actions(response_text)
+            
+            # Emit action signals if actions were found
+            for action in actions:
+                action_type = action.get("action")
+                parameters = action.get("parameters", {})
+                self.llm_action_requested.emit(action_type, parameters)
+            
+            # Save project state after LLM operation
+            self._save_version_after_operation(response_text)
+            
+            # Emit response signal
+            self.llm_response_received.emit(response_text, response)
     
     def _save_version_before_operation(self, prompt):
         """
@@ -338,7 +702,7 @@ class LLMManager(QObject):
             reason = f"After LLM: {short_response}"
             self.app.autosave_manager.save_version(reason)
     
-    def _send_openai_request(self, prompt, system_message, temperature, max_tokens):
+    def _send_openai_request(self, prompt, system_message, temperature, max_tokens, functions=None):
         """
         Send a request to the OpenAI API.
         
@@ -347,6 +711,7 @@ class LLMManager(QObject):
             system_message (str): System message.
             temperature (float): Temperature parameter.
             max_tokens (int): Maximum tokens in the response.
+            functions (list, optional): List of function definitions.
         
         Returns:
             dict: API response, or None if the request failed.
@@ -369,6 +734,11 @@ class LLMManager(QObject):
                 "temperature": temperature,
                 "max_tokens": max_tokens
             }
+            
+            # Add functions if provided
+            if functions:
+                data["functions"] = functions
+                data["function_call"] = "auto"
             
             # Send request
             response = requests.post(url, headers=headers, json=data, timeout=60)
@@ -759,6 +1129,45 @@ class LLMManager(QObject):
         self.interrupt_requested = True
         self.llm_interrupted.emit()
         return True
+    
+    def _handle_function_call(self, response):
+        """
+        Handle a function call from the LLM.
+        
+        Args:
+            response (dict): API response containing a function call.
+        
+        Returns:
+            dict: Result of the function call.
+        """
+        try:
+            # Extract function call
+            message = response["choices"][0]["message"]
+            function_call = message.get("function_call")
+            
+            if not function_call:
+                return {"success": False, "error": "No function call in response"}
+            
+            # Extract function name and arguments
+            function_name = function_call.get("name")
+            arguments_str = function_call.get("arguments", "{}")
+            
+            try:
+                arguments = json.loads(arguments_str)
+            except json.JSONDecodeError:
+                return {"success": False, "error": f"Invalid function arguments: {arguments_str}"}
+            
+            # Log function call
+            self.logger.info(f"Function call: {function_name}({arguments})")
+            
+            # Execute function
+            result = self.execute_action(function_name, arguments)
+            
+            return result
+        
+        except Exception as e:
+            self.logger.error(f"Error handling function call: {e}")
+            return {"success": False, "error": str(e)}
     
     def parse_actions(self, response_text):
         """

@@ -74,16 +74,12 @@ This document tracks the implementation status of the LLM integration for Sequen
    - ✅ Created diagnostic tools for troubleshooting
    - ✅ Improved error handling and reporting
 
-2. **Function Calling Integration**
-   - Implement OpenAI function calling for more structured interactions
-   - Create function schemas for common operations
-   - Add support for streaming responses
-   - Enhance the UI to display structured responses
-
-2. **Function Calling Integration**
-   - Implement OpenAI function calling for more structured interactions
-   - Create function schemas for common operations
-   - Add support for streaming responses
+2. ✅ **Function Calling Integration**
+   - ✅ Implemented OpenAI function calling for more structured interactions
+   - ✅ Created function schemas for timeline and audio operations
+   - ✅ Added support for streaming responses
+   - ✅ Enhanced the UI to display structured responses
+   - ✅ Added LLM diagnostics dialog for performance monitoring
 
 3. **User Customization**
    - Allow users to define custom instructions for the LLM
