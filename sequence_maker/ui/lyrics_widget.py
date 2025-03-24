@@ -490,7 +490,7 @@ class LyricsDisplayWidget(QWidget):
             
             # Draw the word
             painter.setFont(self.word_font)
-            painter.setPen(QPen(QColor(0, 0, 0)))  # Black color for words
+            painter.setPen(QPen(QColor(128, 128, 128)))  # Light grey color for words
             painter.drawText(word_rect, Qt.AlignmentFlag.AlignCenter, timestamp.word)
     
     def mousePressEvent(self, event):
