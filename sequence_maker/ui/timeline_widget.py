@@ -80,12 +80,24 @@ class TimelineWidget(QWidget):
         
         # Segment editing
         self.copied_segment = None
+        
+        # Dragging state variables
         self.dragging_segment = False
+        self.drag_start_mouse_pos = None
+        self.drag_segment_initial_start_time = None
+        self.drag_segment_initial_end_time = None
+        
+        # Resizing state variables
         self.resizing_segment = False
-        self.dragging_boundary = False  # New state for dragging boundaries
         self.resize_edge = None  # "left" or "right"
-        self.drag_start_pos = None
-        self.drag_start_time = None
+        self.resize_start_mouse_pos = None
+        self.resize_segment_initial_start_time = None
+        self.resize_segment_initial_end_time = None
+        
+        # Boundary dragging state variables
+        self.dragging_boundary = False
+        self.drag_boundary_start_pos = None
+        self.drag_boundary_start_time = None
         self.drag_boundary_segments = (None, None)  # (left_segment, right_segment) for boundary dragging
         
         # Create UI
@@ -1318,11 +1330,14 @@ class TimelineContainer(QWidget):
                         
                         # Start dragging boundary
                         self.parent_widget.dragging_boundary = True
-                        self.parent_widget.drag_start_pos = event.pos()
-                        self.parent_widget.drag_start_time = time
+                        self.parent_widget.drag_boundary_start_pos = event.pos()
+                        self.parent_widget.drag_boundary_start_time = time
                         
                         # Store boundary segments for dragging
                         self.parent_widget.drag_boundary_segments = (left_segment, right_segment)
+                        
+                        # Log for debugging
+                        self.logger.debug(f"Dragging boundary at time {time:.3f}s between segments")
                         
                         # Start drag operation in timeline manager to handle undo/redo properly
                         self.app.timeline_manager.start_drag_operation()
@@ -1338,21 +1353,14 @@ class TimelineContainer(QWidget):
                             # Start resizing segment
                             self.parent_widget.resizing_segment = True
                             self.parent_widget.resize_edge = edge
-                            self.parent_widget.drag_start_pos = event.pos()
-
-                            # Clearly differentiate left and right edge
-                            if edge == "left":
-                                self.parent_widget.drag_start_time = segment.start_time
-                            elif edge == "right":
-                                self.parent_widget.drag_start_time = segment.end_time
-
-                            # Explicitly store original boundaries correctly
-                            self.parent_widget.original_segment_start = segment.start_time
-                            self.parent_widget.original_segment_end = segment.end_time
-
+                            self.parent_widget.resize_start_mouse_pos = event.pos()
+                            
+                            # Store initial segment boundaries
+                            self.parent_widget.resize_segment_initial_start_time = segment.start_time
+                            self.parent_widget.resize_segment_initial_end_time = segment.end_time
+                            
                             # Log for debugging
-                            self.logger.debug(f"Resizing segment {edge} edge: drag_start_time={self.parent_widget.drag_start_time:.3f}s")
-                            self.logger.debug(f"Original segment boundaries: {segment.start_time:.3f}s-{segment.end_time:.3f}s")
+                            self.logger.debug(f"Resizing segment {edge} edge: initial_boundaries={segment.start_time:.3f}s-{segment.end_time:.3f}s")
                             
                             # Start drag operation in timeline manager to handle undo/redo properly
                             self.app.timeline_manager.start_drag_operation()
@@ -1362,11 +1370,15 @@ class TimelineContainer(QWidget):
                         else:
                             # Start dragging segment
                             self.parent_widget.dragging_segment = True
-                        self.parent_widget.drag_start_pos = event.pos()
-                        self.parent_widget.drag_start_time = segment.start_time
-                        
-                        # Start drag operation in timeline manager to handle undo/redo properly
-                        self.app.timeline_manager.start_drag_operation()
+                            self.parent_widget.drag_start_mouse_pos = event.pos()
+                            self.parent_widget.drag_segment_initial_start_time = segment.start_time
+                            self.parent_widget.drag_segment_initial_end_time = segment.end_time
+                            
+                            # Log for debugging
+                            self.logger.debug(f"Dragging segment: initial_boundaries={segment.start_time:.3f}s-{segment.end_time:.3f}s")
+                            
+                            # Start drag operation in timeline manager to handle undo/redo properly
+                            self.app.timeline_manager.start_drag_operation()
                         
                         # Set cursor
                         self.setCursor(Qt.CursorShape.ClosedHandCursor)
@@ -1445,11 +1457,14 @@ class TimelineContainer(QWidget):
         elif self.parent_widget.dragging_boundary:
             # Calculate time difference
             time_diff = (
-                event.pos().x() - self.parent_widget.drag_start_pos.x()
+                event.pos().x() - self.parent_widget.drag_boundary_start_pos.x()
             ) / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
             # Calculate new time
-            new_time = self.parent_widget.drag_start_time + time_diff
+            new_time = self.parent_widget.drag_boundary_start_time + time_diff
+            
+            # Log for debugging
+            self.logger.debug(f"Dragging boundary: diff={time_diff:.3f}s, new_time={new_time:.3f}s")
             
             # Ensure time is not negative
             if new_time < 0:
@@ -1522,22 +1537,25 @@ class TimelineContainer(QWidget):
                         self.app.main_window.boundary_editor_time = new_time
             
         elif self.parent_widget.dragging_segment:
-            # Calculate time difference
+            # Calculate time difference based on mouse movement
             time_diff = (
-                event.pos().x() - self.parent_widget.drag_start_pos.x()
+                event.pos().x() - self.parent_widget.drag_start_mouse_pos.x()
             ) / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
-            # Calculate new start and end times
-            new_start_time = self.parent_widget.drag_start_time + time_diff
-            new_end_time = self.parent_widget.selected_segment.end_time + time_diff
+            # Calculate new start and end times based on initial positions
+            new_start_time = self.parent_widget.drag_segment_initial_start_time + time_diff
+            new_end_time = self.parent_widget.drag_segment_initial_end_time + time_diff
+            
+            # Log for debugging
+            self.logger.debug(f"Dragging segment: diff={time_diff:.3f}s, new_boundaries={new_start_time:.3f}s-{new_end_time:.3f}s")
             
             # Ensure start time is not negative
             if new_start_time < 0:
-                time_diff -= new_start_time
+                time_shift = -new_start_time
                 new_start_time = 0
-                new_end_time = self.parent_widget.selected_segment.end_time + time_diff
+                new_end_time += time_shift  # Shift end time by same amount to maintain segment duration
             
-            # Update segment
+            # Update segment position (without changing duration!)
             self.app.timeline_manager.modify_segment(
                 timeline=self.parent_widget.selected_timeline,
                 segment=self.parent_widget.selected_segment,
@@ -1548,27 +1566,26 @@ class TimelineContainer(QWidget):
         elif self.parent_widget.resizing_segment:
             # Calculate time difference based on mouse movement
             time_diff = (
-                event.pos().x() - self.parent_widget.drag_start_pos.x()
+                event.pos().x() - self.parent_widget.resize_start_mouse_pos.x()
             ) / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
             # Log for debugging
-            self.logger.debug(f"Resizing {self.parent_widget.resize_edge} edge: drag_start_time={self.parent_widget.drag_start_time:.3f}s, " +
-                             f"diff={time_diff:.3f}s")
+            self.logger.debug(f"Resizing {self.parent_widget.resize_edge} edge: diff={time_diff:.3f}s")
             
             # Define minimum segment width
             min_segment_width = 0.05  # Minimum segment width in seconds
             
             # Clearly differentiate edges
             if self.parent_widget.resize_edge == "left":
-                # Calculate new start time based on original start time plus movement
-                new_start_time = self.parent_widget.original_segment_start + time_diff
+                # Calculate new start time based on initial start time plus movement
+                new_start_time = self.parent_widget.resize_segment_initial_start_time + time_diff
                 
                 # Log for debugging
-                self.logger.debug(f"Left edge: new_start_time={new_start_time:.3f}s, original_end={self.parent_widget.original_segment_end:.3f}s")
+                self.logger.debug(f"Left edge: new_start_time={new_start_time:.3f}s, initial_end={self.parent_widget.resize_segment_initial_end_time:.3f}s")
                 
                 # Prevent collapsing and ensure minimum width
-                if new_start_time >= self.parent_widget.original_segment_end - min_segment_width:
-                    new_start_time = self.parent_widget.original_segment_end - min_segment_width
+                if new_start_time >= self.parent_widget.resize_segment_initial_end_time - min_segment_width:
+                    new_start_time = self.parent_widget.resize_segment_initial_end_time - min_segment_width
                     self.logger.debug(f"Preventing left edge from passing end: capped at {new_start_time:.3f}s")
                 
                 # Ensure time is not negative
@@ -1584,15 +1601,15 @@ class TimelineContainer(QWidget):
                 )
                 
             elif self.parent_widget.resize_edge == "right":
-                # Calculate new end time based on original end time plus movement
-                new_end_time = self.parent_widget.original_segment_end + time_diff
+                # Calculate new end time based on initial end time plus movement
+                new_end_time = self.parent_widget.resize_segment_initial_end_time + time_diff
                 
                 # Log for debugging
-                self.logger.debug(f"Right edge: new_end_time={new_end_time:.3f}s, original_start={self.parent_widget.original_segment_start:.3f}s")
+                self.logger.debug(f"Right edge: new_end_time={new_end_time:.3f}s, initial_start={self.parent_widget.resize_segment_initial_start_time:.3f}s")
                 
                 # Prevent collapsing and ensure minimum width
-                if new_end_time <= self.parent_widget.original_segment_start + min_segment_width:
-                    new_end_time = self.parent_widget.original_segment_start + min_segment_width
+                if new_end_time <= self.parent_widget.resize_segment_initial_start_time + min_segment_width:
+                    new_end_time = self.parent_widget.resize_segment_initial_start_time + min_segment_width
                     self.logger.debug(f"Preventing right edge from passing start: capped at {new_end_time:.3f}s")
                 
                 # Update segment with new end time
@@ -1679,11 +1696,27 @@ class TimelineContainer(QWidget):
         was_resizing = self.parent_widget.resizing_segment
         was_dragging_boundary = self.parent_widget.dragging_boundary
         
-        # Reset dragging flags
+        # Reset all state variables
+        # Dragging position
         self.parent_widget.dragging_position = False
+        
+        # Dragging segment
         self.parent_widget.dragging_segment = False
+        self.parent_widget.drag_start_mouse_pos = None
+        self.parent_widget.drag_segment_initial_start_time = None
+        self.parent_widget.drag_segment_initial_end_time = None
+        
+        # Resizing segment
         self.parent_widget.resizing_segment = False
+        self.parent_widget.resize_edge = None
+        self.parent_widget.resize_start_mouse_pos = None
+        self.parent_widget.resize_segment_initial_start_time = None
+        self.parent_widget.resize_segment_initial_end_time = None
+        
+        # Boundary dragging
         self.parent_widget.dragging_boundary = False
+        self.parent_widget.drag_boundary_start_pos = None
+        self.parent_widget.drag_boundary_start_time = None
         self.parent_widget.drag_boundary_segments = (None, None)
         
         # End drag operation in timeline manager if we were dragging or resizing
