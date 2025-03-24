@@ -1535,7 +1535,7 @@ class TimelineContainer(QWidget):
                     # Update stored boundary time in main window
                     if hasattr(self.app.main_window, 'boundary_editor_time'):
                         self.app.main_window.boundary_editor_time = new_time
-            
+        
         elif self.parent_widget.dragging_segment:
             # Calculate time difference based on mouse movement
             time_diff = (
@@ -1562,6 +1562,16 @@ class TimelineContainer(QWidget):
                 start_time=new_start_time,
                 end_time=new_end_time
             )
+            
+            # Display real-time segment info in status bar
+            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
+                start_time_str = self.app.main_window._format_seconds_to_hms(
+                    new_start_time, include_hundredths=True, hide_hours_if_zero=True)
+                end_time_str = self.app.main_window._format_seconds_to_hms(
+                    new_end_time, include_hundredths=True, hide_hours_if_zero=True)
+
+                self.app.main_window.statusbar.showMessage(
+                    f"Segment: {start_time_str} - {end_time_str}")
         
         elif self.parent_widget.resizing_segment:
             # Calculate time difference based on mouse movement
@@ -1618,6 +1628,26 @@ class TimelineContainer(QWidget):
                     segment=self.parent_widget.selected_segment,
                     end_time=new_end_time
                 )
+            
+            # Display real-time segment info in status bar during resizing
+            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
+                # Determine current start/end based on resize edge
+                if self.parent_widget.resize_edge == "left":
+                    updated_start_time = new_start_time
+                    updated_end_time = self.parent_widget.resize_segment_initial_end_time
+                else:
+                    updated_start_time = self.parent_widget.resize_segment_initial_start_time
+                    updated_end_time = new_end_time
+                
+                # Format times for display
+                start_time_str = self.app.main_window._format_seconds_to_hms(
+                    updated_start_time, include_hundredths=True, hide_hours_if_zero=True)
+                end_time_str = self.app.main_window._format_seconds_to_hms(
+                    updated_end_time, include_hundredths=True, hide_hours_if_zero=True)
+                
+                # Show in status bar
+                self.app.main_window.statusbar.showMessage(
+                    f"Segment: {start_time_str} - {end_time_str}")
         
         else:
             # Update cursor based on mouse position
@@ -1696,6 +1726,10 @@ class TimelineContainer(QWidget):
         was_resizing = self.parent_widget.resizing_segment
         was_dragging_boundary = self.parent_widget.dragging_boundary
         
+        # Store the moved segment and timeline for overlap resolution
+        moved_segment = self.parent_widget.selected_segment if (was_dragging or was_resizing) else None
+        timeline = self.parent_widget.selected_timeline if (was_dragging or was_resizing) else None
+        
         # Reset all state variables
         # Dragging position
         self.parent_widget.dragging_position = False
@@ -1745,9 +1779,68 @@ class TimelineContainer(QWidget):
                         )
                 except Exception as e:
                     print(f"Error updating boundary after drag: {e}")
+            
+            # Resolve segment overlaps if we were dragging or resizing a segment
+            if (was_dragging or was_resizing) and moved_segment and timeline:
+                self._resolve_segment_overlap(moved_segment, timeline)
         
         # Reset cursor
         self.setCursor(Qt.CursorShape.ArrowCursor)
+    
+    def _resolve_segment_overlap(self, moved_segment, timeline):
+        """
+        Resolve overlaps between the moved segment and other segments in the timeline.
+        
+        Args:
+            moved_segment: The segment that was moved or resized.
+            timeline: The timeline containing the segments.
+        """
+        # Get all segments in the timeline
+        segments = timeline.segments
+        
+        # Skip if there are no segments or only one segment
+        if not segments or len(segments) <= 1:
+            return
+        
+        # Sort segments by start time for easier processing
+        sorted_segments = sorted(segments, key=lambda s: s.start_time)
+        
+        for segment in sorted_segments:
+            # Skip the moved segment
+            if segment == moved_segment:
+                continue
+            
+            # Check for overlap
+            if not (moved_segment.end_time <= segment.start_time or moved_segment.start_time >= segment.end_time):
+                # Segments overlap
+                
+                # If segment is to the left of moved_segment
+                if segment.start_time < moved_segment.start_time:
+                    # Resize segment end to not overlap
+                    new_end_time = min(segment.end_time, moved_segment.start_time)
+                    if new_end_time <= segment.start_time:
+                        # Delete if completely covered
+                        self.app.timeline_manager.remove_segment(timeline, segment)
+                    else:
+                        self.app.timeline_manager.modify_segment(
+                            timeline=timeline,
+                            segment=segment,
+                            end_time=new_end_time
+                        )
+                
+                # If segment is to the right of moved_segment
+                else:
+                    # Resize segment start to not overlap
+                    new_start_time = max(segment.start_time, moved_segment.end_time)
+                    if new_start_time >= segment.end_time:
+                        # Delete if completely covered
+                        self.app.timeline_manager.remove_segment(timeline, segment)
+                    else:
+                        self.app.timeline_manager.modify_segment(
+                            timeline=timeline,
+                            segment=segment,
+                            start_time=new_start_time
+                        )
     
     def mouseDoubleClickEvent(self, event):
         """
