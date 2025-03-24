@@ -74,6 +74,9 @@ class TimelineWidget(QWidget):
         self.dragging_position = False
         self.selected_timeline = None
         self.selected_segment = None
+        self.selected_boundary = None  # For selecting the line between segments
+        self.selected_boundary_time = None  # Time value of the selected boundary
+        self.selected_boundary_segments = (None, None)  # (left_segment, right_segment)
         
         # Segment editing
         self.copied_segment = None
@@ -262,6 +265,11 @@ class TimelineWidget(QWidget):
             timeline: Timeline containing the segment.
             segment: Segment to select.
         """
+        # Clear any boundary selection
+        self.selected_boundary = False
+        self.selected_boundary_time = None
+        self.selected_boundary_segments = (None, None)
+        
         self.selected_timeline = timeline
         self.selected_segment = segment
         
@@ -272,8 +280,60 @@ class TimelineWidget(QWidget):
         self.selection_changed.emit(timeline, segment)
         
         # Show segment editor in main window
-        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'show_segment_editor'):
-            self.app.main_window.show_segment_editor(timeline, segment)
+        if hasattr(self.app, 'main_window'):
+            # Hide boundary editor if visible
+            if hasattr(self.app.main_window, 'hide_boundary_editor'):
+                self.app.main_window.hide_boundary_editor()
+            
+            # Show segment editor
+            if hasattr(self.app.main_window, 'show_segment_editor'):
+                self.app.main_window.show_segment_editor(timeline, segment)
+        
+        # Redraw
+        self.timeline_container.update()
+    
+    def select_boundary(self, timeline, time, left_segment, right_segment):
+        """
+        Select a boundary between two segments.
+        
+        Args:
+            timeline: Timeline containing the segments.
+            time: Time position of the boundary.
+            left_segment: Segment to the left of the boundary.
+            right_segment: Segment to the right of the boundary.
+        """
+        # Check if this boundary is already selected (for toggle behavior)
+        if (self.selected_boundary and
+            self.selected_boundary_time == time and
+            self.selected_boundary_segments == (left_segment, right_segment)):
+            # Deselect the boundary
+            self.clear_selection()
+            return
+        
+        # Clear any segment selection
+        self.selected_segment = None
+        
+        # Set boundary selection
+        self.selected_timeline = timeline
+        self.selected_boundary = True
+        self.selected_boundary_time = time
+        self.selected_boundary_segments = (left_segment, right_segment)
+        
+        # Update timeline manager - clear segment selection
+        self.app.timeline_manager.clear_selection()
+        
+        # Show boundary editor in main window
+        if hasattr(self.app, 'main_window'):
+            # Hide segment editor if visible
+            if hasattr(self.app.main_window, 'hide_segment_editor'):
+                self.app.main_window.hide_segment_editor()
+            
+            # Show boundary editor
+            if hasattr(self.app.main_window, 'show_boundary_editor'):
+                self.app.main_window.show_boundary_editor(timeline, time, left_segment, right_segment)
+        
+        # Emit signal
+        self.selection_changed.emit(timeline, None)
         
         # Redraw
         self.timeline_container.update()
@@ -282,13 +342,19 @@ class TimelineWidget(QWidget):
         """Clear the current selection."""
         self.selected_timeline = None
         self.selected_segment = None
+        self.selected_boundary = False
+        self.selected_boundary_time = None
+        self.selected_boundary_segments = (None, None)
         
         # Update timeline manager
         self.app.timeline_manager.clear_selection()
         
-        # Hide segment editor in main window
-        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'hide_segment_editor'):
-            self.app.main_window.hide_segment_editor()
+        # Hide editors in main window
+        if hasattr(self.app, 'main_window'):
+            if hasattr(self.app.main_window, 'hide_segment_editor'):
+                self.app.main_window.hide_segment_editor()
+            if hasattr(self.app.main_window, 'hide_boundary_editor'):
+                self.app.main_window.hide_boundary_editor()
         
         # Emit signal
         self.selection_changed.emit(None, None)
@@ -1003,12 +1069,31 @@ class TimelineContainer(QWidget):
             # Draw segment border
             if segment == self.parent_widget.selected_segment:
                 # Selected segment
-                painter.setPen(QPen(QColor(0, 0, 0), 2))
+                painter.setPen(QPen(QColor(255, 255, 255), 2))  # White, 2px wide
             else:
                 # Normal segment
-                painter.setPen(QPen(QColor(0, 0, 0), 1))
+                painter.setPen(QPen(QColor(0, 0, 0), 1))  # Black, 1px wide
             
             painter.drawRect(segment_rect)
+            
+            # Draw bold line for selected boundary
+            if self.parent_widget.selected_boundary:
+                left_segment, right_segment = self.parent_widget.selected_boundary_segments
+                boundary_time = self.parent_widget.selected_boundary_time
+                
+                # Check if this segment is part of the selected boundary
+                if segment == left_segment or segment == right_segment:
+                    # Calculate boundary position
+                    boundary_x = int(boundary_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
+                    
+                    # Draw bold line at boundary - match the height of the segment
+                    painter.setPen(QPen(QColor(255, 255, 255), 3))  # White, 3px wide
+                    painter.drawLine(
+                        boundary_x,
+                        segment_rect.top(),  # Start at the top of the segment
+                        boundary_x,
+                        segment_rect.bottom()  # End at the bottom of the segment
+                    )
             
             # Note: Color name labels removed as requested by user
     
@@ -1130,11 +1215,12 @@ class TimelineContainer(QWidget):
             pos: QPoint position.
         
         Returns:
-            tuple: (segment, edge) or (None, None) if no segment at position.
+            tuple: (segment, edge, boundary_info) or (None, None, None) if no segment at position.
             edge can be "left", "right", or None.
+            boundary_info is (time, left_segment, right_segment) or None.
         """
         if not timeline:
-            return None, None
+            return None, None, None
         
         # Get segments
         segments = timeline.segments
@@ -1154,17 +1240,39 @@ class TimelineContainer(QWidget):
             
             # Check left edge
             if abs(pos.x() - start_x) <= edge_threshold:
-                edge_segments.append((segment, "left", abs(pos.x() - start_x)))
+                edge_segments.append((segment, "left", abs(pos.x() - start_x), segment.start_time))
             
             # Check right edge
             if abs(pos.x() - end_x) <= edge_threshold:
-                edge_segments.append((segment, "right", abs(pos.x() - end_x)))
+                edge_segments.append((segment, "right", abs(pos.x() - end_x), segment.end_time))
         
         # If we found edges, return the closest one
         if edge_segments:
             # Sort by distance (third element in tuple)
             edge_segments.sort(key=lambda x: x[2])
-            return edge_segments[0][0], edge_segments[0][1]
+            
+            closest_segment = edge_segments[0][0]
+            closest_edge = edge_segments[0][1]
+            closest_time = edge_segments[0][3]
+            
+            # Check if this is a boundary between two segments
+            if closest_edge == "right":
+                # Find if there's a segment that starts exactly where this one ends
+                for segment in segments:
+                    if segment != closest_segment and abs(segment.start_time - closest_time) < 0.001:
+                        # This is a boundary between two segments
+                        boundary_info = (closest_time, closest_segment, segment)
+                        return closest_segment, closest_edge, boundary_info
+            elif closest_edge == "left":
+                # Find if there's a segment that ends exactly where this one starts
+                for segment in segments:
+                    if segment != closest_segment and abs(segment.end_time - closest_time) < 0.001:
+                        # This is a boundary between two segments
+                        boundary_info = (closest_time, segment, closest_segment)
+                        return closest_segment, closest_edge, boundary_info
+            
+            # Not a boundary, just a regular edge
+            return closest_segment, closest_edge, None
         
         # If no edges found, check if position is inside any segment
         for segment in segments:
@@ -1173,9 +1281,9 @@ class TimelineContainer(QWidget):
             
             # Check if position is in segment
             if start_x <= pos.x() <= end_x:
-                return segment, None
+                return segment, None, None
         
-        return None, None
+        return None, None, None
     
     def mousePressEvent(self, event):
         """
@@ -1190,30 +1298,36 @@ class TimelineContainer(QWidget):
             
             if timeline:
                 # Get segment at position
-                segment, edge = self._get_segment_at_pos(timeline, event.pos())
+                segment, edge, boundary_info = self._get_segment_at_pos(timeline, event.pos())
                 
                 if segment:
-                    # Select segment
-                    self.parent_widget.select_segment(timeline, segment)
-                    
-                    # Check if clicking on edge
-                    if edge:
-                        # Start resizing segment
-                        self.parent_widget.resizing_segment = True
-                        self.parent_widget.resize_edge = edge
-                        self.parent_widget.drag_start_pos = event.pos()
-                        self.parent_widget.drag_start_time = (
-                            segment.start_time if edge == "left" else segment.end_time
-                        )
-                        
-                        # Start drag operation in timeline manager to handle undo/redo properly
-                        self.app.timeline_manager.start_drag_operation()
-                        
-                        # Set cursor
-                        self.setCursor(Qt.CursorShape.SizeHorCursor)
+                    # Check if clicking on a boundary between segments
+                    if boundary_info:
+                        # Select the boundary
+                        time, left_segment, right_segment = boundary_info
+                        self.parent_widget.select_boundary(timeline, time, left_segment, right_segment)
                     else:
-                        # Start dragging segment
-                        self.parent_widget.dragging_segment = True
+                        # Select segment
+                        self.parent_widget.select_segment(timeline, segment)
+                        
+                        # Check if clicking on edge
+                        if edge:
+                            # Start resizing segment
+                            self.parent_widget.resizing_segment = True
+                            self.parent_widget.resize_edge = edge
+                            self.parent_widget.drag_start_pos = event.pos()
+                            self.parent_widget.drag_start_time = (
+                                segment.start_time if edge == "left" else segment.end_time
+                            )
+                            
+                            # Start drag operation in timeline manager to handle undo/redo properly
+                            self.app.timeline_manager.start_drag_operation()
+                            
+                            # Set cursor
+                            self.setCursor(Qt.CursorShape.SizeHorCursor)
+                        else:
+                            # Start dragging segment
+                            self.parent_widget.dragging_segment = True
                         self.parent_widget.drag_start_pos = event.pos()
                         self.parent_widget.drag_start_time = segment.start_time
                         
@@ -1390,22 +1504,22 @@ class TimelineContainer(QWidget):
             timeline, y_offset = self._get_timeline_at_pos(event.pos())
             
             if timeline:
-                segment, edge = self._get_segment_at_pos(timeline, event.pos())
+                segment, edge, boundary_info = self._get_segment_at_pos(timeline, event.pos())
                 
                 if segment:
-                    if edge:
+                    if boundary_info:
+                        # Mouse over boundary between segments
+                        self.setCursor(Qt.CursorShape.SizeHorCursor)
+                    elif edge:
                         # Mouse over segment edge
                         self.setCursor(Qt.CursorShape.SizeHorCursor)
                     else:
                         # Mouse over segment
                         self.setCursor(Qt.CursorShape.OpenHandCursor)
                     
-                    # Display segment information in status bar only if no segment is selected
-                    # (otherwise the segment editor is shown and should take precedence)
-                    if (hasattr(self.app, 'main_window') and
-                        hasattr(self.app.main_window, 'statusbar') and
-                        hasattr(self.app.main_window, 'segment_editor_container') and
-                        not self.app.main_window.segment_editor_container.isVisible()):
+                    # Display segment information in status bar when hovering over segments
+                    # This should work even when a segment is selected
+                    if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
                         
                         # Format start and end times
                         start_time_str = self.app.main_window._format_seconds_to_hms(

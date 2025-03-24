@@ -450,6 +450,12 @@ class MainWindow(QMainWindow):
         segment_editor_layout.setContentsMargins(5, 0, 5, 0)
         segment_editor_layout.setSpacing(10)
         
+        # Create boundary editor container (initially hidden)
+        self.boundary_editor_container = QWidget()
+        boundary_editor_layout = QHBoxLayout(self.boundary_editor_container)
+        boundary_editor_layout.setContentsMargins(5, 0, 5, 0)
+        boundary_editor_layout.setSpacing(10)
+        
         # Start time editor
         start_time_label = QLabel("Start:")
         start_time_label.setFixedWidth(40)
@@ -517,9 +523,36 @@ class MainWindow(QMainWindow):
         self.apply_segment_button.clicked.connect(self._on_apply_segment_changes)
         segment_editor_layout.addWidget(self.apply_segment_button)
         
+        # Boundary time editor
+        boundary_time_label = QLabel("Boundary Time:")
+        boundary_time_label.setFixedWidth(100)
+        boundary_editor_layout.addWidget(boundary_time_label)
+        
+        self.boundary_time_input = QLineEdit()
+        self.boundary_time_input.setFixedWidth(90)
+        self.boundary_time_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.boundary_time_input.setValidator(validator)  # Reuse the same time validator
+        boundary_editor_layout.addWidget(self.boundary_time_input)
+        
+        # Apply button
+        self.apply_boundary_button = QPushButton("Apply")
+        self.apply_boundary_button.setToolTip("Apply changes to the boundary time")
+        self.apply_boundary_button.setFixedWidth(60)
+        self.apply_boundary_button.clicked.connect(self._on_apply_boundary_changes)
+        boundary_editor_layout.addWidget(self.apply_boundary_button)
+        
+        # Add spacer to push everything to the left
+        boundary_spacer = QWidget()
+        boundary_spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        boundary_editor_layout.addWidget(boundary_spacer)
+        
         # Add the segment editor container to the status bar (initially hidden)
         self.statusbar.addWidget(self.segment_editor_container)
         self.segment_editor_container.setVisible(False)
+        
+        # Add the boundary editor container to the status bar (initially hidden)
+        self.statusbar.addWidget(self.boundary_editor_container)
+        self.boundary_editor_container.setVisible(False)
         
         # Connect signals for segment editor fields
         self.segment_start_input.editingFinished.connect(self._on_segment_time_changed)
@@ -527,6 +560,9 @@ class MainWindow(QMainWindow):
         self.segment_r_input.editingFinished.connect(self._on_segment_color_changed)
         self.segment_g_input.editingFinished.connect(self._on_segment_color_changed)
         self.segment_b_input.editingFinished.connect(self._on_segment_color_changed)
+        
+        # Connect signals for boundary editor fields
+        self.boundary_time_input.editingFinished.connect(self._on_boundary_time_changed)
         self.position_label.setVisible(False)
     
     def _create_central_widget(self):
@@ -1113,8 +1149,98 @@ class MainWindow(QMainWindow):
         
         # Clear any status bar message
         self.statusbar.clearMessage()
+    def show_boundary_editor(self, timeline, time, left_segment, right_segment):
+        """
+        Show the boundary editor with the given boundary time.
+        
+        Args:
+            timeline: Timeline containing the segments.
+            time: Time position of the boundary.
+            left_segment: Segment to the left of the boundary.
+            right_segment: Segment to the right of the boundary.
+        """
+        # Format boundary time
+        time_str = self._format_seconds_to_hms(
+            time, include_hundredths=True, hide_hours_if_zero=True)
+        
+        # Set value in the editor field
+        self.boundary_time_input.setText(time_str)
+        
+        # Store references to the timeline and segments
+        self.boundary_editor_timeline = timeline
+        self.boundary_editor_time = time
+        self.boundary_editor_left_segment = left_segment
+        self.boundary_editor_right_segment = right_segment
+        
+        # Show the boundary editor
+        self.boundary_editor_container.setVisible(True)
+        
+        # Hide the segment editor if visible
+        self.segment_editor_container.setVisible(False)
+        
+        # Clear any status bar message
+        self.statusbar.clearMessage()
+    
+    def hide_boundary_editor(self):
+        """Hide the boundary editor."""
+        self.boundary_editor_container.setVisible(False)
+        self.boundary_editor_timeline = None
+        self.boundary_editor_time = None
+        self.boundary_editor_left_segment = None
+        self.boundary_editor_right_segment = None
+    
+    def _on_boundary_time_changed(self):
+        """Handle boundary time input changes."""
+        if not hasattr(self, 'boundary_editor_timeline') or not self.boundary_editor_timeline:
+            return
+        
+        try:
+            # Parse boundary time
+            time_str = self.boundary_time_input.text()
+            new_time = self._parse_time_input(time_str)
+            
+            # Validate time
+            if new_time < 0:
+                self.logger.warning("Boundary time cannot be negative")
+                # Reset to original value
+                self.boundary_time_input.setText(self._format_seconds_to_hms(
+                    self.boundary_editor_time, include_hundredths=True, hide_hours_if_zero=True))
+                return
+            
+            # Update segments
+            if self.boundary_editor_left_segment and self.boundary_editor_right_segment:
+                # Update left segment end time
+                self.app.timeline_manager.modify_segment(
+                    timeline=self.boundary_editor_timeline,
+                    segment=self.boundary_editor_left_segment,
+                    end_time=new_time
+                )
+                
+                # Update right segment start time
+                self.app.timeline_manager.modify_segment(
+                    timeline=self.boundary_editor_timeline,
+                    segment=self.boundary_editor_right_segment,
+                    start_time=new_time
+                )
+                
+                # Update stored boundary time
+                self.boundary_editor_time = new_time
+                
+                # Update the selected boundary time in the timeline widget
+                if hasattr(self.timeline_widget, 'selected_boundary_time'):
+                    self.timeline_widget.selected_boundary_time = new_time
+        except Exception as e:
+            self.logger.error(f"Error updating boundary time: {e}")
+            # Reset to original value
+            self.boundary_time_input.setText(self._format_seconds_to_hms(
+                self.boundary_editor_time, include_hundredths=True, hide_hours_if_zero=True))
+    
+    def _on_apply_boundary_changes(self):
+        """Apply boundary time changes."""
+        self._on_boundary_time_changed()
     
     def hide_segment_editor(self):
+        """Hide the segment editor."""
         """Hide the segment editor."""
         self.segment_editor_container.setVisible(False)
         self.segment_editor_timeline = None
