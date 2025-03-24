@@ -28,6 +28,7 @@ from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
 from ui.dialogs.llm_chat_window import LLMChatWindow
 from ui.dialogs.version_history_dialog import VersionHistoryDialog
+from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
 
 from api.app_context_api import AppContextAPI
 from api.timeline_action_api import TimelineActionAPI
@@ -210,6 +211,10 @@ class MainWindow(QMainWindow):
         self.llm_chat_action.setStatusTip("Open LLM chat interface")
         self.llm_chat_action.triggered.connect(self._on_llm_chat)
         
+        self.llm_diagnostics_action = QAction("LLM &Diagnostics...", self)
+        self.llm_diagnostics_action.setStatusTip("View LLM performance metrics and diagnostics")
+        self.llm_diagnostics_action.triggered.connect(self._on_llm_diagnostics)
+        
         self.process_lyrics_action = QAction("Process &Lyrics...", self)
         self.process_lyrics_action.setStatusTip("Process lyrics for the current audio")
         self.process_lyrics_action.triggered.connect(self._on_process_lyrics)
@@ -296,6 +301,7 @@ class MainWindow(QMainWindow):
         self.tools_menu.addAction(self.key_mapping_action)
         self.tools_menu.addAction(self.connect_balls_action)
         self.tools_menu.addAction(self.llm_chat_action)
+        self.tools_menu.addAction(self.llm_diagnostics_action)
         self.tools_menu.addAction(self.process_lyrics_action)
         
         # Playback menu
@@ -486,6 +492,12 @@ class MainWindow(QMainWindow):
         else:
             self.llm_chat_window.raise_()
             self.llm_chat_window.activateWindow()
+    
+    def _on_llm_diagnostics(self):
+        """Handle LLM Diagnostics action."""
+        # Create and show the LLM diagnostics dialog
+        dialog = LLMDiagnosticsDialog(self.app, self)
+        dialog.exec()
     
     def _on_version_history(self):
         """Handle Version History action."""

@@ -153,6 +153,74 @@ class LLMManager(QObject):
         
         return True
     
+    def _log_request_details(self, prompt, system_message, temperature, max_tokens):
+        """
+        Log detailed information about an LLM request.
+        
+        Args:
+            prompt (str): User prompt.
+            system_message (str): System message.
+            temperature (float): Temperature parameter.
+            max_tokens (int): Maximum tokens in the response.
+        """
+        self.logger.info(f"LLM Request Details:")
+        self.logger.info(f"Provider: {self.provider}")
+        self.logger.info(f"Model: {self.model}")
+        self.logger.info(f"Temperature: {temperature}")
+        self.logger.info(f"Max Tokens: {max_tokens}")
+        self.logger.info(f"Prompt Length: {len(prompt)} characters")
+        self.logger.info(f"System Message Length: {len(system_message)} characters")
+        
+        # Log truncated versions of prompt and system message
+        max_log_length = 100
+        prompt_truncated = prompt[:max_log_length] + "..." if len(prompt) > max_log_length else prompt
+        system_truncated = system_message[:max_log_length] + "..." if len(system_message) > max_log_length else system_message
+        
+        self.logger.info(f"Prompt (truncated): {prompt_truncated}")
+        self.logger.info(f"System Message (truncated): {system_truncated}")
+    
+    def _track_performance_metrics(self, start_time, end_time, prompt_length, response_length, tokens):
+        """
+        Track performance metrics for an LLM request.
+        
+        Args:
+            start_time (float): Request start time.
+            end_time (float): Request end time.
+            prompt_length (int): Length of the prompt in characters.
+            response_length (int): Length of the response in characters.
+            tokens (int): Number of tokens used.
+        """
+        duration = end_time - start_time
+        
+        # Log metrics
+        self.logger.info(f"LLM Request Performance Metrics:")
+        self.logger.info(f"Duration: {duration:.2f} seconds")
+        self.logger.info(f"Tokens: {tokens}")
+        self.logger.info(f"Tokens per second: {tokens / duration:.2f}")
+        self.logger.info(f"Characters per second: {response_length / duration:.2f}")
+        
+        # Store metrics in project metadata
+        if self.app.project_manager.current_project:
+            if not hasattr(self.app.project_manager.current_project, "llm_performance_metrics"):
+                self.app.project_manager.current_project.llm_performance_metrics = []
+            
+            self.app.project_manager.current_project.llm_performance_metrics.append({
+                "timestamp": datetime.now().isoformat(),
+                "duration": duration,
+                "tokens": tokens,
+                "prompt_length": prompt_length,
+                "response_length": response_length,
+                "tokens_per_second": tokens / duration,
+                "characters_per_second": response_length / duration,
+                "model": self.model,
+                "provider": self.provider
+            })
+            
+            # Mark project as changed
+            self.app.project_manager.project_changed.emit()
+            
+        self.logger.info(f"Tracked performance metrics: {duration:.2f} seconds, {tokens} tokens")
+
     def _request_worker(self, prompt, system_message, temperature, max_tokens):
         """
         Worker thread for sending requests to the language model.
@@ -170,6 +238,12 @@ class LLMManager(QObject):
             # Save project state before LLM operation
             self._save_version_before_operation(prompt)
             
+            # Log request details
+            self._log_request_details(prompt, system_message, temperature, max_tokens)
+            
+            # Record start time for performance metrics
+            start_time = time.time()
+            
             # Prepare request based on provider
             if self.provider == "openai":
                 response = self._send_openai_request(prompt, system_message, temperature, max_tokens)
@@ -179,6 +253,9 @@ class LLMManager(QObject):
                 response = self._send_local_model_request(prompt, system_message, temperature, max_tokens)
             else:
                 raise ValueError(f"Unsupported LLM provider: {self.provider}")
+            
+            # Record end time for performance metrics
+            end_time = time.time()
             
             # Check if interrupt was requested
             if self.interrupt_requested:
@@ -192,6 +269,12 @@ class LLMManager(QObject):
                 
                 # Track token usage
                 self.track_token_usage(response)
+                
+                # Track performance metrics
+                prompt_length = len(prompt)
+                response_length = len(response_text)
+                tokens = self._get_token_count_from_response(response)
+                self._track_performance_metrics(start_time, end_time, prompt_length, response_length, tokens)
                 
                 # Check for ambiguity in the response
                 if not self._handle_ambiguity(prompt, response_text):
@@ -585,6 +668,35 @@ class LLMManager(QObject):
             self.logger.warning(f"No handler for action type: {action_type}")
             return {"success": False, "error": f"Unknown action type: {action_type}"}
     
+    def _get_token_count_from_response(self, response):
+        """
+        Extract token count from API response.
+        
+        Args:
+            response (dict): API response.
+            
+        Returns:
+            int: Total token count.
+        """
+        try:
+            # Extract token usage from response based on provider
+            if self.provider == "openai":
+                prompt_tokens = response.get("usage", {}).get("prompt_tokens", 0)
+                completion_tokens = response.get("usage", {}).get("completion_tokens", 0)
+                return prompt_tokens + completion_tokens
+            elif self.provider == "anthropic":
+                return response.get("usage", {}).get("total_tokens", 0)
+            else:
+                # Estimate tokens for local models (rough approximation)
+                system_content = response.get("system", "")
+                prompt_content = response.get("prompt", "")
+                response_content = self._extract_response_text(response)
+                # Rough estimate: 1 token ≈ 4 characters
+                return (len(system_content) + len(prompt_content) + len(response_content)) // 4
+        except Exception as e:
+            self.logger.error(f"Error extracting token count: {e}")
+            return 0
+            
     def track_token_usage(self, response):
         """
         Track token usage and cost from API response.
@@ -593,15 +705,8 @@ class LLMManager(QObject):
             response (dict): API response.
         """
         try:
-            # Extract token usage from response based on provider
-            if self.provider == "openai":
-                prompt_tokens = response.get("usage", {}).get("prompt_tokens", 0)
-                completion_tokens = response.get("usage", {}).get("completion_tokens", 0)
-                total_tokens = prompt_tokens + completion_tokens
-            elif self.provider == "anthropic":
-                total_tokens = response.get("usage", {}).get("total_tokens", 0)
-            else:
-                total_tokens = 0
+            # Get total tokens
+            total_tokens = self._get_token_count_from_response(response)
                 
             # Update token usage
             self.token_usage += total_tokens

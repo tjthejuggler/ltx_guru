@@ -399,41 +399,450 @@ class VersionHistoryDialog(QDialog):
 3. ✅ Added tests for audio analysis and data extraction
 4. ✅ Integrated with LLM system messages
 
-### 2.4. Phase 4: Floating Chat Window (NEXT PRIORITY)
-1. Create `LLMChatWindow` class
-2. Update `MainWindow` to use floating window
-3. Test window functionality
+### 2.4. Phase 4: Floating Chat Window (COMPLETED)
+1. ✅ Created `LLMChatWindow` class
+2. ✅ Updated `MainWindow` to use floating window
+3. ✅ Added tests for window functionality
+4. ✅ Updated documentation
 
-## 3. Next Implementation: Floating Chat Window
+## 3. Next Implementation: Function Calling Integration
 
-The next phase to implement is the Floating Chat Window. This will involve:
+With the Enhanced Logging and Diagnostics now implemented, the next phase to focus on is Function Calling Integration. This will involve:
 
-1. Converting the `LLMChatDialog` from a modal dialog to a floating window
-2. Allowing the chat window to remain open while using the application
-3. Adding minimize/maximize functionality
-4. Ensuring proper integration with the main window
+1. Implementing OpenAI function calling for more structured interactions
+2. Creating function schemas for common operations
+3. Adding support for streaming responses
+4. Enhancing the UI to display structured responses
 
-This implementation will improve the user experience by allowing users to interact with the LLM while continuing to work on their project, rather than having to close the dialog each time.
+This implementation will improve the reliability and effectiveness of the LLM integration by providing more structured interactions and better response handling.
 
-### 3.1. LLMChatWindow Class
+### 3.1. Function Calling Implementation
 
-The new `LLMChatWindow` class will be created to replace the current `LLMChatDialog`:
+Update the `LLMManager` class to support OpenAI function calling:
 
 ```python
-from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QTextEdit, QComboBox, QProgressBar, QMessageBox,
-    QSplitter, QListWidget, QListWidgetItem
-)
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
-from PyQt6.QtGui import QFont, QColor
+def _send_openai_request_with_functions(self, prompt, system_message, temperature, max_tokens, functions):
+    """
+    Send a request to the OpenAI API with function calling.
+    
+    Args:
+        prompt (str): User prompt.
+        system_message (str): System message.
+        temperature (float): Temperature parameter.
+        max_tokens (int): Maximum tokens in the response.
+        functions (list): List of function definitions.
+    
+    Returns:
+        dict: API response, or None if the request failed.
+    """
+    self.logger.info("Sending request to OpenAI API with function calling")
+    
+    try:
+        # Prepare request
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+        data = {
+            "model": self.model,
+            "messages": [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": prompt}
+            ],
+            "functions": functions,
+            "function_call": "auto",
+            "temperature": temperature,
+            "max_tokens": max_tokens
+        }
+        
+        # Send request
+        response = requests.post(url, headers=headers, json=data, timeout=60)
+        
+        # Check for errors
+        response.raise_for_status()
+        
+        # Parse response
+        return response.json()
+    
+    except Exception as e:
+        self.logger.error(f"Error in OpenAI function calling request: {e}")
+        raise
+```
 
-class LLMChatWindow(QWidget):
-    """Floating window for interacting with LLMs."""
+### 3.2. Function Schemas
+
+Create function schemas for common operations:
+
+```python
+# Timeline function schemas
+TIMELINE_FUNCTIONS = [
+    {
+        "name": "create_segment",
+        "description": "Create a new segment in a timeline",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "timeline_index": {
+                    "type": "integer",
+                    "description": "Index of the timeline to add the segment to"
+                },
+                "start_time": {
+                    "type": "number",
+                    "description": "Start time of the segment in seconds"
+                },
+                "end_time": {
+                    "type": "number",
+                    "description": "End time of the segment in seconds"
+                },
+                "color": {
+                    "type": "array",
+                    "description": "RGB color values (0-255)",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            },
+            "required": ["timeline_index", "start_time", "end_time", "color"]
+        }
+    },
+    {
+        "name": "delete_segment",
+        "description": "Delete a segment from a timeline",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "timeline_index": {
+                    "type": "integer",
+                    "description": "Index of the timeline containing the segment"
+                },
+                "segment_index": {
+                    "type": "integer",
+                    "description": "Index of the segment to delete"
+                }
+            },
+            "required": ["timeline_index", "segment_index"]
+        }
+    },
+    {
+        "name": "modify_segment",
+        "description": "Modify an existing segment in a timeline",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "timeline_index": {
+                    "type": "integer",
+                    "description": "Index of the timeline containing the segment"
+                },
+                "segment_index": {
+                    "type": "integer",
+                    "description": "Index of the segment to modify"
+                },
+                "start_time": {
+                    "type": "number",
+                    "description": "New start time of the segment in seconds"
+                },
+                "end_time": {
+                    "type": "number",
+                    "description": "New end time of the segment in seconds"
+                },
+                "color": {
+                    "type": "array",
+                    "description": "New RGB color values (0-255)",
+                    "items": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                    },
+                    "minItems": 3,
+                    "maxItems": 3
+                }
+            },
+            "required": ["timeline_index", "segment_index"]
+        }
+    }
+]
+
+# Audio function schemas
+AUDIO_FUNCTIONS = [
+    {
+        "name": "play_audio",
+        "description": "Play the loaded audio file",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "start_time": {
+                    "type": "number",
+                    "description": "Start time in seconds (optional)"
+                }
+            }
+        }
+    },
+    {
+        "name": "pause_audio",
+        "description": "Pause audio playback",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        }
+    },
+    {
+        "name": "stop_audio",
+        "description": "Stop audio playback",
+        "parameters": {
+            "type": "object",
+            "properties": {}
+        }
+    }
+]
+```
+
+### 3.3. Function Call Handling
+
+Add methods to handle function calls:
+
+```python
+def _handle_function_call(self, response):
+    """
+    Handle a function call from the LLM.
+    
+    Args:
+        response (dict): API response containing a function call.
+    
+    Returns:
+        dict: Result of the function call.
+    """
+    try:
+        # Extract function call
+        message = response["choices"][0]["message"]
+        function_call = message.get("function_call")
+        
+        if not function_call:
+            return {"success": False, "error": "No function call in response"}
+        
+        # Extract function name and arguments
+        function_name = function_call.get("name")
+        arguments_str = function_call.get("arguments", "{}")
+        
+        try:
+            arguments = json.loads(arguments_str)
+        except json.JSONDecodeError:
+            return {"success": False, "error": f"Invalid function arguments: {arguments_str}"}
+        
+        # Log function call
+        self.logger.info(f"Function call: {function_name}({arguments})")
+        
+        # Execute function
+        result = self.execute_action(function_name, arguments)
+        
+        return result
+    
+    except Exception as e:
+        self.logger.error(f"Error handling function call: {e}")
+        return {"success": False, "error": str(e)}
+```
+
+### 3.4. Streaming Response Support
+
+Add support for streaming responses:
+
+```python
+def _send_openai_streaming_request(self, prompt, system_message, temperature, max_tokens):
+    """
+    Send a streaming request to the OpenAI API.
+    
+    Args:
+        prompt (str): User prompt.
+        system_message (str): System message.
+        temperature (float): Temperature parameter.
+        max_tokens (int): Maximum tokens in the response.
+    
+    Yields:
+        str: Chunks of the response text.
+    """
+    self.logger.info("Sending streaming request to OpenAI API")
+    
+    try:
+        # Prepare request
+        url = "https://api.openai.com/v1/chat/completions"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {self.api_key}"
+        }
+        data = {
+            "model": self.model,
+            "messages": [
+                {"role": "system", "content": system_message},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "stream": True
+        }
+        
+        # Send request
+        response = requests.post(url, headers=headers, json=data, stream=True, timeout=60)
+        
+        # Check for errors
+        response.raise_for_status()
+        
+        # Process streaming response
+        for line in response.iter_lines():
+            if line:
+                # Remove "data: " prefix
+                line = line.decode("utf-8")
+                if line.startswith("data: "):
+                    line = line[6:]
+                
+                # Skip "[DONE]" message
+                if line == "[DONE]":
+                    break
+                
+                try:
+                    # Parse JSON
+                    chunk = json.loads(line)
+                    
+                    # Extract content
+                    delta = chunk.get("choices", [{}])[0].get("delta", {})
+                    content = delta.get("content", "")
+                    
+                    if content:
+                        yield content
+                except json.JSONDecodeError:
+                    continue
+    
+    except Exception as e:
+        self.logger.error(f"Error in OpenAI streaming request: {e}")
+        yield f"Error: {str(e)}"
+```
+
+### 3.5. UI Updates for Structured Responses
+
+Update the `LLMChatWindow` class to display structured responses:
+
+```python
+def _display_function_call(self, function_name, arguments, result):
+    """
+    Display a function call in the chat window.
+    
+    Args:
+        function_name (str): Name of the function.
+        arguments (dict): Function arguments.
+        result (dict): Result of the function call.
+    """
+    # Create function call HTML
+    html = f"""
+    <div class="function-call">
+        <div class="function-header">Function Call: <span class="function-name">{function_name}</span></div>
+        <div class="function-arguments">
+            <pre>{json.dumps(arguments, indent=2)}</pre>
+        </div>
+        <div class="function-result">
+            <div class="result-header">Result:</div>
+            <pre>{json.dumps(result, indent=2)}</pre>
+        </div>
+    </div>
+    """
+    
+    # Add to chat history
+    self._add_html_to_chat(html)
+```
+
+### 3.1. Enhanced Logging Implementation
+
+The logging system should be enhanced to provide more detailed information about LLM operations:
+
+```python
+# Add to LLMManager class
+def _log_request_details(self, prompt, system_message, temperature, max_tokens):
+    """
+    Log detailed information about an LLM request.
+    
+    Args:
+        prompt (str): User prompt.
+        system_message (str): System message.
+        temperature (float): Temperature parameter.
+        max_tokens (int): Maximum tokens in the response.
+    """
+    self.logger.info(f"LLM Request Details:")
+    self.logger.info(f"Provider: {self.provider}")
+    self.logger.info(f"Model: {self.model}")
+    self.logger.info(f"Temperature: {temperature}")
+    self.logger.info(f"Max Tokens: {max_tokens}")
+    self.logger.info(f"Prompt Length: {len(prompt)} characters")
+    self.logger.info(f"System Message Length: {len(system_message)} characters")
+    
+    # Log truncated versions of prompt and system message
+    max_log_length = 100
+    prompt_truncated = prompt[:max_log_length] + "..." if len(prompt) > max_log_length else prompt
+    system_truncated = system_message[:max_log_length] + "..." if len(system_message) > max_log_length else system_message
+    
+    self.logger.info(f"Prompt (truncated): {prompt_truncated}")
+    self.logger.info(f"System Message (truncated): {system_truncated}")
+```
+
+### 3.2. Performance Metrics Tracking
+
+Add performance metrics tracking to measure response times and other performance indicators:
+
+```python
+# Add to LLMManager class
+def _track_performance_metrics(self, start_time, end_time, prompt_length, response_length, tokens):
+    """
+    Track performance metrics for an LLM request.
+    
+    Args:
+        start_time (float): Request start time.
+        end_time (float): Request end time.
+        prompt_length (int): Length of the prompt in characters.
+        response_length (int): Length of the response in characters.
+        tokens (int): Number of tokens used.
+    """
+    duration = end_time - start_time
+    
+    # Log metrics
+    self.logger.info(f"LLM Request Performance Metrics:")
+    self.logger.info(f"Duration: {duration:.2f} seconds")
+    self.logger.info(f"Tokens: {tokens}")
+    self.logger.info(f"Tokens per second: {tokens / duration:.2f}")
+    self.logger.info(f"Characters per second: {response_length / duration:.2f}")
+    
+    # Store metrics in project metadata
+    if self.app.project_manager.current_project:
+        if not hasattr(self.app.project_manager.current_project, "llm_performance_metrics"):
+            self.app.project_manager.current_project.llm_performance_metrics = []
+        
+        self.app.project_manager.current_project.llm_performance_metrics.append({
+            "timestamp": datetime.now().isoformat(),
+            "duration": duration,
+            "tokens": tokens,
+            "prompt_length": prompt_length,
+            "response_length": response_length,
+            "tokens_per_second": tokens / duration,
+            "characters_per_second": response_length / duration,
+            "model": self.model,
+            "provider": self.provider
+        })
+        
+        # Mark project as changed
+        self.app.project_manager.project_changed.emit()
+```
+
+### 3.3. Diagnostic Tools
+
+Create a diagnostic dialog to display LLM performance metrics and other diagnostic information:
+
+```python
+class LLMDiagnosticsDialog(QDialog):
+    """Dialog for displaying LLM diagnostics."""
     
     def __init__(self, app, parent=None):
         """
-        Initialize the LLM chat window.
+        Initialize the LLM diagnostics dialog.
         
         Args:
             app: The main application instance.
@@ -441,84 +850,20 @@ class LLMChatWindow(QWidget):
         """
         super().__init__(parent)
         
-        self.logger = logging.getLogger("SequenceMaker.LLMChatWindow")
         self.app = app
         
-        # Set window properties
-        self.setWindowTitle("LLM Chat")
-        self.setWindowFlags(Qt.WindowType.Window | Qt.WindowType.Tool)
-        self.setMinimumWidth(600)
-        self.setMinimumHeight(400)
-        
-        # Create APIs
-        self.context_api = AppContextAPI(app)
-        
-        # Chat properties
-        self.chat_history = []
+        # Set dialog properties
+        self.setWindowTitle("LLM Diagnostics")
+        self.setMinimumWidth(800)
+        self.setMinimumHeight(600)
         
         # Create UI
         self._create_ui()
         
-        # Check if LLM is configured
-        self._check_llm_configuration()
-        
-        # Load chat history from project
-        self._load_chat_history()
-        
-        # Connect signals
-        self.app.llm_manager.token_usage_updated.connect(self._on_token_usage_updated)
-        self.app.llm_manager.llm_ambiguity.connect(self._on_llm_ambiguity)
-```
-
-### 3.2. MainWindow Integration
-
-The `MainWindow` class will be updated to use the new floating window:
-
-```python
-# Add to MainWindow class
-def _create_llm_chat_window(self):
-    """Create the LLM chat window."""
-    self.llm_chat_window = LLMChatWindow(self.app, self)
+        # Load metrics
+        self._load_metrics()
     
-    # Hide by default
-    self.llm_chat_window.hide()
-
-def _on_llm_chat_action_triggered(self):
-    """Handle LLM chat action triggered."""
-    # Show the chat window if it's hidden, otherwise bring it to front
-    if self.llm_chat_window.isHidden():
-        self.llm_chat_window.show()
-    else:
-        self.llm_chat_window.raise_()
-        self.llm_chat_window.activateWindow()
-```
-
-### 3.3. Window Management
-
-The `LLMChatWindow` class will include methods for window management:
-
-```python
-def closeEvent(self, event):
-    """
-    Handle window close event.
-    
-    Args:
-        event: Close event.
-    """
-    # Hide instead of close
-    event.ignore()
-    self.hide()
-    
-def showEvent(self, event):
-    """
-    Handle window show event.
-    
-    Args:
-        event: Show event.
-    """
-    # Update UI when shown
-    self._populate_timeline_list()
-    
-    # Call parent method
-    super().showEvent(event)
+    def _create_ui(self):
+        """Create the user interface."""
+        # Implementation details...
 ```

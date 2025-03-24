@@ -68,10 +68,17 @@ This document tracks the implementation status of the LLM integration for Sequen
 
 ## Next Steps (Implementation Priority)
 
-1. **Enhanced Logging and Diagnostics**
-   - Implement more detailed logging for LLM operations
-   - Add performance metrics tracking
-   - Create diagnostic tools for troubleshooting
+1. ✅ **Enhanced Logging and Diagnostics**
+   - ✅ Implemented more detailed logging for LLM operations
+   - ✅ Added performance metrics tracking
+   - ✅ Created diagnostic tools for troubleshooting
+   - ✅ Improved error handling and reporting
+
+2. **Function Calling Integration**
+   - Implement OpenAI function calling for more structured interactions
+   - Create function schemas for common operations
+   - Add support for streaming responses
+   - Enhance the UI to display structured responses
 
 2. **Function Calling Integration**
    - Implement OpenAI function calling for more structured interactions
