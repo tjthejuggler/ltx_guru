@@ -604,11 +604,15 @@ class TimelineContainer(QWidget):
             parent: Parent widget (TimelineWidget).
         """
         super().__init__(parent)
-        
         self.parent_widget = parent
         self.app = parent.app
+        
+        # Set up logger
+        self.logger = logging.getLogger("SequenceMaker.TimelineContainer")
+        
         # Widget properties
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         
         # Enable mouse tracking for cursor position updates
@@ -1240,6 +1244,10 @@ class TimelineContainer(QWidget):
             start_x = int(segment.start_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
             end_x = int(segment.end_time * self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
+            # Log edge positions for debugging
+            self.logger.debug(f"Segment: {segment.start_time:.3f}s-{segment.end_time:.3f}s, " +
+                             f"x-coords: {start_x}-{end_x}, mouse at: {pos.x()}")
+            
             # Check left edge
             if abs(pos.x() - start_x) <= edge_threshold:
                 edge_segments.append((segment, "left", abs(pos.x() - start_x), segment.start_time))
@@ -1331,9 +1339,20 @@ class TimelineContainer(QWidget):
                             self.parent_widget.resizing_segment = True
                             self.parent_widget.resize_edge = edge
                             self.parent_widget.drag_start_pos = event.pos()
-                            self.parent_widget.drag_start_time = (
-                                segment.start_time if edge == "left" else segment.end_time
-                            )
+
+                            # Clearly differentiate left and right edge
+                            if edge == "left":
+                                self.parent_widget.drag_start_time = segment.start_time
+                            elif edge == "right":
+                                self.parent_widget.drag_start_time = segment.end_time
+
+                            # Explicitly store original boundaries correctly
+                            self.parent_widget.original_segment_start = segment.start_time
+                            self.parent_widget.original_segment_end = segment.end_time
+
+                            # Log for debugging
+                            self.logger.debug(f"Resizing segment {edge} edge: drag_start_time={self.parent_widget.drag_start_time:.3f}s")
+                            self.logger.debug(f"Original segment boundaries: {segment.start_time:.3f}s-{segment.end_time:.3f}s")
                             
                             # Start drag operation in timeline manager to handle undo/redo properly
                             self.app.timeline_manager.start_drag_operation()
@@ -1527,71 +1546,61 @@ class TimelineContainer(QWidget):
             )
         
         elif self.parent_widget.resizing_segment:
-            # Calculate time difference
+            # Calculate time difference based on mouse movement
             time_diff = (
                 event.pos().x() - self.parent_widget.drag_start_pos.x()
             ) / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
             
-            # Calculate new time
-            new_time = self.parent_widget.drag_start_time + time_diff
+            # Log for debugging
+            self.logger.debug(f"Resizing {self.parent_widget.resize_edge} edge: drag_start_time={self.parent_widget.drag_start_time:.3f}s, " +
+                             f"diff={time_diff:.3f}s")
             
-            # Ensure time is not negative
-            if new_time < 0:
-                new_time = 0
+            # Define minimum segment width
+            min_segment_width = 0.05  # Minimum segment width in seconds
             
-            # Update segment
+            # Clearly differentiate edges
             if self.parent_widget.resize_edge == "left":
-                # Ensure start time is less than end time
-                if new_time < self.parent_widget.selected_segment.end_time:
-                    # Find any segments that end exactly where this segment starts
-                    adjacent_segment = None
-                    for segment in self.parent_widget.selected_timeline.segments:
-                        if segment != self.parent_widget.selected_segment and abs(segment.end_time - self.parent_widget.selected_segment.start_time) < 0.001:
-                            adjacent_segment = segment
-                            break
-                    
-                    # We don't need to save state here anymore as it's handled by start_drag_operation and end_drag_operation
-                    
-                    # Update the selected segment
-                    self.app.timeline_manager.modify_segment(
-                        timeline=self.parent_widget.selected_timeline,
-                        segment=self.parent_widget.selected_segment,
-                        start_time=new_time
-                    )
-                    
-                    # Also update the adjacent segment if it exists
-                    if adjacent_segment:
-                        self.app.timeline_manager.modify_segment(
-                            timeline=self.parent_widget.selected_timeline,
-                            segment=adjacent_segment,
-                            end_time=new_time
-                        )
-            else:  # right edge
-                # Ensure end time is greater than start time
-                if new_time > self.parent_widget.selected_segment.start_time:
-                    # Find any segments that start exactly where this segment ends
-                    adjacent_segment = None
-                    for segment in self.parent_widget.selected_timeline.segments:
-                        if segment != self.parent_widget.selected_segment and abs(segment.start_time - self.parent_widget.selected_segment.end_time) < 0.001:
-                            adjacent_segment = segment
-                            break
-                    
-                    # We don't need to save state here anymore as it's handled by start_drag_operation and end_drag_operation
-                    
-                    # Update the selected segment
-                    self.app.timeline_manager.modify_segment(
-                        timeline=self.parent_widget.selected_timeline,
-                        segment=self.parent_widget.selected_segment,
-                        end_time=new_time
-                    )
-                    
-                    # Also update the adjacent segment if it exists
-                    if adjacent_segment:
-                        self.app.timeline_manager.modify_segment(
-                            timeline=self.parent_widget.selected_timeline,
-                            segment=adjacent_segment,
-                            start_time=new_time
-                        )
+                # Calculate new start time based on original start time plus movement
+                new_start_time = self.parent_widget.original_segment_start + time_diff
+                
+                # Log for debugging
+                self.logger.debug(f"Left edge: new_start_time={new_start_time:.3f}s, original_end={self.parent_widget.original_segment_end:.3f}s")
+                
+                # Prevent collapsing and ensure minimum width
+                if new_start_time >= self.parent_widget.original_segment_end - min_segment_width:
+                    new_start_time = self.parent_widget.original_segment_end - min_segment_width
+                    self.logger.debug(f"Preventing left edge from passing end: capped at {new_start_time:.3f}s")
+                
+                # Ensure time is not negative
+                if new_start_time < 0:
+                    new_start_time = 0
+                    self.logger.debug(f"Preventing negative start time: capped at 0.000s")
+                
+                # Update segment with new start time
+                self.app.timeline_manager.modify_segment(
+                    timeline=self.parent_widget.selected_timeline,
+                    segment=self.parent_widget.selected_segment,
+                    start_time=new_start_time
+                )
+                
+            elif self.parent_widget.resize_edge == "right":
+                # Calculate new end time based on original end time plus movement
+                new_end_time = self.parent_widget.original_segment_end + time_diff
+                
+                # Log for debugging
+                self.logger.debug(f"Right edge: new_end_time={new_end_time:.3f}s, original_start={self.parent_widget.original_segment_start:.3f}s")
+                
+                # Prevent collapsing and ensure minimum width
+                if new_end_time <= self.parent_widget.original_segment_start + min_segment_width:
+                    new_end_time = self.parent_widget.original_segment_start + min_segment_width
+                    self.logger.debug(f"Preventing right edge from passing start: capped at {new_end_time:.3f}s")
+                
+                # Update segment with new end time
+                self.app.timeline_manager.modify_segment(
+                    timeline=self.parent_widget.selected_timeline,
+                    segment=self.parent_widget.selected_segment,
+                    end_time=new_end_time
+                )
         
         else:
             # Update cursor based on mouse position
