@@ -440,9 +440,93 @@ class MainWindow(QMainWindow):
         
         # Add the status container to the status bar
         self.statusbar.addPermanentWidget(status_container)
-        
         # Create a hidden position label for compatibility with old code
         self.position_label = QLabel("Position: 0.00s")
+        self.position_label.setVisible(False)
+        
+        # Create segment editor container (initially hidden)
+        self.segment_editor_container = QWidget()
+        segment_editor_layout = QHBoxLayout(self.segment_editor_container)
+        segment_editor_layout.setContentsMargins(5, 0, 5, 0)
+        segment_editor_layout.setSpacing(10)
+        
+        # Start time editor
+        start_time_label = QLabel("Start:")
+        start_time_label.setFixedWidth(40)
+        segment_editor_layout.addWidget(start_time_label)
+        
+        self.segment_start_input = QLineEdit()
+        self.segment_start_input.setFixedWidth(90)
+        self.segment_start_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.segment_start_input.setValidator(validator)  # Reuse the same time validator
+        segment_editor_layout.addWidget(self.segment_start_input)
+        
+        # End time editor
+        end_time_label = QLabel("End:")
+        end_time_label.setFixedWidth(40)
+        segment_editor_layout.addWidget(end_time_label)
+        
+        self.segment_end_input = QLineEdit()
+        self.segment_end_input.setFixedWidth(90)
+        self.segment_end_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.segment_end_input.setValidator(validator)  # Reuse the same time validator
+        segment_editor_layout.addWidget(self.segment_end_input)
+        
+        # RGB color editor
+        color_label = QLabel("RGB:")
+        color_label.setFixedWidth(40)
+        segment_editor_layout.addWidget(color_label)
+        
+        # Create a container for the RGB inputs
+        rgb_container = QWidget()
+        rgb_layout = QHBoxLayout(rgb_container)
+        rgb_layout.setContentsMargins(0, 0, 0, 0)
+        rgb_layout.setSpacing(5)
+        
+        # RGB validators
+        rgb_regex = QRegularExpression("^([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$")
+        rgb_validator = QRegularExpressionValidator(rgb_regex)
+        
+        # R input
+        self.segment_r_input = QLineEdit()
+        self.segment_r_input.setFixedWidth(40)
+        self.segment_r_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.segment_r_input.setValidator(rgb_validator)
+        rgb_layout.addWidget(self.segment_r_input)
+        
+        # G input
+        self.segment_g_input = QLineEdit()
+        self.segment_g_input.setFixedWidth(40)
+        self.segment_g_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.segment_g_input.setValidator(rgb_validator)
+        rgb_layout.addWidget(self.segment_g_input)
+        
+        # B input
+        self.segment_b_input = QLineEdit()
+        self.segment_b_input.setFixedWidth(40)
+        self.segment_b_input.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.segment_b_input.setValidator(rgb_validator)
+        rgb_layout.addWidget(self.segment_b_input)
+        
+        segment_editor_layout.addWidget(rgb_container)
+        
+        # Apply button
+        self.apply_segment_button = QPushButton("Apply")
+        self.apply_segment_button.setToolTip("Apply changes to the selected segment")
+        self.apply_segment_button.setFixedWidth(60)
+        self.apply_segment_button.clicked.connect(self._on_apply_segment_changes)
+        segment_editor_layout.addWidget(self.apply_segment_button)
+        
+        # Add the segment editor container to the status bar (initially hidden)
+        self.statusbar.addWidget(self.segment_editor_container)
+        self.segment_editor_container.setVisible(False)
+        
+        # Connect signals for segment editor fields
+        self.segment_start_input.editingFinished.connect(self._on_segment_time_changed)
+        self.segment_end_input.editingFinished.connect(self._on_segment_time_changed)
+        self.segment_r_input.editingFinished.connect(self._on_segment_color_changed)
+        self.segment_g_input.editingFinished.connect(self._on_segment_color_changed)
+        self.segment_b_input.editingFinished.connect(self._on_segment_color_changed)
         self.position_label.setVisible(False)
     
     def _create_central_widget(self):
@@ -995,8 +1079,179 @@ class MainWindow(QMainWindow):
         # Update play/pause actions
         self.play_action.setVisible(True)
         self.pause_action.setVisible(False)
+    def show_segment_editor(self, timeline, segment):
+        """
+        Show the segment editor with the given segment's values.
+        
+        Args:
+            timeline: Timeline containing the segment.
+            segment: Segment to edit.
+        """
+        if not segment:
+            self.hide_segment_editor()
+            return
+        
+        # Format start and end times
+        start_time_str = self._format_seconds_to_hms(
+            segment.start_time, include_hundredths=True, hide_hours_if_zero=True)
+        end_time_str = self._format_seconds_to_hms(
+            segment.end_time, include_hundredths=True, hide_hours_if_zero=True)
+        
+        # Set values in the editor fields
+        self.segment_start_input.setText(start_time_str)
+        self.segment_end_input.setText(end_time_str)
+        self.segment_r_input.setText(str(segment.color[0]))
+        self.segment_g_input.setText(str(segment.color[1]))
+        self.segment_b_input.setText(str(segment.color[2]))
+        
+        # Store references to the timeline and segment
+        self.segment_editor_timeline = timeline
+        self.segment_editor_segment = segment
+        
+        # Show the segment editor
+        self.segment_editor_container.setVisible(True)
+        
+        # Clear any status bar message
+        self.statusbar.clearMessage()
+    
+    def hide_segment_editor(self):
+        """Hide the segment editor."""
+        self.segment_editor_container.setVisible(False)
+        self.segment_editor_timeline = None
+        self.segment_editor_segment = None
+    
+    def _on_segment_time_changed(self):
+        """Handle segment time input changes."""
+        if not hasattr(self, 'segment_editor_segment') or not self.segment_editor_segment:
+            return
+        
+        try:
+            # Parse start time
+            start_time_str = self.segment_start_input.text()
+            start_time = self._parse_time_input(start_time_str)
+            
+            # Parse end time
+            end_time_str = self.segment_end_input.text()
+            end_time = self._parse_time_input(end_time_str)
+            
+            # Validate times
+            if start_time >= end_time:
+                self.logger.warning("Start time must be less than end time")
+                # Reset to original values
+                self.show_segment_editor(self.segment_editor_timeline, self.segment_editor_segment)
+                return
+            
+            # Update segment
+            self.app.timeline_manager.modify_segment(
+                timeline=self.segment_editor_timeline,
+                segment=self.segment_editor_segment,
+                start_time=start_time,
+                end_time=end_time
+            )
+        except Exception as e:
+            self.logger.error(f"Error updating segment times: {e}")
+            # Reset to original values
+            self.show_segment_editor(self.segment_editor_timeline, self.segment_editor_segment)
+    
+    def _on_segment_color_changed(self):
+        """Handle segment color input changes."""
+        if not hasattr(self, 'segment_editor_segment') or not self.segment_editor_segment:
+            return
+        
+        try:
+            # Parse RGB values
+            r = int(self.segment_r_input.text())
+            g = int(self.segment_g_input.text())
+            b = int(self.segment_b_input.text())
+            
+            # Validate RGB values
+            r = max(0, min(255, r))
+            g = max(0, min(255, g))
+            b = max(0, min(255, b))
+            
+            # Update segment
+            self.app.timeline_manager.modify_segment(
+                timeline=self.segment_editor_timeline,
+                segment=self.segment_editor_segment,
+                color=(r, g, b)
+            )
+        except Exception as e:
+            self.logger.error(f"Error updating segment color: {e}")
+            # Reset to original values
+            self.show_segment_editor(self.segment_editor_timeline, self.segment_editor_segment)
+    
+    def _on_apply_segment_changes(self):
+        """Apply all segment changes at once."""
+        if not hasattr(self, 'segment_editor_segment') or not self.segment_editor_segment:
+            return
+        
+        try:
+            # Parse start time
+            start_time_str = self.segment_start_input.text()
+            start_time = self._parse_time_input(start_time_str)
+            
+            # Parse end time
+            end_time_str = self.segment_end_input.text()
+            end_time = self._parse_time_input(end_time_str)
+            
+            # Parse RGB values
+            r = int(self.segment_r_input.text())
+            g = int(self.segment_g_input.text())
+            b = int(self.segment_b_input.text())
+            
+            # Validate times
+            if start_time >= end_time:
+                self.logger.warning("Start time must be less than end time")
+                # Reset to original values
+                self.show_segment_editor(self.segment_editor_timeline, self.segment_editor_segment)
+                return
+            
+            # Validate RGB values
+            r = max(0, min(255, r))
+            g = max(0, min(255, g))
+            b = max(0, min(255, b))
+            
+            # Update segment
+            self.app.timeline_manager.modify_segment(
+                timeline=self.segment_editor_timeline,
+                segment=self.segment_editor_segment,
+                start_time=start_time,
+                end_time=end_time,
+                color=(r, g, b)
+            )
+        except Exception as e:
+            self.logger.error(f"Error applying segment changes: {e}")
+            # Reset to original values
+            self.show_segment_editor(self.segment_editor_timeline, self.segment_editor_segment)
+    
+    def _parse_time_input(self, time_str):
+        """
+        Parse a time string in the format MM:SS.SS or HH:MM:SS.SS.
+        
+        Args:
+            time_str (str): Time string to parse.
+        
+        Returns:
+            float: Time in seconds.
+        """
+        parts = time_str.split(':')
+        
+        if len(parts) == 2:
+            # MM:SS.SS format
+            minutes = int(parts[0])
+            seconds = float(parts[1])
+            return minutes * 60 + seconds
+        elif len(parts) == 3:
+            # HH:MM:SS.SS format
+            hours = int(parts[0])
+            minutes = int(parts[1])
+            seconds = float(parts[2])
+            return hours * 3600 + minutes * 60 + seconds
+        else:
+            raise ValueError(f"Invalid time format: {time_str}")
     
     def _on_apply_sequence_length(self):
+        """Handle Apply button click for sequence length."""
         """Handle Apply button click for sequence length."""
         if not self.app.project_manager.current_project:
             return

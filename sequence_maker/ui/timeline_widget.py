@@ -254,7 +254,6 @@ class TimelineWidget(QWidget):
         
         # Redraw
         self.timeline_container.update()
-    
     def select_segment(self, timeline, segment):
         """
         Select a segment.
@@ -272,6 +271,10 @@ class TimelineWidget(QWidget):
         # Emit signal
         self.selection_changed.emit(timeline, segment)
         
+        # Show segment editor in main window
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'show_segment_editor'):
+            self.app.main_window.show_segment_editor(timeline, segment)
+        
         # Redraw
         self.timeline_container.update()
     
@@ -282,6 +285,10 @@ class TimelineWidget(QWidget):
         
         # Update timeline manager
         self.app.timeline_manager.clear_selection()
+        
+        # Hide segment editor in main window
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'hide_segment_editor'):
+            self.app.main_window.hide_segment_editor()
         
         # Emit signal
         self.selection_changed.emit(None, None)
@@ -1392,12 +1399,39 @@ class TimelineContainer(QWidget):
                     else:
                         # Mouse over segment
                         self.setCursor(Qt.CursorShape.OpenHandCursor)
+                    
+                    # Display segment information in status bar only if no segment is selected
+                    # (otherwise the segment editor is shown and should take precedence)
+                    if (hasattr(self.app, 'main_window') and
+                        hasattr(self.app.main_window, 'statusbar') and
+                        hasattr(self.app.main_window, 'segment_editor_container') and
+                        not self.app.main_window.segment_editor_container.isVisible()):
+                        
+                        # Format start and end times
+                        start_time_str = self.app.main_window._format_seconds_to_hms(
+                            segment.start_time, include_hundredths=True, hide_hours_if_zero=True)
+                        end_time_str = self.app.main_window._format_seconds_to_hms(
+                            segment.end_time, include_hundredths=True, hide_hours_if_zero=True)
+                        
+                        # Format RGB color
+                        r, g, b = segment.color
+                        color_str = f"RGB({r}, {g}, {b})"
+                        
+                        # Display in status bar
+                        self.app.main_window.statusbar.showMessage(
+                            f"Segment: {start_time_str} - {end_time_str} | Color: {color_str}")
                 else:
                     # Mouse over timeline
                     self.setCursor(Qt.CursorShape.ArrowCursor)
+                    # Clear status bar message
+                    if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
+                        self.app.main_window.statusbar.clearMessage()
             else:
                 # Mouse not over timeline
                 self.setCursor(Qt.CursorShape.ArrowCursor)
+                # Clear status bar message
+                if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
+                    self.app.main_window.statusbar.clearMessage()
     
     def leaveEvent(self, event):
         """
