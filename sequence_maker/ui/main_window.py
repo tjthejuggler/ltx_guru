@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
     QLabel, QTextEdit, QPushButton, QSizePolicy
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSettings, QSize, QTimer
-from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont, QPixmap, QImage
+from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont, QPixmap, QImage, QKeyEvent
 
 from resources.resources import get_icon_path
 
@@ -23,6 +23,33 @@ from ui.timeline_widget import TimelineWidget
 from ui.ball_widget import BallWidget
 from ui.audio_widget import AudioWidget
 from ui.lyrics_widget import LyricsWidget
+
+class ApplyTextEdit(QTextEdit):
+    """
+    Custom QTextEdit that applies changes when Enter is pressed instead of creating a new line.
+    """
+    apply_pressed = pyqtSignal()
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+    
+    def keyPressEvent(self, event: QKeyEvent):
+        """Override keyPressEvent to handle Enter key."""
+        if event.key() == Qt.Key.Key_Return or event.key() == Qt.Key.Key_Enter:
+            # Log the event for debugging
+            print(f"Enter key pressed in {self.__class__.__name__}")
+            
+            # Emit apply_pressed signal instead of inserting a new line
+            self.apply_pressed.emit()
+            
+            # Mark the event as handled
+            event.accept()
+            
+            # Return early to prevent default behavior
+            return
+        
+        # For all other keys, use the default behavior
+        super().keyPressEvent(event)
 from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
@@ -689,20 +716,28 @@ class MainWindow(QMainWindow):
         self.segment_editor_layout.setSpacing(5)
         
         # Add segment editor labels and fields
-        self.segment_editor_layout.addWidget(QLabel("Start:"))
-        self.segment_start_edit = QTextEdit()
+        self.segment_editor_layout.addWidget(QLabel("Start (MM:SS):"))
+        self.segment_start_edit = ApplyTextEdit()
         self.segment_start_edit.setFixedSize(100, 25)  # Wider to show decimal places
+        self.segment_start_edit.apply_pressed.connect(self._on_segment_start_apply)
         self.segment_editor_layout.addWidget(self.segment_start_edit)
         
-        self.segment_editor_layout.addWidget(QLabel("End:"))
-        self.segment_end_edit = QTextEdit()
+        self.segment_editor_layout.addWidget(QLabel("End (MM:SS):"))
+        self.segment_end_edit = ApplyTextEdit()
         self.segment_end_edit.setFixedSize(100, 25)  # Wider to show decimal places
+        self.segment_end_edit.apply_pressed.connect(self._on_segment_end_apply)
         self.segment_editor_layout.addWidget(self.segment_end_edit)
         
-        self.segment_editor_layout.addWidget(QLabel("Color:"))
-        self.segment_color_edit = QTextEdit()
+        self.segment_editor_layout.addWidget(QLabel("Color (RGB):"))
+        self.segment_color_edit = ApplyTextEdit()
         self.segment_color_edit.setFixedSize(120, 25)
+        self.segment_color_edit.apply_pressed.connect(self._on_segment_color_apply)
         self.segment_editor_layout.addWidget(self.segment_color_edit)
+        
+        # Add a single apply button for all segment editor fields
+        self.segment_apply_button = QPushButton("Apply Changes")
+        self.segment_apply_button.clicked.connect(self._on_segment_apply_all)
+        self.segment_editor_layout.addWidget(self.segment_apply_button)
         
         # Create boundary editor
         self.boundary_editor_container = QWidget()
@@ -711,13 +746,19 @@ class MainWindow(QMainWindow):
         self.boundary_editor_layout.setSpacing(0)  # removes spacing completely
         
         # Add label and edit directly to the boundary editor layout
-        time_label = QLabel("Time:")
+        time_label = QLabel("Time (MM:SS):")
         self.boundary_editor_layout.addWidget(time_label)
         
-        self.boundary_time_edit = QTextEdit()
+        self.boundary_time_edit = ApplyTextEdit()
         self.boundary_time_edit.setFixedSize(100, 25)  # Wider to show decimal places
         self.boundary_time_edit.setStyleSheet("QTextEdit { padding: 0; margin: 0; }")
+        self.boundary_time_edit.apply_pressed.connect(self._on_boundary_time_apply)
         self.boundary_editor_layout.addWidget(self.boundary_time_edit)
+        
+        # Add a single apply button for boundary editor
+        self.boundary_apply_button = QPushButton("Apply Changes")
+        self.boundary_apply_button.clicked.connect(self._on_boundary_time_apply)
+        self.boundary_editor_layout.addWidget(self.boundary_apply_button)
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -1205,6 +1246,11 @@ class MainWindow(QMainWindow):
         self.segment_start_edit.textChanged.connect(self._on_segment_start_changed)
         self.segment_end_edit.textChanged.connect(self._on_segment_end_changed)
         self.segment_color_edit.textChanged.connect(self._on_segment_color_changed)
+        
+        # Connect apply signals
+        self.segment_start_edit.apply_pressed.connect(self._on_segment_start_apply)
+        self.segment_end_edit.apply_pressed.connect(self._on_segment_end_apply)
+        self.segment_color_edit.apply_pressed.connect(self._on_segment_color_apply)
     
     def hide_segment_editor(self):
         """Hide the segment editor."""
@@ -1221,6 +1267,11 @@ class MainWindow(QMainWindow):
             self.segment_start_edit.textChanged.disconnect(self._on_segment_start_changed)
             self.segment_end_edit.textChanged.disconnect(self._on_segment_end_changed)
             self.segment_color_edit.textChanged.disconnect(self._on_segment_color_changed)
+            
+            # Disconnect apply signals
+            self.segment_start_edit.apply_pressed.disconnect(self._on_segment_start_apply)
+            self.segment_end_edit.apply_pressed.disconnect(self._on_segment_end_apply)
+            self.segment_color_edit.apply_pressed.disconnect(self._on_segment_color_apply)
         except:
             pass
     
@@ -1255,6 +1306,9 @@ class MainWindow(QMainWindow):
         
         # Connect signals
         self.boundary_time_edit.textChanged.connect(self._on_boundary_time_changed)
+        
+        # Connect apply signal
+        self.boundary_time_edit.apply_pressed.connect(self._on_boundary_time_apply)
     
     def hide_boundary_editor(self):
         """Hide the boundary editor."""
@@ -1269,6 +1323,7 @@ class MainWindow(QMainWindow):
         # Disconnect signals
         try:
             self.boundary_time_edit.textChanged.disconnect(self._on_boundary_time_changed)
+            self.boundary_time_edit.apply_pressed.disconnect(self._on_boundary_time_apply)
         except:
             pass
     
@@ -1363,7 +1418,13 @@ class MainWindow(QMainWindow):
     
     def _parse_time_from_text(self, text):
         """
-        Parse time from text in format MM:SS.ss or SS.ss.
+        Parse time from text in various formats.
+        
+        Supported formats:
+        - MM:SS.ss (e.g., 01:23.45)
+        - MM:SS (e.g., 01:23)
+        - SS.ss (e.g., 23.45)
+        - SS (e.g., 23)
         
         Args:
             text (str): Time text.
@@ -1371,18 +1432,37 @@ class MainWindow(QMainWindow):
         Returns:
             float: Time in seconds, or None if parsing failed.
         """
+        # Log the input for debugging
+        self.logger.debug(f"Parsing time from text: '{text}'")
+        
+        # Clean the input
+        text = text.strip()
+        
         try:
-            # Try MM:SS.ss format
+            # Try MM:SS.ss or MM:SS format
             if ':' in text:
                 parts = text.split(':')
                 if len(parts) == 2:
                     minutes = int(parts[0])
+                    # Handle both SS.ss and SS formats
                     seconds = float(parts[1])
-                    return minutes * 60 + seconds
+                    total_seconds = minutes * 60 + seconds
+                    self.logger.debug(f"Parsed as MM:SS format: {minutes}:{seconds} = {total_seconds} seconds")
+                    return total_seconds
+                elif len(parts) == 3:  # Handle HH:MM:SS format
+                    hours = int(parts[0])
+                    minutes = int(parts[1])
+                    seconds = float(parts[2])
+                    total_seconds = hours * 3600 + minutes * 60 + seconds
+                    self.logger.debug(f"Parsed as HH:MM:SS format: {hours}:{minutes}:{seconds} = {total_seconds} seconds")
+                    return total_seconds
             
-            # Try SS.ss format
-            return float(text)
-        except:
+            # Try SS.ss or SS format
+            total_seconds = float(text)
+            self.logger.debug(f"Parsed as SS format: {total_seconds} seconds")
+            return total_seconds
+        except Exception as e:
+            self.logger.error(f"Failed to parse time from text '{text}': {str(e)}")
             return None
     
     def _parse_color_from_text(self, text):
@@ -1455,3 +1535,133 @@ class MainWindow(QMainWindow):
             return f"{hours:02d}:{minutes:02d}:{seconds_format}"
         else:
             return f"{minutes:02d}:{seconds_format}"
+    # Apply methods for the text edit fields
+    def _on_segment_apply_all(self):
+        """Apply all segment changes at once."""
+        if not hasattr(self, 'selected_segment') or not self.selected_segment:
+            self.statusBar().showMessage("No segment selected", 2000)
+            return
+        
+        self.logger.debug("Applying all segment changes")
+        
+        # Track if any changes were made
+        changes_made = False
+        
+        # Apply start time change
+        try:
+            text = self.segment_start_edit.toPlainText()
+            self.logger.debug(f"Parsing start time: '{text}'")
+            start_time = self._parse_time_from_text(text)
+            
+            if start_time is not None and start_time >= 0 and start_time < self.selected_segment.end_time:
+                self.app.timeline_manager.set_segment_start_time(
+                    self.selected_timeline,
+                    self.selected_segment,
+                    start_time
+                )
+                changes_made = True
+                self.logger.debug(f"Start time updated to {start_time}")
+            elif start_time is not None:
+                self.statusBar().showMessage(f"Start time must be between 0 and end time ({self._format_seconds_to_hms(self.selected_segment.end_time)})", 2000)
+                return
+        except Exception as e:
+            self.logger.error(f"Error updating start time: {str(e)}")
+            self.statusBar().showMessage(f"Error updating start time: {str(e)}", 2000)
+            return
+        
+        # Apply end time change
+        try:
+            text = self.segment_end_edit.toPlainText()
+            self.logger.debug(f"Parsing end time: '{text}'")
+            end_time = self._parse_time_from_text(text)
+            
+            if end_time is not None and end_time > self.selected_segment.start_time:
+                self.app.timeline_manager.set_segment_end_time(
+                    self.selected_timeline,
+                    self.selected_segment,
+                    end_time
+                )
+                changes_made = True
+                self.logger.debug(f"End time updated to {end_time}")
+            elif end_time is not None:
+                self.statusBar().showMessage(f"End time must be greater than start time ({self._format_seconds_to_hms(self.selected_segment.start_time)})", 2000)
+                return
+        except Exception as e:
+            self.logger.error(f"Error updating end time: {str(e)}")
+            self.statusBar().showMessage(f"Error updating end time: {str(e)}", 2000)
+            return
+        
+        # Apply color change
+        try:
+            text = self.segment_color_edit.toPlainText()
+            self.logger.debug(f"Parsing color: '{text}'")
+            color = self._parse_color_from_text(text)
+            
+            if color:
+                self.app.timeline_manager.set_segment_color(
+                    self.selected_timeline,
+                    self.selected_segment,
+                    color
+                )
+                changes_made = True
+                self.logger.debug(f"Color updated to RGB({color[0]}, {color[1]}, {color[2]})")
+            else:
+                self.statusBar().showMessage("Invalid color format. Use RGB(r,g,b) or r,g,b format.", 2000)
+                return
+        except Exception as e:
+            self.logger.error(f"Error updating color: {str(e)}")
+            self.statusBar().showMessage(f"Error updating color: {str(e)}", 2000)
+            return
+        
+        # Show success message if changes were made
+        if changes_made:
+            self.statusBar().showMessage("Changes applied successfully", 2000)
+    
+    def _on_segment_start_apply(self):
+        """Apply segment start time changes when Enter is pressed."""
+        # Just call the apply all method
+        self._on_segment_apply_all()
+    
+    def _on_segment_end_apply(self):
+        """Apply segment end time changes when Enter is pressed."""
+        # Just call the apply all method
+        self._on_segment_apply_all()
+    
+    def _on_segment_color_apply(self):
+        """Apply segment color changes when Enter is pressed."""
+        # Just call the apply all method
+        self._on_segment_apply_all()
+    
+    def _on_boundary_time_apply(self):
+        """Apply boundary time changes when Enter is pressed."""
+        if not hasattr(self, 'boundary_editor_time'):
+            self.statusBar().showMessage("No boundary selected", 2000)
+            return
+        
+        try:
+            # Parse time from text
+            text = self.boundary_time_edit.toPlainText()
+            self.logger.debug(f"Applying boundary time change: '{text}'")
+            time = self._parse_time_from_text(text)
+            
+            # Update boundary
+            if time is not None and time >= 0:
+                # Store the new time
+                old_time = self.boundary_editor_time
+                self.boundary_editor_time = time
+                
+                # Update the segments
+                self.app.timeline_manager.move_segment_boundary(
+                    self.selected_timeline,
+                    old_time,
+                    time
+                )
+                self.statusBar().showMessage(f"Boundary time updated to {self._format_seconds_to_hms(time)}", 2000)
+            else:
+                if time is None:
+                    self.statusBar().showMessage("Invalid time format", 2000)
+                else:
+                    self.statusBar().showMessage("Time must be greater than or equal to 0", 2000)
+        except Exception as e:
+            self.logger.error(f"Error in _on_boundary_time_apply: {str(e)}")
+            self.statusBar().showMessage(f"Error updating boundary time: {str(e)}", 2000)
