@@ -89,13 +89,18 @@ class MainWindow(QMainWindow):
         self._connect_signals()
         
         # Set window properties
-        self.setWindowTitle("Sequence Maker")
         self.setMinimumSize(800, 600)
+        
+        # Initialize window title (will be updated in _update_ui)
+        self.setWindowTitle("Sequence Maker")
         
         # Initialize API
         self.app_context_api = AppContextAPI(self.app)
         self.timeline_action_api = TimelineActionAPI(self.app)
         self.audio_action_api = AudioActionAPI(self.app)
+        
+        # Update UI to set window title with project name if a project is loaded
+        self._update_ui()
         
         # Show the window
         self.show()
@@ -313,13 +318,22 @@ class MainWindow(QMainWindow):
         """Create the status bar for the main window."""
         self.statusbar = self.statusBar()
         
-        # Add cursor position label
-        self.cursor_position_label = QLabel("Position: 0.000s")
-        self.statusbar.addPermanentWidget(self.cursor_position_label)
-        
-        # Add project status label
-        self.project_status_label = QLabel("No project loaded")
+        # Add project status label (empty by default)
+        self.project_status_label = QLabel("")
         self.statusbar.addWidget(self.project_status_label)
+        
+        # Add hover info label for segment information
+        self.hover_info_label = QLabel("")
+        self.hover_info_label.setVisible(False)
+        self.statusbar.addWidget(self.hover_info_label)
+        
+        # Add cursor hover position label (shows time when hovering over timelines)
+        self.cursor_hover_label = QLabel("Cursor: --:--.--)")
+        self.statusbar.addPermanentWidget(self.cursor_hover_label)
+        
+        # Add cursor position label with formatted time (on the right side)
+        self.cursor_position_label = QLabel("Position: 00:00.00")
+        self.statusbar.addPermanentWidget(self.cursor_position_label)
     
     def _create_central_widget(self):
         """Create the central widget for the main window."""
@@ -458,6 +472,12 @@ class MainWindow(QMainWindow):
         # Connect audio signals
         self.audio_widget.position_changed.connect(self._update_cursor_position)
         
+        # Connect project signals
+        if hasattr(self.app, 'project_manager'):
+            self.app.project_manager.project_changed.connect(self._update_ui)
+            self.app.project_manager.project_loaded.connect(self._update_ui)
+            self.app.project_manager.project_saved.connect(self._update_ui)
+        
         # Connect LLM signals
         if hasattr(self.app, 'llm_manager'):
             self.app.llm_manager.llm_action_requested.connect(self._on_llm_action)
@@ -531,8 +551,18 @@ class MainWindow(QMainWindow):
             self.app.config.save()
             self._update_recent_files_menu()
     def _update_cursor_position(self, position):
-        """Update the cursor position label."""
-        self.cursor_position_label.setText(f"Position: {position:.3f}s")
+        """Update the cursor position label with formatted time."""
+        formatted_time = self._format_seconds_to_hms(position, include_hundredths=True, hide_hours_if_zero=True)
+        self.cursor_position_label.setText(f"Position: {formatted_time}")
+        
+    def update_cursor_hover_position(self, position):
+        """Update the cursor hover position label with formatted time."""
+        formatted_time = self._format_seconds_to_hms(position, include_hundredths=True, hide_hours_if_zero=True)
+        self.cursor_hover_label.setText(f"Cursor: {formatted_time}")
+        
+    def clear_cursor_hover_position(self):
+        """Clear the cursor hover position label."""
+        self.cursor_hover_label.setText("Cursor: --:--.--")
         
     def _on_new(self):
         """Create a new project."""
@@ -729,6 +759,27 @@ class MainWindow(QMainWindow):
             
     def _update_ui(self):
         """Update the user interface."""
+        # Update window title with project name and unsaved changes indicator
+        if hasattr(self.app, 'project_manager') and self.app.project_manager.current_project:
+            # Get the project name
+            if self.app.project_manager.current_project.file_path:
+                file_name = os.path.basename(self.app.project_manager.current_project.file_path)
+            else:
+                file_name = "Untitled"
+                
+            # Add unsaved changes indicator if needed
+            if hasattr(self.app.project_manager, 'has_unsaved_changes') and self.app.project_manager.has_unsaved_changes:
+                self.setWindowTitle(f"{file_name} *")
+            else:
+                self.setWindowTitle(f"{file_name}")
+            
+            # Clear the project status label since we don't need to show project info there
+            self.project_status_label.setText("")
+        else:
+            self.setWindowTitle("")
+            # Clear the project status label even when no project is loaded
+            self.project_status_label.setText("")
+            
         # Update timeline widget
         self.timeline_widget.update()
         
@@ -1109,7 +1160,6 @@ class MainWindow(QMainWindow):
         self.segment_color_edit.clear()
         self.segment_start_edit.clear()
         self.segment_end_edit.clear()
-    
     def _on_boundary_time_apply(self):
         """Handle boundary time apply button click."""
         # Get boundary time from form
@@ -1123,6 +1173,157 @@ class MainWindow(QMainWindow):
             self.app.timeline_manager.set_boundary(time)
         except ValueError:
             # Show error message
+            QMessageBox.warning(self, "Invalid Time", "Please enter a valid time value.")
+            
+    def show_segment_editor(self, timeline, segment):
+        """
+        Show the segment editor for the selected segment.
+        
+        Args:
+            timeline: The timeline containing the segment
+            segment: The segment to edit
+        """
+        # Make sure the segment editor container exists
+        if not hasattr(self, 'segment_editor_container'):
+            # Create segment editor container if it doesn't exist
+            self.segment_editor_container = QWidget()
+            self.segment_editor_layout = QHBoxLayout(self.segment_editor_container)
+            self.segment_editor_layout.setContentsMargins(5, 5, 5, 5)
+            
+            # Create segment editor label
+            self.segment_editor_label = QLabel("Segment:")
+            self.segment_editor_layout.addWidget(self.segment_editor_label)
+            
+            # Create segment color field
+            self.segment_color_label = QLabel("Color:")
+            self.segment_editor_layout.addWidget(self.segment_color_label)
+            
+            self.segment_color_edit = QTextEdit()
+            self.segment_color_edit.setMaximumHeight(25)
+            self.segment_color_edit.setMaximumWidth(100)
+            self.segment_editor_layout.addWidget(self.segment_color_edit)
+            
+            # Create segment start time field
+            self.segment_start_label = QLabel("Start:")
+            self.segment_editor_layout.addWidget(self.segment_start_label)
+            
+            self.segment_start_edit = QTextEdit()
+            self.segment_start_edit.setMaximumHeight(25)
+            self.segment_start_edit.setMaximumWidth(80)
+            self.segment_editor_layout.addWidget(self.segment_start_edit)
+            
+            # Create segment end time field
+            self.segment_end_label = QLabel("End:")
+            self.segment_editor_layout.addWidget(self.segment_end_label)
+            
+            self.segment_end_edit = QTextEdit()
+            self.segment_end_edit.setMaximumHeight(25)
+            self.segment_end_edit.setMaximumWidth(80)
+            self.segment_editor_layout.addWidget(self.segment_end_edit)
+            
+            # Create apply button
+            self.segment_apply_button = QPushButton("Apply")
+            self.segment_apply_button.clicked.connect(self._on_segment_apply)
+            self.segment_editor_layout.addWidget(self.segment_apply_button)
+            
+            # Add spacer to push everything to the left
+            self.segment_editor_layout.addStretch()
+            
+            # Insert the segment editor at the top of the main layout, before the timeline widget
+            self.main_layout.insertWidget(0, self.segment_editor_container)
+        
+        # Hide hover info label
+        if hasattr(self, 'hover_info_label'):
+            self.hover_info_label.hide()
+        
+        # Populate segment editor fields
+        r, g, b = segment.color
+        color_str = f"RGB({r}, {g}, {b})"
+        
+        # Format times
+        start_time_str = self._format_seconds_to_hms(segment.start_time, include_hundredths=True, hide_hours_if_zero=True)
+        end_time_str = self._format_seconds_to_hms(segment.end_time, include_hundredths=True, hide_hours_if_zero=True)
+        
+        self.segment_color_edit.setText(color_str)
+        self.segment_start_edit.setText(start_time_str)
+        self.segment_end_edit.setText(end_time_str)
+        
+        # Show segment editor
+        self.segment_editor_container.show()
+        self.segment_editor_visible = True
+        
+    def hide_segment_editor(self):
+        """Hide the segment editor."""
+        if hasattr(self, 'segment_editor_container'):
+            self.segment_editor_container.hide()
+            self.segment_editor_visible = False
+            
+    def show_boundary_editor(self, timeline, time, left_segment, right_segment):
+        """
+        Show the boundary editor for the selected boundary.
+        
+        Args:
+            timeline: The timeline containing the boundary
+            time: The time position of the boundary
+            left_segment: The segment to the left of the boundary
+            right_segment: The segment to the right of the boundary
+        """
+        # Make sure the boundary editor container exists
+        if not hasattr(self, 'boundary_editor_container'):
+            # Create boundary editor container if it doesn't exist
+            self.boundary_editor_container = QWidget()
+            self.boundary_editor_layout = QHBoxLayout(self.boundary_editor_container)
+            self.boundary_editor_layout.setContentsMargins(5, 5, 5, 5)
+            
+            # Create boundary editor label
+            self.boundary_editor_label = QLabel("Boundary:")
+            self.boundary_editor_layout.addWidget(self.boundary_editor_label)
+            
+            # Create boundary time field
+            self.boundary_time_label = QLabel("Time:")
+            self.boundary_editor_layout.addWidget(self.boundary_time_label)
+            
+            self.boundary_time_edit = ApplyTextEdit()
+            self.boundary_time_edit.setMaximumHeight(25)
+            self.boundary_time_edit.setMaximumWidth(80)
+            self.boundary_time_edit.apply_pressed.connect(self._on_boundary_time_apply)
+            self.boundary_editor_layout.addWidget(self.boundary_time_edit)
+            
+            # Create boundary apply button
+            self.boundary_apply_button = QPushButton("Apply")
+            self.boundary_apply_button.clicked.connect(self._on_boundary_time_apply)
+            self.boundary_editor_layout.addWidget(self.boundary_apply_button)
+            
+            # Add spacer to push everything to the left
+            self.boundary_editor_layout.addStretch()
+            
+            # Insert the boundary editor at the top of the main layout, before the timeline widget
+            self.main_layout.insertWidget(0, self.boundary_editor_container)
+        
+        # Hide hover info label
+        if hasattr(self, 'hover_info_label'):
+            self.hover_info_label.hide()
+        
+        # Store boundary information
+        self.boundary_editor_time = time
+        self.boundary_editor_left_segment = left_segment
+        self.boundary_editor_right_segment = right_segment
+        
+        # Format time
+        time_str = self._format_seconds_to_hms(time, include_hundredths=True, hide_hours_if_zero=True)
+        
+        # Populate boundary editor fields
+        self.boundary_time_edit.setText(time_str)
+        
+        # Show boundary editor
+        self.boundary_editor_container.show()
+        self.boundary_editor_visible = True
+        
+    def hide_boundary_editor(self):
+        """Hide the boundary editor."""
+        if hasattr(self, 'boundary_editor_container'):
+            self.boundary_editor_container.hide()
+            self.boundary_editor_visible = False
             QMessageBox.warning(self, "Invalid Time", "Please enter a valid time value.")
     
     def _on_llm_action(self, action_type, parameters):

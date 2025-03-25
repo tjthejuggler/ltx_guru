@@ -1446,9 +1446,9 @@ class TimelineContainer(QWidget):
         # Calculate cursor time position for all cases
         cursor_time = event.pos().x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
-        # Update cursor position in main window
-        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
-            self.app.main_window.update_cursor_position(cursor_time)
+        # Update cursor hover position in main window
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_hover_position'):
+            self.app.main_window.update_cursor_hover_position(cursor_time)
             
         if self.parent_widget.dragging_position:
             # Update position
@@ -1773,9 +1773,9 @@ class TimelineContainer(QWidget):
         Args:
             event: Leave event.
         """
-        # Clear cursor position when mouse leaves the widget
-        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
-            self.app.main_window.cursor_position_label.setText("Cursor: --:--:--")
+        # Clear cursor hover position when mouse leaves the widget
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'clear_cursor_hover_position'):
+            self.app.main_window.clear_cursor_hover_position()
         # Restore appropriate editor when leaving the timeline
         if hasattr(self.app, 'main_window'):
             # Hide hover info label

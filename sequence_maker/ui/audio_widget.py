@@ -691,9 +691,9 @@ class AudioVisualization(QWidget):
             if audio_duration > 0 and time > audio_duration:
                 time = audio_duration
             
-            # Update cursor position in main window
-            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
-                self.app.main_window.update_cursor_position(time)
+            # Update cursor hover position in main window
+            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_hover_position'):
+                self.app.main_window.update_cursor_hover_position(time)
             
             # Set position in timeline manager (this will update all linked components)
             self.app.timeline_manager.set_position(time)
@@ -720,9 +720,9 @@ class AudioVisualization(QWidget):
             if audio_duration > 0 and time > audio_duration:
                 time = audio_duration
                 
-            # Update cursor position in main window
-            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
-                self.app.main_window.update_cursor_position(time)
+            # Update cursor hover position in main window
+            if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_hover_position'):
+                self.app.main_window.update_cursor_hover_position(time)
                 
             # Change cursor to indicate the visualization is clickable
             self.setCursor(Qt.CursorShape.PointingHandCursor)
@@ -737,9 +737,9 @@ class AudioVisualization(QWidget):
         Args:
             event: Leave event.
         """
-        # Clear cursor position when mouse leaves the widget
-        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
-            self.app.main_window.cursor_position_label.setText("Cursor: --:--:--")
+        # Clear cursor hover position when mouse leaves the widget
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'clear_cursor_hover_position'):
+            self.app.main_window.clear_cursor_hover_position()
         
         # Reset cursor
         self.setCursor(Qt.CursorShape.ArrowCursor)
