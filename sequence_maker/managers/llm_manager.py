@@ -86,6 +86,11 @@ class LLMManager(QObject):
         # Action handlers
         self.action_handlers = {}
         
+        # Register lyrics function handlers
+        self.register_action_handler("get_lyrics_info", self._handle_get_lyrics_info)
+        self.register_action_handler("get_word_timestamps", self._handle_get_word_timestamps)
+        self.register_action_handler("find_first_word", self._handle_find_first_word)
+        
         # Function definitions
         self.timeline_functions = [
             {
@@ -285,6 +290,50 @@ class LLMManager(QObject):
                 }
             }
         ]
+        
+        self.lyrics_functions = [
+            {
+                "name": "get_lyrics_info",
+                "description": "Get information about the current song lyrics",
+                "parameters": {
+                    "type": "object",
+                    "properties": {}
+                }
+            },
+            {
+                "name": "get_word_timestamps",
+                "description": "Get timestamps for words in the lyrics",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "word": {
+                            "type": "string",
+                            "description": "Specific word to find (optional). If not provided, returns all word timestamps."
+                        },
+                        "start_time": {
+                            "type": "number",
+                            "description": "Start time in seconds for filtering words (optional)"
+                        },
+                        "end_time": {
+                            "type": "number",
+                            "description": "End time in seconds for filtering words (optional)"
+                        },
+                        "limit": {
+                            "type": "integer",
+                            "description": "Maximum number of word timestamps to return (optional)"
+                        }
+                    }
+                }
+            },
+            {
+                "name": "find_first_word",
+                "description": "Find the first word in the lyrics",
+                "parameters": {
+                    "type": "object",
+                    "properties": {}
+                }
+            }
+        ]
     
     def is_configured(self):
         """
@@ -323,6 +372,7 @@ class LLMManager(QObject):
         functions = []
         functions.extend(self.timeline_functions)
         functions.extend(self.audio_functions)
+        functions.extend(self.lyrics_functions)
         
         return functions
     
@@ -341,6 +391,10 @@ class LLMManager(QObject):
         Returns:
             bool: True if the request was sent, False otherwise.
         """
+        # Always enable function calling for lyrics-related queries
+        if any(keyword in prompt.lower() for keyword in ["lyrics", "word", "timestamp"]):
+            use_functions = True
+            self.logger.info("Lyrics-related query detected, enabling function calling")
         if not self.is_configured():
             self.logger.warning("Cannot send request: LLM not configured")
             self.llm_error.emit("LLM not configured")
@@ -361,6 +415,13 @@ class LLMManager(QObject):
                 "Do not add additional color changes at the end of segments or anywhere else unless "
                 "specifically asked to do so. Your changes will be added to the existing timeline without "
                 "removing what's already there."
+                "\n\nYou have access to the following functions to get lyrics data:"
+                "\n1. get_lyrics_info() - Get general information about the current song lyrics"
+                "\n2. get_word_timestamps(word, start_time, end_time, limit) - Get timestamps for words in the lyrics"
+                "\n3. find_first_word() - Find the first word in the lyrics with its timestamp"
+                "\n\nWhen asked about lyrics or word timestamps, ALWAYS use these functions to get accurate data. "
+                "For example, if asked 'what is the first word in the song?', use the find_first_word() function. "
+                "If asked about specific words, use get_word_timestamps() with the word parameter."
             )
         
         # Set default temperature if not provided
@@ -550,8 +611,21 @@ class LLMManager(QObject):
             
             # Prepare functions if needed
             functions = None
-            if use_functions and self.provider == "openai":
-                functions = self._get_available_functions()
+            if use_functions:
+                if self.provider == "openai":
+                    functions = self._get_available_functions()
+                    self.logger.info(f"Enabled function calling with {len(functions)} functions for OpenAI")
+                elif self.provider == "anthropic":
+                    self.logger.warning("Function calling requested but not supported by Anthropic API")
+                    # For Anthropic, we need to add function descriptions to the system message
+                    system_message += "\n\nAvailable functions:\n"
+                    for func in self._get_available_functions():
+                        system_message += f"\n- {func['name']}: {func['description']}\n"
+                        if 'parameters' in func and 'properties' in func['parameters']:
+                            system_message += "  Parameters:\n"
+                            for param_name, param_info in func['parameters']['properties'].items():
+                                system_message += f"    - {param_name}: {param_info.get('description', '')}\n"
+                    self.logger.info("Added function descriptions to system message for Anthropic")
             
             # Handle streaming requests
             if stream and self.provider == "openai":
@@ -609,22 +683,44 @@ class LLMManager(QObject):
             # Process response
             if response:
                 # Check for function call
-                if use_functions and self.provider == "openai":
-                    message = response.get("choices", [{}])[0].get("message", {})
-                    if "function_call" in message:
-                        # Handle function call
-                        result = self._handle_function_call(response)
+                if use_functions:
+                    if self.provider == "openai":
+                        message = response.get("choices", [{}])[0].get("message", {})
+                        if "function_call" in message:
+                            # Handle function call
+                            result = self._handle_function_call(response)
+                            
+                            # Extract response text (function call description)
+                            function_name = message["function_call"]["name"]
+                            arguments = json.loads(message["function_call"]["arguments"])
+                            
+                            # Create a human-readable description of the function call
+                            response_text = f"I'll {function_name.replace('_', ' ')} with the following parameters:\n"
+                            response_text += json.dumps(arguments, indent=2)
+                            response_text += f"\n\nResult: {json.dumps(result, indent=2)}"
+                            
+                            # Process response
+                            self._process_response(response, response_text, prompt, start_time, end_time)
+                            
+                            # Emit function call signal
+                            self.llm_function_called.emit(function_name, arguments, result)
+                            
+                            return
+                    elif self.provider == "anthropic" and "function_call" in response:
+                        # Handle function call from Anthropic
+                        function_name = response["function_call"]["name"]
+                        arguments = json.loads(response["function_call"]["arguments"])
+                        result = response["function_call"]["result"]
                         
-                        # Extract response text (function call description)
-                        function_name = message["function_call"]["name"]
-                        arguments = json.loads(message["function_call"]["arguments"])
+                        self.logger.info(f"Processing Anthropic function call: {function_name}({arguments})")
                         
-                        # Create a human-readable description of the function call
-                        response_text = f"I'll {function_name.replace('_', ' ')} with the following parameters:\n"
-                        response_text += json.dumps(arguments, indent=2)
-                        response_text += f"\n\nResult: {json.dumps(result, indent=2)}"
+                        # Get original response text
+                        content = response.get("content", [{}])[0].get("text", "")
                         
-                        # Process response
+                        # Create a new response text with the function result
+                        response_text = content + f"\n\nResult: {json.dumps(result, indent=2)}"
+                        
+                        # Process response with the updated text
                         self._process_response(response, response_text, prompt, start_time, end_time)
                         
                         # Emit function call signal
@@ -663,6 +759,11 @@ class LLMManager(QObject):
             start_time (float): Request start time.
             end_time (float): Request end time.
         """
+        # Check if this is an error response
+        if response.get("error", False):
+            self.llm_error.emit(response_text)
+            return
+            
         # Track token usage
         self.track_token_usage(response)
         
@@ -765,6 +866,17 @@ class LLMManager(QObject):
             # Parse response
             return response.json()
         
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error(f"Network connection error in OpenAI request: {e}")
+            # Return a more user-friendly error message
+            return {
+                "choices": [{
+                    "message": {
+                        "content": "Network connection error. Please check your internet connection and try again."
+                    }
+                }],
+                "error": True
+            }
         except Exception as e:
             self.logger.error(f"Error in OpenAI request: {e}")
             raise
@@ -784,6 +896,9 @@ class LLMManager(QObject):
         """
         self.logger.info("Sending request to Anthropic API")
         
+        # Check if this is a lyrics-related query that might need function calling
+        is_lyrics_query = any(keyword in prompt.lower() for keyword in ["lyrics", "word", "timestamp"])
+        
         try:
             # Prepare request
             url = "https://api.anthropic.com/v1/messages"
@@ -792,6 +907,20 @@ class LLMManager(QObject):
                 "x-api-key": self.api_key,
                 "anthropic-version": "2023-06-01"
             }
+            
+            # For lyrics queries, add special instructions to prompt
+            if is_lyrics_query:
+                self.logger.info("Adding function calling instructions to prompt for Anthropic")
+                prompt = (
+                    f"{prompt}\n\n"
+                    "IMPORTANT: To answer this question accurately, you MUST use one of the available functions "
+                    "mentioned in the system message. Format your response as if you're calling the function, like this:\n\n"
+                    "```python\n"
+                    "function_name(param1=value1, param2=value2)\n"
+                    "```\n\n"
+                    "Then I'll execute the function and provide you with the results."
+                )
+            
             data = {
                 "model": self.model,
                 "system": system_message,
@@ -809,8 +938,74 @@ class LLMManager(QObject):
             response.raise_for_status()
             
             # Parse response
-            return response.json()
+            response_data = response.json()
+            
+            # For lyrics queries, check if the response contains a function call pattern
+            if is_lyrics_query and "content" in response_data:
+                content = response_data.get("content", [{}])[0].get("text", "")
+                
+                # Look for function call patterns like function_name(params)
+                import re
+                function_pattern = r"```python\s*\n([\w_]+)\((.*?)\)\s*\n```"
+                match = re.search(function_pattern, content, re.DOTALL)
+                
+                if match:
+                    function_name = match.group(1)
+                    args_str = match.group(2)
+                    
+                    self.logger.info(f"Detected function call in Anthropic response: {function_name}({args_str})")
+                    
+                    # Parse arguments
+                    args = {}
+                    if args_str.strip():
+                        # Handle key=value pairs
+                        for arg in args_str.split(','):
+                            if '=' in arg:
+                                key, value = arg.split('=', 1)
+                                key = key.strip()
+                                value = value.strip()
+                                
+                                # Handle string values (with or without quotes)
+                                if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+                                    value = value[1:-1]
+                                # Handle numeric values
+                                elif value.isdigit():
+                                    value = int(value)
+                                elif value.replace('.', '', 1).isdigit():
+                                    value = float(value)
+                                # Handle None/null
+                                elif value.lower() in ('none', 'null'):
+                                    value = None
+                                
+                                args[key] = value
+                    
+                    # Execute the function
+                    if function_name in self.action_handlers:
+                        self.logger.info(f"Executing function from Anthropic response: {function_name}({args})")
+                        result = self.execute_action(function_name, args)
+                        
+                        # Add function result to response
+                        response_data["function_call"] = {
+                            "name": function_name,
+                            "arguments": json.dumps(args),
+                            "result": result
+                        }
+                        
+                        self.logger.info(f"Function result: {result}")
+                    else:
+                        self.logger.warning(f"Function {function_name} not found")
+            
+            return response_data
         
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error(f"Network connection error in Anthropic request: {e}")
+            # Return a more user-friendly error message
+            return {
+                "content": [{
+                    "text": "Network connection error. Please check your internet connection and try again."
+                }],
+                "error": True
+            }
         except Exception as e:
             self.logger.error(f"Error in Anthropic request: {e}")
             raise
@@ -852,6 +1047,13 @@ class LLMManager(QObject):
             # Parse response
             return response.json()
         
+        except requests.exceptions.ConnectionError as e:
+            self.logger.error(f"Network connection error in local model request: {e}")
+            # Return a more user-friendly error message
+            return {
+                "response": "Network connection error. Please check your internet connection and try again.",
+                "error": True
+            }
         except Exception as e:
             self.logger.error(f"Error in local model request: {e}")
             raise
@@ -1186,28 +1388,41 @@ class LLMManager(QObject):
         Returns:
             dict: Result of the function call.
         """
+        self.logger.info("_handle_function_call called with response: %s", response)
         try:
             # Extract function call
             message = response["choices"][0]["message"]
             function_call = message.get("function_call")
             
             if not function_call:
+                self.logger.warning("No function call in response")
                 return {"success": False, "error": "No function call in response"}
             
             # Extract function name and arguments
             function_name = function_call.get("name")
             arguments_str = function_call.get("arguments", "{}")
             
+            self.logger.info(f"Received function call: {function_name} with arguments: {arguments_str}")
+            
             try:
                 arguments = json.loads(arguments_str)
             except json.JSONDecodeError:
+                self.logger.error(f"Invalid function arguments: {arguments_str}")
                 return {"success": False, "error": f"Invalid function arguments: {arguments_str}"}
             
             # Log function call
-            self.logger.info(f"Function call: {function_name}({arguments})")
+            self.logger.info(f"Executing function call: {function_name}({arguments})")
+            
+            # Check if function exists
+            if function_name not in self.action_handlers:
+                self.logger.error(f"Function not found: {function_name}")
+                return {"success": False, "error": f"Function not found: {function_name}"}
             
             # Execute function
             result = self.execute_action(function_name, arguments)
+            
+            # Log result
+            self.logger.info(f"Function call result: {result}")
             
             return result
         
@@ -1417,3 +1632,173 @@ class LLMManager(QObject):
                 "and the colors should reflect the mood and energy of the music at those points."
             )
         )
+    
+    def _handle_get_lyrics_info(self, parameters):
+        """
+        Handle the get_lyrics_info function call.
+        
+        Args:
+            parameters (dict): Function parameters.
+            
+        Returns:
+            dict: Lyrics information.
+        """
+        self.logger.info("_handle_get_lyrics_info called with parameters: %s", parameters)
+        try:
+            # Check if lyrics are available
+            if not self.app.project_manager.current_project:
+                self.logger.warning("No current project available")
+                return {"success": False, "error": "No current project loaded"}
+                
+            if not self.app.project_manager.current_project.lyrics:
+                self.logger.warning("No lyrics available in current project")
+                return {"success": False, "error": "No lyrics available for the current project"}
+            
+            # Get lyrics from project
+            lyrics = self.app.project_manager.current_project.lyrics
+            self.logger.info("Found lyrics: song_name=%s, artist_name=%s, word_count=%d",
+                            lyrics.song_name, lyrics.artist_name, len(lyrics.word_timestamps))
+            
+            # Return lyrics information
+            return {
+                "success": True,
+                "song_name": lyrics.song_name,
+                "artist_name": lyrics.artist_name,
+                "lyrics_text": lyrics.lyrics_text,
+                "word_count": len(lyrics.word_timestamps),
+                "has_timestamps": len(lyrics.word_timestamps) > 0
+            }
+        except Exception as e:
+            self.logger.error(f"Error getting lyrics info: {e}")
+            return {"success": False, "error": str(e)}
+    
+    def _handle_get_word_timestamps(self, parameters):
+        """
+        Handle the get_word_timestamps function call.
+        
+        Args:
+            parameters (dict): Function parameters.
+            
+        Returns:
+            dict: Word timestamps.
+        """
+        try:
+            # Check if lyrics are available
+            if not self.app.project_manager.current_project or not self.app.project_manager.current_project.lyrics:
+                return {"success": False, "error": "No lyrics available for the current project"}
+            
+            # Get lyrics from project
+            lyrics = self.app.project_manager.current_project.lyrics
+            
+            # Check if there are word timestamps
+            if not lyrics.word_timestamps:
+                return {"success": False, "error": "No word timestamps available for the current lyrics"}
+            
+            # Get parameters
+            word = parameters.get("word")
+            start_time = parameters.get("start_time")
+            end_time = parameters.get("end_time")
+            limit = parameters.get("limit")
+            
+            # Filter word timestamps
+            filtered_timestamps = []
+            for wt in lyrics.word_timestamps:
+                # Filter by word if specified
+                if word and word.lower() != wt.word.lower():
+                    continue
+                
+                # Filter by start time if specified
+                if start_time is not None and wt.start < start_time:
+                    continue
+                
+                # Filter by end time if specified
+                if end_time is not None and wt.end > end_time:
+                    continue
+                
+                # Add to filtered list
+                filtered_timestamps.append({
+                    "word": wt.word,
+                    "start": wt.start,
+                    "end": wt.end,
+                    "duration": wt.end - wt.start,
+                    "formatted_start": self._format_time(wt.start),
+                    "formatted_end": self._format_time(wt.end)
+                })
+            
+            # Apply limit if specified
+            if limit is not None and limit > 0:
+                filtered_timestamps = filtered_timestamps[:limit]
+            
+            # Return filtered timestamps
+            return {
+                "success": True,
+                "word_timestamps": filtered_timestamps,
+                "count": len(filtered_timestamps)
+            }
+        except Exception as e:
+            self.logger.error(f"Error getting word timestamps: {e}")
+            return {"success": False, "error": str(e)}
+    
+    def _handle_find_first_word(self, parameters):
+        """
+        Handle the find_first_word function call.
+        
+        Args:
+            parameters (dict): Function parameters.
+            
+        Returns:
+            dict: First word information.
+        """
+        self.logger.info("_handle_find_first_word called with parameters: %s", parameters)
+        try:
+            # Check if lyrics are available
+            if not self.app.project_manager.current_project:
+                self.logger.warning("No current project available")
+                return {"success": False, "error": "No current project loaded"}
+                
+            if not self.app.project_manager.current_project.lyrics:
+                self.logger.warning("No lyrics available in current project")
+                return {"success": False, "error": "No lyrics available for the current project"}
+            
+            # Get lyrics from project
+            lyrics = self.app.project_manager.current_project.lyrics
+            
+            # Check if there are word timestamps
+            if not lyrics.word_timestamps:
+                self.logger.warning("No word timestamps available in lyrics")
+                return {"success": False, "error": "No word timestamps available for the current lyrics"}
+            
+            # Get the first word timestamp
+            first_word = lyrics.word_timestamps[0]
+            self.logger.info("Found first word: word=%s, start=%.2f, end=%.2f",
+                            first_word.word, first_word.start, first_word.end)
+            
+            # Return first word information
+            result = {
+                "success": True,
+                "word": first_word.word,
+                "start": first_word.start,
+                "end": first_word.end,
+                "duration": first_word.end - first_word.start,
+                "formatted_start": self._format_time(first_word.start),
+                "formatted_end": self._format_time(first_word.end)
+            }
+            self.logger.info("Returning first word result: %s", result)
+            return result
+        except Exception as e:
+            self.logger.error(f"Error finding first word: {e}")
+            return {"success": False, "error": str(e)}
+    
+    def _format_time(self, seconds):
+        """
+        Format time in seconds to MM:SS.MS format.
+        
+        Args:
+            seconds (float): Time in seconds.
+            
+        Returns:
+            str: Formatted time string.
+        """
+        minutes = int(seconds // 60)
+        seconds_remainder = seconds % 60
+        return f"{minutes:02d}:{seconds_remainder:06.2f}"

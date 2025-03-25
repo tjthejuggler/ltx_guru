@@ -616,6 +616,13 @@ class LLMChatWindow(QWidget):
             "Do not add additional color changes at the end of segments or anywhere else unless "
             "specifically asked to do so. Your changes will be added to the existing timeline without "
             "removing what's already there."
+            "\n\nYou have access to the following functions to get lyrics data:"
+            "\n1. get_lyrics_info() - Get general information about the current song lyrics"
+            "\n2. get_word_timestamps(word, start_time, end_time, limit) - Get timestamps for words in the lyrics"
+            "\n3. find_first_word() - Find the first word in the lyrics with its timestamp"
+            "\n\nWhen asked about lyrics or word timestamps, ALWAYS use these functions to get accurate data. "
+            "For example, if asked 'what is the first word in the song?', use the find_first_word() function. "
+            "If asked about specific words, use get_word_timestamps() with the word parameter."
         )
         
         return system_message
