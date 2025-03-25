@@ -140,24 +140,25 @@ class Config:
         except Exception as e:
             self.logger.error(f"Error saving configuration: {e}")
     
-    def get(self, section, key=None):
+    def get(self, section, key=None, default=None):
         """
         Get a configuration value.
         
         Args:
             section (str): Configuration section
             key (str, optional): Configuration key within section. If None, returns the entire section.
+            default: Default value to return if the key is not found.
         
         Returns:
-            The configuration value, or None if not found.
+            The configuration value, or the default value if not found.
         """
         if section not in self.config:
-            return None
+            return default
         
         if key is None:
             return self.config[section]
         
-        return self.config[section].get(key)
+        return self.config[section].get(key, default)
     
     def set(self, section, key, value):
         """

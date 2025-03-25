@@ -232,26 +232,26 @@ class SettingsDialog(QDialog):
         
         # Create general LLM settings group
         general_llm_group = QGroupBox("General Settings")
-        general_llm_layout = QFormLayout(general_llm_group)
+        self.general_llm_layout = QFormLayout(general_llm_group)
         
         self.llm_enabled_check = QCheckBox("Enable LLM Integration")
-        general_llm_layout.addRow(self.llm_enabled_check)
+        self.general_llm_layout.addRow(self.llm_enabled_check)
         
         self.llm_provider_combo = QComboBox()
         self.llm_provider_combo.addItems(["OpenAI", "Anthropic", "Local"])
         self.llm_provider_combo.currentTextChanged.connect(self._on_llm_provider_changed)
-        general_llm_layout.addRow("Provider:", self.llm_provider_combo)
+        self.general_llm_layout.addRow("Provider:", self.llm_provider_combo)
         
         self.llm_api_key_edit = QLineEdit()
         self.llm_api_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
-        general_llm_layout.addRow("API Key:", self.llm_api_key_edit)
+        self.general_llm_layout.addRow("API Key:", self.llm_api_key_edit)
         
         self.llm_model_edit = QLineEdit()
-        general_llm_layout.addRow("Model:", self.llm_model_edit)
+        self.general_llm_layout.addRow("Model:", self.llm_model_edit)
         
         self.llm_local_endpoint_edit = QLineEdit()
         self.llm_local_endpoint_edit.setPlaceholderText("http://localhost:8000/v1/completions")
-        general_llm_layout.addRow("Local Endpoint:", self.llm_local_endpoint_edit)
+        self.general_llm_layout.addRow("Local Endpoint:", self.llm_local_endpoint_edit)
         
         self.llm_layout.addWidget(general_llm_group)
         
@@ -500,12 +500,12 @@ class SettingsDialog(QDialog):
         # Show/hide API key field based on provider
         show_api_key = provider != "Local"
         self.llm_api_key_edit.setVisible(show_api_key)
-        self.llm_layout.labelForField(self.llm_api_key_edit).setVisible(show_api_key)
+        self.general_llm_layout.labelForField(self.llm_api_key_edit).setVisible(show_api_key)
         
         # Show/hide local endpoint field based on provider
         show_local_endpoint = provider == "Local"
         self.llm_local_endpoint_edit.setVisible(show_local_endpoint)
-        self.llm_layout.labelForField(self.llm_local_endpoint_edit).setVisible(show_local_endpoint)
+        self.general_llm_layout.labelForField(self.llm_local_endpoint_edit).setVisible(show_local_endpoint)
         
         # Update model field placeholder based on provider
         if provider == "OpenAI":
