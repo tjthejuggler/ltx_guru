@@ -139,6 +139,260 @@ class MainWindow(QMainWindow):
         self.load_audio_action.setStatusTip("Load an audio file")
         self.load_audio_action.triggered.connect(self._on_load_audio)
         
+        # Export actions
+        self.export_json_action = QAction("Export to &JSON...", self)
+        self.export_json_action.setStatusTip("Export timeline to JSON format")
+        self.export_json_action.triggered.connect(self._on_export_json)
+        
+        self.export_prg_action = QAction("Export to &PRG...", self)
+        self.export_prg_action.setStatusTip("Export timeline to PRG format")
+        self.export_prg_action.triggered.connect(self._on_export_prg)
+        
+        # Version history action
+        self.version_history_action = QAction("&Version History...", self)
+        self.version_history_action.setStatusTip("View and restore previous versions")
+        self.version_history_action.triggered.connect(self._on_version_history)
+        
+        # Exit action
+        self.exit_action = QAction("E&xit", self)
+        self.exit_action.setShortcut(QKeySequence.StandardKey.Quit)
+        self.exit_action.setStatusTip("Exit the application")
+        self.exit_action.triggered.connect(self.close)
+        
+        # Edit actions
+        self.undo_action = QAction("&Undo", self)
+        self.undo_action.setShortcut(QKeySequence.StandardKey.Undo)
+        self.undo_action.setStatusTip("Undo the last action")
+        self.undo_action.triggered.connect(self._on_undo)
+        
+        self.redo_action = QAction("&Redo", self)
+        self.redo_action.setShortcut(QKeySequence.StandardKey.Redo)
+        self.redo_action.setStatusTip("Redo the last undone action")
+        self.redo_action.triggered.connect(self._on_redo)
+        
+        self.cut_action = QAction("Cu&t", self)
+        self.cut_action.setShortcut(QKeySequence.StandardKey.Cut)
+        self.cut_action.setStatusTip("Cut the selected items")
+        self.cut_action.triggered.connect(self._on_cut)
+        
+        self.copy_action = QAction("&Copy", self)
+        self.copy_action.setShortcut(QKeySequence.StandardKey.Copy)
+        self.copy_action.setStatusTip("Copy the selected items")
+        self.copy_action.triggered.connect(self._on_copy)
+        
+        self.paste_action = QAction("&Paste", self)
+        self.paste_action.setShortcut(QKeySequence.StandardKey.Paste)
+        self.paste_action.setStatusTip("Paste the copied items")
+        self.paste_action.triggered.connect(self._on_paste)
+        
+        self.delete_action = QAction("&Delete", self)
+        self.delete_action.setShortcut(QKeySequence.StandardKey.Delete)
+        self.delete_action.setStatusTip("Delete the selected items")
+        self.delete_action.triggered.connect(self._on_delete)
+        
+        self.select_all_action = QAction("Select &All", self)
+        self.select_all_action.setShortcut(QKeySequence.StandardKey.SelectAll)
+        self.select_all_action.setStatusTip("Select all items")
+        self.select_all_action.triggered.connect(self._on_select_all)
+        
+        # Preferences action
+        self.preferences_action = QAction("&Preferences...", self)
+        self.preferences_action.setStatusTip("Edit application preferences")
+        self.preferences_action.triggered.connect(self._on_preferences)
+        
+        # View actions
+        self.zoom_in_action = QAction("Zoom &In", self)
+        self.zoom_in_action.setShortcut(QKeySequence.StandardKey.ZoomIn)
+        self.zoom_in_action.setStatusTip("Zoom in")
+        self.zoom_in_action.triggered.connect(self._on_zoom_in)
+        
+        self.zoom_out_action = QAction("Zoom &Out", self)
+        self.zoom_out_action.setShortcut(QKeySequence.StandardKey.ZoomOut)
+        self.zoom_out_action.setStatusTip("Zoom out")
+        self.zoom_out_action.triggered.connect(self._on_zoom_out)
+        
+        self.zoom_fit_action = QAction("Zoom &Fit", self)
+        self.zoom_fit_action.setStatusTip("Zoom to fit")
+        self.zoom_fit_action.triggered.connect(self._on_zoom_fit)
+        
+        # Timeline actions
+        self.add_timeline_action = QAction("&Add Timeline", self)
+        self.add_timeline_action.setStatusTip("Add a new timeline")
+        self.add_timeline_action.triggered.connect(self._on_add_timeline)
+        
+        self.remove_timeline_action = QAction("&Remove Timeline", self)
+        self.remove_timeline_action.setStatusTip("Remove the selected timeline")
+        self.remove_timeline_action.triggered.connect(self._on_remove_timeline)
+        
+        self.duplicate_timeline_action = QAction("&Duplicate Timeline", self)
+        self.duplicate_timeline_action.setStatusTip("Duplicate the selected timeline")
+        self.duplicate_timeline_action.triggered.connect(self._on_duplicate_timeline)
+        
+        # Tools actions
+        self.key_mapping_action = QAction("&Key Mapping...", self)
+        self.key_mapping_action.setStatusTip("Configure key mappings")
+        self.key_mapping_action.triggered.connect(self._on_key_mapping)
+        
+        self.connect_balls_action = QAction("&Connect Balls...", self)
+        self.connect_balls_action.setStatusTip("Connect to physical balls")
+        self.connect_balls_action.triggered.connect(self._on_connect_balls)
+        
+        self.llm_chat_action = QAction("&LLM Chat...", self)
+        self.llm_chat_action.setStatusTip("Open LLM chat window")
+        self.llm_chat_action.triggered.connect(self._on_llm_chat)
+        
+        self.llm_diagnostics_action = QAction("LLM &Diagnostics...", self)
+        self.llm_diagnostics_action.setStatusTip("View LLM diagnostics")
+        self.llm_diagnostics_action.triggered.connect(self._on_llm_diagnostics)
+        
+        self.process_lyrics_action = QAction("Process &Lyrics...", self)
+        self.process_lyrics_action.setStatusTip("Process lyrics for timeline")
+        self.process_lyrics_action.triggered.connect(self._on_process_lyrics)
+        
+        # Playback actions
+        self.play_action = QAction("&Play", self)
+        self.play_action.setShortcut(QKeySequence("Space"))
+        self.play_action.setStatusTip("Play audio")
+        self.play_action.triggered.connect(self._on_play)
+        
+        self.pause_action = QAction("P&ause", self)
+        self.pause_action.setShortcut(QKeySequence("Space"))
+        self.pause_action.setStatusTip("Pause audio")
+        self.pause_action.triggered.connect(self._on_pause)
+        self.pause_action.setVisible(False)  # Hide initially
+        
+        self.stop_action = QAction("&Stop", self)
+        self.stop_action.setShortcut(QKeySequence("Escape"))
+        self.stop_action.setStatusTip("Stop audio")
+        self.stop_action.triggered.connect(self._on_stop)
+        
+        # Help actions
+        self.about_action = QAction("&About", self)
+        self.about_action.setStatusTip("About Sequence Maker")
+        self.about_action.triggered.connect(self._on_about)
+        
+        self.help_action = QAction("&Help", self)
+        self.help_action.setShortcut(QKeySequence.StandardKey.HelpContents)
+        self.help_action.setStatusTip("Show help")
+        self.help_action.triggered.connect(self._on_help)
+        
+    def _on_new(self):
+        """Create a new project."""
+        # Check for unsaved changes
+        if not self._check_unsaved_changes():
+            return
+            
+        # Create a new project
+        self.app.project_manager.new_project()
+        
+        # Update UI
+        self._update_ui()
+        
+    def _on_open(self):
+        """Open an existing project."""
+        # Check for unsaved changes
+        if not self._check_unsaved_changes():
+            return
+            
+        # Show file dialog
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Open Project",
+            self.app.config.get("general", "default_project_dir"),
+            "Sequence Maker Project (*.smproj)"
+        )
+        
+        if file_path:
+            # Load project
+            self.app.project_manager.load_project(file_path)
+            
+            # Update UI
+            self._update_ui()
+            
+    def _on_save(self):
+        """Save the current project."""
+        # Check if project has a file path
+        if not self.app.project_manager.current_project.file_path:
+            # If not, use save as
+            return self._on_save_as()
+            
+        # Save project
+        success = self.app.project_manager.save_project()
+        
+        # Update UI
+        if success:
+            self.statusBar().showMessage("Project saved", 3000)
+            
+        return success
+        
+    def _on_save_as(self):
+        """Save the current project with a new name."""
+        # Show file dialog
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Project As",
+            self.app.config.get("general", "default_project_dir"),
+            "Sequence Maker Project (*.smproj)"
+        )
+        
+        if file_path:
+            # Save project
+            success = self.app.project_manager.save_project(file_path)
+            
+            # Update UI
+            if success:
+                self.statusBar().showMessage("Project saved", 3000)
+                
+            return success
+            
+        return False
+        
+    def _on_load_audio(self):
+        """Load an audio file."""
+        # Show file dialog
+        file_path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Load Audio",
+            self.app.config.get("general", "default_project_dir"),
+            "Audio Files (*.mp3 *.wav)"
+        )
+        
+        if file_path:
+            # Load audio
+            self.app.audio_manager.load_audio(file_path)
+            
+            # Update UI
+            self._update_ui()
+            
+    def _check_unsaved_changes(self):
+        """
+        Check if there are unsaved changes and prompt the user.
+        
+        Returns:
+            bool: True if it's safe to proceed, False otherwise.
+        """
+        if not self.app.project_manager.has_unsaved_changes():
+            return True
+            
+        # Show confirmation dialog
+        reply = QMessageBox.question(
+            self,
+            "Unsaved Changes",
+            "There are unsaved changes. Do you want to save them?",
+            QMessageBox.StandardButton.Save | QMessageBox.StandardButton.Discard | QMessageBox.StandardButton.Cancel,
+            QMessageBox.StandardButton.Save
+        )
+        
+        if reply == QMessageBox.StandardButton.Save:
+            # Save changes
+            return self._on_save()
+        elif reply == QMessageBox.StandardButton.Discard:
+            # Discard changes
+            return True
+        else:
+            # Cancel
+            return False
+        
         self.export_json_action = QAction("Export to &JSON...", self)
         self.export_json_action.setStatusTip("Export timelines to JSON files")
         self.export_json_action.triggered.connect(self._on_export_json)
@@ -393,19 +647,31 @@ class MainWindow(QMainWindow):
         """Connect signals to slots."""
         # Connect undo manager signals
         if self.app.undo_manager:
-            self.app.undo_manager.can_undo_changed.connect(self.undo_action.setEnabled)
-            self.app.undo_manager.can_redo_changed.connect(self.redo_action.setEnabled)
+            # Update undo/redo actions based on current state
+            self.undo_action.setEnabled(self.app.undo_manager.can_undo())
+            self.redo_action.setEnabled(self.app.undo_manager.can_redo())
+            
+            # Connect signals if they exist
+            if hasattr(self.app.undo_manager, 'can_undo_changed'):
+                self.app.undo_manager.can_undo_changed.connect(self.undo_action.setEnabled)
+            if hasattr(self.app.undo_manager, 'can_redo_changed'):
+                self.app.undo_manager.can_redo_changed.connect(self.redo_action.setEnabled)
         
         # Connect timeline manager signals
-        self.app.timeline_manager.position_changed.connect(self._on_position_changed)
+        if hasattr(self.app.timeline_manager, 'position_changed'):
+            self.app.timeline_manager.position_changed.connect(self._update_cursor_position)
         
         # Connect audio manager signals
-        self.app.audio_manager.playback_started.connect(self._on_playback_started)
-        self.app.audio_manager.playback_paused.connect(self._on_playback_paused)
-        self.app.audio_manager.playback_stopped.connect(self._on_playback_stopped)
+        if hasattr(self.app.audio_manager, 'playback_started'):
+            self.app.audio_manager.playback_started.connect(self._on_playback_started)
+        if hasattr(self.app.audio_manager, 'playback_paused'):
+            self.app.audio_manager.playback_paused.connect(self._on_playback_paused)
+        if hasattr(self.app.audio_manager, 'playback_stopped'):
+            self.app.audio_manager.playback_stopped.connect(self._on_playback_stopped)
         
         # Connect LLM manager signals
-        self.app.llm_manager.llm_action_requested.connect(self._on_llm_action)
+        if hasattr(self.app.llm_manager, 'llm_action_requested'):
+            self.app.llm_manager.llm_action_requested.connect(self._on_llm_action)
     
     def _load_settings(self):
         """Load application settings."""
@@ -457,7 +723,7 @@ class MainWindow(QMainWindow):
         self.recent_projects_menu.clear()
         
         # Get recent projects
-        recent_projects = self.app.config.get_recent_projects()
+        recent_projects = self.app.config.get("general", "recent_projects") or []
         
         # Add actions for each recent project
         for project in recent_projects:
@@ -472,6 +738,37 @@ class MainWindow(QMainWindow):
             clear_action = QAction("Clear Recent Projects", self)
             clear_action.triggered.connect(self._on_clear_recent_projects)
             self.recent_projects_menu.addAction(clear_action)
+    
+    def _on_recent_project(self):
+        """Handle opening a recent project."""
+        # Get the action that triggered this
+        action = self.sender()
+        if not action:
+            return
+            
+        # Get the project path from the action's data
+        project_path = action.data()
+        if not project_path:
+            return
+            
+        # Check for unsaved changes
+        if not self._check_unsaved_changes():
+            return
+            
+        # Load the project
+        self.app.project_manager.load_project(project_path)
+        
+        # Update UI
+        self._update_ui()
+    
+    def _on_clear_recent_projects(self):
+        """Clear the list of recent projects."""
+        # Clear the recent projects list in the config
+        self.app.config.set("general", "recent_projects", [])
+        self.app.config.save()
+        
+        # Update the menu
+        self._update_recent_projects_menu()
     
     def _create_llm_chat_window(self):
         """Create the LLM chat window."""
@@ -499,6 +796,191 @@ class MainWindow(QMainWindow):
         # Create and show the LLM diagnostics dialog
         dialog = LLMDiagnosticsDialog(self.app, self)
         dialog.exec()
+        
+    def _on_export_json(self):
+        """Export timeline to JSON format."""
+        # Show directory selection dialog
+        export_dir = QFileDialog.getExistingDirectory(
+            self,
+            "Select Export Directory",
+            self.app.config.get("general", "default_project_dir")
+        )
+        
+        if not export_dir:
+            return
+            
+        # Export each timeline
+        for i, timeline in enumerate(self.app.timeline_manager.timelines):
+            # Generate filename
+            filename = f"Ball_{i+1}.json"
+            file_path = os.path.join(export_dir, filename)
+            
+            # Export timeline
+            from sequence_maker.export.json_exporter import export_timeline
+            export_timeline(timeline, file_path)
+            
+        # Show success message
+        self.statusBar().showMessage(f"Exported JSON to {export_dir}", 3000)
+        
+    def _on_export_prg(self):
+        """Export timeline to PRG format."""
+        # Show directory selection dialog
+        export_dir = QFileDialog.getExistingDirectory(
+            self,
+            "Select Export Directory",
+            self.app.config.get("general", "default_project_dir")
+        )
+        
+        if not export_dir:
+            return
+            
+        # Export each timeline
+        for i, timeline in enumerate(self.app.timeline_manager.timelines):
+            # Generate filename
+            filename = f"Ball_{i+1}.prg"
+            file_path = os.path.join(export_dir, filename)
+            
+            # Export timeline
+            from sequence_maker.export.prg_exporter import export_timeline
+            export_timeline(timeline, file_path)
+            
+        # Show success message
+        self.statusBar().showMessage(f"Exported PRG to {export_dir}", 3000)
+        
+    def _on_version_history(self):
+        """Show version history dialog."""
+        from sequence_maker.ui.dialogs.version_history_dialog import VersionHistoryDialog
+        dialog = VersionHistoryDialog(self.app, self)
+        dialog.exec()
+        
+    def _on_undo(self):
+        """Undo the last action."""
+        if self.app.undo_manager.can_undo():
+            self.app.undo_manager.undo()
+            self._update_ui()
+            
+    def _on_redo(self):
+        """Redo the last undone action."""
+        if self.app.undo_manager.can_redo():
+            self.app.undo_manager.redo()
+            self._update_ui()
+            
+    def _on_cut(self):
+        """Cut the selected items."""
+        # Get the currently focused widget
+        focused_widget = QApplication.focusWidget()
+        
+        # If it's a text edit widget, use its cut method
+        if hasattr(focused_widget, "cut"):
+            focused_widget.cut()
+        
+    def _on_copy(self):
+        """Copy the selected items."""
+        # Get the currently focused widget
+        focused_widget = QApplication.focusWidget()
+        
+        # If it's a text edit widget, use its copy method
+        if hasattr(focused_widget, "copy"):
+            focused_widget.copy()
+        
+    def _on_paste(self):
+        """Paste the copied items."""
+        # Get the currently focused widget
+        focused_widget = QApplication.focusWidget()
+        
+        # If it's a text edit widget, use its paste method
+        if hasattr(focused_widget, "paste"):
+            focused_widget.paste()
+        
+    def _on_delete(self):
+        """Delete the selected items."""
+        # Get the currently focused widget
+        focused_widget = QApplication.focusWidget()
+        
+        # If it's a text edit widget, use its clear method
+        if hasattr(focused_widget, "clear"):
+            focused_widget.clear()
+            
+    def _on_select_all(self):
+        """Select all items."""
+        # Get the currently focused widget
+        focused_widget = QApplication.focusWidget()
+        
+        # If it's a text edit widget, use its selectAll method
+        if hasattr(focused_widget, "selectAll"):
+            focused_widget.selectAll()
+            
+    def _on_preferences(self):
+        """Show preferences dialog."""
+        from sequence_maker.ui.dialogs.settings_dialog import SettingsDialog
+        dialog = SettingsDialog(self.app, self)
+        dialog.exec()
+        
+    def _on_zoom_in(self):
+        """Zoom in."""
+        # Increase zoom level
+        self.timeline_widget.zoom_in()
+        
+    def _on_zoom_out(self):
+        """Zoom out."""
+        # Decrease zoom level
+        self.timeline_widget.zoom_out()
+        
+    def _on_zoom_fit(self):
+        """Zoom to fit."""
+        # Reset zoom level
+        self.timeline_widget.zoom_fit()
+        
+    def _on_add_timeline(self):
+        """Add a new timeline."""
+        # Add a new timeline
+        self.app.timeline_manager.add_timeline()
+        
+        # Update UI
+        self._update_ui()
+        
+    def _on_remove_timeline(self):
+        """Remove the selected timeline."""
+        # Get the selected timeline
+        selected_timeline = self.timeline_widget.get_selected_timeline()
+        
+        if selected_timeline:
+            # Remove the timeline
+            self.app.timeline_manager.remove_timeline(selected_timeline)
+            
+            # Update UI
+            self._update_ui()
+        
+    def _on_duplicate_timeline(self):
+        """Duplicate the selected timeline."""
+        # Get the selected timeline
+        selected_timeline = self.timeline_widget.get_selected_timeline()
+        
+        if selected_timeline:
+            # Duplicate the timeline
+            self.app.timeline_manager.duplicate_timeline(selected_timeline)
+            
+            # Update UI
+            self._update_ui()
+            
+    def _on_key_mapping(self):
+        """Show key mapping dialog."""
+        from sequence_maker.ui.dialogs.key_mapping_dialog import KeyMappingDialog
+        dialog = KeyMappingDialog(self.app, self)
+        dialog.exec()
+        
+    def _on_connect_balls(self):
+        """Connect to physical balls."""
+        # Show ball scan dialog
+        from sequence_maker.ui.dialogs.ball_scan_dialog import BallScanDialog
+        dialog = BallScanDialog(self.app, self)
+        dialog.exec()
+        
+    def _on_process_lyrics(self):
+        """Process lyrics for timeline."""
+        # Show lyrics input dialog
+        from sequence_maker.ui.dialogs.lyrics_input_dialog import LyricsInputDialog
+        dialog = LyricsInputDialog(self.app, self)
         dialog.exec()
     
     def _on_version_history(self):
@@ -524,3 +1006,115 @@ class MainWindow(QMainWindow):
         # Create and show version history dialog
         dialog = VersionHistoryDialog(self.app, self)
         dialog.exec()
+        
+    def _on_play(self):
+        """Play audio."""
+        # Play audio
+        self.app.audio_manager.play()
+        
+        # Update UI
+        self.play_action.setVisible(False)
+        self.pause_action.setVisible(True)
+        
+    def _on_pause(self):
+        """Pause audio."""
+        # Pause audio
+        self.app.audio_manager.pause()
+        
+        # Update UI
+        self.pause_action.setVisible(False)
+        self.play_action.setVisible(True)
+        
+    def _on_stop(self):
+        """Stop audio."""
+        # Stop audio
+        self.app.audio_manager.stop()
+        
+        # Update UI
+        self.pause_action.setVisible(False)
+        self.play_action.setVisible(True)
+        
+    def _on_about(self):
+        """Show about dialog."""
+        from sequence_maker.ui.dialogs.about_dialog import AboutDialog
+        dialog = AboutDialog(self.app, self)
+        dialog.exec()
+        
+    def _on_help(self):
+        """Show help."""
+        # Open help documentation
+        from PyQt6.QtGui import QDesktopServices
+        from PyQt6.QtCore import QUrl
+        QDesktopServices.openUrl(QUrl("https://github.com/yourusername/sequence_maker/wiki"))
+        
+    def _on_playback_started(self):
+        """Handle playback started event."""
+        # Update UI
+        self.play_action.setVisible(False)
+        self.pause_action.setVisible(True)
+        
+    def _on_playback_paused(self):
+        """Handle playback paused event."""
+        # Update UI
+        self.pause_action.setVisible(False)
+        self.play_action.setVisible(True)
+        
+    def _on_playback_stopped(self):
+        """Handle playback stopped event."""
+        # Update UI
+        self.pause_action.setVisible(False)
+        self.play_action.setVisible(True)
+        
+    def _on_llm_action(self, action_type, action_data):
+        """
+        Handle LLM action request.
+        
+        Args:
+            action_type (str): Type of action requested
+            action_data (dict): Action data
+        """
+        # Process the action based on its type
+        if action_type == "create_segment":
+            # Create a segment
+            self.app.timeline_manager.create_segment(action_data)
+        elif action_type == "modify_segment":
+            # Modify a segment
+            self.app.timeline_manager.modify_segment(action_data)
+        elif action_type == "delete_segment":
+            # Delete a segment
+            self.app.timeline_manager.delete_segment(action_data)
+        elif action_type == "play_audio":
+            # Play audio
+            self._on_play()
+        elif action_type == "pause_audio":
+            # Pause audio
+            self._on_pause()
+        elif action_type == "stop_audio":
+            # Stop audio
+            self._on_stop()
+            
+    def _format_seconds_to_hms(self, seconds, include_hundredths=True, hide_hours_if_zero=False):
+        """
+        Format seconds to HH:MM:SS.ss format.
+        
+        Args:
+            seconds (float): Time in seconds
+            include_hundredths (bool): Whether to include hundredths of a second
+            hide_hours_if_zero (bool): Whether to hide hours if they are zero
+            
+        Returns:
+            str: Formatted time string
+        """
+        hours = int(seconds // 3600)
+        minutes = int((seconds % 3600) // 60)
+        seconds_val = seconds % 60
+        
+        if include_hundredths:
+            seconds_format = f"{seconds_val:05.2f}"
+        else:
+            seconds_format = f"{int(seconds_val):02d}"
+        
+        if hours > 0 or not hide_hours_if_zero:
+            return f"{hours:02d}:{minutes:02d}:{seconds_format}"
+        else:
+            return f"{minutes:02d}:{seconds_format}"

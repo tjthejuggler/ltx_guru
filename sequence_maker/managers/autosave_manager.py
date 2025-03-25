@@ -23,7 +23,9 @@ class AutosaveManager:
         """
         self.app = app
         self.logger = logging.getLogger("SequenceMaker.AutosaveManager")
-        self.max_versions = app.config.get("general", "max_autosave_files", 10)
+        # Get max_autosave_files with a default of 10 if not found
+        max_autosave_files = app.config.get("general", "max_autosave_files")
+        self.max_versions = 10 if max_autosave_files is None else max_autosave_files
         self.autosave_dir = None
         
         # Create autosave directory if it doesn't exist

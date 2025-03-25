@@ -13,7 +13,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QColor, QBrush
-from PyQt6.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis
+# Temporarily commented out due to missing module
+# from PyQt6.QtChart import QChart, QChartView, QLineSeries, QValueAxis, QDateTimeAxis
 
 
 class LLMDiagnosticsDialog(QDialog):
@@ -101,7 +102,8 @@ class LLMDiagnosticsDialog(QDialog):
         
         self.tab_widget.addTab(self.usage_tab, "Token Usage History")
         
-        # Create charts tab
+        # Charts tab temporarily disabled due to missing PyQt6.QtChart module
+        # Create a placeholder tab with a message
         self.charts_tab = QWidget()
         self.charts_layout = QVBoxLayout(self.charts_tab)
         
@@ -109,23 +111,10 @@ class LLMDiagnosticsDialog(QDialog):
         self.charts_label.setFont(QFont("Arial", 14, QFont.Weight.Bold))
         self.charts_layout.addWidget(self.charts_label)
         
-        # Create chart splitter
-        self.chart_splitter = QSplitter(Qt.Orientation.Vertical)
-        self.charts_layout.addWidget(self.chart_splitter)
-        
-        # Create token usage chart
-        self.token_chart = QChart()
-        self.token_chart.setTitle("Token Usage Over Time")
-        self.token_chart_view = QChartView(self.token_chart)
-        self.token_chart_view.setRenderHint(self.token_chart_view.RenderHint.Antialiasing)
-        self.chart_splitter.addWidget(self.token_chart_view)
-        
-        # Create response time chart
-        self.time_chart = QChart()
-        self.time_chart.setTitle("Response Time")
-        self.time_chart_view = QChartView(self.time_chart)
-        self.time_chart_view.setRenderHint(self.time_chart_view.RenderHint.Antialiasing)
-        self.chart_splitter.addWidget(self.time_chart_view)
+        # Add a message about the missing module
+        self.charts_message = QLabel("Charts are temporarily unavailable. Please install PyQt6-Charts package.")
+        self.charts_message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.charts_layout.addWidget(self.charts_message)
         
         self.tab_widget.addTab(self.charts_tab, "Charts")
         
@@ -150,8 +139,9 @@ class LLMDiagnosticsDialog(QDialog):
         # Clear existing data
         self.metrics_list.clear()
         self.usage_table.setRowCount(0)
-        self.token_chart.removeAllSeries()
-        self.time_chart.removeAllSeries()
+        # Chart-related code temporarily commented out
+        # self.token_chart.removeAllSeries()
+        # self.time_chart.removeAllSeries()
         
         # Check if project is loaded
         if not self.app.project_manager.current_project:
@@ -185,30 +175,30 @@ class LLMDiagnosticsDialog(QDialog):
                 # Add to list
                 self.metrics_list.addItem(item)
             
-            # Create response time chart
-            if metrics:
-                time_series = QLineSeries()
-                time_series.setName("Response Time (s)")
-                
-                for i, metric in enumerate(metrics):
-                    time_series.append(i, metric.get("duration", 0))
-                
-                self.time_chart.addSeries(time_series)
-                
-                # Create axes
-                axis_x = QValueAxis()
-                axis_x.setTitleText("Request Number")
-                axis_x.setRange(0, len(metrics) - 1)
-                
-                axis_y = QValueAxis()
-                axis_y.setTitleText("Response Time (s)")
-                axis_y.setRange(0, max(metric.get("duration", 0) for metric in metrics) * 1.1)
-                
-                self.time_chart.addAxis(axis_x, Qt.AlignmentFlag.AlignBottom)
-                self.time_chart.addAxis(axis_y, Qt.AlignmentFlag.AlignLeft)
-                
-                time_series.attachAxis(axis_x)
-                time_series.attachAxis(axis_y)
+            # Response time chart creation temporarily commented out due to missing PyQt6.QtChart module
+            # if metrics:
+            #     time_series = QLineSeries()
+            #     time_series.setName("Response Time (s)")
+            #
+            #     for i, metric in enumerate(metrics):
+            #         time_series.append(i, metric.get("duration", 0))
+            #
+            #     self.time_chart.addSeries(time_series)
+            #
+            #     # Create axes
+            #     axis_x = QValueAxis()
+            #     axis_x.setTitleText("Request Number")
+            #     axis_x.setRange(0, len(metrics) - 1)
+            #
+            #     axis_y = QValueAxis()
+            #     axis_y.setTitleText("Response Time (s)")
+            #     axis_y.setRange(0, max(metric.get("duration", 0) for metric in metrics) * 1.1)
+            #
+            #     self.time_chart.addAxis(axis_x, Qt.AlignmentFlag.AlignBottom)
+            #     self.time_chart.addAxis(axis_y, Qt.AlignmentFlag.AlignLeft)
+            #
+            #     time_series.attachAxis(axis_x)
+            #     time_series.attachAxis(axis_y)
         
         # Load token usage
         if hasattr(self.app.project_manager.current_project, "llm_metadata"):
@@ -255,29 +245,29 @@ class LLMDiagnosticsDialog(QDialog):
                 # Add provider
                 self.usage_table.setItem(i, 4, QTableWidgetItem(interaction.get("provider", "Unknown")))
             
-            # Create token usage chart
-            if interactions:
-                token_series = QLineSeries()
-                token_series.setName("Tokens")
-                
-                cumulative_tokens = 0
-                for i, interaction in enumerate(interactions):
-                    cumulative_tokens += interaction.get("tokens", 0)
-                    token_series.append(i, cumulative_tokens)
-                
-                self.token_chart.addSeries(token_series)
-                
-                # Create axes
-                axis_x = QValueAxis()
-                axis_x.setTitleText("Interaction Number")
-                axis_x.setRange(0, len(interactions) - 1)
-                
-                axis_y = QValueAxis()
-                axis_y.setTitleText("Cumulative Tokens")
-                axis_y.setRange(0, cumulative_tokens * 1.1)
-                
-                self.token_chart.addAxis(axis_x, Qt.AlignmentFlag.AlignBottom)
-                self.token_chart.addAxis(axis_y, Qt.AlignmentFlag.AlignLeft)
-                
-                token_series.attachAxis(axis_x)
-                token_series.attachAxis(axis_y)
+            # Token usage chart creation temporarily commented out due to missing PyQt6.QtChart module
+            # if interactions:
+            #     token_series = QLineSeries()
+            #     token_series.setName("Tokens")
+            #
+            #     cumulative_tokens = 0
+            #     for i, interaction in enumerate(interactions):
+            #         cumulative_tokens += interaction.get("tokens", 0)
+            #         token_series.append(i, cumulative_tokens)
+            #
+            #     self.token_chart.addSeries(token_series)
+            #
+            #     # Create axes
+            #     axis_x = QValueAxis()
+            #     axis_x.setTitleText("Interaction Number")
+            #     axis_x.setRange(0, len(interactions) - 1)
+            #
+            #     axis_y = QValueAxis()
+            #     axis_y.setTitleText("Cumulative Tokens")
+            #     axis_y.setRange(0, cumulative_tokens * 1.1)
+            #
+            #     self.token_chart.addAxis(axis_x, Qt.AlignmentFlag.AlignBottom)
+            #     self.token_chart.addAxis(axis_y, Qt.AlignmentFlag.AlignLeft)
+            #
+            #     token_series.attachAxis(axis_x)
+            #     token_series.attachAxis(axis_y)
