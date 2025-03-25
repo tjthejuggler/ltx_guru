@@ -422,7 +422,7 @@ class MainWindow(QMainWindow):
         # Create editor dock widget - always visible, ultra-compact layout
         # This will be used for both segment editing and boundary editing
         self.editor_dock = QWidget()
-        self.editor_dock.setFixedHeight(EDITOR_DOCK_HEIGHT)  # Set fixed height to minimize vertical space
+        self.editor_dock.setFixedHeight(EDITOR_BUTTON_HEIGHT + 10)  # Reduced height to remove gap
         self.editor_layout = QHBoxLayout(self.editor_dock)
         self.editor_layout.setContentsMargins(5, 0, 5, 0)  # Minimal margins
         self.editor_layout.setSpacing(5)  # Minimal spacing
@@ -463,6 +463,18 @@ class MainWindow(QMainWindow):
         self.segment_color_edit.setMinimumWidth(120)  # Wider for color values
         self.segment_editor_widget_layout.addWidget(self.segment_color_edit)
         
+        # Create apply and cancel buttons (now next to the input fields)
+        self.segment_apply_button = QPushButton("Apply")
+        self.segment_apply_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)
+        self.segment_editor_widget_layout.addWidget(self.segment_apply_button)
+        
+        self.segment_cancel_button = QPushButton("Cancel")
+        self.segment_cancel_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)
+        self.segment_editor_widget_layout.addWidget(self.segment_cancel_button)
+        
+        # Add spacer to prevent stretching across the whole width
+        self.segment_editor_widget_layout.addStretch(1)
+        
         # Add segment editor to stack
         self.editor_stack.addWidget(self.segment_editor_widget)
         
@@ -480,26 +492,23 @@ class MainWindow(QMainWindow):
         self.boundary_time_edit.setMinimumWidth(120)
         self.boundary_editor_widget_layout.addWidget(self.boundary_time_edit)
         
+        # Create apply and cancel buttons (next to the input field)
+        self.boundary_apply_button = QPushButton("Apply")
+        self.boundary_apply_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)
+        self.boundary_editor_widget_layout.addWidget(self.boundary_apply_button)
+        
+        self.boundary_cancel_button = QPushButton("Cancel")
+        self.boundary_cancel_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)
+        self.boundary_editor_widget_layout.addWidget(self.boundary_cancel_button)
+        
+        # Add spacer to prevent stretching across the whole width
+        self.boundary_editor_widget_layout.addStretch(1)
+        
         # Add boundary editor to stack
         self.editor_stack.addWidget(self.boundary_editor_widget)
         
-        # Add spacer to push buttons to the right
-        self.editor_layout.addStretch(1)
-        
-        # Create apply button
-        self.editor_apply_button = QPushButton("Apply")
-        self.editor_apply_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)  # Smaller button height
-        self.editor_layout.addWidget(self.editor_apply_button)
-        
-        # Create cancel button
-        self.editor_cancel_button = QPushButton("Cancel")
-        self.editor_cancel_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)  # Smaller button height
-        self.editor_layout.addWidget(self.editor_cancel_button)
-        
-        # Connect buttons to appropriate handlers based on current mode
+        # Set default editor mode
         self.editor_mode = "segment"  # Default mode
-        self.editor_apply_button.clicked.connect(self._on_editor_apply)
-        self.editor_cancel_button.clicked.connect(self._on_editor_cancel)
         
         # Hide the name field as it's not needed according to user feedback
         # but keep it in the code for future reference
@@ -524,10 +533,12 @@ class MainWindow(QMainWindow):
         self._connect_audio_signals()
         self._connect_project_signals()
         self._connect_llm_signals()
+        self._connect_editor_signals()
     
     def _connect_timeline_signals(self):
         """Connect timeline-related signals."""
         self.timeline_widget.position_changed.connect(self._update_cursor_position)
+        self.timeline_widget.selection_changed.connect(self._on_timeline_selection_changed)
     
     def _connect_audio_signals(self):
         """Connect audio-related signals."""
@@ -544,6 +555,27 @@ class MainWindow(QMainWindow):
         """Connect LLM-related signals."""
         if get_app_attr(self.app, 'llm_manager'):
             self.app.llm_manager.llm_action_requested.connect(self._on_llm_action)
+    
+    def _connect_editor_signals(self):
+        """Connect editor-related signals."""
+        # Connect segment editor buttons
+        self.segment_apply_button.clicked.connect(self._on_segment_apply)
+        self.segment_cancel_button.clicked.connect(self._on_segment_cancel)
+        
+        # Connect boundary editor buttons
+        self.boundary_apply_button.clicked.connect(self._on_boundary_time_apply)
+        self.boundary_cancel_button.clicked.connect(self._on_editor_cancel)
+        
+        # Disable inputs and buttons initially (when no selection)
+        self.segment_start_edit.setEnabled(False)
+        self.segment_end_edit.setEnabled(False)
+        self.segment_color_edit.setEnabled(False)
+        self.segment_apply_button.setEnabled(False)
+        self.segment_cancel_button.setEnabled(False)
+        
+        self.boundary_time_edit.setEnabled(False)
+        self.boundary_apply_button.setEnabled(False)
+        self.boundary_cancel_button.setEnabled(False)
     
     def _load_settings(self):
         """Load application settings."""
@@ -1166,6 +1198,13 @@ class MainWindow(QMainWindow):
             self.segment_start_edit.setText(start_formatted)
             self.segment_end_edit.setText(end_formatted)
             
+            # Enable inputs and buttons when a segment is selected
+            self.segment_start_edit.setEnabled(True)
+            self.segment_end_edit.setEnabled(True)
+            self.segment_color_edit.setEnabled(True)
+            self.segment_apply_button.setEnabled(True)
+            self.segment_cancel_button.setEnabled(True)
+            
     def _on_delete_segment(self):
         """Delete the selected segment."""
         # Get the selected segment
@@ -1320,6 +1359,23 @@ class MainWindow(QMainWindow):
                                f"- Minutes:Seconds (e.g., 01:23.45)\n"
                                f"- Hours:Minutes:Seconds (e.g., 01:23:45.67)")
     
+    def _on_timeline_selection_changed(self, timeline, segment):
+        """
+        Handle timeline selection changed signal.
+        
+        Args:
+            timeline: The selected timeline or None if no timeline is selected
+            segment: The selected segment or None if no segment is selected
+        """
+        if segment is None:
+            # No segment selected, clear and disable the segment editor
+            self.hide_segment_editor()
+            
+            # Also check if there's no boundary selected (this is handled separately by the timeline widget)
+            if not hasattr(self.timeline_widget, 'selected_boundary') or not self.timeline_widget.selected_boundary:
+                # No boundary selected either, hide the boundary editor too
+                self.hide_boundary_editor()
+    
     def _on_segment_cancel(self):
         """Handle segment cancel button click."""
         # Clear segment form
@@ -1461,7 +1517,14 @@ class MainWindow(QMainWindow):
         self.segment_start_edit.clear()
         self.segment_end_edit.clear()
         self.segment_color_edit.clear()
-            
+        
+        # Disable inputs and buttons when no segment is selected
+        self.segment_start_edit.setEnabled(False)
+        self.segment_end_edit.setEnabled(False)
+        self.segment_color_edit.setEnabled(False)
+        self.segment_apply_button.setEnabled(False)
+        self.segment_cancel_button.setEnabled(False)
+        
     def show_boundary_editor(self, timeline, time, left_segment, right_segment):
         """
         Show the boundary editor for the selected boundary.
@@ -1491,6 +1554,11 @@ class MainWindow(QMainWindow):
         # Populate boundary editor field
         self.boundary_time_edit.setText(time_str)
         
+        # Enable inputs and buttons
+        self.boundary_time_edit.setEnabled(True)
+        self.boundary_apply_button.setEnabled(True)
+        self.boundary_cancel_button.setEnabled(True)
+        
         # Print debug info
         print(f"Boundary editor initialized with:")
         print(f"  Time: {time}")
@@ -1502,6 +1570,11 @@ class MainWindow(QMainWindow):
         """Clear the boundary editor fields and switch back to segment mode."""
         # Clear the boundary time field
         self.boundary_time_edit.clear()
+        
+        # Disable inputs and buttons when no boundary is selected
+        self.boundary_time_edit.setEnabled(False)
+        self.boundary_apply_button.setEnabled(False)
+        self.boundary_cancel_button.setEnabled(False)
         
         # Switch back to segment mode
         self._switch_to_segment_mode()
