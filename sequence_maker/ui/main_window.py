@@ -539,53 +539,74 @@ class MainWindow(QMainWindow):
     
     def keyPressEvent(self, event: QKeyEvent):
         """Handle key press events."""
-        # Check if we have a key mapping manager
-        if hasattr(self.app, 'key_mapping_manager'):
-            # Get the key mapping
-            key_mapping = self.app.key_mapping_manager.get_key_mapping()
+        # Get the key
+        key = event.key()
+        modifiers = event.modifiers()
+        
+        # Convert key to string representation
+        key_text = chr(key).lower() if key >= 32 and key <= 126 else ""
+        
+        # Check if the key is in the DEFAULT_KEY_MAPPING from constants
+        from app.constants import DEFAULT_KEY_MAPPING, EFFECT_MODIFIERS
+        
+        if key_text in DEFAULT_KEY_MAPPING:
+            # Get the mapping
+            mapping = DEFAULT_KEY_MAPPING[key_text]
+            color = mapping["color"]
+            timelines = mapping["timelines"]
             
-            # Check if the key is mapped
-            key = event.key()
-            modifiers = event.modifiers()
+            # Check for effect modifiers
+            effect_type = None
+            if modifiers & Qt.KeyboardModifier.ShiftModifier and "shift" in EFFECT_MODIFIERS:
+                effect_type = EFFECT_MODIFIERS["shift"]
+            elif modifiers & Qt.KeyboardModifier.ControlModifier and "ctrl" in EFFECT_MODIFIERS:
+                effect_type = EFFECT_MODIFIERS["ctrl"]
+            elif modifiers & Qt.KeyboardModifier.AltModifier and "alt" in EFFECT_MODIFIERS:
+                effect_type = EFFECT_MODIFIERS["alt"]
             
-            # Create a key string
-            key_string = ""
+            # Add color to each timeline
+            for timeline_index in timelines:
+                if hasattr(self.app, 'timeline_manager'):
+                    segment = self.app.timeline_manager.add_color_at_position(timeline_index, color)
+                    
+                    # Add effect if specified
+                    if effect_type and segment:
+                        self.app.timeline_manager.add_effect_to_segment(
+                            self.app.timeline_manager.get_timeline(timeline_index),
+                            segment,
+                            effect_type
+                        )
             
-            # Add modifiers
-            if modifiers & Qt.KeyboardModifier.ControlModifier:
-                key_string += "Ctrl+"
-            if modifiers & Qt.KeyboardModifier.AltModifier:
-                key_string += "Alt+"
-            if modifiers & Qt.KeyboardModifier.ShiftModifier:
-                key_string += "Shift+"
+            # Update UI
+            self._update_ui()
             
-            # Add key
-            key_string += str(key)
-            
-            # Check if the key is mapped
-            if key_string in key_mapping:
-                # Get the action
-                action = key_mapping[key_string]
-                
-                # Execute the action
-                if action == "play":
-                    self._on_play()
-                elif action == "pause":
-                    self._on_pause()
-                elif action == "stop":
-                    self._on_stop()
-                elif action == "add_segment":
-                    self._on_add_segment()
-                elif action == "delete_segment":
-                    self._on_delete_segment()
-                elif action == "split_segment":
-                    self._on_split_segment()
-                elif action == "merge_segments":
-                    self._on_merge_segments()
-                
-                # Consume the event
-                event.accept()
-                return
+            # Consume the event
+            event.accept()
+            return
+        
+        # Check for other key mappings (play, pause, etc.)
+        key_string = ""
+        
+        # Add modifiers
+        if modifiers & Qt.KeyboardModifier.ControlModifier:
+            key_string += "Ctrl+"
+        if modifiers & Qt.KeyboardModifier.AltModifier:
+            key_string += "Alt+"
+        if modifiers & Qt.KeyboardModifier.ShiftModifier:
+            key_string += "Shift+"
+        
+        # Add key
+        key_string += str(key)
+        
+        # Check for specific actions
+        if key == Qt.Key.Key_Space:
+            # Toggle play/pause
+            if hasattr(self.app, 'audio_manager') and self.app.audio_manager.is_playing():
+                self._on_pause()
+            else:
+                self._on_play()
+            event.accept()
+            return
         
         # If we get here, the key wasn't handled, so pass it to the parent
         super().keyPressEvent(event)
