@@ -83,8 +83,8 @@ class MainWindow(QMainWindow):
         self._create_menus()
         self._create_toolbars()
         self._create_statusbar()
-        self._create_central_widget()
-        self._create_dock_widgets()
+        self._create_dock_widgets()  # Create dock widgets first
+        self._create_central_widget()  # Then create central widget
         self._load_settings()
         self._connect_signals()
         
@@ -344,6 +344,10 @@ class MainWindow(QMainWindow):
         # Create main layout
         self.main_layout = QVBoxLayout(self.central_widget)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
+        self.main_layout.setSpacing(0)  # No spacing
+        
+        # Add segment editor at the top (always visible)
+        self.main_layout.addWidget(self.segment_editor_dock, 0)  # 0 stretch factor to minimize space
         
         # Create splitter for timeline and ball visualization
         self.main_splitter = QSplitter(Qt.Orientation.Vertical)
@@ -371,74 +375,65 @@ class MainWindow(QMainWindow):
     
     def _create_dock_widgets(self):
         """Create dock widgets for the main window."""
-        # Create segment editor dock widget
+        # Create segment editor dock widget - always visible, ultra-compact layout
         self.segment_editor_dock = QWidget()
-        self.segment_editor_layout = QVBoxLayout(self.segment_editor_dock)
+        self.segment_editor_dock.setFixedHeight(30)  # Set fixed height to minimize vertical space
+        self.segment_editor_layout = QHBoxLayout(self.segment_editor_dock)
+        self.segment_editor_layout.setContentsMargins(5, 0, 5, 0)  # Minimal margins
+        self.segment_editor_layout.setSpacing(5)  # Minimal spacing
         
-        # Create segment editor title
-        self.segment_editor_title = QLabel("Segment Editor")
-        self.segment_editor_title.setFont(QFont("Arial", 12, QFont.Weight.Bold))
-        self.segment_editor_layout.addWidget(self.segment_editor_title)
-        
-        # Create segment editor form
-        self.segment_editor_form = QWidget()
-        self.segment_editor_form_layout = QVBoxLayout(self.segment_editor_form)
-        
-        # Create segment name field
-        self.segment_name_layout = QHBoxLayout()
-        self.segment_name_label = QLabel("Name:")
-        self.segment_name_edit = QTextEdit()
-        self.segment_name_edit.setMaximumHeight(30)
-        self.segment_name_layout.addWidget(self.segment_name_label)
-        self.segment_name_layout.addWidget(self.segment_name_edit)
-        self.segment_editor_form_layout.addLayout(self.segment_name_layout)
-        
-        # Create segment color field
-        self.segment_color_layout = QHBoxLayout()
-        self.segment_color_label = QLabel("Color:")
-        self.segment_color_edit = QTextEdit()
-        self.segment_color_edit.setMaximumHeight(30)
-        self.segment_color_layout.addWidget(self.segment_color_label)
-        self.segment_color_layout.addWidget(self.segment_color_edit)
-        self.segment_editor_form_layout.addLayout(self.segment_color_layout)
+        # Create a more compact layout with all fields in one row
+        # Use QLineEdit instead of QTextEdit for single-line input with less padding
         
         # Create segment start time field
-        self.segment_start_layout = QHBoxLayout()
         self.segment_start_label = QLabel("Start:")
-        self.segment_start_edit = QTextEdit()
-        self.segment_start_edit.setMaximumHeight(30)
-        self.segment_start_layout.addWidget(self.segment_start_label)
-        self.segment_start_layout.addWidget(self.segment_start_edit)
-        self.segment_editor_form_layout.addLayout(self.segment_start_layout)
+        self.segment_editor_layout.addWidget(self.segment_start_label)
+        
+        from PyQt6.QtWidgets import QLineEdit  # Import QLineEdit
+        self.segment_start_edit = QLineEdit()
+        self.segment_start_edit.setMinimumWidth(80)
+        self.segment_editor_layout.addWidget(self.segment_start_edit)
         
         # Create segment end time field
-        self.segment_end_layout = QHBoxLayout()
         self.segment_end_label = QLabel("End:")
-        self.segment_end_edit = QTextEdit()
-        self.segment_end_edit.setMaximumHeight(30)
-        self.segment_end_layout.addWidget(self.segment_end_label)
-        self.segment_end_layout.addWidget(self.segment_end_edit)
-        self.segment_editor_form_layout.addLayout(self.segment_end_layout)
+        self.segment_editor_layout.addWidget(self.segment_end_label)
         
-        # Add form to segment editor
-        self.segment_editor_layout.addWidget(self.segment_editor_form)
+        self.segment_end_edit = QLineEdit()
+        self.segment_end_edit.setMinimumWidth(80)
+        self.segment_editor_layout.addWidget(self.segment_end_edit)
         
-        # Create segment editor buttons
-        self.segment_editor_buttons = QWidget()
-        self.segment_editor_buttons_layout = QHBoxLayout(self.segment_editor_buttons)
+        # Create segment color field
+        self.segment_color_label = QLabel("RGB:")  # Changed from "Color:" to "RGB:"
+        self.segment_editor_layout.addWidget(self.segment_color_label)
+        
+        self.segment_color_edit = QLineEdit()
+        self.segment_color_edit.setMinimumWidth(120)  # Wider for color values
+        self.segment_editor_layout.addWidget(self.segment_color_edit)
+        
+        # Add spacer to push buttons to the right
+        self.segment_editor_layout.addStretch(1)
         
         # Create apply button
         self.segment_apply_button = QPushButton("Apply")
+        self.segment_apply_button.setFixedHeight(24)  # Smaller button height
         self.segment_apply_button.clicked.connect(self._on_segment_apply)
-        self.segment_editor_buttons_layout.addWidget(self.segment_apply_button)
+        self.segment_editor_layout.addWidget(self.segment_apply_button)
         
         # Create cancel button
         self.segment_cancel_button = QPushButton("Cancel")
+        self.segment_cancel_button.setFixedHeight(24)  # Smaller button height
         self.segment_cancel_button.clicked.connect(self._on_segment_cancel)
-        self.segment_editor_buttons_layout.addWidget(self.segment_cancel_button)
+        self.segment_editor_layout.addWidget(self.segment_cancel_button)
         
-        # Add buttons to segment editor
-        self.segment_editor_layout.addWidget(self.segment_editor_buttons)
+        # Hide the name field as it's not needed according to user feedback
+        # but keep it in the code for future reference
+        self.segment_name_edit = QLineEdit()
+        self.segment_name_edit.setVisible(False)
+        
+        # Initialize with empty fields
+        self.segment_start_edit.clear()
+        self.segment_end_edit.clear()
+        self.segment_color_edit.clear()
         
         # Create boundary editor dock widget
         self.boundary_editor_dock = QWidget()
@@ -1027,6 +1022,22 @@ class MainWindow(QMainWindow):
         if hasattr(self, 'lyrics_widget'):
             self.lyrics_widget.setVisible(checked)
             
+    def _format_color_tuple(self, color_tuple):
+        """
+        Format a color tuple as a string.
+        
+        Args:
+            color_tuple (tuple): RGB color tuple (r, g, b)
+            
+        Returns:
+            str: Formatted color string in the format "r,g,b"
+        """
+        if not isinstance(color_tuple, tuple) or len(color_tuple) != 3:
+            return "255,0,0"  # Default to red if invalid
+        
+        r, g, b = color_tuple
+        return f"{r},{g},{b}"
+    
     def _format_seconds_to_hms(self, seconds, include_hundredths=True, hide_hours_if_zero=False):
         """
         Format seconds to HH:MM:SS.ss format.
@@ -1056,10 +1067,30 @@ class MainWindow(QMainWindow):
     def _on_add_segment(self):
         """Add a new segment."""
         # Get the current cursor position
-        cursor_position = self.timeline_widget.get_cursor_position()
+        cursor_position = self.timeline_widget.position
         
-        # Create a new segment at the cursor position
-        self.app.timeline_manager.add_segment(cursor_position)
+        # Get the selected timeline
+        selected_timeline = self.timeline_widget.selected_timeline
+        
+        if selected_timeline:
+            try:
+                # Create a new segment at the cursor position
+                # Parse the default color
+                default_color = self._parse_color_string("#FF0000")  # Red color by default
+                
+                self.app.timeline_manager.add_segment(
+                    timeline=selected_timeline,
+                    start_time=cursor_position,
+                    end_time=cursor_position + 1.0,  # 1 second duration by default
+                    color=default_color
+                )
+            except ValueError as e:
+                # This shouldn't happen with our hardcoded default color, but just in case
+                self.logger.error(f"Error parsing default color: {e}")
+        else:
+            # Show error message
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "No Timeline Selected", "Please select a timeline first.")
         
         # Update UI
         self._update_ui()
@@ -1067,23 +1098,29 @@ class MainWindow(QMainWindow):
     def _on_edit_segment(self):
         """Edit the selected segment."""
         # Get the selected segment
-        selected_segment = self.timeline_widget.get_selected_segment()
+        selected_segment = self.timeline_widget.selected_segment
         
         if selected_segment:
-            # Show segment editor
-            self.segment_name_edit.setText(selected_segment.name)
-            self.segment_color_edit.setText(selected_segment.color)
-            self.segment_start_edit.setText(str(selected_segment.start))
-            self.segment_end_edit.setText(str(selected_segment.end))
+            # Format color tuple as string for display
+            color_formatted = self._format_color_tuple(selected_segment.color)
+            self.segment_color_edit.setText(color_formatted)
+            
+            # Format time values for better readability
+            start_formatted = self._format_seconds_to_hms(selected_segment.start_time, include_hundredths=True, hide_hours_if_zero=True)
+            end_formatted = self._format_seconds_to_hms(selected_segment.end_time, include_hundredths=True, hide_hours_if_zero=True)
+            
+            self.segment_start_edit.setText(start_formatted)
+            self.segment_end_edit.setText(end_formatted)
             
     def _on_delete_segment(self):
         """Delete the selected segment."""
         # Get the selected segment
-        selected_segment = self.timeline_widget.get_selected_segment()
+        selected_segment = self.timeline_widget.selected_segment
+        selected_timeline = self.timeline_widget.selected_timeline
         
-        if selected_segment:
+        if selected_segment and selected_timeline:
             # Delete the segment
-            self.app.timeline_manager.delete_segment(selected_segment)
+            self.app.timeline_manager.delete_segment(selected_timeline, selected_segment)
             
             # Update UI
             self._update_ui()
@@ -1091,14 +1128,15 @@ class MainWindow(QMainWindow):
     def _on_split_segment(self):
         """Split the selected segment."""
         # Get the selected segment
-        selected_segment = self.timeline_widget.get_selected_segment()
+        selected_segment = self.timeline_widget.selected_segment
+        selected_timeline = self.timeline_widget.selected_timeline
         
-        if selected_segment:
+        if selected_segment and selected_timeline:
             # Get the cursor position
-            cursor_position = self.timeline_widget.get_cursor_position()
+            cursor_position = self.timeline_widget.position
             
             # Split the segment at the cursor position
-            self.app.timeline_manager.split_segment(selected_segment, cursor_position)
+            self.app.timeline_manager.split_segment(selected_timeline, selected_segment, cursor_position)
             
             # Update UI
             self._update_ui()
@@ -1106,14 +1144,15 @@ class MainWindow(QMainWindow):
     def _on_merge_segments(self):
         """Merge selected segments."""
         # Get the selected segments
-        selected_segments = self.timeline_widget.get_selected_segments()
+        selected_timeline = self.timeline_widget.selected_timeline
         
-        if len(selected_segments) > 1:
-            # Merge the segments
-            self.app.timeline_manager.merge_segments(selected_segments)
-            
-            # Update UI
-            self._update_ui()
+        # Note: We need to implement a way to select multiple segments
+        # For now, we'll just show a message that this feature is not fully implemented
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.information(self, "Not Implemented",
+                              "Multiple segment selection is not fully implemented yet.")
+        
+        # No update needed since we didn't change anything
             
     def _on_clear_timeline(self):
         """Clear the timeline."""
@@ -1134,29 +1173,182 @@ class MainWindow(QMainWindow):
             # Update UI
             self._update_ui()
     
+    def _parse_color_string(self, color_string):
+        """
+        Parse a color string into an RGB tuple.
+        
+        Handles various formats:
+        - "red", "green", "blue", etc. (common color names)
+        - "#RRGGBB" (hex format)
+        - "rgb(r,g,b)" (CSS-style format)
+        - "r,g,b" (comma-separated values)
+        
+        Args:
+            color_string (str): Color string to parse
+            
+        Returns:
+            tuple: (r, g, b) color tuple with values in range 0-255
+            
+        Raises:
+            ValueError: If the color string cannot be parsed
+        """
+        color_string = color_string.strip().lower()
+        
+        # Common color names
+        color_names = {
+            "red": (255, 0, 0),
+            "green": (0, 255, 0),
+            "blue": (0, 0, 255),
+            "yellow": (255, 255, 0),
+            "cyan": (0, 255, 255),
+            "magenta": (255, 0, 255),
+            "white": (255, 255, 255),
+            "black": (0, 0, 0),
+            "orange": (255, 165, 0),
+            "purple": (128, 0, 128),
+            "pink": (255, 192, 203)
+        }
+        
+        if color_string in color_names:
+            return color_names[color_string]
+        
+        # Hex format: #RRGGBB
+        if color_string.startswith("#") and len(color_string) == 7:
+            try:
+                r = int(color_string[1:3], 16)
+                g = int(color_string[3:5], 16)
+                b = int(color_string[5:7], 16)
+                return (r, g, b)
+            except ValueError:
+                pass
+        
+        # CSS-style format: rgb(r,g,b)
+        if color_string.startswith("rgb(") and color_string.endswith(")"):
+            try:
+                rgb = color_string[4:-1].split(",")
+                if len(rgb) == 3:
+                    r = int(rgb[0].strip())
+                    g = int(rgb[1].strip())
+                    b = int(rgb[2].strip())
+                    return (r, g, b)
+            except ValueError:
+                pass
+        
+        # Comma-separated values: r,g,b
+        if "," in color_string:
+            try:
+                rgb = color_string.split(",")
+                if len(rgb) == 3:
+                    r = int(rgb[0].strip())
+                    g = int(rgb[1].strip())
+                    b = int(rgb[2].strip())
+                    return (r, g, b)
+            except ValueError:
+                pass
+        
+        # If we get here, we couldn't parse the color string
+        raise ValueError(f"Could not parse color string: {color_string}")
+    
+    def _parse_time_string(self, time_string):
+        """
+        Parse a time string into seconds.
+        
+        Handles various formats:
+        - "123.45" (seconds as float)
+        - "01:23.45" (minutes:seconds.hundredths)
+        - "01:23" (minutes:seconds)
+        - "01:23:45.67" (hours:minutes:seconds.hundredths)
+        
+        Args:
+            time_string (str): Time string to parse
+            
+        Returns:
+            float: Time in seconds
+            
+        Raises:
+            ValueError: If the time string cannot be parsed
+        """
+        time_string = time_string.strip()
+        
+        # Try direct float conversion first
+        try:
+            return float(time_string)
+        except ValueError:
+            pass
+        
+        # Try MM:SS.ss format
+        if ":" in time_string:
+            parts = time_string.split(":")
+            
+            if len(parts) == 2:  # MM:SS or MM:SS.ss
+                minutes, seconds = parts
+                try:
+                    return float(minutes) * 60 + float(seconds)
+                except ValueError:
+                    pass
+                    
+            elif len(parts) == 3:  # HH:MM:SS or HH:MM:SS.ss
+                hours, minutes, seconds = parts
+                try:
+                    return float(hours) * 3600 + float(minutes) * 60 + float(seconds)
+                except ValueError:
+                    pass
+        
+        # If we get here, we couldn't parse the time string
+        raise ValueError(f"Could not parse time string: {time_string}")
+    
     def _on_segment_apply(self):
         """Handle segment apply button click."""
         # Get segment data from form
-        name = self.segment_name_edit.toPlainText()
-        color = self.segment_color_edit.toPlainText()
-        start = float(self.segment_start_edit.toPlainText())
-        end = float(self.segment_end_edit.toPlainText())
+        color = self.segment_color_edit.text()
         
-        # Create segment data
-        segment_data = {
-            "name": name,
-            "color": color,
-            "start": start,
-            "end": end
-        }
-        
-        # Update segment
-        self.app.timeline_manager.update_segment(segment_data)
+        try:
+            # Parse time strings
+            start = self._parse_time_string(self.segment_start_edit.text())
+            end = self._parse_time_string(self.segment_end_edit.text())
+            
+            # Parse color string
+            try:
+                parsed_color = self._parse_color_string(color)
+            except ValueError:
+                # Show error message for invalid color
+                from PyQt6.QtWidgets import QMessageBox
+                QMessageBox.warning(self, "Invalid Color Format",
+                                   f"Please enter a valid color value.\n\nSupported formats:\n"
+                                   f"- Color names (e.g., red, green, blue)\n"
+                                   f"- Hex format (e.g., #FF0000)\n"
+                                   f"- RGB format (e.g., rgb(255,0,0) or 255,0,0)")
+                return
+            
+            # Get the selected segment and its timeline
+            selected_segment = self.timeline_widget.selected_segment
+            selected_timeline = self.timeline_widget.selected_timeline
+            
+            if selected_segment and selected_timeline:
+                # Update segment
+                self.app.timeline_manager.modify_segment(
+                    timeline=selected_timeline,
+                    segment=selected_segment,
+                    start_time=start,
+                    end_time=end,
+                    color=parsed_color
+                )
+            else:
+                # Show error message
+                from PyQt6.QtWidgets import QMessageBox
+                QMessageBox.warning(self, "No Selection", "Please select a segment to modify.")
+        except ValueError as e:
+            # Show error message
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "Invalid Time Format",
+                               f"Please enter a valid time value.\n\nSupported formats:\n"
+                               f"- Seconds (e.g., 123.45)\n"
+                               f"- Minutes:Seconds (e.g., 01:23.45)\n"
+                               f"- Hours:Minutes:Seconds (e.g., 01:23:45.67)")
     
     def _on_segment_cancel(self):
         """Handle segment cancel button click."""
         # Clear segment form
-        self.segment_name_edit.clear()
         self.segment_color_edit.clear()
         self.segment_start_edit.clear()
         self.segment_end_edit.clear()
@@ -1166,14 +1358,19 @@ class MainWindow(QMainWindow):
         time_text = self.boundary_time_edit.toPlainText()
         
         try:
-            # Convert to float
-            time = float(time_text)
+            # Parse time string
+            time = self._parse_time_string(time_text)
             
             # Update boundary
             self.app.timeline_manager.set_boundary(time)
         except ValueError:
             # Show error message
-            QMessageBox.warning(self, "Invalid Time", "Please enter a valid time value.")
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "Invalid Time Format",
+                               f"Please enter a valid time value.\n\nSupported formats:\n"
+                               f"- Seconds (e.g., 123.45)\n"
+                               f"- Minutes:Seconds (e.g., 01:23.45)\n"
+                               f"- Hours:Minutes:Seconds (e.g., 01:23:45.67)")
             
     def show_segment_editor(self, timeline, segment):
         """
@@ -1183,80 +1380,22 @@ class MainWindow(QMainWindow):
             timeline: The timeline containing the segment
             segment: The segment to edit
         """
-        # Make sure the segment editor container exists
-        if not hasattr(self, 'segment_editor_container'):
-            # Create segment editor container if it doesn't exist
-            self.segment_editor_container = QWidget()
-            self.segment_editor_layout = QHBoxLayout(self.segment_editor_container)
-            self.segment_editor_layout.setContentsMargins(5, 5, 5, 5)
-            
-            # Create segment editor label
-            self.segment_editor_label = QLabel("Segment:")
-            self.segment_editor_layout.addWidget(self.segment_editor_label)
-            
-            # Create segment color field
-            self.segment_color_label = QLabel("Color:")
-            self.segment_editor_layout.addWidget(self.segment_color_label)
-            
-            self.segment_color_edit = QTextEdit()
-            self.segment_color_edit.setMaximumHeight(25)
-            self.segment_color_edit.setMaximumWidth(100)
-            self.segment_editor_layout.addWidget(self.segment_color_edit)
-            
-            # Create segment start time field
-            self.segment_start_label = QLabel("Start:")
-            self.segment_editor_layout.addWidget(self.segment_start_label)
-            
-            self.segment_start_edit = QTextEdit()
-            self.segment_start_edit.setMaximumHeight(25)
-            self.segment_start_edit.setMaximumWidth(80)
-            self.segment_editor_layout.addWidget(self.segment_start_edit)
-            
-            # Create segment end time field
-            self.segment_end_label = QLabel("End:")
-            self.segment_editor_layout.addWidget(self.segment_end_label)
-            
-            self.segment_end_edit = QTextEdit()
-            self.segment_end_edit.setMaximumHeight(25)
-            self.segment_end_edit.setMaximumWidth(80)
-            self.segment_editor_layout.addWidget(self.segment_end_edit)
-            
-            # Create apply button
-            self.segment_apply_button = QPushButton("Apply")
-            self.segment_apply_button.clicked.connect(self._on_segment_apply)
-            self.segment_editor_layout.addWidget(self.segment_apply_button)
-            
-            # Add spacer to push everything to the left
-            self.segment_editor_layout.addStretch()
-            
-            # Insert the segment editor at the top of the main layout, before the timeline widget
-            self.main_layout.insertWidget(0, self.segment_editor_container)
+        # Just call our _on_edit_segment method to populate the always-visible segment editor
+        # This avoids creating a second segment editor
+        self.timeline_widget.selected_segment = segment
+        self.timeline_widget.selected_timeline = timeline
+        self._on_edit_segment()
         
         # Hide hover info label
         if hasattr(self, 'hover_info_label'):
             self.hover_info_label.hide()
         
-        # Populate segment editor fields
-        r, g, b = segment.color
-        color_str = f"RGB({r}, {g}, {b})"
-        
-        # Format times
-        start_time_str = self._format_seconds_to_hms(segment.start_time, include_hundredths=True, hide_hours_if_zero=True)
-        end_time_str = self._format_seconds_to_hms(segment.end_time, include_hundredths=True, hide_hours_if_zero=True)
-        
-        self.segment_color_edit.setText(color_str)
-        self.segment_start_edit.setText(start_time_str)
-        self.segment_end_edit.setText(end_time_str)
-        
-        # Show segment editor
-        self.segment_editor_container.show()
-        self.segment_editor_visible = True
-        
     def hide_segment_editor(self):
-        """Hide the segment editor."""
-        if hasattr(self, 'segment_editor_container'):
-            self.segment_editor_container.hide()
-            self.segment_editor_visible = False
+        """Clear the segment editor fields but don't hide it."""
+        # Just clear the fields
+        self.segment_start_edit.clear()
+        self.segment_end_edit.clear()
+        self.segment_color_edit.clear()
             
     def show_boundary_editor(self, timeline, time, left_segment, right_segment):
         """
