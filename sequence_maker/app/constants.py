@@ -75,6 +75,17 @@ ZOOM_STEP = 1.2  # Zoom factor per step
 MAX_ZOOM = 100.0
 MIN_ZOOM = 0.01
 
+# Main window UI constants
+DEFAULT_WINDOW_WIDTH = 800
+DEFAULT_WINDOW_HEIGHT = 600
+DEFAULT_SPLITTER_SIZES = [300, 200, 200, 200]
+EDITOR_DOCK_HEIGHT = 30
+EDITOR_BUTTON_HEIGHT = 24
+EDITOR_MODES = {
+    "segment": 0,
+    "boundary": 1
+}
+
 # Autosave constants
 AUTOSAVE_INTERVAL = 300  # seconds (5 minutes)
 MAX_AUTOSAVE_FILES = 5

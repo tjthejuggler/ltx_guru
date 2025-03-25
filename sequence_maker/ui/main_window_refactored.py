@@ -12,7 +12,7 @@ from pathlib import Path
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QSplitter,
     QMenuBar, QMenu, QToolBar, QStatusBar, QFileDialog, QMessageBox,
-    QLabel, QTextEdit, QPushButton, QSizePolicy
+    QLabel, QTextEdit, QPushButton, QSizePolicy, QLineEdit, QStackedWidget
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSettings, QSize, QTimer
 from PyQt6.QtGui import QAction, QKeySequence, QIcon, QFont, QPixmap, QImage, QKeyEvent
@@ -53,7 +53,16 @@ from api.app_context_api import AppContextAPI
 from api.timeline_action_api import TimelineActionAPI
 from api.audio_action_api import AudioActionAPI
 
-from app.constants import PROJECT_FILE_EXTENSION, AUDIO_FILE_EXTENSIONS, BALL_VISUALIZATION_SIZE
+from utils.ui_utils import (
+    parse_time_string, format_seconds_to_hms,
+    parse_color_string, format_color_tuple, get_app_attr
+)
+
+from app.constants import (
+    PROJECT_FILE_EXTENSION, AUDIO_FILE_EXTENSIONS, BALL_VISUALIZATION_SIZE,
+    DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, DEFAULT_SPLITTER_SIZES,
+    EDITOR_DOCK_HEIGHT, EDITOR_BUTTON_HEIGHT, EDITOR_MODES, APP_NAME
+)
 
 
 class MainWindow(QMainWindow):
@@ -89,10 +98,10 @@ class MainWindow(QMainWindow):
         self._connect_signals()
         
         # Set window properties
-        self.setMinimumSize(800, 600)
+        self.setMinimumSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT)
         
         # Initialize window title (will be updated in _update_ui)
-        self.setWindowTitle("Sequence Maker")
+        self.setWindowTitle(APP_NAME)
         
         # Initialize API
         self.app_context_api = AppContextAPI(self.app)
@@ -122,7 +131,16 @@ class MainWindow(QMainWindow):
         self.playback_actions = PlaybackActions(self)
         self.tools_actions = ToolsActions(self)
         
-        # Get actions from action classes
+        # Create actions by category
+        self._create_file_actions()
+        self._create_edit_actions()
+        self._create_view_actions()
+        self._create_timeline_actions()
+        self._create_playback_actions()
+        self._create_tools_actions()
+    
+    def _create_file_actions(self):
+        """Create file-related actions."""
         self.new_action = self.file_actions.new_action
         self.open_action = self.file_actions.open_action
         self.save_action = self.file_actions.save_action
@@ -130,7 +148,9 @@ class MainWindow(QMainWindow):
         self.export_json_action = self.file_actions.export_json_action
         self.export_prg_action = self.file_actions.export_prg_action
         self.exit_action = self.file_actions.exit_action
-        
+    
+    def _create_edit_actions(self):
+        """Create edit-related actions."""
         self.undo_action = self.edit_actions.undo_action
         self.redo_action = self.edit_actions.redo_action
         self.cut_action = self.edit_actions.cut_action
@@ -139,11 +159,14 @@ class MainWindow(QMainWindow):
         self.delete_action = self.edit_actions.delete_action
         self.select_all_action = self.edit_actions.select_all_action
         self.preferences_action = self.edit_actions.preferences_action
+    
+    def _create_view_actions(self):
+        """Create view-related actions."""
         self.zoom_in_action = self.view_actions.zoom_in_action
         self.zoom_out_action = self.view_actions.zoom_out_action
         self.zoom_fit_action = self.view_actions.zoom_fit_action
         
-        # Create toggle view actions directly
+        # Create toggle view actions
         self.toggle_ball_view_action = QAction("Toggle &Ball View", self)
         self.toggle_ball_view_action.setStatusTip("Toggle ball visualization")
         self.toggle_ball_view_action.setCheckable(True)
@@ -161,8 +184,10 @@ class MainWindow(QMainWindow):
         self.toggle_lyrics_view_action.setCheckable(True)
         self.toggle_lyrics_view_action.setChecked(True)
         self.toggle_lyrics_view_action.triggered.connect(self._on_toggle_lyrics_view)
-        
-        # Create segment-related actions directly
+    
+    def _create_timeline_actions(self):
+        """Create timeline-related actions."""
+        # Create segment-related actions
         self.add_segment_action = QAction("&Add Segment", self)
         self.add_segment_action.setStatusTip("Add a new segment")
         self.add_segment_action.triggered.connect(self._on_add_segment)
@@ -186,23 +211,27 @@ class MainWindow(QMainWindow):
         self.clear_timeline_action = QAction("&Clear Timeline", self)
         self.clear_timeline_action.setStatusTip("Clear the timeline")
         self.clear_timeline_action.triggered.connect(self._on_clear_timeline)
-        
+    
+    def _create_playback_actions(self):
+        """Create playback-related actions."""
         self.play_action = self.playback_actions.play_action
         self.pause_action = self.playback_actions.pause_action
         self.stop_action = self.playback_actions.stop_action
         
-        # Create loop action directly
+        # Create loop action
         self.loop_action = QAction("&Loop", self)
         self.loop_action.setStatusTip("Toggle audio looping")
         self.loop_action.setCheckable(True)
         self.loop_action.triggered.connect(self._on_loop)
-        
+    
+    def _create_tools_actions(self):
+        """Create tools-related actions."""
         self.key_mapping_action = self.tools_actions.key_mapping_action
         self.connect_balls_action = self.tools_actions.connect_balls_action
         self.llm_chat_action = self.tools_actions.llm_chat_action
         self.llm_diagnostics_action = self.tools_actions.llm_diagnostics_action
         
-        # Create version history action directly
+        # Create version history action
         self.version_history_action = QAction("&Version History...", self)
         self.version_history_action.setStatusTip("View and restore previous versions")
         self.version_history_action.triggered.connect(self._on_version_history)
@@ -211,7 +240,16 @@ class MainWindow(QMainWindow):
     
     def _create_menus(self):
         """Create menus for the main window."""
-        # File menu
+        self._create_file_menu()
+        self._create_edit_menu()
+        self._create_view_menu()
+        self._create_timeline_menu()
+        self._create_playback_menu()
+        self._create_tools_menu()
+        self._create_help_menu()
+    
+    def _create_file_menu(self):
+        """Create the file menu."""
         self.file_menu = self.menuBar().addMenu("&File")
         self.file_menu.addAction(self.new_action)
         self.file_menu.addAction(self.open_action)
@@ -230,8 +268,9 @@ class MainWindow(QMainWindow):
         
         self.file_menu.addSeparator()
         self.file_menu.addAction(self.exit_action)
-        
-        # Edit menu
+    
+    def _create_edit_menu(self):
+        """Create the edit menu."""
         self.edit_menu = self.menuBar().addMenu("&Edit")
         self.edit_menu.addAction(self.undo_action)
         self.edit_menu.addAction(self.redo_action)
@@ -243,8 +282,9 @@ class MainWindow(QMainWindow):
         self.edit_menu.addAction(self.select_all_action)
         self.edit_menu.addSeparator()
         self.edit_menu.addAction(self.preferences_action)
-        
-        # View menu
+    
+    def _create_view_menu(self):
+        """Create the view menu."""
         self.view_menu = self.menuBar().addMenu("&View")
         self.view_menu.addAction(self.zoom_in_action)
         self.view_menu.addAction(self.zoom_out_action)
@@ -253,8 +293,9 @@ class MainWindow(QMainWindow):
         self.view_menu.addAction(self.toggle_ball_view_action)
         self.view_menu.addAction(self.toggle_audio_view_action)
         self.view_menu.addAction(self.toggle_lyrics_view_action)
-        
-        # Timeline menu
+    
+    def _create_timeline_menu(self):
+        """Create the timeline menu."""
         self.timeline_menu = self.menuBar().addMenu("&Timeline")
         self.timeline_menu.addAction(self.add_segment_action)
         self.timeline_menu.addAction(self.edit_segment_action)
@@ -264,23 +305,26 @@ class MainWindow(QMainWindow):
         self.timeline_menu.addAction(self.merge_segments_action)
         self.timeline_menu.addSeparator()
         self.timeline_menu.addAction(self.clear_timeline_action)
-        
-        # Playback menu
+    
+    def _create_playback_menu(self):
+        """Create the playback menu."""
         self.playback_menu = self.menuBar().addMenu("&Playback")
         self.playback_menu.addAction(self.play_action)
         self.playback_menu.addAction(self.pause_action)
         self.playback_menu.addAction(self.stop_action)
         self.playback_menu.addSeparator()
         self.playback_menu.addAction(self.loop_action)
-        
-        # Tools menu
+    
+    def _create_tools_menu(self):
+        """Create the tools menu."""
         self.tools_menu = self.menuBar().addMenu("&Tools")
         self.tools_menu.addAction(self.key_mapping_action)
         self.tools_menu.addAction(self.llm_chat_action)
         self.tools_menu.addAction(self.llm_diagnostics_action)
         self.tools_menu.addAction(self.version_history_action)
-        
-        # Help menu
+    
+    def _create_help_menu(self):
+        """Create the help menu."""
         self.help_menu = self.menuBar().addMenu("&Help")
         self.help_menu.addAction(self.about_action)
     
@@ -366,19 +410,19 @@ class MainWindow(QMainWindow):
         self.main_splitter.addWidget(self.audio_widget)
         
         # Create lyrics widget if lyrics manager is available
-        if hasattr(self.app, 'lyrics_manager'):
+        if get_app_attr(self.app, 'lyrics_manager'):
             self.lyrics_widget = LyricsWidget(self.app, self)
             self.main_splitter.addWidget(self.lyrics_widget)
         
         # Set initial splitter sizes
-        self.main_splitter.setSizes([300, 200, 200, 200])
+        self.main_splitter.setSizes(DEFAULT_SPLITTER_SIZES)
     
     def _create_dock_widgets(self):
         """Create dock widgets for the main window."""
         # Create editor dock widget - always visible, ultra-compact layout
         # This will be used for both segment editing and boundary editing
         self.editor_dock = QWidget()
-        self.editor_dock.setFixedHeight(30)  # Set fixed height to minimize vertical space
+        self.editor_dock.setFixedHeight(EDITOR_DOCK_HEIGHT)  # Set fixed height to minimize vertical space
         self.editor_layout = QHBoxLayout(self.editor_dock)
         self.editor_layout.setContentsMargins(5, 0, 5, 0)  # Minimal margins
         self.editor_layout.setSpacing(5)  # Minimal spacing
@@ -444,12 +488,12 @@ class MainWindow(QMainWindow):
         
         # Create apply button
         self.editor_apply_button = QPushButton("Apply")
-        self.editor_apply_button.setFixedHeight(24)  # Smaller button height
+        self.editor_apply_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)  # Smaller button height
         self.editor_layout.addWidget(self.editor_apply_button)
         
         # Create cancel button
         self.editor_cancel_button = QPushButton("Cancel")
-        self.editor_cancel_button.setFixedHeight(24)  # Smaller button height
+        self.editor_cancel_button.setFixedHeight(EDITOR_BUTTON_HEIGHT)  # Smaller button height
         self.editor_layout.addWidget(self.editor_cancel_button)
         
         # Connect buttons to appropriate handlers based on current mode
@@ -476,20 +520,29 @@ class MainWindow(QMainWindow):
     
     def _connect_signals(self):
         """Connect signals to slots."""
-        # Connect timeline signals
+        self._connect_timeline_signals()
+        self._connect_audio_signals()
+        self._connect_project_signals()
+        self._connect_llm_signals()
+    
+    def _connect_timeline_signals(self):
+        """Connect timeline-related signals."""
         self.timeline_widget.position_changed.connect(self._update_cursor_position)
-        
-        # Connect audio signals
+    
+    def _connect_audio_signals(self):
+        """Connect audio-related signals."""
         self.audio_widget.position_changed.connect(self._update_cursor_position)
-        
-        # Connect project signals
-        if hasattr(self.app, 'project_manager'):
+    
+    def _connect_project_signals(self):
+        """Connect project-related signals."""
+        if get_app_attr(self.app, 'project_manager'):
             self.app.project_manager.project_changed.connect(self._update_ui)
             self.app.project_manager.project_loaded.connect(self._update_ui)
             self.app.project_manager.project_saved.connect(self._update_ui)
-        
-        # Connect LLM signals
-        if hasattr(self.app, 'llm_manager'):
+    
+    def _connect_llm_signals(self):
+        """Connect LLM-related signals."""
+        if get_app_attr(self.app, 'llm_manager'):
             self.app.llm_manager.llm_action_requested.connect(self._on_llm_action)
     
     def _load_settings(self):
@@ -1047,11 +1100,8 @@ class MainWindow(QMainWindow):
         Returns:
             str: Formatted color string in the format "r,g,b"
         """
-        if not isinstance(color_tuple, tuple) or len(color_tuple) != 3:
-            return "255,0,0"  # Default to red if invalid
-        
-        r, g, b = color_tuple
-        return f"{r},{g},{b}"
+        # Use the extracted utility function
+        return format_color_tuple(color_tuple)
     
     def _format_seconds_to_hms(self, seconds, include_hundredths=True, hide_hours_if_zero=False):
         """
@@ -1065,19 +1115,8 @@ class MainWindow(QMainWindow):
         Returns:
             str: Formatted time string
         """
-        hours = int(seconds // 3600)
-        minutes = int((seconds % 3600) // 60)
-        seconds_val = seconds % 60
-        
-        if include_hundredths:
-            seconds_format = f"{seconds_val:05.2f}"
-        else:
-            seconds_format = f"{int(seconds_val):02d}"
-        
-        if hours > 0 or not hide_hours_if_zero:
-            return f"{hours:02d}:{minutes:02d}:{seconds_format}"
-        else:
-            return f"{minutes:02d}:{seconds_format}"
+        # Use the extracted utility function
+        return format_seconds_to_hms(seconds, include_hundredths, hide_hours_if_zero)
             
     def _on_add_segment(self):
         """Add a new segment."""
@@ -1207,62 +1246,8 @@ class MainWindow(QMainWindow):
         Raises:
             ValueError: If the color string cannot be parsed
         """
-        color_string = color_string.strip().lower()
-        
-        # Common color names
-        color_names = {
-            "red": (255, 0, 0),
-            "green": (0, 255, 0),
-            "blue": (0, 0, 255),
-            "yellow": (255, 255, 0),
-            "cyan": (0, 255, 255),
-            "magenta": (255, 0, 255),
-            "white": (255, 255, 255),
-            "black": (0, 0, 0),
-            "orange": (255, 165, 0),
-            "purple": (128, 0, 128),
-            "pink": (255, 192, 203)
-        }
-        
-        if color_string in color_names:
-            return color_names[color_string]
-        
-        # Hex format: #RRGGBB
-        if color_string.startswith("#") and len(color_string) == 7:
-            try:
-                r = int(color_string[1:3], 16)
-                g = int(color_string[3:5], 16)
-                b = int(color_string[5:7], 16)
-                return (r, g, b)
-            except ValueError:
-                pass
-        
-        # CSS-style format: rgb(r,g,b)
-        if color_string.startswith("rgb(") and color_string.endswith(")"):
-            try:
-                rgb = color_string[4:-1].split(",")
-                if len(rgb) == 3:
-                    r = int(rgb[0].strip())
-                    g = int(rgb[1].strip())
-                    b = int(rgb[2].strip())
-                    return (r, g, b)
-            except ValueError:
-                pass
-        
-        # Comma-separated values: r,g,b
-        if "," in color_string:
-            try:
-                rgb = color_string.split(",")
-                if len(rgb) == 3:
-                    r = int(rgb[0].strip())
-                    g = int(rgb[1].strip())
-                    b = int(rgb[2].strip())
-                    return (r, g, b)
-            except ValueError:
-                pass
-        
-        # If we get here, we couldn't parse the color string
-        raise ValueError(f"Could not parse color string: {color_string}")
+        # Use the extracted utility function
+        return parse_color_string(color_string)
     
     def _parse_time_string(self, time_string):
         """
@@ -1283,34 +1268,8 @@ class MainWindow(QMainWindow):
         Raises:
             ValueError: If the time string cannot be parsed
         """
-        time_string = time_string.strip()
-        
-        # Try direct float conversion first
-        try:
-            return float(time_string)
-        except ValueError:
-            pass
-        
-        # Try MM:SS.ss format
-        if ":" in time_string:
-            parts = time_string.split(":")
-            
-            if len(parts) == 2:  # MM:SS or MM:SS.ss
-                minutes, seconds = parts
-                try:
-                    return float(minutes) * 60 + float(seconds)
-                except ValueError:
-                    pass
-                    
-            elif len(parts) == 3:  # HH:MM:SS or HH:MM:SS.ss
-                hours, minutes, seconds = parts
-                try:
-                    return float(hours) * 3600 + float(minutes) * 60 + float(seconds)
-                except ValueError:
-                    pass
-        
-        # If we get here, we couldn't parse the time string
-        raise ValueError(f"Could not parse time string: {time_string}")
+        # Use the extracted utility function
+        return parse_time_string(time_string)
     
     def _on_segment_apply(self):
         """Handle segment apply button click."""
@@ -1452,15 +1411,27 @@ class MainWindow(QMainWindow):
         else:  # boundary mode
             self.boundary_time_edit.clear()
     
+    def switch_editor_mode(self, mode):
+        """
+        Switch the editor to the specified mode.
+        
+        Args:
+            mode (str): The mode to switch to ('segment' or 'boundary')
+        """
+        if mode not in EDITOR_MODES:
+            self.logger.warning(f"Unknown editor mode: {mode}")
+            return
+            
+        self.editor_mode = mode
+        self.editor_stack.setCurrentIndex(EDITOR_MODES[mode])
+    
     def _switch_to_segment_mode(self):
         """Switch the editor to segment mode."""
-        self.editor_mode = "segment"
-        self.editor_stack.setCurrentIndex(0)  # Show segment editor
+        self.switch_editor_mode("segment")
     
     def _switch_to_boundary_mode(self):
         """Switch the editor to boundary mode."""
-        self.editor_mode = "boundary"
-        self.editor_stack.setCurrentIndex(1)  # Show boundary editor
+        self.switch_editor_mode("boundary")
             
     def show_segment_editor(self, timeline, segment):
         """
