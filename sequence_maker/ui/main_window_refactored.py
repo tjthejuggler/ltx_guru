@@ -346,8 +346,8 @@ class MainWindow(QMainWindow):
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(0)  # No spacing
         
-        # Add segment editor at the top (always visible)
-        self.main_layout.addWidget(self.segment_editor_dock, 0)  # 0 stretch factor to minimize space
+        # Add editor at the top (always visible)
+        self.main_layout.addWidget(self.editor_dock, 0)  # 0 stretch factor to minimize space
         
         # Create splitter for timeline and ball visualization
         self.main_splitter = QSplitter(Qt.Orientation.Vertical)
@@ -375,55 +375,87 @@ class MainWindow(QMainWindow):
     
     def _create_dock_widgets(self):
         """Create dock widgets for the main window."""
-        # Create segment editor dock widget - always visible, ultra-compact layout
-        self.segment_editor_dock = QWidget()
-        self.segment_editor_dock.setFixedHeight(30)  # Set fixed height to minimize vertical space
-        self.segment_editor_layout = QHBoxLayout(self.segment_editor_dock)
-        self.segment_editor_layout.setContentsMargins(5, 0, 5, 0)  # Minimal margins
-        self.segment_editor_layout.setSpacing(5)  # Minimal spacing
+        # Create editor dock widget - always visible, ultra-compact layout
+        # This will be used for both segment editing and boundary editing
+        self.editor_dock = QWidget()
+        self.editor_dock.setFixedHeight(30)  # Set fixed height to minimize vertical space
+        self.editor_layout = QHBoxLayout(self.editor_dock)
+        self.editor_layout.setContentsMargins(5, 0, 5, 0)  # Minimal margins
+        self.editor_layout.setSpacing(5)  # Minimal spacing
         
-        # Create a more compact layout with all fields in one row
-        # Use QLineEdit instead of QTextEdit for single-line input with less padding
+        from PyQt6.QtWidgets import QLineEdit, QStackedWidget  # Import QLineEdit and QStackedWidget
+        
+        # Create a stacked widget to switch between segment and boundary editing modes
+        self.editor_stack = QStackedWidget()
+        self.editor_layout.addWidget(self.editor_stack)
+        
+        # Create segment editor widget
+        self.segment_editor_widget = QWidget()
+        self.segment_editor_widget_layout = QHBoxLayout(self.segment_editor_widget)
+        self.segment_editor_widget_layout.setContentsMargins(0, 0, 0, 0)  # No margins
+        self.segment_editor_widget_layout.setSpacing(5)  # Minimal spacing
         
         # Create segment start time field
         self.segment_start_label = QLabel("Start:")
-        self.segment_editor_layout.addWidget(self.segment_start_label)
+        self.segment_editor_widget_layout.addWidget(self.segment_start_label)
         
-        from PyQt6.QtWidgets import QLineEdit  # Import QLineEdit
         self.segment_start_edit = QLineEdit()
         self.segment_start_edit.setMinimumWidth(80)
-        self.segment_editor_layout.addWidget(self.segment_start_edit)
+        self.segment_editor_widget_layout.addWidget(self.segment_start_edit)
         
         # Create segment end time field
         self.segment_end_label = QLabel("End:")
-        self.segment_editor_layout.addWidget(self.segment_end_label)
+        self.segment_editor_widget_layout.addWidget(self.segment_end_label)
         
         self.segment_end_edit = QLineEdit()
         self.segment_end_edit.setMinimumWidth(80)
-        self.segment_editor_layout.addWidget(self.segment_end_edit)
+        self.segment_editor_widget_layout.addWidget(self.segment_end_edit)
         
         # Create segment color field
         self.segment_color_label = QLabel("RGB:")  # Changed from "Color:" to "RGB:"
-        self.segment_editor_layout.addWidget(self.segment_color_label)
+        self.segment_editor_widget_layout.addWidget(self.segment_color_label)
         
         self.segment_color_edit = QLineEdit()
         self.segment_color_edit.setMinimumWidth(120)  # Wider for color values
-        self.segment_editor_layout.addWidget(self.segment_color_edit)
+        self.segment_editor_widget_layout.addWidget(self.segment_color_edit)
+        
+        # Add segment editor to stack
+        self.editor_stack.addWidget(self.segment_editor_widget)
+        
+        # Create boundary editor widget
+        self.boundary_editor_widget = QWidget()
+        self.boundary_editor_widget_layout = QHBoxLayout(self.boundary_editor_widget)
+        self.boundary_editor_widget_layout.setContentsMargins(0, 0, 0, 0)  # No margins
+        self.boundary_editor_widget_layout.setSpacing(5)  # Minimal spacing
+        
+        # Create boundary time field
+        self.boundary_time_label = QLabel("Time:")
+        self.boundary_editor_widget_layout.addWidget(self.boundary_time_label)
+        
+        self.boundary_time_edit = QLineEdit()
+        self.boundary_time_edit.setMinimumWidth(120)
+        self.boundary_editor_widget_layout.addWidget(self.boundary_time_edit)
+        
+        # Add boundary editor to stack
+        self.editor_stack.addWidget(self.boundary_editor_widget)
         
         # Add spacer to push buttons to the right
-        self.segment_editor_layout.addStretch(1)
+        self.editor_layout.addStretch(1)
         
         # Create apply button
-        self.segment_apply_button = QPushButton("Apply")
-        self.segment_apply_button.setFixedHeight(24)  # Smaller button height
-        self.segment_apply_button.clicked.connect(self._on_segment_apply)
-        self.segment_editor_layout.addWidget(self.segment_apply_button)
+        self.editor_apply_button = QPushButton("Apply")
+        self.editor_apply_button.setFixedHeight(24)  # Smaller button height
+        self.editor_layout.addWidget(self.editor_apply_button)
         
         # Create cancel button
-        self.segment_cancel_button = QPushButton("Cancel")
-        self.segment_cancel_button.setFixedHeight(24)  # Smaller button height
-        self.segment_cancel_button.clicked.connect(self._on_segment_cancel)
-        self.segment_editor_layout.addWidget(self.segment_cancel_button)
+        self.editor_cancel_button = QPushButton("Cancel")
+        self.editor_cancel_button.setFixedHeight(24)  # Smaller button height
+        self.editor_layout.addWidget(self.editor_cancel_button)
+        
+        # Connect buttons to appropriate handlers based on current mode
+        self.editor_mode = "segment"  # Default mode
+        self.editor_apply_button.clicked.connect(self._on_editor_apply)
+        self.editor_cancel_button.clicked.connect(self._on_editor_cancel)
         
         # Hide the name field as it's not needed according to user feedback
         # but keep it in the code for future reference
@@ -434,30 +466,13 @@ class MainWindow(QMainWindow):
         self.segment_start_edit.clear()
         self.segment_end_edit.clear()
         self.segment_color_edit.clear()
+        self.boundary_time_edit.clear()
         
-        # Create boundary editor dock widget
-        self.boundary_editor_dock = QWidget()
-        self.boundary_editor_layout = QVBoxLayout(self.boundary_editor_dock)
+        # Start in segment mode
+        self._switch_to_segment_mode()
         
-        # Create boundary editor title
-        self.boundary_editor_title = QLabel("Boundary Editor")
-        self.boundary_editor_title.setFont(QFont("Arial", 12, QFont.Weight.Bold))
-        self.boundary_editor_layout.addWidget(self.boundary_editor_title)
-        
-        # Create boundary time field
-        self.boundary_time_layout = QHBoxLayout()
-        self.boundary_time_label = QLabel("Time:")
-        self.boundary_time_edit = ApplyTextEdit()
-        self.boundary_time_edit.setMaximumHeight(30)
-        self.boundary_time_edit.apply_pressed.connect(self._on_boundary_time_apply)
-        self.boundary_time_layout.addWidget(self.boundary_time_label)
-        self.boundary_time_layout.addWidget(self.boundary_time_edit)
-        self.boundary_editor_layout.addLayout(self.boundary_time_layout)
-        
-        # Create boundary apply button
-        self.boundary_apply_button = QPushButton("Apply")
-        self.boundary_apply_button.clicked.connect(self._on_boundary_time_apply)
-        self.boundary_editor_layout.addWidget(self.boundary_apply_button)
+        # The old boundary editor code has been removed
+        # We now use the unified editor with segment and boundary modes
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -1355,14 +1370,65 @@ class MainWindow(QMainWindow):
     def _on_boundary_time_apply(self):
         """Handle boundary time apply button click."""
         # Get boundary time from form
-        time_text = self.boundary_time_edit.toPlainText()
+        time_text = self.boundary_time_edit.text()
         
         try:
             # Parse time string
             time = self._parse_time_string(time_text)
             
-            # Update boundary
-            self.app.timeline_manager.set_boundary(time)
+            # Add debug logging
+            print("Boundary time apply:")
+            print(f"  Has boundary_editor_time: {hasattr(self, 'boundary_editor_time')}")
+            print(f"  Has boundary_editor_left_segment: {hasattr(self, 'boundary_editor_left_segment')}")
+            print(f"  Has boundary_editor_right_segment: {hasattr(self, 'boundary_editor_right_segment')}")
+            print(f"  Has boundary_editor_timeline: {hasattr(self, 'boundary_editor_timeline')}")
+            
+            if hasattr(self, 'boundary_editor_left_segment'):
+                print(f"  Left segment: {self.boundary_editor_left_segment}")
+            
+            if hasattr(self, 'boundary_editor_right_segment'):
+                print(f"  Right segment: {self.boundary_editor_right_segment}")
+            
+            if hasattr(self, 'boundary_editor_timeline'):
+                print(f"  Timeline: {self.boundary_editor_timeline}")
+            
+            # Update boundary by modifying the segments on either side
+            if (hasattr(self, 'boundary_editor_time') and
+                hasattr(self, 'boundary_editor_left_segment') and
+                hasattr(self, 'boundary_editor_right_segment') and
+                hasattr(self, 'boundary_editor_timeline')):
+                
+                # Get the stored boundary information
+                left_segment = self.boundary_editor_left_segment
+                right_segment = self.boundary_editor_right_segment
+                timeline = self.boundary_editor_timeline  # Use the stored timeline
+                
+                print(f"  Timeline: {timeline}")
+                print(f"  Left segment: {left_segment}")
+                print(f"  Right segment: {right_segment}")
+                
+                if timeline and left_segment and right_segment:
+                    # Modify the end time of the left segment
+                    self.app.timeline_manager.modify_segment(
+                        timeline=timeline,
+                        segment=left_segment,
+                        end_time=time
+                    )
+                    
+                    # Modify the start time of the right segment
+                    self.app.timeline_manager.modify_segment(
+                        timeline=timeline,
+                        segment=right_segment,
+                        start_time=time
+                    )
+                else:
+                    # Show error message
+                    from PyQt6.QtWidgets import QMessageBox
+                    QMessageBox.warning(self, "No Boundary Selected", "Please select a boundary to modify.")
+            else:
+                # Show error message
+                from PyQt6.QtWidgets import QMessageBox
+                QMessageBox.warning(self, "No Boundary Selected", "Please select a boundary to modify.")
         except ValueError:
             # Show error message
             from PyQt6.QtWidgets import QMessageBox
@@ -1371,6 +1437,30 @@ class MainWindow(QMainWindow):
                                f"- Seconds (e.g., 123.45)\n"
                                f"- Minutes:Seconds (e.g., 01:23.45)\n"
                                f"- Hours:Minutes:Seconds (e.g., 01:23:45.67)")
+    
+    def _on_editor_apply(self):
+        """Handle editor apply button click based on current mode."""
+        if self.editor_mode == "segment":
+            self._on_segment_apply()
+        else:  # boundary mode
+            self._on_boundary_time_apply()
+    
+    def _on_editor_cancel(self):
+        """Handle editor cancel button click based on current mode."""
+        if self.editor_mode == "segment":
+            self._on_segment_cancel()
+        else:  # boundary mode
+            self.boundary_time_edit.clear()
+    
+    def _switch_to_segment_mode(self):
+        """Switch the editor to segment mode."""
+        self.editor_mode = "segment"
+        self.editor_stack.setCurrentIndex(0)  # Show segment editor
+    
+    def _switch_to_boundary_mode(self):
+        """Switch the editor to boundary mode."""
+        self.editor_mode = "boundary"
+        self.editor_stack.setCurrentIndex(1)  # Show boundary editor
             
     def show_segment_editor(self, timeline, segment):
         """
@@ -1380,10 +1470,14 @@ class MainWindow(QMainWindow):
             timeline: The timeline containing the segment
             segment: The segment to edit
         """
-        # Just call our _on_edit_segment method to populate the always-visible segment editor
-        # This avoids creating a second segment editor
+        # Switch to segment mode
+        self._switch_to_segment_mode()
+        
+        # Set the selected segment and timeline
         self.timeline_widget.selected_segment = segment
         self.timeline_widget.selected_timeline = timeline
+        
+        # Populate the segment editor fields
         self._on_edit_segment()
         
         # Hide hover info label
@@ -1407,37 +1501,8 @@ class MainWindow(QMainWindow):
             left_segment: The segment to the left of the boundary
             right_segment: The segment to the right of the boundary
         """
-        # Make sure the boundary editor container exists
-        if not hasattr(self, 'boundary_editor_container'):
-            # Create boundary editor container if it doesn't exist
-            self.boundary_editor_container = QWidget()
-            self.boundary_editor_layout = QHBoxLayout(self.boundary_editor_container)
-            self.boundary_editor_layout.setContentsMargins(5, 5, 5, 5)
-            
-            # Create boundary editor label
-            self.boundary_editor_label = QLabel("Boundary:")
-            self.boundary_editor_layout.addWidget(self.boundary_editor_label)
-            
-            # Create boundary time field
-            self.boundary_time_label = QLabel("Time:")
-            self.boundary_editor_layout.addWidget(self.boundary_time_label)
-            
-            self.boundary_time_edit = ApplyTextEdit()
-            self.boundary_time_edit.setMaximumHeight(25)
-            self.boundary_time_edit.setMaximumWidth(80)
-            self.boundary_time_edit.apply_pressed.connect(self._on_boundary_time_apply)
-            self.boundary_editor_layout.addWidget(self.boundary_time_edit)
-            
-            # Create boundary apply button
-            self.boundary_apply_button = QPushButton("Apply")
-            self.boundary_apply_button.clicked.connect(self._on_boundary_time_apply)
-            self.boundary_editor_layout.addWidget(self.boundary_apply_button)
-            
-            # Add spacer to push everything to the left
-            self.boundary_editor_layout.addStretch()
-            
-            # Insert the boundary editor at the top of the main layout, before the timeline widget
-            self.main_layout.insertWidget(0, self.boundary_editor_container)
+        # Switch to boundary mode
+        self._switch_to_boundary_mode()
         
         # Hide hover info label
         if hasattr(self, 'hover_info_label'):
@@ -1447,23 +1512,28 @@ class MainWindow(QMainWindow):
         self.boundary_editor_time = time
         self.boundary_editor_left_segment = left_segment
         self.boundary_editor_right_segment = right_segment
+        self.boundary_editor_timeline = timeline  # Store the timeline as well
         
         # Format time
         time_str = self._format_seconds_to_hms(time, include_hundredths=True, hide_hours_if_zero=True)
         
-        # Populate boundary editor fields
+        # Populate boundary editor field
         self.boundary_time_edit.setText(time_str)
         
-        # Show boundary editor
-        self.boundary_editor_container.show()
-        self.boundary_editor_visible = True
+        # Print debug info
+        print(f"Boundary editor initialized with:")
+        print(f"  Time: {time}")
+        print(f"  Left segment: {left_segment}")
+        print(f"  Right segment: {right_segment}")
+        print(f"  Timeline: {timeline}")
         
     def hide_boundary_editor(self):
-        """Hide the boundary editor."""
-        if hasattr(self, 'boundary_editor_container'):
-            self.boundary_editor_container.hide()
-            self.boundary_editor_visible = False
-            QMessageBox.warning(self, "Invalid Time", "Please enter a valid time value.")
+        """Clear the boundary editor fields and switch back to segment mode."""
+        # Clear the boundary time field
+        self.boundary_time_edit.clear()
+        
+        # Switch back to segment mode
+        self._switch_to_segment_mode()
     
     def _on_llm_action(self, action_type, parameters):
         """Handle LLM action requests."""
