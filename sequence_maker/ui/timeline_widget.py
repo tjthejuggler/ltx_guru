@@ -1666,7 +1666,6 @@ class TimelineContainer(QWidget):
                     else:
                         # Mouse over segment
                         self.setCursor(Qt.CursorShape.OpenHandCursor)
-                    
                     # Display segment information in status bar when hovering over segments
                     # This should work even when a segment is selected
                     if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
@@ -1681,21 +1680,91 @@ class TimelineContainer(QWidget):
                         r, g, b = segment.color
                         color_str = f"RGB({r}, {g}, {b})"
                         
-                        # Display in status bar
-                        self.app.main_window.statusbar.showMessage(
-                            f"Segment: {start_time_str} - {end_time_str} | Color: {color_str}")
+                        # Display in hover info label
+                        if hasattr(self.app.main_window, 'hover_info_label'):
+                            hover_text = f"Segment: {start_time_str} - {end_time_str} | Color: {color_str}"
+                            self.app.main_window.hover_info_label.setText(hover_text)
+                            
+                            # Store current editor state before showing hover info
+                            if hasattr(self.app.main_window, 'segment_editor_container') and self.app.main_window.segment_editor_container.isVisible():
+                                self.app.main_window.segment_editor_visible = True
+                                self.app.main_window.segment_editor_container.hide()
+                            else:
+                                self.app.main_window.segment_editor_visible = False
+                                
+                            if hasattr(self.app.main_window, 'boundary_editor_container') and self.app.main_window.boundary_editor_container.isVisible():
+                                self.app.main_window.boundary_editor_visible = True
+                                self.app.main_window.boundary_editor_container.hide()
+                            else:
+                                self.app.main_window.boundary_editor_visible = False
+                            
+                            # Make sure the hover info label is visible
+                            self.app.main_window.hover_info_label.setVisible(True)
+                            self.app.main_window.hover_info_label.setVisible(True)
                 else:
                     # Mouse over timeline
                     self.setCursor(Qt.CursorShape.ArrowCursor)
-                    # Clear status bar message
-                    if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
-                        self.app.main_window.statusbar.clearMessage()
+                    # Clear hover info label
+                    if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'hover_info_label'):
+                        self.app.main_window.hover_info_label.setText("")
+                        # Keep the label visible but empty
+                        self.app.main_window.hover_info_label.setVisible(True)
+                        # Check if there's a selected segment or boundary and show the appropriate editor
+                        if hasattr(self.parent_widget, 'selected_segment') and self.parent_widget.selected_segment:
+                            # There's a selected segment, show the segment editor
+                            if hasattr(self.app.main_window, 'segment_editor_container'):
+                                self.app.main_window.segment_editor_container.show()
+                                self.app.main_window.hover_info_label.hide()
+                            self.app.main_window.segment_editor_visible = False
+                        elif hasattr(self.parent_widget, 'selected_boundary') and self.parent_widget.selected_boundary:
+                            # There's a selected boundary, show the boundary editor
+                            if hasattr(self.app.main_window, 'boundary_editor_container'):
+                                self.app.main_window.boundary_editor_container.show()
+                                self.app.main_window.hover_info_label.hide()
+                            self.app.main_window.boundary_editor_visible = False
+                        else:
+                            # No selection, just restore based on previous visibility
+                            if hasattr(self.app.main_window, 'segment_editor_visible') and self.app.main_window.segment_editor_visible:
+                                if hasattr(self.app.main_window, 'segment_editor_container'):
+                                    self.app.main_window.segment_editor_container.show()
+                                self.app.main_window.segment_editor_visible = False
+                            
+                            if hasattr(self.app.main_window, 'boundary_editor_visible') and self.app.main_window.boundary_editor_visible:
+                                if hasattr(self.app.main_window, 'boundary_editor_container'):
+                                    self.app.main_window.boundary_editor_container.show()
+                                self.app.main_window.boundary_editor_visible = False
+                            self.app.main_window.boundary_editor_visible = False
             else:
                 # Mouse not over timeline
                 self.setCursor(Qt.CursorShape.ArrowCursor)
-                # Clear status bar message
-                if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusbar'):
-                    self.app.main_window.statusbar.clearMessage()
+                # Clear hover info label
+                if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'hover_info_label'):
+                    self.app.main_window.hover_info_label.setText("")
+                    
+                    # Check if there's a selected segment or boundary and show the appropriate editor
+                    if hasattr(self.parent_widget, 'selected_segment') and self.parent_widget.selected_segment:
+                        # There's a selected segment, show the segment editor
+                        if hasattr(self.app.main_window, 'segment_editor_container'):
+                            self.app.main_window.segment_editor_container.show()
+                            self.app.main_window.hover_info_label.hide()
+                        self.app.main_window.segment_editor_visible = False
+                    elif hasattr(self.parent_widget, 'selected_boundary') and self.parent_widget.selected_boundary:
+                        # There's a selected boundary, show the boundary editor
+                        if hasattr(self.app.main_window, 'boundary_editor_container'):
+                            self.app.main_window.boundary_editor_container.show()
+                            self.app.main_window.hover_info_label.hide()
+                        self.app.main_window.boundary_editor_visible = False
+                    else:
+                        # No selection, just restore based on previous visibility
+                        if hasattr(self.app.main_window, 'segment_editor_visible') and self.app.main_window.segment_editor_visible:
+                            if hasattr(self.app.main_window, 'segment_editor_container'):
+                                self.app.main_window.segment_editor_container.show()
+                            self.app.main_window.segment_editor_visible = False
+                        
+                        if hasattr(self.app.main_window, 'boundary_editor_visible') and self.app.main_window.boundary_editor_visible:
+                            if hasattr(self.app.main_window, 'boundary_editor_container'):
+                                self.app.main_window.boundary_editor_container.show()
+                            self.app.main_window.boundary_editor_visible = False
     
     def leaveEvent(self, event):
         """
@@ -1707,6 +1776,37 @@ class TimelineContainer(QWidget):
         # Clear cursor position when mouse leaves the widget
         if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_position'):
             self.app.main_window.cursor_position_label.setText("Cursor: --:--:--")
+        # Restore appropriate editor when leaving the timeline
+        if hasattr(self.app, 'main_window'):
+            # Hide hover info label
+            if hasattr(self.app.main_window, 'hover_info_label'):
+                self.app.main_window.hover_info_label.setText("")
+            
+            # Check if there's a selected segment or boundary and show the appropriate editor
+            if hasattr(self.parent_widget, 'selected_segment') and self.parent_widget.selected_segment:
+                # There's a selected segment, show the segment editor
+                if hasattr(self.app.main_window, 'segment_editor_container'):
+                    self.app.main_window.segment_editor_container.show()
+                    self.app.main_window.hover_info_label.hide()
+                self.app.main_window.segment_editor_visible = False
+            elif hasattr(self.parent_widget, 'selected_boundary') and self.parent_widget.selected_boundary:
+                # There's a selected boundary, show the boundary editor
+                if hasattr(self.app.main_window, 'boundary_editor_container'):
+                    self.app.main_window.boundary_editor_container.show()
+                    self.app.main_window.hover_info_label.hide()
+                self.app.main_window.boundary_editor_visible = False
+            else:
+                # No selection, just restore based on previous visibility
+                if hasattr(self.app.main_window, 'segment_editor_visible') and self.app.main_window.segment_editor_visible:
+                    if hasattr(self.app.main_window, 'segment_editor_container'):
+                        self.app.main_window.segment_editor_container.show()
+                    self.app.main_window.segment_editor_visible = False
+                
+                if hasattr(self.app.main_window, 'boundary_editor_visible') and self.app.main_window.boundary_editor_visible:
+                    if hasattr(self.app.main_window, 'boundary_editor_container'):
+                        self.app.main_window.boundary_editor_container.show()
+                    self.app.main_window.boundary_editor_visible = False
+                self.app.main_window.boundary_editor_visible = False
         
         # Reset cursor
         self.setCursor(Qt.CursorShape.ArrowCursor)

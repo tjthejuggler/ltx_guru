@@ -582,21 +582,20 @@ class MainWindow(QMainWindow):
         # Create splitter
         self.splitter = QSplitter(Qt.Orientation.Vertical)
         self.main_layout.addWidget(self.splitter)
-        
-        # Create timeline widget
-        self.timeline_widget = TimelineWidget(self.app, self)
-        self.splitter.addWidget(self.timeline_widget)
+        # Create lyrics widget
+        self.lyrics_widget = LyricsWidget(self.app, self)
+        self.splitter.addWidget(self.lyrics_widget)
         
         # Create audio widget
         self.audio_widget = AudioWidget(self.app, self)
         self.splitter.addWidget(self.audio_widget)
         
-        # Create lyrics widget
-        self.lyrics_widget = LyricsWidget(self.app, self)
-        self.splitter.addWidget(self.lyrics_widget)
+        # Create timeline widget
+        self.timeline_widget = TimelineWidget(self.app, self)
+        self.splitter.addWidget(self.timeline_widget)
         
         # Set splitter sizes
-        self.splitter.setSizes([400, 200, 100])
+        self.splitter.setSizes([100, 200, 400])
     
     def _create_toolbars(self):
         """Create toolbars for the main window."""
@@ -628,20 +627,97 @@ class MainWindow(QMainWindow):
         self.playback_toolbar.addAction(self.play_action)
         self.playback_toolbar.addAction(self.pause_action)
         self.playback_toolbar.addAction(self.stop_action)
-    
     def _create_status_bar(self):
         """Create status bar for the main window."""
         self.statusbar = QStatusBar(self)
         self.setStatusBar(self.statusbar)
+        
+        # Create a fixed-width container for the left side (hover info and editors)
+        self.left_status_container = QWidget()
+        self.left_status_container.setMinimumWidth(400)
+        self.left_status_layout = QHBoxLayout(self.left_status_container)
+        self.left_status_layout.setContentsMargins(5, 0, 5, 0)
+        self.left_status_layout.setSpacing(5)
+        
+        # Create hover info label
+        self.hover_info_label = QLabel("")
+        self.left_status_layout.addWidget(self.hover_info_label)
+        
+        # Initialize editor visibility flags
+        self.segment_editor_visible = False
+        self.boundary_editor_visible = False
+        
+        # Add the left container to the status bar
+        self.statusbar.addWidget(self.left_status_container)
+        
+        # Create a spacer to center the ball widget
+        spacer_left = QWidget()
+        spacer_left.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self.statusbar.addWidget(spacer_left)
         
         # Create ball widget
         self.ball_widget = BallWidget(self.app, self)
         self.ball_widget.setFixedHeight(BALL_VISUALIZATION_SIZE)
         self.statusbar.addWidget(self.ball_widget)
         
-        # Create cursor position label
+        # Create another spacer to center the ball widget
+        spacer_right = QWidget()
+        spacer_right.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self.statusbar.addWidget(spacer_right)
+        
+        # Create a spacer to push the time labels to the right
+        spacer = QWidget()
+        spacer.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        self.statusbar.addWidget(spacer)
+        
+        # Create cursor position label with fixed width font to prevent movement
         self.cursor_position_label = QLabel("Cursor: 00:00.00")
+        self.cursor_position_label.setFont(QFont("Monospace"))
+        self.cursor_position_label.setMinimumWidth(150)  # Fixed width to prevent movement
         self.statusbar.addPermanentWidget(self.cursor_position_label)
+        
+        # Create marker position label with fixed width font
+        self.marker_position_label = QLabel("Marker: 00:00.00")
+        self.marker_position_label.setFont(QFont("Monospace"))
+        self.marker_position_label.setMinimumWidth(150)  # Fixed width to prevent movement
+        self.statusbar.addPermanentWidget(self.marker_position_label)
+        
+        # Create segment editor
+        self.segment_editor_container = QWidget()
+        self.segment_editor_layout = QHBoxLayout(self.segment_editor_container)
+        self.segment_editor_layout.setContentsMargins(0, 0, 0, 0)
+        self.segment_editor_layout.setSpacing(5)
+        
+        # Add segment editor labels and fields
+        self.segment_editor_layout.addWidget(QLabel("Start:"))
+        self.segment_start_edit = QTextEdit()
+        self.segment_start_edit.setFixedSize(100, 25)  # Wider to show decimal places
+        self.segment_editor_layout.addWidget(self.segment_start_edit)
+        
+        self.segment_editor_layout.addWidget(QLabel("End:"))
+        self.segment_end_edit = QTextEdit()
+        self.segment_end_edit.setFixedSize(100, 25)  # Wider to show decimal places
+        self.segment_editor_layout.addWidget(self.segment_end_edit)
+        
+        self.segment_editor_layout.addWidget(QLabel("Color:"))
+        self.segment_color_edit = QTextEdit()
+        self.segment_color_edit.setFixedSize(120, 25)
+        self.segment_editor_layout.addWidget(self.segment_color_edit)
+        
+        # Create boundary editor
+        self.boundary_editor_container = QWidget()
+        self.boundary_editor_layout = QHBoxLayout(self.boundary_editor_container)
+        self.boundary_editor_layout.setContentsMargins(0, 0, 0, 0)
+        self.boundary_editor_layout.setSpacing(0)  # removes spacing completely
+        
+        # Add label and edit directly to the boundary editor layout
+        time_label = QLabel("Time:")
+        self.boundary_editor_layout.addWidget(time_label)
+        
+        self.boundary_time_edit = QTextEdit()
+        self.boundary_time_edit.setFixedSize(100, 25)  # Wider to show decimal places
+        self.boundary_time_edit.setStyleSheet("QTextEdit { padding: 0; margin: 0; }")
+        self.boundary_editor_layout.addWidget(self.boundary_time_edit)
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -708,14 +784,34 @@ class MainWindow(QMainWindow):
         # Update ball widget
         self.ball_widget.update()
     
-    def _update_cursor_position(self):
-        """Update the cursor position label."""
-        position = self.app.timeline_manager.position
+    def update_cursor_position(self, cursor_time=None):
+        """
+        Update the cursor position label with the given time.
         
-        # Format position as MM:SS.ss
-        minutes = int(position / 60)
-        seconds = position % 60
-        self.cursor_position_label.setText(f"Cursor: {minutes:02d}:{seconds:05.2f}")
+        Args:
+            cursor_time (float, optional): Cursor time in seconds. If None, shows placeholder.
+        """
+        # Store the cursor position
+        self.cursor_position = cursor_time
+        
+        if cursor_time is not None:
+            # Format cursor time
+            cursor_minutes = int(cursor_time / 60)
+            cursor_seconds = cursor_time % 60
+            self.cursor_position_label.setText(f"Cursor: {cursor_minutes:02d}:{cursor_seconds:05.2f}")
+        else:
+            # Show placeholder when cursor is not over timelines
+            self.cursor_position_label.setText("Cursor: --:--.--")
+    
+    def _update_cursor_position(self):
+        """Update the marker position label."""
+        # Get marker position (playback/current time)
+        marker_position = self.app.timeline_manager.position
+        
+        # Format marker position
+        marker_minutes = int(marker_position / 60)
+        marker_seconds = marker_position % 60
+        self.marker_position_label.setText(f"Marker: {marker_minutes:02d}:{marker_seconds:05.2f}")
     
     def _update_recent_projects_menu(self):
         """Update the recent projects menu."""
@@ -1074,6 +1170,247 @@ class MainWindow(QMainWindow):
             action_data (dict): Action data
         """
         # Process the action based on its type
+        
+    def show_segment_editor(self, timeline, segment):
+        """
+        Show the segment editor for the selected segment.
+        
+        Args:
+            timeline: The timeline containing the segment.
+            segment: The selected segment.
+        """
+        # Store the selected segment
+        self.selected_timeline = timeline
+        self.selected_segment = segment
+        
+        # Update segment editor fields
+        self.segment_start_edit.setText(self._format_seconds_to_hms(segment.start_time))
+        self.segment_end_edit.setText(self._format_seconds_to_hms(segment.end_time))
+        
+        # Format color as RGB
+        r, g, b = segment.color
+        self.segment_color_edit.setText(f"RGB({r}, {g}, {b})")
+        
+        # Hide hover info label and boundary editor
+        self.hover_info_label.hide()
+        if self.boundary_editor_container.parent():
+            self.left_status_layout.removeWidget(self.boundary_editor_container)
+            self.boundary_editor_container.hide()
+        
+        # Add segment editor to left status layout
+        self.left_status_layout.addWidget(self.segment_editor_container)
+        self.segment_editor_container.show()
+        
+        # Connect signals
+        self.segment_start_edit.textChanged.connect(self._on_segment_start_changed)
+        self.segment_end_edit.textChanged.connect(self._on_segment_end_changed)
+        self.segment_color_edit.textChanged.connect(self._on_segment_color_changed)
+    
+    def hide_segment_editor(self):
+        """Hide the segment editor."""
+        # Remove segment editor from layout
+        if self.segment_editor_container.parent():
+            self.left_status_layout.removeWidget(self.segment_editor_container)
+            self.segment_editor_container.hide()
+        
+        # Show hover info label
+        self.hover_info_label.show()
+        
+        # Disconnect signals
+        try:
+            self.segment_start_edit.textChanged.disconnect(self._on_segment_start_changed)
+            self.segment_end_edit.textChanged.disconnect(self._on_segment_end_changed)
+            self.segment_color_edit.textChanged.disconnect(self._on_segment_color_changed)
+        except:
+            pass
+    
+    def show_boundary_editor(self, timeline, time, left_segment, right_segment):
+        """
+        Show the boundary editor for the selected boundary.
+        
+        Args:
+            timeline: The timeline containing the boundary.
+            time: The time position of the boundary.
+            left_segment: The segment to the left of the boundary.
+            right_segment: The segment to the right of the boundary.
+        """
+        # Store the selected boundary
+        self.selected_timeline = timeline
+        self.boundary_editor_time = time
+        self.boundary_editor_left_segment = left_segment
+        self.boundary_editor_right_segment = right_segment
+        
+        # Update boundary editor fields
+        self.boundary_time_edit.setText(self._format_seconds_to_hms(time))
+        
+        # Hide hover info label and segment editor
+        self.hover_info_label.hide()
+        if self.segment_editor_container.parent():
+            self.left_status_layout.removeWidget(self.segment_editor_container)
+            self.segment_editor_container.hide()
+        
+        # Add boundary editor to left status layout
+        self.left_status_layout.addWidget(self.boundary_editor_container)
+        self.boundary_editor_container.show()
+        
+        # Connect signals
+        self.boundary_time_edit.textChanged.connect(self._on_boundary_time_changed)
+    
+    def hide_boundary_editor(self):
+        """Hide the boundary editor."""
+        # Remove boundary editor from layout
+        if self.boundary_editor_container.parent():
+            self.left_status_layout.removeWidget(self.boundary_editor_container)
+            self.boundary_editor_container.hide()
+        
+        # Show hover info label
+        self.hover_info_label.show()
+        
+        # Disconnect signals
+        try:
+            self.boundary_time_edit.textChanged.disconnect(self._on_boundary_time_changed)
+        except:
+            pass
+    
+    def _on_segment_start_changed(self):
+        """Handle segment start time changed."""
+        if not hasattr(self, 'selected_segment') or not self.selected_segment:
+            return
+        
+        try:
+            # Parse time from text
+            text = self.segment_start_edit.toPlainText()
+            time = self._parse_time_from_text(text)
+            
+            # Update segment
+            if time is not None and time >= 0 and time < self.selected_segment.end_time:
+                self.app.timeline_manager.set_segment_start_time(
+                    self.selected_timeline,
+                    self.selected_segment,
+                    time
+                )
+        except:
+            # Ignore parsing errors
+            pass
+    
+    def _on_segment_end_changed(self):
+        """Handle segment end time changed."""
+        if not hasattr(self, 'selected_segment') or not self.selected_segment:
+            return
+        
+        try:
+            # Parse time from text
+            text = self.segment_end_edit.toPlainText()
+            time = self._parse_time_from_text(text)
+            
+            # Update segment
+            if time is not None and time > self.selected_segment.start_time:
+                self.app.timeline_manager.set_segment_end_time(
+                    self.selected_timeline,
+                    self.selected_segment,
+                    time
+                )
+        except:
+            # Ignore parsing errors
+            pass
+    
+    def _on_segment_color_changed(self):
+        """Handle segment color changed."""
+        if not hasattr(self, 'selected_segment') or not self.selected_segment:
+            return
+        
+        try:
+            # Parse color from text
+            text = self.segment_color_edit.toPlainText()
+            color = self._parse_color_from_text(text)
+            
+            # Update segment
+            if color:
+                self.app.timeline_manager.set_segment_color(
+                    self.selected_timeline,
+                    self.selected_segment,
+                    color
+                )
+        except:
+            # Ignore parsing errors
+            pass
+    
+    def _on_boundary_time_changed(self):
+        """Handle boundary time changed."""
+        if not hasattr(self, 'boundary_editor_time'):
+            return
+        
+        try:
+            # Parse time from text
+            text = self.boundary_time_edit.toPlainText()
+            time = self._parse_time_from_text(text)
+            
+            # Update boundary
+            if time is not None and time >= 0:
+                # Store the new time
+                old_time = self.boundary_editor_time
+                self.boundary_editor_time = time
+                
+                # Update the segments
+                self.app.timeline_manager.move_segment_boundary(
+                    self.selected_timeline,
+                    old_time,
+                    time
+                )
+        except:
+            # Ignore parsing errors
+            pass
+    
+    def _parse_time_from_text(self, text):
+        """
+        Parse time from text in format MM:SS.ss or SS.ss.
+        
+        Args:
+            text (str): Time text.
+            
+        Returns:
+            float: Time in seconds, or None if parsing failed.
+        """
+        try:
+            # Try MM:SS.ss format
+            if ':' in text:
+                parts = text.split(':')
+                if len(parts) == 2:
+                    minutes = int(parts[0])
+                    seconds = float(parts[1])
+                    return minutes * 60 + seconds
+            
+            # Try SS.ss format
+            return float(text)
+        except:
+            return None
+    
+    def _parse_color_from_text(self, text):
+        """
+        Parse color from text in format RGB(r, g, b) or r, g, b.
+        
+        Args:
+            text (str): Color text.
+            
+        Returns:
+            tuple: (r, g, b) color tuple, or None if parsing failed.
+        """
+        try:
+            # Remove RGB() wrapper if present
+            if text.startswith('RGB(') and text.endswith(')'):
+                text = text[4:-1]
+            
+            # Split by commas
+            parts = text.split(',')
+            if len(parts) == 3:
+                r = int(parts[0].strip())
+                g = int(parts[1].strip())
+                b = int(parts[2].strip())
+                return (r, g, b)
+            
+            return None
+        except:
+            return None
         if action_type == "create_segment":
             # Create a segment
             self.app.timeline_manager.create_segment(action_data)
