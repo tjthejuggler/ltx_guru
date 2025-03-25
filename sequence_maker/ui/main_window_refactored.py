@@ -1166,6 +1166,87 @@ class MainWindow(QMainWindow):
         else:
             self.logger.warning(f"Unknown LLM action type: {action_type}")
     
+    def keyPressEvent(self, event: QKeyEvent):
+        """
+        Handle key press events for adding color blocks.
+        
+        This method handles keyboard input for adding color blocks to the timeline:
+        - qwer... keys for ball 1 (timeline 0)
+        - asdf... keys for ball 2 (timeline 1)
+        - zxcv... keys for ball 3 (timeline 2)
+        - Number keys for all balls (all timelines)
+        """
+        # Get the key text
+        key_text = event.text().lower()
+        
+        # Check if we have a key mapping for this key
+        if hasattr(self.app, 'project_manager') and self.app.project_manager.current_project:
+            # Get the key mappings from the constants
+            from app.constants import DEFAULT_KEY_MAPPING
+            
+            # Check if the key is in the default key mapping
+            if key_text in DEFAULT_KEY_MAPPING:
+                # Get the mapping for this key
+                mapping = DEFAULT_KEY_MAPPING[key_text]
+                
+                # Get the color and timelines
+                color = mapping["color"]
+                timelines = mapping["timelines"]
+                
+                # Get the current position
+                position = self.app.audio_manager.position
+                
+                # Create a segment at the current position for each timeline
+                for timeline_index in timelines:
+                    # Get the timelines using the get_timelines method
+                    all_timelines = self.app.timeline_manager.get_timelines()
+                    
+                    # Check if the timeline index is valid
+                    if timeline_index < len(all_timelines):
+                        timeline = all_timelines[timeline_index]
+                        
+                        # Find the end time for the new segment
+                        # It should be either the end of the timeline or the start of the next segment
+                        end_time = self.app.project_manager.current_project.total_duration
+                        
+                        # Check if there are any segments that start after the current position
+                        for segment in timeline.segments:
+                            if segment.start_time > position:
+                                # Found a segment that starts after the current position
+                                # Set the end time to the start of this segment
+                                end_time = min(end_time, segment.start_time)
+                        
+                        # Check if the current position is inside an existing segment
+                        segment_to_truncate = None
+                        for segment in timeline.segments:
+                            if segment.start_time <= position < segment.end_time:
+                                # Found a segment that contains the current position
+                                segment_to_truncate = segment
+                                break
+                        
+                        # If we found a segment to truncate, modify it to end at the current position
+                        if segment_to_truncate:
+                            self.app.timeline_manager.modify_segment(
+                                timeline=timeline,
+                                segment=segment_to_truncate,
+                                end_time=position
+                            )
+                        
+                        # Create a segment that extends to the calculated end time
+                        self.app.timeline_manager.add_segment(
+                            timeline=timeline,
+                            start_time=position,
+                            end_time=end_time,
+                            color=color
+                        )
+                
+                # Accept the event
+                event.accept()
+                return
+        
+        # Pass the event to the parent class
+        super().keyPressEvent(event)
+    
     def closeEvent(self, event):
         """Handle window close event."""
         # Save settings
