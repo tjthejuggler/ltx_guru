@@ -34,6 +34,7 @@ class Config:
         },
         "audio": {
             "volume": 0.8,
+            "loop": False,
             "visualizations": ["waveform", "beats"],
             "beat_detection_threshold": 0.5,
             "waveform_color": [0, 0, 255],

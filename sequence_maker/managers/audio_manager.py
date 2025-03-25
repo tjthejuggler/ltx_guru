@@ -88,6 +88,10 @@ class AudioManager(QObject):
         self.position = 0.0
         self.volume = app.config.get("audio", "volume")
         
+        # Get loop setting from config, default to False if not found
+        loop_setting = app.config.get("audio", "loop")
+        self.loop = False if loop_setting is None else loop_setting
+        
         # Playback thread
         self.playback_thread = None
         self.playback_stop_event = threading.Event()
@@ -454,9 +458,27 @@ class AudioManager(QObject):
         
         # Update volume
         self.volume = volume
-        
         # Save to config
         self.app.config.set("audio", "volume", volume)
+        
+    def set_loop(self, loop):
+        """
+        Set the playback loop mode.
+        
+        Args:
+            loop (bool): Whether to loop playback.
+        
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        self.logger.info(f"Setting loop mode: {loop}")
+        
+        # Update loop mode
+        self.loop = loop
+        
+        # Save to config
+        self.app.config.set("audio", "loop", loop)
+        
         
         return True
     
@@ -726,7 +748,12 @@ class AudioManager(QObject):
         
         # Check if we've reached the end
         if current_sample >= len(self.audio_data):
-            return (np.zeros(frame_count, dtype=np.float32), pyaudio.paComplete)
+            if self.loop:
+                # Reset to beginning if looping is enabled
+                self._current_sample = 0
+                current_sample = 0
+            else:
+                return (np.zeros(frame_count, dtype=np.float32), pyaudio.paComplete)
         
         # Calculate end position
         end_sample = min(current_sample + frame_count, len(self.audio_data))
