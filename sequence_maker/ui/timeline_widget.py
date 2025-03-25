@@ -1247,7 +1247,7 @@ class TimelineContainer(QWidget):
         time = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
         # First check for segment edges (prioritize edges over segment bodies)
-        edge_threshold = 5  # pixels
+        edge_threshold = 8  # pixels - increased for easier boundary selection
         
         # Find segments with edges near the cursor position
         edge_segments = []
@@ -1281,16 +1281,20 @@ class TimelineContainer(QWidget):
             if closest_edge == "right":
                 # Find if there's a segment that starts exactly where this one ends
                 for segment in segments:
-                    if segment != closest_segment and abs(segment.start_time - closest_time) < 0.001:
+                    if segment != closest_segment and abs(segment.start_time - closest_time) < 0.005:
                         # This is a boundary between two segments
                         boundary_info = (closest_time, closest_segment, segment)
+                        # Set cursor to indicate draggable boundary
+                        self.setCursor(Qt.CursorShape.SizeHorCursor)
                         return closest_segment, closest_edge, boundary_info
             elif closest_edge == "left":
                 # Find if there's a segment that ends exactly where this one starts
                 for segment in segments:
-                    if segment != closest_segment and abs(segment.end_time - closest_time) < 0.001:
+                    if segment != closest_segment and abs(segment.end_time - closest_time) < 0.005:
                         # This is a boundary between two segments
                         boundary_info = (closest_time, segment, closest_segment)
+                        # Set cursor to indicate draggable boundary
+                        self.setCursor(Qt.CursorShape.SizeHorCursor)
                         return closest_segment, closest_edge, boundary_info
             
             # Not a boundary, just a regular edge
@@ -1450,6 +1454,19 @@ class TimelineContainer(QWidget):
         if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_hover_position'):
             self.app.main_window.update_cursor_hover_position(cursor_time)
             
+        # Check if we're hovering over a boundary (only if not already dragging)
+        if not (self.parent_widget.dragging_position or
+                self.parent_widget.dragging_segment or
+                self.parent_widget.resizing_segment or
+                self.parent_widget.dragging_boundary):
+            
+            # Get timeline at position
+            timeline, y_offset = self._get_timeline_at_pos(event.pos())
+            
+            if timeline:
+                # Get segment at position - this will set the cursor if over a boundary
+                self._get_segment_at_pos(timeline, event.pos())
+            
         if self.parent_widget.dragging_position:
             # Update position
             self.parent_widget.set_position(cursor_time)
@@ -1478,15 +1495,25 @@ class TimelineContainer(QWidget):
                 # Use a more relaxed condition to allow dragging
                 if left_segment and right_segment:
                     # Only constrain by the start of left segment and end of right segment
-                    if left_segment.start_time < new_time < right_segment.end_time:
-                        # Update left segment end time
+                    # Allow a small buffer (0.001s) to prevent exact boundary checks from failing
+                    if (left_segment.start_time + 0.001) < new_time < (right_segment.end_time - 0.001):
+                        # Force a redraw to update the boundary position during dragging
+                        self.update()
+                        # Store the original values to restore if needed
+                        original_left_end = left_segment.end_time
+                        original_right_start = right_segment.start_time
+                        
+                        # Directly update segment properties for immediate visual feedback
+                        left_segment.end_time = new_time
+                        right_segment.start_time = new_time
+                        
+                        # Update through timeline manager for proper state management
                         self.app.timeline_manager.modify_segment(
                             timeline=self.parent_widget.selected_timeline,
                             segment=left_segment,
                             end_time=new_time
                         )
                         
-                        # Update right segment start time
                         self.app.timeline_manager.modify_segment(
                             timeline=self.parent_widget.selected_timeline,
                             segment=right_segment,
@@ -1776,6 +1803,10 @@ class TimelineContainer(QWidget):
         # Clear cursor hover position when mouse leaves the widget
         if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'clear_cursor_hover_position'):
             self.app.main_window.clear_cursor_hover_position()
+            
+        # Reset cursor to default when mouse leaves the widget
+        self.setCursor(Qt.CursorShape.ArrowCursor)
+        
         # Restore appropriate editor when leaving the timeline
         if hasattr(self.app, 'main_window'):
             # Hide hover info label
@@ -1884,7 +1915,8 @@ class TimelineContainer(QWidget):
             if (was_dragging or was_resizing) and moved_segment and timeline:
                 self._resolve_segment_overlap(moved_segment, timeline)
         
-        # Reset cursor
+        # Reset cursor to default
+        self.setCursor(Qt.CursorShape.ArrowCursor)
         self.setCursor(Qt.CursorShape.ArrowCursor)
     
     def _resolve_segment_overlap(self, moved_segment, timeline):
