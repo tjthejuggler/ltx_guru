@@ -378,6 +378,10 @@ class LLMChatWindow(QWidget):
             # Disable input
             self.input_text.setEnabled(False)
             self.send_button.setEnabled(False)
+        else:
+            # Enable input if LLM is configured
+            self.input_text.setEnabled(True)
+            self.send_button.setEnabled(True)
     
     def _on_response_chunk(self, chunk):
         """
@@ -608,6 +612,10 @@ class LLMChatWindow(QWidget):
             "- At 0 seconds: Red (255, 0, 0)\n"
             "- At 5.2 seconds: Green (0, 255, 0)\n"
             "- At 10.8 seconds: Blue (0, 0, 255)"
+            "\n\nIMPORTANT: Only include color changes that are explicitly requested by the user. "
+            "Do not add additional color changes at the end of segments or anywhere else unless "
+            "specifically asked to do so. Your changes will be added to the existing timeline without "
+            "removing what's already there."
         )
         
         return system_message
@@ -729,48 +737,95 @@ class LLMChatWindow(QWidget):
         # Get confirmation mode
         confirmation_mode = self.confirmation_mode_combo.currentData()
         
-        # Parse color sequence (legacy support)
-        sequence = self.app.llm_manager.parse_color_sequence(response_text)
+        # Parse color sequence
+        parsed_result = self.app.llm_manager.parse_color_sequence(response_text)
         
         # Check if sequence was parsed
-        if sequence:
-            # Get selected timelines
-            selected_timelines = []
-            for item in self.timeline_list.selectedItems():
-                timeline_index = item.data(Qt.ItemDataRole.UserRole)
-                selected_timelines.append(timeline_index)
-            
-            # If no timelines selected, use the first one
-            if not selected_timelines and self.app.project_manager.current_project:
-                if len(self.app.project_manager.current_project.timelines) > 0:
-                    selected_timelines = [0]
-            
-            # Check confirmation mode
-            if confirmation_mode == "full" or confirmation_mode == "selective":
-                # Ask if user wants to apply the sequence
-                if selected_timelines:
+        if parsed_result:
+            # Check if the result is a dictionary mapping timeline indices to sequences
+            if isinstance(parsed_result, dict) and all(isinstance(k, int) for k in parsed_result.keys()):
+                # This is a timeline-specific format
+                timeline_sequences = parsed_result
+                
+                # Check confirmation mode
+                if confirmation_mode == "full" or confirmation_mode == "selective":
+                    # Ask if user wants to apply the sequences
+                    timeline_names = []
+                    for timeline_index in timeline_sequences.keys():
+                        timeline = self.app.timeline_manager.get_timeline(timeline_index)
+                        if timeline:
+                            timeline_names.append(f"Ball {timeline_index + 1}")
+                    
+                    timeline_str = ", ".join(timeline_names)
                     result = QMessageBox.question(
                         self,
                         "Apply Sequence",
-                        f"Do you want to apply the suggested sequence to the selected timeline(s)?",
+                        f"Do you want to apply the suggested sequences to {timeline_str}?",
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
                     
                     if result == QMessageBox.StandardButton.Yes:
-                        # Apply sequence to each selected timeline
-                        for timeline_index in selected_timelines:
+                        # Apply sequences to each specified timeline
+                        for timeline_index, sequence in timeline_sequences.items():
                             self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
                         
                         # Show success message
                         QMessageBox.information(
                             self,
                             "Sequence Applied",
-                            f"The sequence has been applied to {len(selected_timelines)} timeline(s)."
+                            f"The sequences have been applied to {len(timeline_sequences)} timeline(s)."
                         )
-            else:  # Auto mode
-                # Apply sequence to each selected timeline automatically
-                for timeline_index in selected_timelines:
-                    self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                else:  # Auto mode
+                    # Apply sequences to each specified timeline automatically
+                    for timeline_index, sequence in timeline_sequences.items():
+                        self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                    
+                    # Add info message to chat
+                    self._add_message("System", f"Sequences automatically applied to {len(timeline_sequences)} timeline(s).")
+            else:
+                # This is the legacy format with a single sequence
+                sequence = parsed_result
+                
+                # Get selected timelines
+                selected_timelines = []
+                for item in self.timeline_list.selectedItems():
+                    timeline_index = item.data(Qt.ItemDataRole.UserRole)
+                    selected_timelines.append(timeline_index)
+                
+                # If no timelines selected, use the first one
+                if not selected_timelines and self.app.project_manager.current_project:
+                    if len(self.app.project_manager.current_project.timelines) > 0:
+                        selected_timelines = [0]
+                
+                # Check confirmation mode
+                if confirmation_mode == "full" or confirmation_mode == "selective":
+                    # Ask if user wants to apply the sequence
+                    if selected_timelines:
+                        result = QMessageBox.question(
+                            self,
+                            "Apply Sequence",
+                            f"Do you want to apply the suggested sequence to the selected timeline(s)?",
+                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                        )
+                        
+                        if result == QMessageBox.StandardButton.Yes:
+                            # Apply sequence to each selected timeline
+                            for timeline_index in selected_timelines:
+                                self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                            
+                            # Show success message
+                            QMessageBox.information(
+                                self,
+                                "Sequence Applied",
+                                f"The sequence has been applied to {len(selected_timelines)} timeline(s)."
+                            )
+                else:  # Auto mode
+                    # Apply sequence to each selected timeline automatically
+                    for timeline_index in selected_timelines:
+                        self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                    
+                    # Add info message to chat
+                    self._add_message("System", f"Sequence automatically applied to {len(selected_timelines)} timeline(s).")
                 
                 # Add info message to chat
                 self._add_message("System", f"Sequence automatically applied to {len(selected_timelines)} timeline(s).")
@@ -901,6 +956,10 @@ class LLMChatWindow(QWidget):
         # Load presets and templates
         self._load_presets()
         self._load_templates()
+        
+        # Check LLM configuration when window is shown
+        # This ensures the UI is updated if settings were changed
+        self._check_llm_configuration()
         
         # Call parent method
         super().showEvent(event)

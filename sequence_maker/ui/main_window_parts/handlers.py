@@ -274,7 +274,13 @@ def on_preferences(main_window):
     from ui.dialogs.settings_dialog import SettingsDialog
     
     dialog = SettingsDialog(main_window.app, main_window)
-    dialog.exec()
+    result = dialog.exec()
+    
+    # If dialog was accepted, reload LLM manager configuration
+    if result:
+        # Update LLM manager with new settings
+        if hasattr(main_window.app, 'llm_manager'):
+            main_window.app.llm_manager.reload_configuration()
 
 
 def on_zoom_in(main_window):

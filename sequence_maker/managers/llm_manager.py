@@ -299,6 +299,18 @@ class LLMManager(QObject):
             self.api_key and
             self.model
         )
+        
+    def reload_configuration(self):
+        """
+        Reload configuration from the application config.
+        This should be called after settings are changed.
+        """
+        self.logger.info("Reloading LLM configuration")
+        self.enabled = self.app.config.get("llm", "enabled")
+        self.provider = self.app.config.get("llm", "provider")
+        self.api_key = self.app.config.get("llm", "api_key")
+        self.model = self.app.config.get("llm", "model")
+        self.temperature = self.app.config.get("llm", "temperature")
     
     def _get_available_functions(self):
         """
@@ -344,7 +356,11 @@ class LLMManager(QObject):
             system_message = (
                 "You are an assistant that helps create color sequences for juggling balls. "
                 "You can analyze music and suggest color patterns that match the rhythm, mood, and style of the music. "
-                "Your responses should be clear and specific, describing exact colors and timings."
+                "Your responses should be clear and specific, describing exact colors and timings. "
+                "IMPORTANT: Only include color changes that are explicitly requested by the user. "
+                "Do not add additional color changes at the end of segments or anywhere else unless "
+                "specifically asked to do so. Your changes will be added to the existing timeline without "
+                "removing what's already there."
             )
         
         # Set default temperature if not provided
@@ -946,6 +962,7 @@ class LLMManager(QObject):
         
         Returns:
             list: List of (time, color) tuples, or None if parsing failed.
+            dict: Dictionary mapping timeline names to sequences, or None if parsing failed.
         """
         try:
             # Look for JSON blocks in the response
@@ -957,7 +974,7 @@ class LLMManager(QObject):
                     try:
                         data = json.loads(json_block)
                         
-                        # Check if it's a valid sequence
+                        # Check if it's a valid sequence with the "sequence" key
                         if "sequence" in data and isinstance(data["sequence"], dict):
                             # Convert to list of (time, color) tuples
                             sequence = []
@@ -970,7 +987,36 @@ class LLMManager(QObject):
                             sequence.sort(key=lambda x: x[0])
                             
                             return sequence
-                    except:
+                        
+                        # Check if it's a format with timeline names as keys
+                        # Example: {"Ball 2": {"4": {"color": [0, 0, 255]}, "6": {"color": [0, 0, 0]}}}
+                        timeline_sequences = {}
+                        has_timeline_format = False
+                        
+                        for key, value in data.items():
+                            # Check if the key looks like a timeline name (e.g., "Ball 1", "Ball 2")
+                            if isinstance(value, dict) and key.startswith("Ball "):
+                                has_timeline_format = True
+                                timeline_name = key
+                                timeline_index = int(key.split(" ")[1]) - 1  # Convert "Ball 2" to index 1
+                                
+                                # Convert to list of (time, color) tuples
+                                sequence = []
+                                for time_str, entry in value.items():
+                                    time = float(time_str)
+                                    color = tuple(entry["color"])
+                                    sequence.append((time, color))
+                                
+                                # Sort by time
+                                sequence.sort(key=lambda x: x[0])
+                                
+                                timeline_sequences[timeline_index] = sequence
+                        
+                        if has_timeline_format:
+                            self.logger.info(f"Parsed timeline-specific sequences: {timeline_sequences}")
+                            return timeline_sequences
+                    except Exception as e:
+                        self.logger.debug(f"Failed to parse JSON block: {e}")
                         continue
             
             # If no valid JSON blocks, try to parse from text
@@ -1260,24 +1306,44 @@ class LLMManager(QObject):
             self.logger.warning(f"Cannot apply sequence: Timeline {timeline_index} not found")
             return False
         
-        # Clear existing segments
-        timeline.clear()
-        
-        # Add segments for each time point
+        # Add segments for each time point without clearing existing segments
         for i, (time, color) in enumerate(sequence):
             # Determine end time
             if i < len(sequence) - 1:
                 end_time = sequence[i + 1][0]
             else:
-                end_time = time + 10  # Default duration of 10 seconds for the last segment
+                # Find the next existing segment after this time point
+                next_segment_time = None
+                for segment in timeline.segments:
+                    if segment.start_time > time:
+                        if next_segment_time is None or segment.start_time < next_segment_time:
+                            next_segment_time = segment.start_time
+                
+                if next_segment_time is not None:
+                    end_time = next_segment_time
+                else:
+                    end_time = time + 10  # Default duration of 10 seconds if no next segment
             
-            # Add segment
-            self.app.timeline_manager.add_segment(
-                timeline=timeline,
-                start_time=time,
-                end_time=end_time,
-                color=color
-            )
+            # Add segment by using the timeline's add_color_at_time method
+            # This will handle splitting existing segments if needed
+            timeline.add_color_at_time(time, color)
+            
+            # If this is not the last segment, we need to ensure the color extends to the end time
+            if i < len(sequence) - 1:
+                # Check if there's already a segment at the end time
+                existing_segment = timeline.get_segment_at_time(end_time - 0.001)  # Just before end time
+                if existing_segment and existing_segment.end_time > end_time:
+                    # Split the existing segment at the end time
+                    existing_color = existing_segment.color
+                    existing_segment.end_time = end_time
+                    
+                    # Create a new segment with the original color
+                    self.app.timeline_manager.add_segment(
+                        timeline=timeline,
+                        start_time=end_time,
+                        end_time=existing_segment.end_time,
+                        color=existing_color
+                    )
         
         return True
     
