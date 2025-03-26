@@ -56,10 +56,11 @@ class LLMManager(QObject):
         
         # LLM configuration
         self.enabled = app.config.get("llm", "enabled")
-        self.provider = app.config.get("llm", "provider")
-        self.api_key = app.config.get("llm", "api_key")
-        self.model = app.config.get("llm", "model")
-        self.temperature = app.config.get("llm", "temperature")
+        self.active_profile = app.config.get("llm", "active_profile", "default")
+        self.profiles = app.config.get("llm", "profiles", {})
+        
+        # Load active profile settings
+        self._load_active_profile()
         
         # Request state
         self.is_processing = False
@@ -349,6 +350,226 @@ class LLMManager(QObject):
             self.model
         )
         
+    def get_profiles(self):
+        """
+        Get all available LLM profiles.
+        
+        Returns:
+            dict: Dictionary of profile configurations.
+        """
+        return self.profiles
+        
+    def get_profile_names(self):
+        """
+        Get names of all available profiles.
+        
+        Returns:
+            list: List of profile names.
+        """
+        return list(self.profiles.keys())
+        
+    def get_active_profile(self):
+        """
+        Get the active profile name.
+        
+        Returns:
+            str: Name of the active profile.
+        """
+        return self.active_profile
+        
+    def set_active_profile(self, profile_name):
+        """
+        Set the active profile.
+        
+        Args:
+            profile_name (str): Name of the profile to activate.
+            
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if profile_name in self.profiles:
+            self.active_profile = profile_name
+            self.app.config.set("llm", "active_profile", profile_name)
+            self.app.config.save()
+            self._load_active_profile()
+            return True
+        return False
+        
+    def add_profile(self, name, provider="", api_key="", model="", temperature=0.7,
+                   max_tokens=1024, top_p=1.0, frequency_penalty=0.0, presence_penalty=0.0):
+        """
+        Add a new LLM profile.
+        
+        Args:
+            name (str): Profile name.
+            provider (str): LLM provider.
+            api_key (str): API key.
+            model (str): Model name.
+            temperature (float): Temperature parameter.
+            max_tokens (int): Maximum tokens.
+            top_p (float): Top-p parameter.
+            frequency_penalty (float): Frequency penalty.
+            presence_penalty (float): Presence penalty.
+            
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        profile_id = name.lower().replace(" ", "_")
+        
+        # Check if profile already exists
+        if profile_id in self.profiles:
+            return False
+            
+        # Create profile
+        self.profiles[profile_id] = {
+            "name": name,
+            "provider": provider,
+            "api_key": api_key,
+            "model": model,
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "top_p": top_p,
+            "frequency_penalty": frequency_penalty,
+            "presence_penalty": presence_penalty
+        }
+        
+        # Save to config
+        self.app.config.set("llm", "profiles", self.profiles)
+        self.app.config.save()
+        
+        return True
+        
+    def update_profile(self, profile_id, **kwargs):
+        """
+        Update an existing LLM profile.
+        
+        Args:
+            profile_id (str): Profile ID to update.
+            **kwargs: Profile parameters to update.
+            
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if profile_id not in self.profiles:
+            return False
+            
+        # Update profile
+        for key, value in kwargs.items():
+            if key in self.profiles[profile_id]:
+                self.profiles[profile_id][key] = value
+                
+        # Save to config
+        self.app.config.set("llm", "profiles", self.profiles)
+        self.app.config.save()
+        
+        # Reload if active profile was updated
+        if profile_id == self.active_profile:
+            self._load_active_profile()
+            
+        return True
+        
+    def delete_profile(self, profile_id):
+        """
+        Delete an LLM profile.
+        
+        Args:
+            profile_id (str): Profile ID to delete.
+            
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        if profile_id not in self.profiles or profile_id == "default":
+            # Don't allow deleting the default profile
+            return False
+            
+        # Delete profile
+        del self.profiles[profile_id]
+        
+        # If active profile was deleted, switch to default
+        if profile_id == self.active_profile:
+            self.active_profile = "default"
+            self.app.config.set("llm", "active_profile", "default")
+            self._load_active_profile()
+            
+        # Save to config
+        self.app.config.set("llm", "profiles", self.profiles)
+        self.app.config.save()
+        
+        return True
+        
+    def _load_active_profile(self):
+        """
+        Load settings from the active profile.
+        """
+        # Check if we need to migrate legacy settings
+        self._migrate_legacy_settings_if_needed()
+        
+        if self.active_profile in self.profiles:
+            profile = self.profiles[self.active_profile]
+            self.provider = profile.get("provider", "")
+            self.api_key = profile.get("api_key", "")
+            self.model = profile.get("model", "")
+            self.temperature = profile.get("temperature", 0.7)
+            self.max_tokens = profile.get("max_tokens", 1024)
+            self.top_p = profile.get("top_p", 1.0)
+            self.frequency_penalty = profile.get("frequency_penalty", 0.0)
+            self.presence_penalty = profile.get("presence_penalty", 0.0)
+            
+            # Load thinking parameters
+            self.enable_thinking = profile.get("enable_thinking", False)
+            self.thinking_budget = profile.get("thinking_budget", 1024)
+        else:
+            # Fallback to default values if profile doesn't exist
+            self.provider = ""
+            self.api_key = ""
+            self.model = ""
+            self.temperature = 0.7
+            self.max_tokens = 1024
+            self.top_p = 1.0
+            self.frequency_penalty = 0.0
+            self.presence_penalty = 0.0
+            self.enable_thinking = False
+            self.thinking_budget = 1024
+    
+    def _migrate_legacy_settings_if_needed(self):
+        """
+        Migrate legacy settings to the default profile if needed.
+        This ensures backward compatibility with existing configurations.
+        """
+        # Check if we have legacy settings that need to be migrated
+        legacy_provider = self.app.config.get("llm", "provider")
+        legacy_api_key = self.app.config.get("llm", "api_key")
+        legacy_model = self.app.config.get("llm", "model")
+        
+        # Only migrate if we have meaningful legacy settings and profiles is empty or default profile is empty
+        if (legacy_provider or legacy_api_key or legacy_model) and (
+            not self.profiles or
+            "default" not in self.profiles or
+            not self.profiles["default"].get("provider")
+        ):
+            self.logger.info("Migrating legacy LLM settings to default profile")
+            
+            # Create or update default profile with legacy settings
+            default_profile = self.profiles.get("default", {})
+            default_profile.update({
+                "name": "Default",
+                "provider": legacy_provider or "",
+                "api_key": legacy_api_key or "",
+                "model": legacy_model or "",
+                "temperature": self.app.config.get("llm", "temperature", 0.7),
+                "max_tokens": self.app.config.get("llm", "max_tokens", 1024),
+                "top_p": 1.0,
+                "frequency_penalty": 0.0,
+                "presence_penalty": 0.0
+            })
+            
+            # Update profiles
+            self.profiles["default"] = default_profile
+            
+            # Save to config
+            self.app.config.set("llm", "profiles", self.profiles)
+            self.app.config.save()
+            
     def reload_configuration(self):
         """
         Reload configuration from the application config.
@@ -356,10 +577,9 @@ class LLMManager(QObject):
         """
         self.logger.info("Reloading LLM configuration")
         self.enabled = self.app.config.get("llm", "enabled")
-        self.provider = self.app.config.get("llm", "provider")
-        self.api_key = self.app.config.get("llm", "api_key")
-        self.model = self.app.config.get("llm", "model")
-        self.temperature = self.app.config.get("llm", "temperature")
+        self.active_profile = self.app.config.get("llm", "active_profile", "default")
+        self.profiles = self.app.config.get("llm", "profiles", {})
+        self._load_active_profile()
     
     def _get_available_functions(self):
         """
@@ -921,6 +1141,7 @@ class LLMManager(QObject):
                     "Then I'll execute the function and provide you with the results."
                 )
             
+            # Prepare base request data
             data = {
                 "model": self.model,
                 "system": system_message,
@@ -930,6 +1151,14 @@ class LLMManager(QObject):
                 "temperature": temperature,
                 "max_tokens": max_tokens
             }
+            
+            # Add thinking parameters if enabled
+            if hasattr(self, 'enable_thinking') and self.enable_thinking:
+                self.logger.info("Enabling Anthropic extended thinking")
+                data["thinking"] = {
+                    "type": "enabled",
+                    "budget_tokens": self.thinking_budget
+                }
             
             # Send request
             response = requests.post(url, headers=headers, json=data, timeout=60)
@@ -1073,7 +1302,26 @@ class LLMManager(QObject):
             if self.provider == "openai":
                 return response["choices"][0]["message"]["content"]
             elif self.provider == "anthropic":
-                return response["content"][0]["text"]
+                # Check if response has content blocks
+                if "content" in response:
+                    # Handle new Anthropic API format with content blocks
+                    text_blocks = []
+                    thinking_blocks = []
+                    
+                    for block in response["content"]:
+                        if block["type"] == "text":
+                            text_blocks.append(block["text"])
+                        elif block["type"] == "thinking" and hasattr(self, 'enable_thinking') and self.enable_thinking:
+                            thinking_blocks.append(f"[Thinking]\n{block['thinking']}\n[/Thinking]\n\n")
+                    
+                    # If thinking is enabled and we have thinking blocks, prepend them to the text
+                    if hasattr(self, 'enable_thinking') and self.enable_thinking and thinking_blocks:
+                        return "".join(thinking_blocks) + "".join(text_blocks)
+                    else:
+                        return "".join(text_blocks)
+                else:
+                    # Handle old format for backward compatibility
+                    return response["content"][0]["text"]
             else:
                 return "Unsupported provider"
         

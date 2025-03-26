@@ -80,12 +80,13 @@ class LLMChatWindow(QWidget):
         
         self.header_layout.addStretch()
         
-        # Create preset selection
-        self.preset_label = QLabel("Preset:")
+        # Create profile selection
+        self.preset_label = QLabel("LLM Profile:")
+        self.preset_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         self.header_layout.addWidget(self.preset_label)
         
         self.preset_combo = QComboBox()
-        self.preset_combo.addItem("Default")
+        self.preset_combo.setMinimumWidth(200)  # Make the dropdown wider
         self.preset_combo.currentIndexChanged.connect(self._on_preset_changed)
         self.header_layout.addWidget(self.preset_combo)
         
@@ -229,33 +230,32 @@ class LLMChatWindow(QWidget):
             # Update the chat history display
             self._update_chat_history()
             
-            # Load presets and templates
-            self._load_presets()
+            # Load templates
             self._load_templates()
     
     def _load_presets(self):
-        """Load LLM presets from the current project."""
-        if self.app.project_manager.current_project:
-            # Clear preset combo
-            self.preset_combo.clear()
+        """Load LLM profiles from the LLM manager."""
+        # Clear preset combo
+        self.preset_combo.clear()
+        
+        # Get profiles from LLM manager
+        profiles = self.app.llm_manager.get_profiles()
+        active_profile = self.app.llm_manager.get_active_profile()
+        
+        # Add each profile to the combo
+        for profile_id, profile in profiles.items():
+            profile_name = profile.get("name", profile_id)
+            provider = profile.get("provider", "").capitalize()
+            model = profile.get("model", "")
             
-            # Add default preset
-            self.preset_combo.addItem("Default")
-            
-            # Get presets from project
-            presets_data = getattr(self.app.project_manager.current_project, "llm_presets", [])
-            
-            # Add presets to combo box
-            for preset_data in presets_data:
-                name = preset_data.get("name", "Unnamed")
-                if name != "Default":  # Skip default preset as it's already added
-                    self.preset_combo.addItem(name)
-            
-            # Set active preset
-            active_preset = getattr(self.app.project_manager.current_project, "llm_active_preset", "Default")
-            index = self.preset_combo.findText(active_preset)
-            if index >= 0:
-                self.preset_combo.setCurrentIndex(index)
+            display_text = f"{profile_name} ({provider} - {model})"
+            self.preset_combo.addItem(display_text, profile_id)
+        
+        # Set current index to active profile
+        for i in range(self.preset_combo.count()):
+            if self.preset_combo.itemData(i) == active_profile:
+                self.preset_combo.setCurrentIndex(i)
+                break
     
     def _load_templates(self):
         """Load LLM task templates from the current project."""
@@ -321,19 +321,19 @@ class LLMChatWindow(QWidget):
     
     def _on_preset_changed(self, index):
         """
-        Handle preset selection change.
+        Handle profile selection change.
         
         Args:
             index (int): Selected index.
         """
         if index >= 0 and self.preset_combo.count() > 0:
-            preset_name = self.preset_combo.itemText(index)
-            self.logger.info(f"Selected preset: {preset_name}")
+            profile_id = self.preset_combo.itemData(index)
+            profile_name = self.preset_combo.itemText(index)
+            self.logger.info(f"Selected profile: {profile_name} (ID: {profile_id})")
             
-            # Update active preset in project
-            if self.app.project_manager.current_project:
-                self.app.project_manager.current_project.llm_active_preset = preset_name
-                self.app.project_manager.project_changed.emit()
+            # Set active profile in LLM manager
+            if profile_id:
+                self.app.llm_manager.set_active_profile(profile_id)
     
     def _on_template_changed(self, index):
         """
@@ -366,6 +366,9 @@ class LLMChatWindow(QWidget):
     
     def _check_llm_configuration(self):
         """Check if LLM is configured."""
+        # Load profiles
+        self._load_presets()
+        
         if not self.app.llm_manager.is_configured():
             # Show warning
             QMessageBox.warning(
@@ -697,8 +700,25 @@ class LLMChatWindow(QWidget):
             # Reset text color
             self.chat_history_text.setTextColor(QColor(0, 0, 0))  # Black
             
-            # Add message
-            self.chat_history_text.append(message)
+            # Check if message contains thinking content
+            if "[Thinking]" in message and "[/Thinking]" in message:
+                # Split message into thinking and regular content
+                parts = message.split("[/Thinking]", 1)
+                thinking_part = parts[0] + "[/Thinking]"
+                regular_part = parts[1].strip() if len(parts) > 1 else ""
+                
+                # Format thinking content with a different style
+                self.chat_history_text.setTextColor(QColor(128, 128, 128))  # Gray
+                self.chat_history_text.append(thinking_part)
+                
+                # Format regular content normally
+                self.chat_history_text.setTextColor(QColor(0, 0, 0))  # Black
+                if regular_part:
+                    self.chat_history_text.append(regular_part)
+            else:
+                # Add message normally
+                self.chat_history_text.append(message)
+            
             self.chat_history_text.append("")  # Empty line
         
         # Scroll to bottom

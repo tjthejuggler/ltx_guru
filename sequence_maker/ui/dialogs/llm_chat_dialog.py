@@ -76,13 +76,16 @@ class LLMChatDialog(QDialog):
         
         self.header_layout.addStretch()
         
-        # Create model selection
-        self.model_label = QLabel("Model:")
-        self.header_layout.addWidget(self.model_label)
+        # Create profile selection with a more visible label
+        self.profile_label = QLabel("LLM Profile:")
+        self.profile_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        self.header_layout.addWidget(self.profile_label)
         
-        self.model_combo = QComboBox()
-        self.model_combo.addItem("Default")
-        self.header_layout.addWidget(self.model_combo)
+        self.profile_combo = QComboBox()
+        self.profile_combo.setMinimumWidth(200)  # Make the dropdown wider
+        self.profile_combo.currentIndexChanged.connect(self._on_profile_changed)
+        self._populate_profile_combo()
+        self.header_layout.addWidget(self.profile_combo)
         
         # Add confirmation mode selection
         self.confirmation_mode_label = QLabel("Confirmation Mode:")
@@ -170,6 +173,42 @@ class LLMChatDialog(QDialog):
         # Populate timeline list
         self._populate_timeline_list()
     
+    def _populate_profile_combo(self):
+        """Populate the profile combo box with available profiles."""
+        # Clear combo
+        self.profile_combo.clear()
+        
+        # Get profiles from LLM manager
+        profiles = self.app.llm_manager.get_profiles()
+        active_profile = self.app.llm_manager.get_active_profile()
+        
+        # Add each profile to the combo
+        for profile_id, profile in profiles.items():
+            profile_name = profile.get("name", profile_id)
+            provider = profile.get("provider", "").capitalize()
+            model = profile.get("model", "")
+            
+            display_text = f"{profile_name} ({provider} - {model})"
+            self.profile_combo.addItem(display_text, profile_id)
+            
+        # Set current index to active profile
+        for i in range(self.profile_combo.count()):
+            if self.profile_combo.itemData(i) == active_profile:
+                self.profile_combo.setCurrentIndex(i)
+                break
+    
+    def _on_profile_changed(self, index):
+        """
+        Handle profile selection change.
+        
+        Args:
+            index (int): Selected index.
+        """
+        if index >= 0:
+            profile_id = self.profile_combo.itemData(index)
+            self.app.llm_manager.set_active_profile(profile_id)
+            self.logger.info(f"Active LLM profile changed to: {profile_id}")
+    
     def _populate_timeline_list(self):
         """Populate the timeline list."""
         # Clear list
@@ -250,6 +289,9 @@ class LLMChatDialog(QDialog):
     
     def _check_llm_configuration(self):
         """Check if LLM is configured."""
+        # Refresh profile combo
+        self._populate_profile_combo()
+        
         if not self.app.llm_manager.is_configured():
             # Show warning
             QMessageBox.warning(
@@ -302,6 +344,12 @@ class LLMChatDialog(QDialog):
         
         # Get confirmation mode
         confirmation_mode = self.confirmation_mode_combo.currentData()
+        
+        # Get selected profile
+        profile_id = self.profile_combo.currentData()
+        if profile_id:
+            # Temporarily set the active profile for this request
+            self.app.llm_manager.set_active_profile(profile_id)
         
         # Send request to LLM
         self.app.llm_manager.send_request(message, system_message, confirmation_mode=confirmation_mode)
@@ -456,8 +504,25 @@ class LLMChatDialog(QDialog):
             # Reset text color
             self.chat_history_text.setTextColor(QColor(0, 0, 0))  # Black
             
-            # Add message
-            self.chat_history_text.append(message)
+            # Check if message contains thinking content
+            if "[Thinking]" in message and "[/Thinking]" in message:
+                # Split message into thinking and regular content
+                parts = message.split("[/Thinking]", 1)
+                thinking_part = parts[0] + "[/Thinking]"
+                regular_part = parts[1].strip() if len(parts) > 1 else ""
+                
+                # Format thinking content with a different style
+                self.chat_history_text.setTextColor(QColor(128, 128, 128))  # Gray
+                self.chat_history_text.append(thinking_part)
+                
+                # Format regular content normally
+                self.chat_history_text.setTextColor(QColor(0, 0, 0))  # Black
+                if regular_part:
+                    self.chat_history_text.append(regular_part)
+            else:
+                # Add message normally
+                self.chat_history_text.append(message)
+            
             self.chat_history_text.append("")  # Empty line
         
         # Scroll to bottom

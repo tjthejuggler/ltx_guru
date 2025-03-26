@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import (
     QComboBox, QColorDialog, QPushButton, QFormLayout,
     QDialogButtonBox, QGroupBox, QSlider
 )
+from ui.dialogs.llm_profiles_dialog import LLMProfilesDialog
 from PyQt6.QtCore import Qt, QSettings
 from PyQt6.QtGui import QColor
 
@@ -237,48 +238,48 @@ class SettingsDialog(QDialog):
         self.llm_enabled_check = QCheckBox("Enable LLM Integration")
         self.general_llm_layout.addRow(self.llm_enabled_check)
         
-        self.llm_provider_combo = QComboBox()
-        self.llm_provider_combo.addItems(["OpenAI", "Anthropic", "Local"])
-        self.llm_provider_combo.currentTextChanged.connect(self._on_llm_provider_changed)
-        self.general_llm_layout.addRow("Provider:", self.llm_provider_combo)
+        # Add profiles section
+        profiles_layout = QHBoxLayout()
         
-        self.llm_api_key_edit = QLineEdit()
-        self.llm_api_key_edit.setEchoMode(QLineEdit.EchoMode.Password)
-        self.general_llm_layout.addRow("API Key:", self.llm_api_key_edit)
+        self.active_profile_label = QLabel("No active profile")
+        profiles_layout.addWidget(self.active_profile_label)
         
-        self.llm_model_edit = QLineEdit()
-        self.general_llm_layout.addRow("Model:", self.llm_model_edit)
+        self.manage_profiles_button = QPushButton("Manage Profiles")
+        self.manage_profiles_button.clicked.connect(self._on_manage_profiles_clicked)
+        profiles_layout.addWidget(self.manage_profiles_button)
         
-        self.llm_local_endpoint_edit = QLineEdit()
-        self.llm_local_endpoint_edit.setPlaceholderText("http://localhost:8000/v1/completions")
-        self.general_llm_layout.addRow("Local Endpoint:", self.llm_local_endpoint_edit)
+        self.general_llm_layout.addRow("Profiles:", profiles_layout)
+        
+        # Add a note about profiles
+        note_label = QLabel(
+            "Note: All LLM settings are now managed through profiles. "
+            "Click 'Manage Profiles' to create, edit, or activate profiles."
+        )
+        note_label.setWordWrap(True)
+        self.general_llm_layout.addRow(note_label)
         
         self.llm_layout.addWidget(general_llm_group)
         
-        # Create model parameters group
-        model_params_group = QGroupBox("Model Parameters")
-        model_params_layout = QFormLayout(model_params_group)
-        
-        self.llm_temperature_spin = QDoubleSpinBox()
-        self.llm_temperature_spin.setRange(0.0, 2.0)
-        self.llm_temperature_spin.setSingleStep(0.1)
-        self.llm_temperature_spin.setValue(0.7)
-        model_params_layout.addRow("Temperature:", self.llm_temperature_spin)
-        
-        self.llm_max_tokens_spin = QSpinBox()
-        self.llm_max_tokens_spin.setRange(100, 8000)
-        self.llm_max_tokens_spin.setSingleStep(100)
-        self.llm_max_tokens_spin.setValue(1000)
-        model_params_layout.addRow("Max Tokens:", self.llm_max_tokens_spin)
-        
         # Add presets button
-        presets_button_layout = QHBoxLayout()
+        presets_layout = QHBoxLayout()
         self.manage_presets_button = QPushButton("Manage Presets")
         self.manage_presets_button.clicked.connect(self._on_manage_presets_clicked)
-        presets_button_layout.addWidget(self.manage_presets_button)
-        model_params_layout.addRow("Presets:", presets_button_layout)
+        presets_layout.addWidget(self.manage_presets_button)
         
-        self.llm_layout.addWidget(model_params_group)
+        # Add to main layout
+        presets_group = QGroupBox("Task Presets")
+        presets_group_layout = QFormLayout(presets_group)
+        presets_group_layout.addRow("Manage task presets:", presets_layout)
+        
+        # Add a note about presets
+        presets_note = QLabel(
+            "Task presets provide templates for common LLM tasks. "
+            "Use them to quickly generate sequences based on predefined patterns."
+        )
+        presets_note.setWordWrap(True)
+        presets_group_layout.addRow(presets_note)
+        
+        self.llm_layout.addWidget(presets_group)
         
         # Create user interface group
         ui_group = QGroupBox("User Interface")
@@ -362,15 +363,8 @@ class SettingsDialog(QDialog):
         # LLM settings
         self.llm_enabled_check.setChecked(self.app.config.get("llm", "enabled"))
         
-        provider = self.app.config.get("llm", "provider")
-        if provider:
-            self.llm_provider_combo.setCurrentText(provider.capitalize())
-        
-        self.llm_api_key_edit.setText(self.app.config.get("llm", "api_key"))
-        self.llm_model_edit.setText(self.app.config.get("llm", "model"))
-        self.llm_temperature_spin.setValue(self.app.config.get("llm", "temperature"))
-        self.llm_max_tokens_spin.setValue(self.app.config.get("llm", "max_tokens", 1000))
-        self.llm_local_endpoint_edit.setText(self.app.config.get("llm", "local_endpoint", ""))
+        # Update active profile display
+        self._update_active_profile_display()
         
         # Set confirmation mode
         confirmation_mode = self.app.config.get("llm", "confirmation_mode", "full_confirmation")
@@ -386,8 +380,7 @@ class SettingsDialog(QDialog):
             self.llm_token_usage_label.setText(f"{tokens} tokens used")
             self.llm_cost_label.setText(f"${cost:.2f}")
         
-        # Update visibility based on provider
-        self._on_llm_provider_changed(self.llm_provider_combo.currentText())
+        # No need to update visibility since we removed the provider combo
     
     def _save_settings(self):
         """Save settings to the application configuration."""
@@ -429,12 +422,6 @@ class SettingsDialog(QDialog):
         
         # LLM settings
         self.app.config.set("llm", "enabled", self.llm_enabled_check.isChecked())
-        self.app.config.set("llm", "provider", self.llm_provider_combo.currentText().lower())
-        self.app.config.set("llm", "api_key", self.llm_api_key_edit.text())
-        self.app.config.set("llm", "model", self.llm_model_edit.text())
-        self.app.config.set("llm", "temperature", self.llm_temperature_spin.value())
-        self.app.config.set("llm", "max_tokens", self.llm_max_tokens_spin.value())
-        self.app.config.set("llm", "local_endpoint", self.llm_local_endpoint_edit.text())
         self.app.config.set("llm", "confirmation_mode", self.llm_confirmation_mode_combo.currentText().lower().replace(" ", "_"))
         
         # Save configuration
@@ -490,30 +477,7 @@ class SettingsDialog(QDialog):
                 f"background-color: rgb({color.red()}, {color.green()}, {color.blue()})"
             )
     
-    def _on_llm_provider_changed(self, provider):
-        """
-        Handle LLM provider change.
-        
-        Args:
-            provider (str): Selected provider.
-        """
-        # Show/hide API key field based on provider
-        show_api_key = provider != "Local"
-        self.llm_api_key_edit.setVisible(show_api_key)
-        self.general_llm_layout.labelForField(self.llm_api_key_edit).setVisible(show_api_key)
-        
-        # Show/hide local endpoint field based on provider
-        show_local_endpoint = provider == "Local"
-        self.llm_local_endpoint_edit.setVisible(show_local_endpoint)
-        self.general_llm_layout.labelForField(self.llm_local_endpoint_edit).setVisible(show_local_endpoint)
-        
-        # Update model field placeholder based on provider
-        if provider == "OpenAI":
-            self.llm_model_edit.setPlaceholderText("gpt-4-turbo")
-        elif provider == "Anthropic":
-            self.llm_model_edit.setPlaceholderText("claude-3-opus-20240229")
-        else:  # Local
-            self.llm_model_edit.setPlaceholderText("local-model")
+    # Removed _on_llm_provider_changed method as it's no longer needed
     
     def _on_reset_usage_clicked(self):
         """Handle Reset Usage Statistics button click."""
@@ -524,6 +488,29 @@ class SettingsDialog(QDialog):
             # Update labels
             self.llm_token_usage_label.setText("0 tokens used")
             self.llm_cost_label.setText("$0.00")
+    
+    def _on_manage_profiles_clicked(self):
+        """Handle Manage Profiles button click."""
+        dialog = LLMProfilesDialog(self.app, self)
+        dialog.exec()
+        
+        # Update active profile display
+        self._update_active_profile_display()
+    
+    def _update_active_profile_display(self):
+        """Update the active profile display."""
+        active_profile_id = self.app.llm_manager.get_active_profile()
+        profiles = self.app.llm_manager.get_profiles()
+        
+        if active_profile_id in profiles:
+            profile = profiles[active_profile_id]
+            profile_name = profile.get("name", active_profile_id)
+            provider = profile.get("provider", "").capitalize()
+            model = profile.get("model", "")
+            
+            self.active_profile_label.setText(f"Active: {profile_name} ({provider} - {model})")
+        else:
+            self.active_profile_label.setText("No active profile")
     
     def _on_manage_presets_clicked(self):
         """Handle Manage Presets button click."""

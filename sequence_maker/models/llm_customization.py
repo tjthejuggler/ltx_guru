@@ -12,7 +12,9 @@ from datetime import datetime
 class LLMPreset:
     """Class representing an LLM configuration preset."""
     
-    def __init__(self, name, provider, model, temperature, max_tokens, top_p=1.0, frequency_penalty=0.0, presence_penalty=0.0):
+    def __init__(self, name, provider, model, temperature, max_tokens, top_p=1.0,
+                 frequency_penalty=0.0, presence_penalty=0.0, enable_thinking=False,
+                 thinking_budget=1024):
         """
         Initialize the LLM preset.
         
@@ -25,6 +27,8 @@ class LLMPreset:
             top_p (float, optional): Top-p parameter. Default is 1.0.
             frequency_penalty (float, optional): Frequency penalty parameter. Default is 0.0.
             presence_penalty (float, optional): Presence penalty parameter. Default is 0.0.
+            enable_thinking (bool, optional): Whether to enable Anthropic's extended thinking. Default is False.
+            thinking_budget (int, optional): Token budget for Anthropic's extended thinking. Default is 1024.
         """
         self.name = name
         self.provider = provider
@@ -34,6 +38,8 @@ class LLMPreset:
         self.top_p = top_p
         self.frequency_penalty = frequency_penalty
         self.presence_penalty = presence_penalty
+        self.enable_thinking = enable_thinking
+        self.thinking_budget = thinking_budget
     
     def to_dict(self):
         """Convert preset to dictionary."""
@@ -45,7 +51,9 @@ class LLMPreset:
             "max_tokens": self.max_tokens,
             "top_p": self.top_p,
             "frequency_penalty": self.frequency_penalty,
-            "presence_penalty": self.presence_penalty
+            "presence_penalty": self.presence_penalty,
+            "enable_thinking": self.enable_thinking,
+            "thinking_budget": self.thinking_budget
         }
     
     @classmethod
@@ -59,7 +67,9 @@ class LLMPreset:
             max_tokens=data.get("max_tokens", 1024),
             top_p=data.get("top_p", 1.0),
             frequency_penalty=data.get("frequency_penalty", 0.0),
-            presence_penalty=data.get("presence_penalty", 0.0)
+            presence_penalty=data.get("presence_penalty", 0.0),
+            enable_thinking=data.get("enable_thinking", False),
+            thinking_budget=data.get("thinking_budget", 1024)
         )
 
 

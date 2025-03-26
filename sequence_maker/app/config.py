@@ -88,7 +88,21 @@ class Config:
             "provider": "",
             "api_key": "",
             "model": "",
-            "temperature": 0.7
+            "temperature": 0.7,
+            "active_profile": "default",
+            "profiles": {
+                "default": {
+                    "name": "Default",
+                    "provider": "",
+                    "api_key": "",
+                    "model": "",
+                    "temperature": 0.7,
+                    "max_tokens": 1024,
+                    "top_p": 1.0,
+                    "frequency_penalty": 0.0,
+                    "presence_penalty": 0.0
+                }
+            }
         },
         "ui": {
             "theme": "system",
