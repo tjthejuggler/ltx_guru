@@ -44,7 +44,7 @@ def on_open(main_window):
 def on_save(main_window):
     """Handle the 'Save' action."""
     # If project has no path, prompt for save location
-    if not main_window.app.project_manager.project_path:
+    if not main_window.app.project_manager.current_project or not main_window.app.project_manager.current_project.file_path:
         return on_save_as(main_window)
     
     try:
