@@ -100,3 +100,95 @@ def test_send_with_functions(qtbot, app_fixture, mocker):
     args, kwargs = app_fixture.llm_manager.send_request.call_args
     assert kwargs.get('use_functions') is True
     assert kwargs.get('stream') is True
+
+
+def test_create_segment_for_word_function(qtbot, app_fixture, mocker):
+    """Test the create_segment_for_word orchestrator function."""
+    # Create mock word timestamps result
+    word_timestamps_result = {
+        "success": True,
+        "word_timestamps": [
+            {
+                "word": "test",
+                "start": 1.0,
+                "end": 1.5,
+                "duration": 0.5,
+                "formatted_start": "00:01.00",
+                "formatted_end": "00:01.50"
+            },
+            {
+                "word": "test",
+                "start": 5.0,
+                "end": 5.5,
+                "duration": 0.5,
+                "formatted_start": "00:05.00",
+                "formatted_end": "00:05.50"
+            }
+        ],
+        "count": 2
+    }
+    
+    # Mock the _handle_get_word_timestamps method to return our test data
+    mocker.patch.object(
+        app_fixture.llm_manager,
+        '_handle_get_word_timestamps',
+        return_value=word_timestamps_result
+    )
+    
+    # Mock the timeline_action_api.create_segment method
+    mocker.patch.object(
+        app_fixture.timeline_action_api,
+        'create_segment',
+        return_value={"success": True, "segment": {"start_time": 1.0, "end_time": 1.5, "color": [0, 0, 255]}}
+    )
+    
+    # Mock the timeline_manager to have 3 timelines
+    mocker.patch.object(app_fixture.timeline_manager, 'timelines', [mocker.MagicMock(), mocker.MagicMock(), mocker.MagicMock()])
+    mocker.patch.object(app_fixture.timeline_manager, 'get_timeline', return_value=mocker.MagicMock())
+    
+    # Create parameters for the function
+    parameters = {
+        "word": "test",
+        "color": "blue",
+        "balls": "all"
+    }
+    
+    # Call the function
+    result = app_fixture.llm_manager._handle_create_segment_for_word(parameters)
+    
+    # Check the result
+    assert result["success"] is True
+    assert "Created 6 segment(s)" in result["message"]  # 2 occurrences × 3 balls = 6 segments
+    assert len(result["details"]) == 6
+    
+    # Check that get_word_timestamps was called with the correct parameters
+    app_fixture.llm_manager._handle_get_word_timestamps.assert_called_once_with({"word": "test"})
+    
+    # Check that create_segment was called for each occurrence and each ball
+    assert app_fixture.timeline_action_api.create_segment.call_count == 6
+    
+    # Test with color as RGB array
+    parameters = {
+        "word": "test",
+        "color": [255, 0, 0],
+        "balls": [0, 1]  # Only apply to first two balls
+    }
+    
+    # Reset mocks
+    app_fixture.llm_manager._handle_get_word_timestamps.reset_mock()
+    app_fixture.timeline_action_api.create_segment.reset_mock()
+    
+    # Call the function again
+    result = app_fixture.llm_manager._handle_create_segment_for_word(parameters)
+    
+    # Check the result
+    assert result["success"] is True
+    assert "Created 4 segment(s)" in result["message"]  # 2 occurrences × 2 balls = 4 segments
+    assert len(result["details"]) == 4
+    
+    # Check that create_segment was called with the correct parameters
+    first_call_args = app_fixture.timeline_action_api.create_segment.call_args_list[0][0][0]
+    assert first_call_args["timeline_index"] == 0
+    assert first_call_args["start_time"] == 1.0
+    assert first_call_args["end_time"] == 1.5
+    assert first_call_args["color"] == [255, 0, 0]

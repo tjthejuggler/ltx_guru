@@ -92,8 +92,64 @@ class LLMManager(QObject):
         self.register_action_handler("get_word_timestamps", self._handle_get_word_timestamps)
         self.register_action_handler("find_first_word", self._handle_find_first_word)
         
+        # Register orchestrator function handlers
+        self.register_action_handler("create_segment_for_word", self._handle_create_segment_for_word)
+        
         # Function definitions
         self.timeline_functions = [
+            {
+                "name": "create_segment_for_word",
+                "description": "Creates color segments on specified juggling balls precisely during the occurrences of a specific word in the song lyrics",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "word": {
+                            "type": "string",
+                            "description": "The word in the lyrics to synchronize the color change to"
+                        },
+                        "color": {
+                            "oneOf": [
+                                {
+                                    "type": "array",
+                                    "description": "RGB color values (0-255)",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "maximum": 255
+                                    },
+                                    "minItems": 3,
+                                    "maxItems": 3
+                                },
+                                {
+                                    "type": "string",
+                                    "description": "Color name (e.g., 'red', 'green', 'blue', etc.)"
+                                }
+                            ],
+                            "description": "The RGB color ([R, G, B]) or color name for the segment"
+                        },
+                        "balls": {
+                            "oneOf": [
+                                {
+                                    "type": "array",
+                                    "description": "List of ball indices",
+                                    "items": {
+                                        "type": "integer",
+                                        "minimum": 0
+                                    }
+                                },
+                                {
+                                    "type": "string",
+                                    "enum": ["all"],
+                                    "description": "Apply to all balls"
+                                }
+                            ],
+                            "description": "A list of ball indices or 'all' to apply the segment to"
+                        }
+                    },
+                    "required": ["word", "color"],
+                    "additionalProperties": False
+                }
+            },
             {
                 "name": "create_segment",
                 "description": "Create a new segment in a timeline",
@@ -2035,6 +2091,150 @@ class LLMManager(QObject):
             return result
         except Exception as e:
             self.logger.error(f"Error finding first word: {e}")
+            return {"success": False, "error": str(e)}
+    
+    def _resolve_color_name(self, color_input):
+        """
+        Resolve a color name or RGB array to an RGB tuple.
+        
+        Args:
+            color_input (str or list): Color name or RGB array.
+            
+        Returns:
+            tuple: RGB color tuple, or None if invalid.
+        """
+        # If it's already an RGB array, convert to tuple and return
+        if isinstance(color_input, list) and len(color_input) == 3:
+            # Ensure values are integers in range 0-255
+            return tuple(max(0, min(255, int(c))) for c in color_input)
+            
+        # If it's a string, look up the color name
+        if isinstance(color_input, str):
+            color_map = {
+                "red": (255, 0, 0),
+                "green": (0, 255, 0),
+                "blue": (0, 0, 255),
+                "yellow": (255, 255, 0),
+                "cyan": (0, 255, 255),
+                "magenta": (255, 0, 255),
+                "purple": (128, 0, 128),
+                "orange": (255, 165, 0),
+                "pink": (255, 192, 203),
+                "white": (255, 255, 255),
+                "black": (0, 0, 0),
+                "gray": (128, 128, 128),
+                "brown": (165, 42, 42)
+            }
+            return color_map.get(color_input.lower())
+            
+        # Invalid input
+        return None
+        
+    def _handle_create_segment_for_word(self, parameters):
+        """
+        Handle the create_segment_for_word function call.
+        
+        This is a higher-level orchestrator function that:
+        1. Finds all occurrences of a word in the lyrics
+        2. Creates color segments for each occurrence on the specified balls
+        
+        Args:
+            parameters (dict): Function parameters.
+                - word (str): The word to find in the lyrics.
+                - color (list or str): RGB color values or color name.
+                - balls (list or str, optional): Ball indices or 'all'. Defaults to 'all'.
+                
+        Returns:
+            dict: Result of the operation.
+        """
+        self.logger.info("_handle_create_segment_for_word called with parameters: %s", parameters)
+        
+        try:
+            # Save state for undo
+            if self.app.undo_manager:
+                self.app.undo_manager.save_state("llm_create_segment_for_word")
+            
+            # Extract parameters
+            word = parameters.get("word")
+            color_input = parameters.get("color")
+            balls_input = parameters.get("balls", "all")
+            
+            # Validate parameters
+            if not word:
+                return {"success": False, "error": "Missing required parameter: word"}
+                
+            if not color_input:
+                return {"success": False, "error": "Missing required parameter: color"}
+                
+            # Step 1: Resolve the color
+            rgb_color = self._resolve_color_name(color_input)
+            if rgb_color is None:
+                return {"success": False, "error": f"Invalid color specified: {color_input}"}
+                
+            # Step 2: Determine target balls
+            if balls_input == "all":
+                # Get all timelines (balls)
+                timelines = self.app.timeline_manager.get_timelines()
+                target_balls = list(range(len(timelines)))
+            elif isinstance(balls_input, list):
+                target_balls = balls_input
+            else:
+                return {"success": False, "error": "Invalid 'balls' parameter. Use 'all' or a list of indices."}
+                
+            # Step 3: Get word timestamps using the existing handler
+            timestamp_result = self._handle_get_word_timestamps({"word": word})
+            
+            if not timestamp_result.get("success"):
+                return {"success": False, "error": f"Could not find timestamps for the word '{word}': {timestamp_result.get('error')}"}
+                
+            word_timestamps = timestamp_result.get("word_timestamps", [])
+            if not word_timestamps:
+                return {"success": False, "error": f"No occurrences of the word '{word}' found in the lyrics"}
+                
+            # Step 4: Create segments for each occurrence and each ball
+            results = []
+            
+            for ball_index in target_balls:
+                # Verify the ball/timeline exists
+                timeline = self.app.timeline_manager.get_timeline(ball_index)
+                if not timeline:
+                    self.logger.warning(f"Timeline {ball_index} not found, skipping")
+                    continue
+                    
+                for ts_info in word_timestamps:
+                    start_time = ts_info["start"]
+                    end_time = ts_info["end"]
+                    
+                    # Create segment using the timeline action API
+                    segment_params = {
+                        "timeline_index": ball_index,
+                        "start_time": start_time,
+                        "end_time": end_time,
+                        "color": list(rgb_color)
+                    }
+                    
+                    segment_result = self.app.main_window.timeline_action_api.create_segment(segment_params)
+                    
+                    results.append({
+                        "ball": ball_index,
+                        "start": start_time,
+                        "end": end_time,
+                        "result": segment_result
+                    })
+            
+            # Check if all segments were created successfully
+            all_successful = all(r["result"].get("success", False) for r in results)
+            
+            return {
+                "success": all_successful,
+                "message": f"Created {len(results)} segment(s) for the word '{word}' across {len(target_balls)} balls.",
+                "details": results
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error creating segments for word: {e}")
+            import traceback
+            self.logger.error(traceback.format_exc())
             return {"success": False, "error": str(e)}
     
     def _format_time(self, seconds):
