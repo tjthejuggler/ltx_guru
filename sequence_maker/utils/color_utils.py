@@ -279,3 +279,53 @@ def get_color_name(color):
     
     # Return RGB values
     return f"RGB({color[0]}, {color[1]}, {color[2]})"
+
+
+def resolve_color_name(color_name):
+    """
+    Resolve a color name to RGB values.
+    
+    Args:
+        color_name (str): Color name.
+    
+    Returns:
+        list: RGB values.
+    """
+    # Define common colors
+    color_map = {
+        "red": [255, 0, 0],
+        "orange": [255, 165, 0],
+        "yellow": [255, 255, 0],
+        "green": [0, 255, 0],
+        "cyan": [0, 255, 255],
+        "blue": [0, 0, 255],
+        "purple": [128, 0, 128],
+        "pink": [255, 0, 255],
+        "magenta": [255, 0, 255],
+        "white": [255, 255, 255],
+        "black": [0, 0, 0],
+        "gray": [128, 128, 128],
+        "grey": [128, 128, 128],
+        "brown": [165, 42, 42],
+        "lime": [0, 255, 0],
+        "navy": [0, 0, 128],
+        "teal": [0, 128, 128],
+        "olive": [128, 128, 0],
+        "maroon": [128, 0, 0],
+        "aqua": [0, 255, 255],
+        "silver": [192, 192, 192],
+        "gold": [255, 215, 0]
+    }
+    
+    # Convert to lowercase for case-insensitive matching
+    color_name_lower = color_name.lower()
+    
+    # Check if color name is in the map
+    if color_name_lower in color_map:
+        return color_map[color_name_lower]
+    
+    # Log warning for unknown color
+    logger.warning(f"Unknown color name: {color_name}, defaulting to white")
+    
+    # Default to white for unknown colors
+    return [255, 255, 255]
