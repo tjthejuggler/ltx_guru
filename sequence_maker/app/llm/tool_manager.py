@@ -694,13 +694,18 @@ class LLMToolManager:
                 if not timeline:
                     continue
                 
-                # Create segment
-                segment = timeline_manager.add_segment(
-                    timeline,
-                    start_time,
-                    end_time,
+                # Set the position to the start time
+                timeline_manager.set_position(start_time)
+                
+                # Create segment using add_color_at_position which handles overlapping segments
+                segment = timeline_manager.add_color_at_position(
+                    ball_index,
                     color
                 )
+                
+                # Set the end time of the segment
+                if segment:
+                    segment.end_time = end_time
                 
                 segments_created.append({
                     "ball_index": ball_index,
