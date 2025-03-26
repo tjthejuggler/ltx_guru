@@ -308,6 +308,9 @@ class AudioManager(QObject):
         # Record start time for position tracking
         self._start_time = time.time()
         
+        # Initialize current sample position
+        self._current_sample = int(self.position * self.sample_rate) if self.audio_data is not None else 0
+        
         if AUDIO_AVAILABLE and self.audio_data is not None:
             # Start audio playback thread
             self.playback_thread = threading.Thread(
@@ -602,11 +605,17 @@ class AudioManager(QObject):
             # Get project total duration
             total_duration = 60  # Default to 60 seconds
             if self.app.project_manager.current_project:
-                total_duration = self.app.project_manager.current_project.total_duration
+                if isinstance(self.app.project_manager.current_project, bool):
+                    # Handle the case where current_project is a boolean
+                    total_duration = 60
+                else:
+                    total_duration = self.app.project_manager.current_project.total_duration
             
             # Use the start time set in the play method
             if not hasattr(self, '_start_time'):
                 self._start_time = time.time()
+            
+            self.logger.info(f"Starting position update worker at position {start_position:.2f}s")
             
             # Update position until stopped or reached the end
             while not self.playback_stop_event.is_set() and self.position < total_duration:
@@ -618,6 +627,13 @@ class AudioManager(QObject):
                     
                     # Emit position signal
                     self.position_changed.emit(self.position)
+                    
+                    # Directly update timeline manager position to ensure it's updated
+                    self.app.timeline_manager.set_position(self.position)
+                    
+                    # Log position occasionally
+                    if int(self.position * 10) % 10 == 0:  # Log every second
+                        self.logger.debug(f"Position update: {self.position:.2f}s")
                 
                 # Sleep to reduce CPU usage - reduced from 0.05 to 0.016 (~60 FPS)
                 time.sleep(0.016)
@@ -648,51 +664,84 @@ class AudioManager(QObject):
         """Audio playback worker thread function."""
         if not AUDIO_AVAILABLE or self.audio_data is None or self.pyaudio is None:
             self.logger.warning("Cannot start playback worker: Audio not available")
-            self.playing = False
+            # Fall back to position update worker instead of just returning
+            self._position_update_worker()
             return
         
         try:
             # Calculate start position in samples
             start_sample = int(self.position * self.sample_rate)
+            start_position = self.position
             
-            # Create audio stream
-            self.stream = self.pyaudio.open(
-                format=pyaudio.paFloat32,
-                channels=1,
-                rate=self.sample_rate,
-                output=True,
-                frames_per_buffer=1024,
-                stream_callback=self._audio_callback
-            )
+            # Record start time for position tracking even if audio fails
+            if not hasattr(self, '_start_time'):
+                self._start_time = time.time()
             
-            # Start stream
-            self.stream.start_stream()
+            self.logger.info(f"Starting playback worker at position {start_position:.2f}s")
+            
+            # Try to create audio stream
+            try:
+                self.stream = self.pyaudio.open(
+                    format=pyaudio.paFloat32,
+                    channels=1,
+                    rate=self.sample_rate,
+                    output=True,
+                    frames_per_buffer=1024,
+                    stream_callback=self._audio_callback
+                )
+                
+                # Start stream
+                self.stream.start_stream()
+            except Exception as e:
+                self.logger.error(f"Error creating audio stream: {e}")
+                # Fall back to manual position updates if audio stream fails
+                self.stream = None
             
             # Set current sample
             self._current_sample = start_sample
             
+            # Get project total duration
+            total_duration = self.duration if self.duration > 0 else 60
+            
             # Wait until stream is finished or stopped
-            while self.stream.is_active() and not self.playback_stop_event.is_set():
+            while not self.playback_stop_event.is_set() and self.position < total_duration:
                 # Only update position if not paused
                 if not self.paused:
-                    # Update position
-                    self.position = self._current_sample / self.sample_rate
+                    if self.stream and self.stream.is_active():
+                        # Update position based on current sample if stream is active
+                        self.position = self._current_sample / self.sample_rate
+                    else:
+                        # Fall back to time-based position if stream is not active
+                        elapsed = time.time() - self._start_time
+                        self.position = start_position + elapsed
                     
-                    # Emit position signal (throttled to reduce CPU usage)
+                    # Emit position signal
                     self.position_changed.emit(self.position)
                     
+                    # Directly update timeline manager position to ensure it's updated
+                    self.app.timeline_manager.set_position(self.position)
+                    
+                    # Log position occasionally
+                    if int(self.position * 10) % 10 == 0:  # Log every second
+                        self.logger.debug(f"Position update: {self.position:.2f}s")
+                    
                     # Check if we've reached the end
-                    if self._current_sample >= len(self.audio_data):
+                    if self.audio_data is not None and self._current_sample >= len(self.audio_data):
                         self.logger.info("Reached end of audio")
                         break
                 
                 # Sleep to reduce CPU usage - reduced from 0.05 to 0.016 (~60 FPS)
                 time.sleep(0.016)
             
-            # Close stream
-            self.stream.stop_stream()
-            self.stream.close()
-            self.stream = None
+            # Close stream if open
+            if self.stream:
+                try:
+                    self.stream.stop_stream()
+                    self.stream.close()
+                except Exception as e:
+                    self.logger.error(f"Error closing stream: {e}")
+                finally:
+                    self.stream = None
             
             # Reset state if not stopped manually
             if not self.playback_stop_event.is_set():
@@ -786,22 +835,10 @@ class AudioManager(QObject):
         # Log current positions
         self.logger.debug(f"_update_timeline_position called with position={position:.2f}s, current timeline position={self.app.timeline_manager.position:.2f}s")
         
-        # Always update if:
-        # - position is 0.0 (stop button was pressed)
-        # - playback just started (self.playing is True and not paused)
-        # - positions are different beyond threshold
-        if (position == 0.0 or
-            (self.playing and not self.paused) or
-            abs(self.app.timeline_manager.position - position) > 0.005):  # Reduced from 10ms to 5ms threshold
-            
-            # Only log occasionally to reduce overhead
-            if position % 1.0 < 0.02:  # Log approximately once per second
-                self.logger.debug(f"Updating timeline position to {position:.2f}s")
-            self.app.timeline_manager.set_position(position)
-        else:
-            # Only log occasionally
-            if position % 1.0 < 0.02:
-                self.logger.debug(f"Positions are similar, not updating timeline position")
+        # Always update the timeline position to ensure synchronization
+        # This ensures that when play is clicked, the timeline always updates
+        self.logger.debug(f"Updating timeline position to {position:.2f}s")
+        self.app.timeline_manager.set_position(position)
     
     def analyze_audio(self):
         """Analyze audio file to extract advanced musical features."""
