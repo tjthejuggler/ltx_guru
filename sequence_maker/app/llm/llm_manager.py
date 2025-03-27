@@ -374,63 +374,97 @@ class LLMManager(QObject):
             start_time (float): Request start time.
             end_time (float): Request end time.
         """
-        # Log the raw LLM API response
-        self.logger.debug(f"Raw LLM API Response: {response}")
-        
-        # Track token usage
-        token_count, cost = self.tracker.track_token_usage(response)
-        
-        # Track performance metrics
-        self.tracker._track_performance_metrics(
-            start_time, end_time, len(prompt), len(response_text), token_count
-        )
-        
-        # Check for function calls
-        function_name, arguments, result = self.tool_manager._handle_function_call(response)
-        
-        if function_name:
-            # Emit function call signal
-            self.llm_function_called.emit(function_name, arguments, result)
+        try:
+            self.logger.info("=== PROCESSING LLM RESPONSE ===")
+            # Log the raw LLM API response
+            self.logger.debug(f"Raw LLM API Response: {response}")
             
-            # Add function call result to response data
-            response_data = {
-                "function_call": {
-                    "name": function_name,
-                    "arguments": arguments,
-                    "result": result
+            # Track token usage
+            token_count, cost = self.tracker.track_token_usage(response)
+            
+            # Track performance metrics
+            self.tracker._track_performance_metrics(
+                start_time, end_time, len(prompt), len(response_text), token_count
+            )
+            
+            # Check for function calls
+            self.logger.info("Checking for function calls in response")
+            try:
+                function_name, arguments, result = self.tool_manager._handle_function_call(response)
+                self.logger.info(f"Function call handling result: name={function_name}, has_arguments={arguments is not None}, has_result={result is not None}")
+            except Exception as e:
+                self.logger.error(f"Error handling function call: {e}", exc_info=True)
+                function_name, arguments, result = None, None, {"error": f"Error handling function call: {str(e)}"}
+            
+            if function_name:
+                self.logger.info(f"Processing function call: {function_name}")
+                # Log the result received from tool manager
+                self.logger.info(f"Result received in LLMManager from tool '{function_name}': {result}")
+                
+                # Emit function call signal
+                self.logger.info(f"Emitting function_called signal for {function_name}")
+                self.llm_function_called.emit(function_name, arguments, result)
+                
+                # Add function call result to response data
+                response_data = {
+                    "function_call": {
+                        "name": function_name,
+                        "arguments": arguments,
+                        "result": result
+                    }
                 }
-            }
-            
-            # Emit response signal
-            self.llm_response_received.emit(response_text, response_data)
-            
-        else:
-            # Check for ambiguity
-            is_ambiguous, suggestions = self.response_processor._handle_ambiguity(prompt, response_text)
-            
-            if is_ambiguous:
-                # Emit ambiguity signal
-                self.llm_ambiguity.emit(prompt, suggestions)
-            
-            # Check for actions
-            actions = self.response_processor.parse_actions(response_text)
-            
-            if actions:
-                # Add actions to response data
-                response_data = {"actions": actions}
+                
+                # Log the response data that will be emitted
+                self.logger.info(f"Response data to be emitted for function '{function_name}': {response_data}")
                 
                 # Emit response signal
+                self.logger.info(f"Emitting response_received signal with function call data")
                 self.llm_response_received.emit(response_text, response_data)
                 
-                # Execute actions
-                for action in actions:
-                    self.llm_action_requested.emit(action["type"], action["parameters"])
             else:
-                # Regular response
-                self.llm_response_received.emit(response_text, {})
-        
-        # Save version after operation
-        self._save_version_after_operation(response_text)
+                self.logger.info("No function call detected, checking for ambiguity")
+                # Check for ambiguity
+                is_ambiguous, suggestions = self.response_processor._handle_ambiguity(prompt, response_text)
+                
+                if is_ambiguous:
+                    # Emit ambiguity signal
+                    self.logger.info(f"Ambiguity detected, emitting ambiguity signal with {len(suggestions)} suggestions")
+                    self.llm_ambiguity.emit(prompt, suggestions)
+                
+                # Check for actions
+                self.logger.info("Checking for actions in response text")
+                actions = self.response_processor.parse_actions(response_text)
+                
+                if actions:
+                    # Add actions to response data
+                    self.logger.info(f"Found {len(actions)} actions in response")
+                    response_data = {"actions": actions}
+                    
+                    # Emit response signal
+                    self.logger.info("Emitting response_received signal with actions data")
+                    self.llm_response_received.emit(response_text, response_data)
+                    
+                    # Execute actions
+                    for action in actions:
+                        self.logger.info(f"Emitting action_requested signal for action: {action['type']}")
+                        self.llm_action_requested.emit(action["type"], action["parameters"])
+                else:
+                    # Regular response
+                    self.logger.info("No actions found, emitting regular response")
+                    self.llm_response_received.emit(response_text, {})
+            
+            # Save version after operation
+            self.logger.info("Saving version after operation")
+            self._save_version_after_operation(response_text)
+            self.logger.info("=== LLM RESPONSE PROCESSING COMPLETED ===")
+        except Exception as e:
+            self.logger.error(f"Unexpected error in _process_response: {e}", exc_info=True)
+            # Try to emit an error response
+            try:
+                self.llm_error.emit(f"Error processing LLM response: {str(e)}")
+                self.llm_response_received.emit(response_text, {"error": str(e)})
+            except:
+                pass
     
     def _save_version_before_operation(self, prompt):
         """

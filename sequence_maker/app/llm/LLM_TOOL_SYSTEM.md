@@ -197,11 +197,50 @@ When the LLM calls a tool, the following sequence occurs:
 
 ### 6.1. Timeline Tools
 
+- `execute_sequence_code`: Executes a provided Python code snippet within a secure sandbox to generate complex light sequences. Use this for loops, conditional logic, random colors, or patterns not covered by other tools.
 - `create_segment_for_word`: Creates color segments on specified juggling balls precisely during the occurrences of a specific word in the song lyrics
 - `create_color_sequence`: Creates a sequence of color segments on specified balls
 - `set_default_color`: Sets the default color for a ball
 - `clear_timeline`: Clears all segments from a specific timeline (ball)
 - `clear_all_timelines`: Clears all segments from all timelines (all balls) at once, optionally setting them to black
+
+#### 6.1.1. Python Sandbox Environment
+
+The `execute_sequence_code` tool provides a secure sandbox for executing Python code to create complex light sequences. The sandbox environment includes:
+
+**Available Functions:**
+- `create_segment(timeline_index, start_time, end_time, color)`: Creates a segment on the specified timeline
+- `clear_timeline(timeline_index)`: Clears all segments from the specified timeline
+- `modify_segment(timeline_index, segment_index, start_time, end_time, color)`: Modifies an existing segment
+- `delete_segment(timeline_index, segment_index)`: Deletes a segment from the specified timeline
+
+**Available Utilities:**
+- `random_color()`: Generates a random RGB color
+- `random_float(min_val, max_val)`: Generates a random float between min_val and max_val
+- `interpolate_color(color1, color2, factor)`: Interpolates between two colors
+- `hsv_to_rgb(h, s, v)`: Converts HSV color to RGB
+- `rgb_to_hsv(r, g, b)`: Converts RGB color to HSV
+- `color_from_name(color_name)`: Converts a color name to RGB values
+
+**Available Data:**
+- `BEAT_TIMES`: List of beat timestamps in seconds
+- `NUM_BALLS`: Number of balls/timelines
+- `SONG_DURATION`: Duration of the song in seconds
+
+**Example Usage:**
+```python
+# Create a rainbow pattern across all beats
+for i, beat_time in enumerate(BEAT_TIMES):
+    # Calculate hue based on position in beat sequence
+    hue = (i / len(BEAT_TIMES)) * 360
+    # Convert HSV to RGB
+    color = hsv_to_rgb(hue, 1.0, 1.0)
+    # Create segment for each ball with different hue offsets
+    for ball in range(NUM_BALLS):
+        offset_hue = (hue + (ball * 30)) % 360
+        ball_color = hsv_to_rgb(offset_hue, 1.0, 1.0)
+        create_segment(ball, beat_time, beat_time + 0.25, ball_color)
+```
 
 ### 6.2. Audio Tools
 

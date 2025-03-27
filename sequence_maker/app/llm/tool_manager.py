@@ -9,6 +9,7 @@ import json
 from utils.color_utils import resolve_color_name
 from .music_data_tools import MusicDataTools
 from .pattern_tools import PatternTools
+from .sandbox_manager import SandboxManager
 
 
 class LLMToolManager:
@@ -45,6 +46,12 @@ class LLMToolManager:
         # Initialize and register pattern tools
         self.pattern_tools = PatternTools(app)
         self.pattern_tools.register_handlers(self)
+        
+        # Initialize sandbox manager for secure code execution
+        self.sandbox_manager = SandboxManager(app)
+        
+        # Register sandbox function handler
+        self.register_action_handler("execute_sequence_code", self._handle_execute_sequence_code)
     def register_action_handler(self, action_type, handler):
         """
         Register a handler for a specific action type.
@@ -138,7 +145,6 @@ class LLMToolManager:
         self.logger.debug(f"Available functions for LLM: {function_names}")
         
         return functions
-    
     def _handle_function_call(self, response):
         """
         Handle a function call from the LLM.
@@ -150,13 +156,39 @@ class LLMToolManager:
             tuple: (function_name, arguments, result)
         """
         try:
+            # Log the response structure to help with debugging
+            self.logger.info("=== HANDLING FUNCTION CALL ===")
+            self.logger.info(f"Response keys: {list(response.keys())}")
+            if "choices" in response:
+                self.logger.info(f"Choices count: {len(response['choices'])}")
+                if len(response['choices']) > 0:
+                    self.logger.info(f"First choice keys: {list(response['choices'][0].keys())}")
+                    if "message" in response['choices'][0]:
+                        self.logger.info(f"Message keys: {list(response['choices'][0]['message'].keys())}")
+                        
+                        # Log the content to see if it contains code blocks
+                        if "content" in response['choices'][0]['message']:
+                            content = response['choices'][0]['message']['content']
+                            self.logger.info(f"Message content preview: {content[:100]}...")
+                            
+                            # Check for code blocks in the content
+                            if "```" in content:
+                                self.logger.info("Content contains code blocks")
+            
             # Extract function call information
             function_call = response["choices"][0]["message"].get("function_call")
             
+            self.logger.info(f"Function call extracted: {function_call is not None}")
+            
             if not function_call:
+                self.logger.info("No function call found in response")
                 return None, None, None
             
             function_name = function_call.get("name")
+            arguments_str = function_call.get("arguments", "{}")
+            
+            self.logger.info(f"Function name: {function_name}")
+            self.logger.info(f"Arguments string: {arguments_str[:100]}...")
             arguments_str = function_call.get("arguments", "{}")
             
             # Parse arguments
@@ -164,12 +196,27 @@ class LLMToolManager:
                 self.logger.debug(f"Attempting to parse arguments for {function_name}: {arguments_str}")
                 arguments = json.loads(arguments_str)
                 self.logger.debug(f"Successfully parsed arguments: {arguments}")
+                
+                # Debug: Check for malformed argument values (e.g., "word=\"you\"" instead of "you")
+                for key, value in arguments.items():
+                    if isinstance(value, str) and (value.startswith('word=') or value.startswith('color=') or value.startswith('balls=')):
+                        self.logger.warning(f"Possible malformed argument value for {key}: {value}")
+                        # Try to extract the actual value from the malformed string
+                        if '=' in value and value.count('"') >= 2:
+                            # Extract the value between quotes
+                            extracted_value = value.split('=', 1)[1].strip('"')
+                            self.logger.warning(f"Extracted value: {extracted_value}")
+                            # Replace the malformed value with the extracted value
+                            arguments[key] = extracted_value
+                            self.logger.warning(f"Corrected argument: {key}={arguments[key]}")
             except json.JSONDecodeError as e:
                 self.logger.error(f"Invalid JSON arguments for {function_name}: {arguments_str}. Error: {e}")
                 return function_name, {}, {"error": f"Invalid function arguments: {arguments_str}"}
             
             # Execute the function
             result = self.execute_action(function_name, arguments)
+            # Add logging to track the result
+            self.logger.info(f"Result from execute_action for {function_name}: {result}")
             
             return function_name, arguments, result
             
@@ -188,6 +235,20 @@ class LLMToolManager:
             list: List of timeline function definitions.
         """
         return [
+            {
+                "name": "execute_sequence_code",
+                "description": "Executes a provided Python code snippet within a secure sandbox to generate complex light sequences. Use this for loops, conditional logic, random colors, or patterns not covered by other tools.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "code": {
+                            "type": "string",
+                            "description": "The Python code snippet to execute. Available functions: create_segment(timeline_index, start_time, end_time, color), clear_timeline(timeline_index), modify_segment(timeline_index, segment_index, start_time, end_time, color), delete_segment(timeline_index, segment_index). Available utilities: random_color(), random_float(min_val, max_val), interpolate_color(color1, color2, factor), hsv_to_rgb(h, s, v), rgb_to_hsv(r, g, b), color_from_name(color_name). Available data: BEAT_TIMES (list), NUM_BALLS (int), SONG_DURATION (float)."
+                        }
+                    },
+                    "required": ["code"]
+                }
+            },
             {
                 "name": "create_segment_for_word",
                 "description": "Creates color segments on specified juggling balls precisely during the occurrences of a specific word in the song lyrics",
@@ -786,6 +847,164 @@ class LLMToolManager:
             "segments_created": segments_created,
             "total_segments": len(segments_created)
         }
+    
+    def _handle_execute_sequence_code(self, parameters):
+        """
+        Handle the execute_sequence_code action.
+        
+        Args:
+            parameters (dict): Action parameters.
+            
+        Returns:
+            dict: Result of the action.
+        """
+        try:
+            self.logger.info("=== HANDLING EXECUTE_SEQUENCE_CODE ACTION ===")
+            self.logger.debug("Handling execute_sequence_code action")
+            
+            # Extract code from parameters
+            code = parameters.get("code")
+            if not code:
+                self.logger.warning("No code provided for execute_sequence_code")
+                return {"error": "No code provided"}
+            
+            self.logger.debug(f"Code to execute:\n{code}")
+            
+            # Prepare available context
+            try:
+                self.logger.info("Preparing sandbox context")
+                available_context = self._prepare_sandbox_context()
+                self.logger.debug(f"Prepared sandbox context: {available_context}")
+            except Exception as e:
+                self.logger.error(f"Error preparing sandbox context: {e}", exc_info=True)
+                return {"error": f"Error preparing sandbox context: {str(e)}"}
+            
+            # Execute code in sandbox
+            try:
+                self.logger.info("Calling sandbox_manager.execute_sandboxed_code")
+                result = self.sandbox_manager.execute_sandboxed_code(code, available_context)
+                # Add detailed logging of the raw result
+                self.logger.info(f"IMMEDIATE raw result from SandboxManager: {result}")
+            except Exception as e:
+                self.logger.error(f"Error executing sandboxed code: {e}", exc_info=True)
+                result = {
+                    "success": False,
+                    "error_type": "ExecutionError",
+                    "error_message": f"Error executing sandboxed code: {str(e)}"
+                }
+            
+            # Format the result for the LLM
+            try:
+                self.logger.info("Formatting sandbox result")
+                formatted_result = self._format_sandbox_result(result)
+                self.logger.info(f"Formatted sandbox result (to be returned): {formatted_result}")
+            except Exception as e:
+                self.logger.error(f"Error formatting sandbox result: {e}", exc_info=True)
+                formatted_result = {
+                    "success": False,
+                    "error": f"Error formatting sandbox result: {str(e)}"
+                }
+            
+            self.logger.info("=== EXECUTE_SEQUENCE_CODE ACTION COMPLETED ===")
+            return formatted_result
+        except Exception as e:
+            self.logger.error(f"Unexpected error in _handle_execute_sequence_code: {e}", exc_info=True)
+            return {
+                "success": False,
+                "error": f"Unexpected error in execute_sequence_code: {str(e)}"
+            }
+    
+    def _prepare_sandbox_context(self):
+        """
+        Prepare the context data for the sandbox.
+        
+        Returns:
+            dict: Context data for the sandbox.
+        """
+        self.logger.debug("Preparing sandbox context")
+        context = {}
+        
+        # Add beat times if available
+        if hasattr(self.app, 'audio_analysis_manager'):
+            self.logger.debug("Audio analysis manager is available")
+            
+            # Load analysis data which contains beats
+            analysis_data = self.app.audio_analysis_manager.load_analysis()
+            self.logger.debug(f"Got analysis data: {analysis_data is not None}")
+            
+            if analysis_data:
+                # Extract beats from analysis data
+                beats = analysis_data.get("beats", [])
+                self.logger.debug(f"Got beats: {beats is not None}, count: {len(beats) if beats else 0}")
+                context["BEAT_TIMES"] = beats
+                
+                # Add song duration
+                if "duration_seconds" in analysis_data:
+                    context["SONG_DURATION"] = analysis_data["duration_seconds"]
+                    self.logger.debug(f"Song duration: {analysis_data['duration_seconds']} seconds")
+                else:
+                    context["SONG_DURATION"] = 0
+                    self.logger.debug("Song duration not available in analysis data, using 0")
+            else:
+                self.logger.debug("No analysis data available")
+                context["BEAT_TIMES"] = []
+                context["SONG_DURATION"] = 0
+        else:
+            self.logger.debug("Audio analysis manager not available")
+            context["BEAT_TIMES"] = []
+            context["SONG_DURATION"] = 0
+        
+        # Add number of balls/timelines
+        if hasattr(self.app, 'timeline_manager'):
+            self.logger.debug("Timeline manager is available")
+            timelines = self.app.timeline_manager.get_timelines()
+            context["NUM_BALLS"] = len(timelines)
+            self.logger.debug(f"Number of balls/timelines: {len(timelines)}")
+        else:
+            self.logger.debug("Timeline manager not available")
+            context["NUM_BALLS"] = 0
+        
+        self.logger.debug(f"Final sandbox context: {context}")
+        return context
+    
+    def _format_sandbox_result(self, result):
+        """
+        Format the sandbox execution result for the LLM.
+        
+        Args:
+            result (dict): Sandbox execution result.
+            
+        Returns:
+            dict: Formatted result.
+        """
+        if not result["success"]:
+            # Format error message
+            error_type = result.get("error_type", "Error")
+            error_message = result.get("error_message", "Unknown error")
+            
+            formatted_error = {
+                "success": False,
+                "error": f"{error_type}: {error_message}"
+            }
+            
+            # Include error details if available
+            if "error_details" in result:
+                formatted_error["error_details"] = result["error_details"]
+                self.logger.error(f"Detailed sandbox error: {result['error_details']}")
+            
+            return formatted_error
+        
+        # Format success message
+        formatted_result = {
+            "success": True,
+            "message": "Code executed successfully"
+        }
+        
+        # Add variables if available
+        if "variables" in result:
+            formatted_result["variables"] = result["variables"]
+        
+        return formatted_result
     
     def _format_time(self, seconds):
         """

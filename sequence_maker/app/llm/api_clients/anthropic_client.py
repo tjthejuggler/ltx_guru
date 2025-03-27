@@ -121,11 +121,23 @@ class AnthropicClient(BaseLLMClient):
             # Convert Anthropic response to a format similar to OpenAI for consistency
             anthropic_response = response.json()
             
+            # Log the raw response for debugging
+            self.logger.info(f"Raw Anthropic API response: {json.dumps(anthropic_response)[:500]}...")
+            
             # Extract the response text
             response_text = anthropic_response.get("content", [{}])[0].get("text", "")
             
+            # Log the extracted response text
+            self.logger.info(f"Extracted response text (first 200 chars): {response_text[:200]}...")
+            
             # Parse the response text for function calls
             function_call = self._extract_function_call(response_text)
+            
+            # Log whether a function call was found
+            self.logger.info(f"Function call extracted: {function_call is not None}")
+            if function_call:
+                self.logger.info(f"Function name: {function_call.get('name')}")
+                self.logger.info(f"Arguments length: {len(function_call.get('arguments', ''))}")
             
             # Create OpenAI-like response
             openai_like_response = {
@@ -171,6 +183,107 @@ class AnthropicClient(BaseLLMClient):
         Returns:
             dict: Function call information or None if not found.
         """
+        self.logger.info(f"Extracting function call from response text")
+        
+        # First, check for execute_sequence_code which has a special format
+        execute_sequence_pattern = r'execute_sequence_code\s*\(\s*code\s*=\s*"""([\s\S]*?)"""'
+        execute_matches = re.search(execute_sequence_pattern, response_text, re.DOTALL)
+        
+        if execute_matches:
+            self.logger.info("Found execute_sequence_code function call in response text")
+            code_content = execute_matches.group(1).strip()
+            self.logger.info(f"Successfully extracted code content from response text, length: {len(code_content)}")
+            
+            # Create a function call object
+            return {
+                "name": "execute_sequence_code",
+                "arguments": json.dumps({"code": code_content})
+            }
+        else:
+            # Try alternative pattern with single quotes
+            alt_pattern = r'execute_sequence_code\s*\(\s*code\s*=\s*"([\s\S]*?)"'
+            alt_matches = re.search(alt_pattern, response_text, re.DOTALL)
+            
+            if alt_matches:
+                self.logger.info("Found execute_sequence_code function call with alternative pattern")
+                code_content = alt_matches.group(1).strip()
+                self.logger.info(f"Successfully extracted code content with alternative pattern, length: {len(code_content)}")
+                
+                # Create a function call object
+                return {
+                    "name": "execute_sequence_code",
+                    "arguments": json.dumps({"code": code_content})
+                }
+        
+        # Look for direct function calls in the text (not in code blocks)
+        direct_function_call_pattern = r"(\w+)\s*\(\s*(.*?)\s*\)"
+        direct_function_match = re.search(direct_function_call_pattern, response_text)
+        
+        if direct_function_match:
+            function_name = direct_function_match.group(1)
+            arguments_str = direct_function_match.group(2)
+            self.logger.info(f"Found direct function call: {function_name}")
+            
+            # Parse arguments
+            try:
+                # Handle simple arguments like set_black=True
+                arguments = {}
+                
+                # Split by commas, but respect nested structures
+                args_list = []
+                current_arg = ""
+                bracket_count = 0
+                
+                for char in arguments_str:
+                    if char == ',' and bracket_count == 0:
+                        args_list.append(current_arg.strip())
+                        current_arg = ""
+                    else:
+                        current_arg += char
+                        if char in '[{(':
+                            bracket_count += 1
+                        elif char in ']})':
+                            bracket_count -= 1
+                
+                if current_arg:
+                    args_list.append(current_arg.strip())
+                
+                # Parse key=value pairs
+                for arg in args_list:
+                    if '=' in arg:
+                        key, value = arg.split('=', 1)
+                        key = key.strip()
+                        value = value.strip()
+                        
+                        # Convert value to appropriate type
+                        if value.lower() == 'true':
+                            arguments[key] = True
+                        elif value.lower() == 'false':
+                            arguments[key] = False
+                        elif value.lower() == 'none' or value.lower() == 'null':
+                            arguments[key] = None
+                        elif (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
+                            arguments[key] = value[1:-1]
+                        else:
+                            try:
+                                if '.' in value:
+                                    arguments[key] = float(value)
+                                else:
+                                    arguments[key] = int(value)
+                            except:
+                                arguments[key] = value
+                
+                return {
+                    "name": function_name,
+                    "arguments": json.dumps(arguments)
+                }
+            except Exception as e:
+                self.logger.error(f"Error parsing direct function arguments: {str(e)}")
+                return {
+                    "name": function_name,
+                    "arguments": "{}"
+                }
+        
         # Look for Python code blocks
         python_code_pattern = r"```python\s*([\s\S]*?)\s*```"
         matches = re.findall(python_code_pattern, response_text)
@@ -181,20 +294,59 @@ class AnthropicClient(BaseLLMClient):
             matches = re.findall(code_pattern, response_text)
             
             if not matches:
+                self.logger.info("No code blocks found in response")
                 return None
         
         # Get the first code block
         code_block = matches[0].strip()
+        self.logger.info(f"Found code block: {code_block[:50]}...")
         
-        # Parse function call
+        # Check for execute_sequence_code in the code block
+        if code_block.startswith("execute_sequence_code"):
+            self.logger.info("Found execute_sequence_code in code block")
+            # Extract the code parameter - handle triple quotes properly
+            code_param_pattern = r'execute_sequence_code\s*\(\s*code\s*=\s*"""([\s\S]*?)"""'
+            code_param_match = re.search(code_param_pattern, code_block, re.DOTALL)
+            
+            if code_param_match:
+                code_content = code_param_match.group(1).strip()
+                self.logger.info(f"Successfully extracted code content, length: {len(code_content)}")
+                return {
+                    "name": "execute_sequence_code",
+                    "arguments": json.dumps({"code": code_content})
+                }
+            else:
+                self.logger.warning("Failed to extract code content with triple quotes pattern, trying alternative pattern")
+                # Try alternative pattern with single quotes
+                alt_pattern = r'execute_sequence_code\s*\(\s*code\s*=\s*"([\s\S]*?)"'
+                alt_match = re.search(alt_pattern, code_block, re.DOTALL)
+                
+                if alt_match:
+                    code_content = alt_match.group(1).strip()
+                    self.logger.info(f"Successfully extracted code content with alternative pattern, length: {len(code_content)}")
+                    return {
+                        "name": "execute_sequence_code",
+                        "arguments": json.dumps({"code": code_content})
+                    }
+                else:
+                    self.logger.error("Failed to extract code content from execute_sequence_code call")
+                    # As a fallback, just use the entire code block
+                    return {
+                        "name": "execute_sequence_code",
+                        "arguments": json.dumps({"code": code_block.replace("execute_sequence_code(code=", "").strip()[:-1]})
+                    }
+        
+        # Parse function call for other functions
         function_call_pattern = r"(\w+)\((.*)\)"
         function_match = re.match(function_call_pattern, code_block)
         
         if not function_match:
+            self.logger.info("No function call pattern matched in code block")
             return None
         
         function_name = function_match.group(1)
         arguments_str = function_match.group(2)
+        self.logger.info(f"Extracted function name: {function_name}")
         
         # Convert arguments to JSON
         try:
