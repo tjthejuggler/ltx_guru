@@ -8,6 +8,7 @@ import logging
 import json
 from utils.color_utils import resolve_color_name
 from .music_data_tools import MusicDataTools
+from .pattern_tools import PatternTools
 
 
 class LLMToolManager:
@@ -39,6 +40,10 @@ class LLMToolManager:
         # Initialize and register music data tools
         self.music_data_tools = MusicDataTools(app)
         self.music_data_tools.register_handlers(self)
+        
+        # Initialize and register pattern tools
+        self.pattern_tools = PatternTools(app)
+        self.pattern_tools.register_handlers(self)
     
     def register_action_handler(self, action_type, handler):
         """
@@ -97,6 +102,9 @@ class LLMToolManager:
         # Add music data functions if audio analysis manager is available
         if hasattr(self.app, 'audio_analysis_manager'):
             functions.extend(self.music_data_tools.music_data_functions)
+            
+            # Add pattern functions if audio analysis manager is available
+            functions.extend(self.pattern_tools.pattern_functions)
         
         return functions
     
