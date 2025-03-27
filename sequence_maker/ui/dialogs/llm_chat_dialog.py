@@ -11,7 +11,8 @@ from datetime import datetime
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QTextEdit, QComboBox, QProgressBar, QMessageBox,
-    QSplitter, QWidget, QListWidget, QListWidgetItem
+    QSplitter, QWidget, QListWidget, QListWidgetItem,
+    QGroupBox, QRadioButton, QButtonGroup
 )
 from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtGui import QFont, QColor
@@ -131,6 +132,49 @@ class LLMChatDialog(QDialog):
         self.chat_history_text = QTextEdit()
         self.chat_history_text.setReadOnly(True)
         self.chat_layout.addWidget(self.chat_history_text)
+        
+        # Add feedback UI elements
+        self.feedback_group = QGroupBox("Feedback")
+        self.feedback_group.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        self.feedback_layout = QVBoxLayout(self.feedback_group)
+        
+        # Add feedback text field
+        self.feedback_text = QTextEdit()
+        self.feedback_text.setPlaceholderText("Enter your feedback about the generated sequence...")
+        self.feedback_text.setMaximumHeight(60)
+        self.feedback_layout.addWidget(self.feedback_text)
+        
+        # Add sentiment buttons
+        self.sentiment_layout = QHBoxLayout()
+        self.feedback_layout.addLayout(self.sentiment_layout)
+        
+        # Create button group for sentiment
+        self.sentiment_group = QButtonGroup(self)
+        
+        # Like button
+        self.like_button = QRadioButton("Like")
+        self.sentiment_group.addButton(self.like_button, 1)  # 1 for positive sentiment
+        self.sentiment_layout.addWidget(self.like_button)
+        
+        # Neutral button
+        self.neutral_button = QRadioButton("Neutral")
+        self.sentiment_group.addButton(self.neutral_button, 0)  # 0 for neutral sentiment
+        self.sentiment_layout.addWidget(self.neutral_button)
+        
+        # Dislike button
+        self.dislike_button = QRadioButton("Dislike")
+        self.sentiment_group.addButton(self.dislike_button, -1)  # -1 for negative sentiment
+        self.sentiment_layout.addWidget(self.dislike_button)
+        
+        self.sentiment_layout.addStretch()
+        
+        # Add submit button
+        self.submit_feedback_button = QPushButton("Submit Feedback")
+        self.submit_feedback_button.clicked.connect(self._submit_feedback)
+        self.sentiment_layout.addWidget(self.submit_feedback_button)
+        
+        # Add feedback group to chat layout
+        self.chat_layout.addWidget(self.feedback_group)
         
         self.input_layout = QHBoxLayout()
         self.chat_layout.addLayout(self.input_layout)
@@ -705,3 +749,83 @@ class LLMChatDialog(QDialog):
         
         # Send clarification to LLM
         self.app.llm_manager.send_request(resolution, system_message, confirmation_mode=confirmation_mode)
+    
+    def _submit_feedback(self):
+        """Handle feedback submission."""
+        # Get feedback text
+        feedback_text = self.feedback_text.toPlainText().strip()
+        
+        # Check if feedback text is empty
+        if not feedback_text:
+            QMessageBox.warning(
+                self,
+                "Empty Feedback",
+                "Please enter some feedback text before submitting."
+            )
+            return
+        
+        # Get selected sentiment
+        sentiment = self.sentiment_group.checkedId()
+        
+        # If no sentiment is selected, default to neutral
+        if sentiment not in [1, 0, -1]:
+            sentiment = 0
+            self.neutral_button.setChecked(True)
+        
+        # Get song identifier
+        song_identifier = ""
+        if self.app.audio_manager.audio_file:
+            song_identifier = os.path.basename(self.app.audio_manager.audio_file)
+        
+        # Extract tags from feedback text (simple implementation)
+        # This could be enhanced in the future with more sophisticated tag extraction
+        tags = []
+        
+        # Common pattern-related keywords
+        pattern_keywords = ["pulse", "toggle", "fade", "beat", "pattern"]
+        for keyword in pattern_keywords:
+            if keyword in feedback_text.lower():
+                tags.append(keyword)
+        
+        # Common section-related keywords
+        section_keywords = ["chorus", "verse", "intro", "outro", "bridge", "section"]
+        for keyword in section_keywords:
+            if keyword in feedback_text.lower():
+                tags.append(keyword)
+        
+        # Common color-related keywords
+        color_keywords = ["red", "green", "blue", "yellow", "purple", "orange", "color"]
+        for keyword in color_keywords:
+            if keyword in feedback_text.lower():
+                tags.append(keyword)
+        
+        # Submit feedback to preference manager
+        success = self.app.preference_manager.add_feedback(
+            song_identifier=song_identifier,
+            feedback_text=feedback_text,
+            sentiment=sentiment,
+            tags=tags
+        )
+        
+        if success:
+            # Show success message
+            QMessageBox.information(
+                self,
+                "Feedback Submitted",
+                "Your feedback has been recorded and will be used to improve future sequences."
+            )
+            
+            # Clear feedback form
+            self.feedback_text.clear()
+            self.sentiment_group.setExclusive(False)
+            self.like_button.setChecked(False)
+            self.neutral_button.setChecked(False)
+            self.dislike_button.setChecked(False)
+            self.sentiment_group.setExclusive(True)
+        else:
+            # Show error message
+            QMessageBox.warning(
+                self,
+                "Feedback Error",
+                "An error occurred while submitting your feedback. Please try again."
+            )
