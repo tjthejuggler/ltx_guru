@@ -374,6 +374,9 @@ class LLMManager(QObject):
             start_time (float): Request start time.
             end_time (float): Request end time.
         """
+        # Log the raw LLM API response
+        self.logger.debug(f"Raw LLM API Response: {response}")
+        
         # Track token usage
         token_count, cost = self.tracker.track_token_usage(response)
         

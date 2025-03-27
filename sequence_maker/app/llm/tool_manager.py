@@ -24,6 +24,7 @@ class LLMToolManager:
             app: The main application instance.
         """
         self.logger = logging.getLogger("SequenceMaker.LLMToolManager")
+        self.logger.debug("Initializing LLMToolManager")
         self.app = app
         
         # Action handlers
@@ -44,7 +45,6 @@ class LLMToolManager:
         # Initialize and register pattern tools
         self.pattern_tools = PatternTools(app)
         self.pattern_tools.register_handlers(self)
-    
     def register_action_handler(self, action_type, handler):
         """
         Register a handler for a specific action type.
@@ -53,6 +53,8 @@ class LLMToolManager:
             action_type (str): The type of action to handle.
             handler (callable): The function to call when this action is requested.
         """
+        self.logger.debug(f"Registering handler for action type: {action_type}")
+        self.action_handlers[action_type] = handler
         self.action_handlers[action_type] = handler
     
     def execute_action(self, action_type, parameters):
@@ -66,6 +68,9 @@ class LLMToolManager:
         Returns:
             dict: Result of the action.
         """
+        self.logger.debug(f"Attempting to execute action: {action_type}")
+        self.logger.debug(f"Available handlers: {list(self.action_handlers.keys())}")
+        
         if action_type in self.action_handlers:
             try:
                 self.logger.debug(f"Executing action: {action_type}")
@@ -75,7 +80,7 @@ class LLMToolManager:
                 self.logger.error(f"Error executing action {action_type}: {str(e)}")
                 return {"error": str(e)}
         else:
-            self.logger.warning(f"No handler registered for action type: {action_type}")
+            self.logger.warning(f"Handler NOT FOUND for action type: {action_type}")
             return {"error": f"No handler registered for action type: {action_type}"}
     
     def _get_available_functions(self):
@@ -86,25 +91,51 @@ class LLMToolManager:
             list: List of function definitions.
         """
         functions = []
+        registered_handlers = set(self.action_handlers.keys())
+        self.logger.debug(f"Registered action handlers: {list(registered_handlers)}")
         
         # Add timeline functions if timeline manager is available
         if hasattr(self.app, 'timeline_manager'):
-            functions.extend(self.timeline_functions)
+            self.logger.debug("Adding timeline functions")
+            # Only add functions that have registered handlers
+            timeline_funcs = [f for f in self.timeline_functions if f["name"] in registered_handlers]
+            self.logger.debug(f"Adding {len(timeline_funcs)} of {len(self.timeline_functions)} timeline functions")
+            functions.extend(timeline_funcs)
         
         # Add audio functions if audio manager is available
         if hasattr(self.app, 'audio_manager'):
-            functions.extend(self.audio_functions)
+            self.logger.debug("Adding audio functions")
+            # Only add functions that have registered handlers
+            audio_funcs = [f for f in self.audio_functions if f["name"] in registered_handlers]
+            self.logger.debug(f"Adding {len(audio_funcs)} of {len(self.audio_functions)} audio functions")
+            functions.extend(audio_funcs)
         
         # Add lyrics functions if lyrics manager is available
         if hasattr(self.app, 'lyrics_manager'):
-            functions.extend(self.lyrics_functions)
+            self.logger.debug("Adding lyrics functions")
+            # Only add functions that have registered handlers
+            lyrics_funcs = [f for f in self.lyrics_functions if f["name"] in registered_handlers]
+            self.logger.debug(f"Adding {len(lyrics_funcs)} of {len(self.lyrics_functions)} lyrics functions")
+            functions.extend(lyrics_funcs)
         
         # Add music data functions if audio analysis manager is available
         if hasattr(self.app, 'audio_analysis_manager'):
-            functions.extend(self.music_data_tools.music_data_functions)
+            self.logger.debug("Adding music data functions")
+            # Only add functions that have registered handlers
+            music_data_funcs = [f for f in self.music_data_tools.music_data_functions if f["name"] in registered_handlers]
+            self.logger.debug(f"Adding {len(music_data_funcs)} of {len(self.music_data_tools.music_data_functions)} music data functions")
+            functions.extend(music_data_funcs)
             
             # Add pattern functions if audio analysis manager is available
-            functions.extend(self.pattern_tools.pattern_functions)
+            self.logger.debug("Adding pattern functions")
+            # Only add functions that have registered handlers
+            pattern_funcs = [f for f in self.pattern_tools.pattern_functions if f["name"] in registered_handlers]
+            self.logger.debug(f"Adding {len(pattern_funcs)} of {len(self.pattern_tools.pattern_functions)} pattern functions")
+            functions.extend(pattern_funcs)
+        
+        # Log all function names being provided to the LLM
+        function_names = [f["name"] for f in functions]
+        self.logger.debug(f"Available functions for LLM: {function_names}")
         
         return functions
     
@@ -130,10 +161,12 @@ class LLMToolManager:
             
             # Parse arguments
             try:
+                self.logger.debug(f"Attempting to parse arguments for {function_name}: {arguments_str}")
                 arguments = json.loads(arguments_str)
-            except json.JSONDecodeError:
-                self.logger.error(f"Invalid function arguments: {arguments_str}")
-                return function_name, {}, {"error": "Invalid function arguments"}
+                self.logger.debug(f"Successfully parsed arguments: {arguments}")
+            except json.JSONDecodeError as e:
+                self.logger.error(f"Invalid JSON arguments for {function_name}: {arguments_str}. Error: {e}")
+                return function_name, {}, {"error": f"Invalid function arguments: {arguments_str}"}
             
             # Execute the function
             result = self.execute_action(function_name, arguments)
