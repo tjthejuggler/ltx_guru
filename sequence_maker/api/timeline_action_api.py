@@ -29,6 +29,7 @@ class TimelineActionAPI:
         self.app.llm_manager.register_action_handler("set_default_color", self.set_default_color)
         self.app.llm_manager.register_action_handler("add_effect", self.add_effect)
         self.app.llm_manager.register_action_handler("clear_timeline", self.clear_timeline)
+        self.app.llm_manager.register_action_handler("clear_all_timelines", self.clear_all_timelines)
         self.app.llm_manager.register_action_handler("create_segments_batch", self.create_segments_batch)
     
     def create_segment(self, parameters):
@@ -359,6 +360,73 @@ class TimelineActionAPI:
         
         except Exception as e:
             self.logger.error(f"Error clearing timeline: {e}")
+            return {"success": False, "error": str(e)}
+            
+    def clear_all_timelines(self, parameters):
+        """
+        Clear all segments from all timelines.
+        
+        Args:
+            parameters (dict): Parameters for the action.
+                - set_black (bool, optional): Whether to set all balls to black [0,0,0] (default: True)
+        
+        Returns:
+            dict: Result of the operation.
+        """
+        try:
+            # Save state for undo
+            if self.app.undo_manager:
+                self.app.undo_manager.save_state("llm_clear_all_timelines")
+            
+            # Extract parameters
+            set_black = parameters.get("set_black", True)
+            
+            # Get all timelines
+            timelines = []
+            if hasattr(self.app.project_manager, 'current_project') and self.app.project_manager.current_project:
+                timelines = self.app.project_manager.current_project.timelines
+            
+            if not timelines:
+                return {"success": False, "error": "No timelines found in current project"}
+            
+            # Clear all timelines
+            cleared_count = 0
+            for i, timeline in enumerate(timelines):
+                # Clear existing segments
+                timeline.clear()
+                
+                # If set_black is True, add a black segment at time 0
+                if set_black:
+                    black_color = (0, 0, 0)  # Black color
+                    
+                    # Get project duration
+                    duration = 0
+                    if hasattr(self.app.project_manager.current_project, 'total_duration'):
+                        duration = self.app.project_manager.current_project.total_duration
+                    elif hasattr(self.app.audio_manager, 'duration'):
+                        duration = self.app.audio_manager.duration
+                    
+                    if duration > 0:
+                        # Add a black segment for the entire duration
+                        self.app.timeline_manager.add_segment(
+                            timeline=timeline,
+                            start_time=0,
+                            end_time=duration,
+                            color=black_color
+                        )
+                
+                # Emit signal
+                self.app.timeline_manager.timeline_modified.emit(timeline)
+                cleared_count += 1
+            
+            return {
+                "success": True,
+                "timelines_cleared": cleared_count,
+                "set_black": set_black
+            }
+        
+        except Exception as e:
+            self.logger.error(f"Error clearing all timelines: {e}")
             return {"success": False, "error": str(e)}
     
     def create_segments_batch(self, parameters):

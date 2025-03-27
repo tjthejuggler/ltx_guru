@@ -200,6 +200,8 @@ When the LLM calls a tool, the following sequence occurs:
 - `create_segment_for_word`: Creates color segments on specified juggling balls precisely during the occurrences of a specific word in the song lyrics
 - `create_color_sequence`: Creates a sequence of color segments on specified balls
 - `set_default_color`: Sets the default color for a ball
+- `clear_timeline`: Clears all segments from a specific timeline (ball)
+- `clear_all_timelines`: Clears all segments from all timelines (all balls) at once, optionally setting them to black
 
 ### 6.2. Audio Tools
 

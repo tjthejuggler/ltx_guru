@@ -230,6 +230,16 @@ class LLMChatWindow(QWidget):
         
         self.button_layout.addStretch()
         
+        # Add Clear Chat button
+        self.clear_chat_button = QPushButton("Clear Chat")
+        self.clear_chat_button.clicked.connect(self._on_clear_chat_clicked)
+        self.button_layout.addWidget(self.clear_chat_button)
+        
+        # Add Clear All Timelines button
+        self.clear_all_timelines_button = QPushButton("Clear All Timelines")
+        self.clear_all_timelines_button.clicked.connect(self._on_clear_all_timelines_clicked)
+        self.button_layout.addWidget(self.clear_all_timelines_button)
+        
         # Add minimize button
         self.minimize_button = QPushButton("Minimize")
         self.minimize_button.clicked.connect(self.hide)
@@ -645,7 +655,7 @@ class LLMChatWindow(QWidget):
         # Add instructions for response format
         system_message += (
             "\n\nWhen suggesting color sequences, please provide specific timestamps and RGB colors. "
-            "You can use the following format:\n"
+            "If asked to generate a complex sequence, you can describe it using this JSON format:\n"
             "```json\n"
             "{\n"
             '  "sequence": {\n'
@@ -663,11 +673,20 @@ class LLMChatWindow(QWidget):
             "Do not add additional color changes at the end of segments or anywhere else unless "
             "specifically asked to do so. Your changes will be added to the existing timeline without "
             "removing what's already there."
-            "\n\nYou have access to the following functions to get lyrics data and create segments:"
+            "\n\nYou have access to the following functions to perform actions:"
             "\n1. get_lyrics_info() - Get general information about the current song lyrics"
             "\n2. get_word_timestamps(word, start_time, end_time, limit) - Get timestamps for words in the lyrics"
             "\n3. find_first_word() - Find the first word in the lyrics with its timestamp"
             "\n4. create_segment_for_word(word, color, balls) - Creates color segments on specified balls during occurrences of a specific word"
+            "\n5. clear_all_timelines(set_black) - Clear all segments from all timelines (all balls)"
+            "\n6. clear_timeline(timeline_index) - Clear all segments from a specific timeline"
+            "\n7. create_segment(timeline_index, start_time, end_time, color) - Create a new segment in a timeline"
+            "\n8. modify_segment(timeline_index, segment_index, properties) - Modify an existing segment"
+            "\n9. delete_segment(timeline_index, segment_index) - Delete a segment from a timeline"
+            "\n\nTo perform actions like creating, modifying, deleting segments, or clearing timelines, "
+            "use the available functions I provide. Describe your goal clearly, and I will call "
+            "the appropriate function. For example, if you want to clear all timelines, simply say "
+            "'clear all timelines' and I'll use the clear_all_timelines function."
             "\n\nWhen asked about lyrics or word timestamps, ALWAYS use these functions to get accurate data. "
             "For example, if asked 'what is the first word in the song?', use the find_first_word() function. "
             "If asked about specific words, use get_word_timestamps() with the word parameter."
@@ -910,6 +929,104 @@ class LLMChatWindow(QWidget):
         """Handle LLM ready signal."""
         # Disconnect signal
         self.app.llm_manager.llm_ready.disconnect(self._on_llm_ready)
+    
+    def _on_clear_chat_clicked(self):
+        """Handle Clear Chat button click."""
+        # Confirm with user
+        result = QMessageBox.question(
+            self,
+            "Clear Chat History",
+            "Are you sure you want to clear the chat history? This will start a fresh conversation.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if result == QMessageBox.StandardButton.Yes:
+            # Clear chat history
+            self.chat_history = []
+            
+            # Reset streaming response
+            self.current_streaming_response = ""
+            
+            # Update chat history display
+            self._update_chat_history()
+            
+            # Save empty chat history to project
+            self._save_chat_history()
+            
+            # Log action
+            self.logger.info("Chat history cleared by user")
+            
+            # Show confirmation
+            QMessageBox.information(
+                self,
+                "Chat Cleared",
+                "Chat history has been cleared. You can now start a fresh conversation."
+            )
+    
+    def _on_clear_all_timelines_clicked(self):
+        """Handle Clear All Timelines button click."""
+        # Confirm with user
+        result = QMessageBox.question(
+            self,
+            "Clear All Timelines",
+            "Are you sure you want to clear all timelines? This will remove all segments from all balls.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if result == QMessageBox.StandardButton.Yes:
+            try:
+                # Get the TimelineActionAPI
+                timeline_api = None
+                if hasattr(self.app, 'timeline_action_api'):
+                    timeline_api = self.app.timeline_action_api
+                else:
+                    # Import and create if not available
+                    from api.timeline_action_api import TimelineActionAPI
+                    timeline_api = TimelineActionAPI(self.app)
+                
+                # Call the clear_all_timelines function directly
+                result = timeline_api.clear_all_timelines({"set_black": True})
+                
+                # Log action
+                self.logger.info(f"Clear all timelines executed directly by user: {result}")
+                
+                # Add message to chat history
+                if result.get("success", False):
+                    message = (
+                        f"All timelines cleared successfully.\n"
+                        f"Timelines cleared: {result.get('timelines_cleared', 0)}\n"
+                        f"Black segments added: {result.get('set_black', False)}"
+                    )
+                    self._add_message("System", message)
+                    
+                    # Show confirmation
+                    QMessageBox.information(
+                        self,
+                        "Timelines Cleared",
+                        "All timelines have been cleared successfully."
+                    )
+                else:
+                    error_message = result.get("error", "Unknown error")
+                    self._add_message("System", f"Error clearing timelines: {error_message}")
+                    
+                    # Show error
+                    QMessageBox.warning(
+                        self,
+                        "Error Clearing Timelines",
+                        f"An error occurred while clearing timelines: {error_message}"
+                    )
+            
+            except Exception as e:
+                self.logger.error(f"Error in _on_clear_all_timelines_clicked: {str(e)}")
+                
+                # Show error
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"An unexpected error occurred: {str(e)}"
+                )
     
     def _on_llm_error(self, error_message):
         """

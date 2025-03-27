@@ -316,6 +316,19 @@ class LLMToolManager:
                 }
             },
             {
+                "name": "clear_all_timelines",
+                "description": "Clear all segments from all timelines (all balls)",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "set_black": {
+                            "type": "boolean",
+                            "description": "Whether to set all balls to black [0,0,0] (default: true)"
+                        }
+                    }
+                }
+            },
+            {
                 "name": "create_segments_batch",
                 "description": "Create multiple segments in a timeline in a single operation",
                 "parameters": {

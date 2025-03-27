@@ -207,6 +207,16 @@ class LLMChatDialog(QDialog):
         
         self.button_layout.addStretch()
         
+        # Add Clear Chat button
+        self.clear_chat_button = QPushButton("Clear Chat")
+        self.clear_chat_button.clicked.connect(self._on_clear_chat_clicked)
+        self.button_layout.addWidget(self.clear_chat_button)
+        
+        # Add Clear All Timelines button
+        self.clear_all_timelines_button = QPushButton("Clear All Timelines")
+        self.clear_all_timelines_button.clicked.connect(self._on_clear_all_timelines_clicked)
+        self.button_layout.addWidget(self.clear_all_timelines_button)
+        
         self.close_button = QPushButton("Close")
         self.close_button.clicked.connect(self.accept)
         self.button_layout.addWidget(self.close_button)
@@ -413,6 +423,7 @@ class LLMChatDialog(QDialog):
             "You are an assistant that helps create color sequences for juggling balls. "
             "You can analyze music and suggest color patterns that match the rhythm, mood, and style of the music. "
             "You can directly manipulate timelines, create segments, and change colors based on user instructions. "
+            "You can also clear all balls at once when requested. "
             "Your responses should be clear and specific, describing exact colors and timings."
         )
         
@@ -494,7 +505,7 @@ class LLMChatDialog(QDialog):
         # Add instructions for response format
         system_message += (
             "\n\nWhen suggesting color sequences, please provide specific timestamps and RGB colors. "
-            "You can use the following format:\n"
+            "If asked to generate a complex sequence, you can describe it using this JSON format:\n"
             "```json\n"
             "{\n"
             '  "sequence": {\n'
@@ -508,6 +519,14 @@ class LLMChatDialog(QDialog):
             "- At 0 seconds: Red (255, 0, 0)\n"
             "- At 5.2 seconds: Green (0, 255, 0)\n"
             "- At 10.8 seconds: Blue (0, 0, 255)"
+        )
+        
+        # Add instructions to use function calling
+        system_message += (
+            "\n\nTo perform actions like creating, modifying, deleting segments, or clearing timelines, "
+            "use the available functions/tools I provide. Describe your goal clearly, and I will call "
+            "the appropriate function(s). For example, if you want to clear all timelines, simply say "
+            "'clear all timelines' and I'll use the clear_all_timelines function."
         )
         
         return system_message
@@ -602,51 +621,129 @@ class LLMChatDialog(QDialog):
         # Get confirmation mode
         confirmation_mode = self.confirmation_mode_combo.currentData()
         
-        # Parse color sequence (legacy support)
-        sequence = self.app.llm_manager.parse_color_sequence(response_text)
-        
-        # Check if sequence was parsed
-        if sequence:
-            # Get selected timelines
-            selected_timelines = []
-            for item in self.timeline_list.selectedItems():
-                timeline_index = item.data(Qt.ItemDataRole.UserRole)
-                selected_timelines.append(timeline_index)
+        # Check if response contains actions
+        if 'actions' in response_data and response_data['actions']:
+            actions = response_data['actions']
+            self.logger.info(f"Detected {len(actions)} actions in response")
             
-            # If no timelines selected, use the first one
-            if not selected_timelines and self.app.project_manager.current_project:
-                if len(self.app.project_manager.current_project.timelines) > 0:
-                    selected_timelines = [0]
-            
-            # Check confirmation mode
-            if confirmation_mode == "full" or confirmation_mode == "selective":
-                # Ask if user wants to apply the sequence
-                if selected_timelines:
+            # Process each action
+            for action in actions:
+                action_type = action.get('type')
+                parameters = action.get('parameters', {})
+                
+                self.logger.info(f"Processing action: {action_type} with parameters: {parameters}")
+                
+                # Check confirmation mode
+                if confirmation_mode == "full":
+                    # Ask for confirmation for all actions
                     result = QMessageBox.question(
                         self,
-                        "Apply Sequence",
-                        f"Do you want to apply the suggested sequence to the selected timeline(s)?",
+                        f"Confirm {action_type}",
+                        f"Do you want to execute the {action_type} action with parameters: {parameters}?",
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
                     
                     if result == QMessageBox.StandardButton.Yes:
-                        # Apply sequence to each selected timeline
-                        for timeline_index in selected_timelines:
-                            self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                        # Execute the action
+                        result = self.app.llm_manager.execute_action(action_type, parameters)
                         
-                        # Show success message
-                        QMessageBox.information(
-                            self,
-                            "Sequence Applied",
-                            f"The sequence has been applied to {len(selected_timelines)} timeline(s)."
-                        )
-            else:  # Auto mode
-                # Apply sequence to each selected timeline automatically
-                for timeline_index in selected_timelines:
-                    self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                        # Show result
+                        if result.get('success', False):
+                            QMessageBox.information(
+                                self,
+                                "Action Executed",
+                                f"The {action_type} action was executed successfully."
+                            )
+                        else:
+                            QMessageBox.warning(
+                                self,
+                                "Action Failed",
+                                f"The {action_type} action failed: {result.get('error', 'Unknown error')}"
+                            )
                 
-                # Add info message to chat
-                self._add_message("System", f"Sequence automatically applied to {len(selected_timelines)} timeline(s).")
+                elif confirmation_mode == "selective" and action_type in ["clear_timeline", "clear_all_timelines"]:
+                    # Ask for confirmation only for clearing actions
+                    result = QMessageBox.question(
+                        self,
+                        f"Confirm {action_type}",
+                        f"Do you want to execute the {action_type} action with parameters: {parameters}?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                    )
+                    
+                    if result == QMessageBox.StandardButton.Yes:
+                        # Execute the action
+                        result = self.app.llm_manager.execute_action(action_type, parameters)
+                        
+                        # Show result
+                        if result.get('success', False):
+                            QMessageBox.information(
+                                self,
+                                "Action Executed",
+                                f"The {action_type} action was executed successfully."
+                            )
+                        else:
+                            QMessageBox.warning(
+                                self,
+                                "Action Failed",
+                                f"The {action_type} action failed: {result.get('error', 'Unknown error')}"
+                            )
+                
+                else:  # Auto mode or selective mode for non-clearing actions
+                    # Execute the action automatically
+                    result = self.app.llm_manager.execute_action(action_type, parameters)
+                    
+                    # Add info message to chat
+                    if result.get('success', False):
+                        self._add_message("System", f"Action {action_type} executed successfully.")
+                    else:
+                        self._add_message("System", f"Action {action_type} failed: {result.get('error', 'Unknown error')}")
+        
+        # Parse color sequence (legacy support)
+        else:
+            sequence = self.app.llm_manager.parse_color_sequence(response_text)
+            
+            # Check if sequence was parsed
+            if sequence:
+                # Get selected timelines
+                selected_timelines = []
+                for item in self.timeline_list.selectedItems():
+                    timeline_index = item.data(Qt.ItemDataRole.UserRole)
+                    selected_timelines.append(timeline_index)
+                
+                # If no timelines selected, use the first one
+                if not selected_timelines and self.app.project_manager.current_project:
+                    if len(self.app.project_manager.current_project.timelines) > 0:
+                        selected_timelines = [0]
+                
+                # Check confirmation mode
+                if confirmation_mode == "full" or confirmation_mode == "selective":
+                    # Ask if user wants to apply the sequence
+                    if selected_timelines:
+                        result = QMessageBox.question(
+                            self,
+                            "Apply Sequence",
+                            f"Do you want to apply the suggested sequence to the selected timeline(s)?",
+                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                        )
+                        
+                        if result == QMessageBox.StandardButton.Yes:
+                            # Apply sequence to each selected timeline
+                            for timeline_index in selected_timelines:
+                                self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                            
+                            # Show success message
+                            QMessageBox.information(
+                                self,
+                                "Sequence Applied",
+                                f"The sequence has been applied to {len(selected_timelines)} timeline(s)."
+                            )
+                else:  # Auto mode
+                    # Apply sequence to each selected timeline automatically
+                    for timeline_index in selected_timelines:
+                        self.app.llm_manager.apply_sequence_to_timeline(sequence, timeline_index)
+                    
+                    # Add info message to chat
+                    self._add_message("System", f"Sequence automatically applied to {len(selected_timelines)} timeline(s).")
     
     def _on_llm_ready(self):
         """Handle LLM ready signal."""
@@ -749,6 +846,101 @@ class LLMChatDialog(QDialog):
         
         # Send clarification to LLM
         self.app.llm_manager.send_request(resolution, system_message, confirmation_mode=confirmation_mode)
+    
+    def _on_clear_chat_clicked(self):
+        """Handle Clear Chat button click."""
+        # Confirm with user
+        result = QMessageBox.question(
+            self,
+            "Clear Chat History",
+            "Are you sure you want to clear the chat history? This will start a fresh conversation.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if result == QMessageBox.StandardButton.Yes:
+            # Clear chat history
+            self.chat_history = []
+            
+            # Update chat history display
+            self._update_chat_history()
+            
+            # Save empty chat history to project
+            self._save_chat_history()
+            
+            # Log action
+            self.logger.info("Chat history cleared by user")
+            
+            # Show confirmation
+            QMessageBox.information(
+                self,
+                "Chat Cleared",
+                "Chat history has been cleared. You can now start a fresh conversation."
+            )
+    
+    def _on_clear_all_timelines_clicked(self):
+        """Handle Clear All Timelines button click."""
+        # Confirm with user
+        result = QMessageBox.question(
+            self,
+            "Clear All Timelines",
+            "Are you sure you want to clear all timelines? This will remove all segments from all balls.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if result == QMessageBox.StandardButton.Yes:
+            try:
+                # Get the TimelineActionAPI
+                timeline_api = None
+                if hasattr(self.app, 'timeline_action_api'):
+                    timeline_api = self.app.timeline_action_api
+                else:
+                    # Import and create if not available
+                    from api.timeline_action_api import TimelineActionAPI
+                    timeline_api = TimelineActionAPI(self.app)
+                
+                # Call the clear_all_timelines function directly
+                result = timeline_api.clear_all_timelines({"set_black": True})
+                
+                # Log action
+                self.logger.info(f"Clear all timelines executed directly by user: {result}")
+                
+                # Add message to chat history
+                if result.get("success", False):
+                    message = (
+                        f"All timelines cleared successfully.\n"
+                        f"Timelines cleared: {result.get('timelines_cleared', 0)}\n"
+                        f"Black segments added: {result.get('set_black', False)}"
+                    )
+                    self._add_message("System", message)
+                    
+                    # Show confirmation
+                    QMessageBox.information(
+                        self,
+                        "Timelines Cleared",
+                        "All timelines have been cleared successfully."
+                    )
+                else:
+                    error_message = result.get("error", "Unknown error")
+                    self._add_message("System", f"Error clearing timelines: {error_message}")
+                    
+                    # Show error
+                    QMessageBox.warning(
+                        self,
+                        "Error Clearing Timelines",
+                        f"An error occurred while clearing timelines: {error_message}"
+                    )
+            
+            except Exception as e:
+                self.logger.error(f"Error in _on_clear_all_timelines_clicked: {str(e)}")
+                
+                # Show error
+                QMessageBox.critical(
+                    self,
+                    "Error",
+                    f"An unexpected error occurred: {str(e)}"
+                )
     
     def _submit_feedback(self):
         """Handle feedback submission."""
