@@ -40,9 +40,9 @@ Onset Strength: A measure of "attack" or percussiveness over time (librosa.onset
 
 RMS Energy (Loudness): Root Mean Square energy as a proxy for perceived loudness over time (librosa.feature.rms). Useful for dynamics.
 
-(Optional) Chroma Features: Represent harmonic content over time (librosa.feature.chroma_stft). Can potentially distinguish major/minor feel or chord changes, useful for advanced color mapping.
+Chroma Features: Represent harmonic content over time (librosa.feature.chroma_stft). Can potentially distinguish major/minor feel or chord changes, useful for advanced color mapping.
 
-(Optional) Spectral Contrast: Measures the difference between peaks and valleys in the spectrum, related to textural clarity (librosa.feature.spectral_contrast).
+Spectral Contrast: Measures the difference between peaks and valleys in the spectrum, related to textural clarity (librosa.feature.spectral_contrast).
 
 Store Analysis Results: Save all extracted features into a well-structured JSON file associated with the song.
 
@@ -270,3 +270,140 @@ User provides feedback: "The green pulse on Chorus 2 was great! The Verse 1 cyan
 Backend stores this feedback linked to the song/pattern. The next time the LLM designs for this song or uses fades, this feedback will be considered.
 
 This comprehensive plan provides the necessary structure for your programmer LLM to build a sophisticated, musically aware, and preference-learning juggling pattern designer. Remember to start simple (e.g., just beats and sections) and incrementally add more features and tools.
+
+
+---
+
+*AT THIS POINT THE PLAN-MAKER WAS GIVEN SPECIFIC DOCUMENTATION ON OUR PROJECT*
+
+
+Okay, excellent! Having the READMEs and tool system documentation for `Sequence_Maker` provides a concrete foundation. We can now tailor the previous general advice specifically to your application's structure (`app/llm/tool_manager.py`, `managers/`, etc.).
+
+Here's a detailed, customized plan for integrating music-based generation and preference learning into `Sequence_Maker`, designed for your programmer LLM:
+
+**Overall Goal:** Enhance `Sequence_Maker`'s LLM capabilities to:
+1.  Generate color sequences synchronized with musical features (beats, sections, energy) extracted via `librosa`.
+2.  Learn and adapt to user preferences regarding generated sequences over time.
+
+**Phase 1: Enhanced Music Analysis Pipeline**
+
+*   **Objective:** Generate a comprehensive `song_analysis.json` file containing detailed musical features for the currently loaded audio file.
+*   **Location:** This logic should reside *outside* the `app/llm/` directory as it's a core data processing step.
+    *   **Recommendation:** Create a new manager, e.g., `managers/audio_analysis_manager.py`.
+    *   Instantiate this manager within your main application class (`app` instance likely passed around) so it can be triggered and its results accessed.
+*   **Implementation Details:**
+    1.  **`AudioAnalysisManager` Class:**
+        *   Takes the main `app` instance or necessary configuration on initialization.
+        *   Method: `analyze_audio(audio_file_path)`:
+            *   Loads the audio using `librosa.load()`.
+            *   Extracts features using `librosa`:
+                *   `librosa.beat.tempo` -> `estimated_tempo`
+                *   `librosa.beat.beat_track` -> `beats` (timestamps)
+                *   **NEW:** Derive `downbeats`: Often the first beat of every N beats based on time signature (e.g., every 4 beats in 4/4). Requires logic after `beat_track`. Store as `downbeats` (timestamps).
+                *   **NEW:** `librosa.segment.agglomerative` or `librosa.feature.stack_memory` with chroma/MFCCs -> `sections` (list of `{"label": "auto_label", "start": float, "end": float}`). Implement a simple labeling strategy (e.g., "A", "B", "A", "C" or "Verse", "Chorus" heuristically based on length/position).
+                *   `librosa.feature.rms` -> `energy_timeseries` (times and normalized values).
+                *   `librosa.onset.onset_strength` -> `onset_strength_timeseries` (times and values).
+                *   **(Optional Advanced):** `librosa.feature.chroma_stft`, `librosa.feature.spectral_contrast`.
+            *   Formats results into the structured `song_analysis.json` (as defined previously).
+            *   Saves the JSON file. **Storage Location:** Associate it clearly with the audio file or project. Options:
+                *   Save next to the project file (`.smkr`?) with a derived name (e.g., `my_project.song_analysis.json`).
+                *   Save in a dedicated subdirectory within the project location.
+                *   Save in the application's config/cache directory (`~/.config/SequenceMaker/analysis_cache/`) using a hash of the audio path as the filename.
+                *   **Crucially:** The main application state must track the path to the *current* song's analysis JSON.
+    2.  **Triggering Analysis:**
+        *   In the UI code that handles `File > Load Audio`, after successfully loading audio, call `audio_analysis_manager.analyze_audio(audio_path)`.
+        *   Run this analysis in a background thread (e.g., using `QThread`) to avoid freezing the UI. Provide UI feedback (e.g., status bar message "Analyzing audio...").
+        *   Store the path to the generated analysis file in the application's current project/state data.
+    3.  **JSON Structure:** Adhere to the detailed structure proposed previously, including `beats`, `downbeats`, `sections`, `energy_timeseries`, etc.
+
+**Phase 2: LLM Tools for Accessing Music Data**
+
+*   **Objective:** Create new tools within the existing LLM framework (`LLMToolManager`) for the LLM to query the `song_analysis.json` data.
+*   **Location:** All definitions, handlers, and registration occur within `app/llm/tool_manager.py`.
+*   **Implementation Steps (Follow `LLM_TOOL_SYSTEM.md` process):**
+
+    1.  **Define Tool Schemas:** Add these JSON definitions to the `audio_functions` property in `LLMToolManager`.
+        *   `get_song_metadata`: (As defined before: duration, tempo, sections list).
+        *   `get_beats_in_range`: (As defined before: requires `start_time`, `end_time`, optional `beat_type='all'|'downbeat'`). *Consider if this replaces or enhances the existing `get_beat_info`.* If `get_beat_info` is very basic, deprecate it or modify it. A ranged query is more flexible.
+        *   `get_section_details`: (As defined before: requires `section_label`, returns start/end).
+        *   `(Optional)` `get_feature_value_at_time`: (As defined before: requires `time`, `feature_name`).
+        *   `(Optional)` `get_significant_events`: (As defined before: useful if analysis produces these).
+
+    2.  **Implement Handler Methods:** Add corresponding private methods within `LLMToolManager` (e.g., `_handle_get_song_metadata`, `_handle_get_beats_in_range`).
+        *   **Accessing Data:** These handlers need the path to the current `song_analysis.json`. The `LLMToolManager` likely has access to the main `app` instance (`self.app`). Add a method to the `app` or a relevant state manager to get the current analysis file path.
+        *   **Logic:** Each handler should:
+            *   Get the analysis file path.
+            *   Load the JSON data (`json.load(file)`). Handle file-not-found errors gracefully (return error to LLM).
+            *   Extract the specific data requested by the tool parameters (e.g., filter beats within the time range, find the section by label).
+            *   Validate parameters (e.g., check if `beat_type` is valid).
+            *   Return the result in the standard structured format (`{"success": True/False, ...}`).
+
+    3.  **Register Handlers:** In `LLMToolManager.__init__`, add calls to `self.register_action_handler("new_tool_name", self._handle_new_tool_name)` for each new audio tool.
+
+**Phase 3: Higher-Level Pattern Tools (Recommended)**
+
+*   **Objective:** Simplify common musical pattern generation tasks for the LLM.
+*   **Location:** Define, implement, and register within `app/llm/tool_manager.py`.
+*   **Implementation Steps:**
+
+    1.  **Define Tool Schemas:** Add to `timeline_functions` or a new `pattern_functions` category in `LLMToolManager`.
+        *   `apply_beat_pattern`: (As defined before: section/time range, beat_type, pattern_type='pulse'|'toggle'|..., color, balls, pulse_duration).
+        *   `apply_section_theme`: (As defined before: section_label, base_color, energy_map='brightness'|'saturation'|'none', balls).
+
+    2.  **Implement Handler Methods:** Add `_handle_apply_beat_pattern`, `_handle_apply_section_theme`.
+        *   **Core Logic:** These handlers will be more complex. They should:
+            *   Retrieve necessary musical data by *directly reading the `song_analysis.json`* (preferred over chaining LLM tool calls). Get the analysis file path as described in Phase 2.
+            *   Calculate the required segment timings and colors based on the pattern logic (e.g., loop through beats, calculate pulse start/end times).
+            *   **Crucially:** Interact with the core application logic to create the segments on the timeline. Instead of calling `_handle_create_segment` (which adds complexity), directly use the underlying methods that `_handle_create_segment` uses. This might involve accessing `self.app.timeline_manager` or similar core components responsible for manipulating the sequence data model. Ensure these interactions trigger necessary UI updates (e.g., via signals if using PyQt).
+            *   Return a summary result (`{"success": True, "message": "Applied pulse pattern to Chorus 1..."}`).
+
+    3.  **Register Handlers:** Register these new pattern handlers in `LLMToolManager.__init__`.
+
+**Phase 4: Preference Learning Mechanism**
+
+*   **Objective:** Store user feedback and inject summaries into the LLM context to guide future designs.
+*   **Implementation:**
+
+    1.  **Feedback Input (UI):**
+        *   **Location:** Modify UI files in the `ui/` directory, specifically around the LLM chat dialog (`Tools > LLM Chat`) or the main timeline view.
+        *   **Components:** Add simple "Like" / "Dislike" buttons, potentially a text field for comments, after the LLM generates or modifies a sequence.
+
+    2.  **Preference Storage:**
+        *   **Location:** Create a new manager: `managers/preference_manager.py`.
+        *   **Technology:** Use Python's built-in `sqlite3` module.
+        *   **Database:** Create `preferences.db` in the application's config directory (e.g., `~/.config/SequenceMaker/preferences.db`).
+        *   **`PreferenceManager` Class:**
+            *   `__init__`: Connects to the DB, creates the table if it doesn't exist (schema: `id`, `song_identifier` TEXT, `timestamp` REAL, `feedback_text` TEXT, `sentiment` INTEGER (e.g., 1=positive, -1=negative), `tags` TEXT (JSON list), `created_at` TEXT).
+            *   `add_feedback(...)`: Method called by the UI when feedback is submitted. Stores the feedback in the DB. Could potentially use the LLM to auto-tag feedback based on keywords (`beat sync`, `color`, `transition`, `verse`, `chorus`).
+            *   `get_preference_summary(current_song_identifier, max_items=5)`: Retrieves relevant feedback. Prioritizes feedback for `current_song_identifier`, then potentially general feedback (e.g., where `song_identifier` is NULL or 'general'). Formats it into a concise text summary string.
+
+    3.  **Preference Retrieval & Injection:**
+        *   **Location:** Modify `app/llm/llm_manager.py`.
+        *   **Logic:**
+            *   In `LLMManager`, ensure it has access to the `PreferenceManager` instance and the `current_song_identifier`.
+            *   Modify the `send_request` method (or wherever the request is prepared).
+            *   *Before* calling the LLM API client (`openai_client`, `anthropic_client`, etc.):
+                *   Call `preference_manager.get_preference_summary(current_song_identifier)`.
+                *   Prepend the returned summary string to the `system_message` being sent to the LLM. Example:
+                    ```python
+                    preference_summary = self.preference_manager.get_preference_summary(song_id)
+                    if preference_summary:
+                        final_system_message = f"User Preference Summary:\n{preference_summary}\n---\nOriginal System Prompt:\n{system_message}"
+                    else:
+                        final_system_message = system_message
+                    # ... pass final_system_message to the API client
+                    ```
+
+    4.  **LLM Instruction:** Ensure the base system prompt (configured possibly via `LLMConfig`) informs the LLM to pay attention to the "User Preference Summary" section if present and use it to guide its creative choices and tool usage.
+
+**Summary for Programmer LLM:**
+
+1.  **Implement `AudioAnalysisManager`:** Create `managers/audio_analysis_manager.py` using `librosa` to extract beats, *downbeats*, *sections*, energy, and onsets. Save results to a `song_analysis.json` associated with the project/audio file. Trigger analysis in the background on audio load.
+2.  **Add Audio Data Tools:** In `app/llm/tool_manager.py`, define, implement (`_handle_...`), and register tools (`get_song_metadata`, `get_beats_in_range`, `get_section_details`) to query the `song_analysis.json`. Handlers read the JSON.
+3.  **Add Pattern Tools:** In `app/llm/tool_manager.py`, define, implement, and register higher-level tools (`apply_beat_pattern`, `apply_section_theme`). Handlers read analysis JSON and directly use core application logic (e.g., `TimelineManager`) to create multiple segments efficiently.
+4.  **Implement `PreferenceManager`:** Create `managers/preference_manager.py` using `sqlite3` to store feedback (sentiment, text, tags) in `config_dir/preferences.db`. Include methods to add feedback and retrieve summarized preferences.
+5.  **Integrate Preferences into LLM Flow:** Modify `app/llm/llm_manager.py` to call `PreferenceManager.get_preference_summary()` and prepend the result to the system message before sending requests to the LLM API.
+6.  **Update UI:** Add simple UI elements (buttons, text field) for users to submit feedback on generated sequences. Connect these UI elements to `PreferenceManager.add_feedback()`.
+7.  **Follow `LLM_TOOL_SYSTEM.md`:** Adhere strictly to the defined procedures for adding new tools.
+
+This detailed, file-specific plan should give your programmer LLM clear instructions, leveraging the existing architecture while adding the desired new functionality. Start with Phase 1 and 2, then add Phase 3, and finally Phase 4 for an incremental approach.
