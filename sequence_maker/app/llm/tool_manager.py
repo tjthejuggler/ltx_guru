@@ -7,6 +7,7 @@ This module defines the LLMToolManager class for managing LLM function definitio
 import logging
 import json
 from utils.color_utils import resolve_color_name
+from .music_data_tools import MusicDataTools
 
 
 class LLMToolManager:
@@ -34,6 +35,10 @@ class LLMToolManager:
         
         # Register orchestrator function handlers
         self.register_action_handler("create_segment_for_word", self._handle_create_segment_for_word)
+        
+        # Initialize and register music data tools
+        self.music_data_tools = MusicDataTools(app)
+        self.music_data_tools.register_handlers(self)
     
     def register_action_handler(self, action_type, handler):
         """
@@ -88,6 +93,10 @@ class LLMToolManager:
         # Add lyrics functions if lyrics manager is available
         if hasattr(self.app, 'lyrics_manager'):
             functions.extend(self.lyrics_functions)
+        
+        # Add music data functions if audio analysis manager is available
+        if hasattr(self.app, 'audio_analysis_manager'):
+            functions.extend(self.music_data_tools.music_data_functions)
         
         return functions
     
