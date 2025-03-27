@@ -14,6 +14,9 @@ app/llm/
 ├── tracker.py                 # Token usage and cost tracking
 ├── utils.py                   # Utility functions
 ├── exceptions.py              # Custom exceptions
+├── README.md                  # This file
+├── REFACTORING_SUMMARY.md     # Summary of the refactoring process
+├── LLM_TOOL_SYSTEM.md         # Documentation of the tool system
 └── api_clients/               # API client implementations
     ├── __init__.py            # Package exports
     ├── base_client.py         # Abstract base class
@@ -46,6 +49,9 @@ Manages function definitions and execution, including:
 - Function definitions for timeline, audio, and lyrics
 - Function call handling
 - Action registration and execution
+- Tool implementation and execution
+
+For detailed documentation on the tool system, including how to define, register, and implement new tools, see [LLM_TOOL_SYSTEM.md](./LLM_TOOL_SYSTEM.md).
 
 ### LLMResponseProcessor
 
@@ -93,6 +99,14 @@ llm_manager.send_request(
 llm_manager.llm_response_received.connect(handle_response)
 llm_manager.llm_error.connect(handle_error)
 ```
+
+## Documentation
+
+The LLM integration includes the following documentation:
+
+- **README.md**: This file, providing an overview of the LLM integration components
+- **REFACTORING_SUMMARY.md**: Summary of the refactoring process from the monolithic structure to the component-based architecture
+- **LLM_TOOL_SYSTEM.md**: Detailed documentation of the tool system, including how to define, register, and implement new tools
 
 ## Migration from Legacy Structure
 

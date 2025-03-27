@@ -14,7 +14,7 @@ Sequence Maker is a desktop application that allows you to create, edit, and vis
 - **Real-time Visualization**: See how your sequences will look on the juggling balls in real-time.
 - **Keyboard Mapping**: Customize keyboard shortcuts for quick color changes.
 - **Export to JSON and PRG**: Export your sequences to JSON format for use with prg_generator.
-- **LLM Integration**: Use AI to automatically generate sequences based on music analysis.
+- **LLM Integration**: Use AI to automatically generate sequences based on music analysis, lyrics synchronization, and natural language instructions.
 
 ## Installation
 
@@ -76,11 +76,13 @@ python sequence_maker/main.py
 ## Project Structure
 
 - **app/**: Core application components.
+  - **llm/**: LLM integration components.
 - **models/**: Data models for the application.
 - **managers/**: Manager classes for different aspects of the application.
 - **ui/**: User interface components.
 - **export/**: Export functionality for different formats.
 - **utils/**: Utility functions.
+- **api/**: API classes for different application features.
 
 ## Timeline Format
 
@@ -99,6 +101,29 @@ Example:
   }
 }
 ```
+
+## LLM Integration
+
+Sequence Maker includes integration with Large Language Models (LLMs) like OpenAI's GPT models and Anthropic's Claude. This integration allows you to:
+
+- Generate color sequences based on natural language instructions
+- Synchronize colors with specific words in lyrics
+- Get creative suggestions based on audio analysis
+- Automate complex sequence creation tasks
+
+### Using the LLM Integration
+
+1. Click on **Tools > LLM Chat** to open the LLM chat dialog
+2. Enter a natural language prompt describing what you want to do
+3. The LLM will analyze your request and perform the appropriate actions
+
+### LLM Documentation
+
+Detailed documentation about the LLM integration can be found in:
+
+- `sequence_maker/app/llm/README.md`: Overview of the LLM integration components
+- `sequence_maker/app/llm/LLM_TOOL_SYSTEM.md`: Documentation of the tool system
+- `sequence_maker/app/llm/REFACTORING_SUMMARY.md`: Summary of the refactoring process
 
 ## Integration with prg_generator
 
