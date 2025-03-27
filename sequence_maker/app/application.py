@@ -25,6 +25,7 @@ from managers.llm_manager import LLMManager
 from managers.undo_manager import UndoManager
 from managers.lyrics_manager import LyricsManager
 from managers.autosave_manager import AutosaveManager
+from managers.preference_manager import PreferenceManager
 from resources.resources import get_icon_path
 
 # Create a custom style that forces our icon to be used
@@ -169,6 +170,13 @@ class SequenceMakerApp:
         self.undo_manager = UndoManager(self)
         self.lyrics_manager = LyricsManager(self)
         self.autosave_manager = AutosaveManager(self)
+        
+        # Add new audio analysis manager
+        from managers.audio_analysis_manager import AudioAnalysisManager
+        self.audio_analysis_manager = AudioAnalysisManager(self)
+        
+        # Add preference manager for preference learning system
+        self.preference_manager = PreferenceManager(self)
         
         # Connect managers as needed
         self.timeline_manager.set_undo_manager(self.undo_manager)

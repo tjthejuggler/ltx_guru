@@ -727,7 +727,7 @@ def _handle_get_feature_value_at_time(self, parameters):
 }
 ```
 
-**Handler Implementation (Example):**
+**Handler Implementation:**
 
 ```python
 def _handle_apply_beat_pattern(self, parameters):
@@ -832,3 +832,15 @@ def _handle_apply_beat_pattern(self, parameters):
                 # Create a gradual fade-in effect
                 # Divide the section into small segments
                 num_segments = 10
+                segment_duration = (end_time - start_time) / num_segments
+                
+                for i in range(num_segments):
+                    segment_start = start_time + i * segment_duration
+                    segment_end = segment_start + segment_duration
+                    
+                    # Calculate brightness factor (0.0 to 1.0)
+                    brightness = i / (num_segments - 1)
+                    
+                    # Adjust color brightness
+                    segment_color = [int(c * brightness) for c in color]
+                    

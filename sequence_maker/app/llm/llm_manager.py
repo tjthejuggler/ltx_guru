@@ -231,6 +231,21 @@ class LLMManager(QObject):
         temperature = temperature if temperature is not None else self.config.temperature
         max_tokens = max_tokens if max_tokens is not None else self.config.max_tokens
         
+        # Get preference summary if available
+        preference_summary = ""
+        if hasattr(self.app, 'preference_manager') and hasattr(self.app, 'audio_manager') and self.app.audio_manager.audio_file:
+            # Use audio file path as song identifier
+            song_identifier = self.app.audio_manager.audio_file
+            preference_summary = self.app.preference_manager.get_preference_summary(song_identifier)
+            self.logger.info(f"Including preference summary for {song_identifier}")
+            self.logger.debug(f"Preference summary: {preference_summary}")
+        
+        # Prepend preference summary to system message if available
+        if preference_summary and system_message:
+            system_message = f"{preference_summary}\n\n{system_message}"
+        elif preference_summary:
+            system_message = preference_summary
+        
         # Log request details
         self._log_request_details(prompt, system_message, temperature, max_tokens)
         

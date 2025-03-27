@@ -148,6 +148,34 @@ def audio_manager_fixture(app_fixture):
 
 
 @pytest.fixture
+def audio_analysis_manager_fixture(app_fixture):
+    """
+    Fixture that provides the AudioAnalysisManager instance for testing.
+    
+    Args:
+        app_fixture: The app_fixture fixture
+        
+    Returns:
+        The AudioAnalysisManager instance
+    """
+    return app_fixture.audio_analysis_manager
+
+
+@pytest.fixture
+def preference_manager_fixture(app_fixture):
+    """
+    Fixture that provides the PreferenceManager instance for testing.
+    
+    Args:
+        app_fixture: The app_fixture fixture
+        
+    Returns:
+        The PreferenceManager instance
+    """
+    return app_fixture.preference_manager
+
+
+@pytest.fixture
 def test_project_fixture(project_manager_fixture):
     """
     Fixture that creates a test project for testing.
