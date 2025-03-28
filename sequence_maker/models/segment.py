@@ -5,6 +5,7 @@ This module defines the TimelineSegment class, which represents a color segment 
 """
 
 import logging
+from models.effect import Effect
 
 
 class TimelineSegment:
@@ -62,8 +63,6 @@ class TimelineSegment:
         Returns:
             TimelineSegment: A new TimelineSegment instance.
         """
-        from models.effect import Effect
-        
         segment = cls(
             start_time=data["startTime"],
             end_time=data["endTime"],

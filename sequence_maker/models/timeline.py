@@ -141,6 +141,8 @@ class Timeline:
         Add a color at a specific time.
         
         This will either create a new segment or modify an existing one.
+        It ensures there are no overlapping segments by removing or adjusting
+        any segments that would overlap with the new one.
         
         Args:
             time (float): Time in seconds.
@@ -155,7 +157,8 @@ class Timeline:
         if pixels is None:
             pixels = self.default_pixels
         
-        # Check if there's already a segment at this time
+        # Find all segments that might be affected by adding a color at this time
+        # First, check if there's a segment that contains this exact time
         existing_segment = self.get_segment_at_time(time)
         self.logger.debug(f"Existing segment at time {time}: {existing_segment}")
         
@@ -180,6 +183,9 @@ class Timeline:
             # Add the new segment
             self.segments.append(new_segment)
             self._sort_segments()
+            
+            # Now check for any other segments that might overlap with the new segment
+            self._remove_overlapping_segments(new_segment)
             
             return new_segment
         else:
@@ -223,7 +229,69 @@ class Timeline:
             self.segments.append(new_segment)
             self._sort_segments()
             
+            # Check for any segments that might overlap with the new segment
+            self._remove_overlapping_segments(new_segment)
+            
             return new_segment
+            
+    def _remove_overlapping_segments(self, segment):
+        """
+        Remove or adjust any segments that overlap with the given segment.
+        
+        Args:
+            segment (TimelineSegment): The segment to check for overlaps with.
+        """
+        segments_to_remove = []
+        
+        for other in self.segments:
+            # Skip the segment itself
+            if other is segment:
+                continue
+                
+            # Check if there's an overlap
+            if (other.start_time < segment.end_time and
+                other.end_time > segment.start_time):
+                
+                self.logger.debug(f"Found overlapping segment: {other.start_time}-{other.end_time}")
+                
+                # If the other segment is completely contained within this segment, remove it
+                if (other.start_time >= segment.start_time and
+                    other.end_time <= segment.end_time):
+                    segments_to_remove.append(other)
+                    
+                # If the other segment starts before this segment and ends within it,
+                # adjust its end time
+                elif other.start_time < segment.start_time and other.end_time <= segment.end_time:
+                    other.end_time = segment.start_time
+                    
+                # If the other segment starts within this segment and ends after it,
+                # adjust its start time
+                elif other.start_time >= segment.start_time and other.end_time > segment.end_time:
+                    other.start_time = segment.end_time
+                    
+                # If the other segment completely contains this segment,
+                # split it into two segments
+                elif other.start_time < segment.start_time and other.end_time > segment.end_time:
+                    # Create a new segment for the part after this segment
+                    new_other = TimelineSegment(
+                        start_time=segment.end_time,
+                        end_time=other.end_time,
+                        color=other.color,
+                        pixels=other.pixels
+                    )
+                    
+                    # Adjust the end time of the original segment
+                    other.end_time = segment.start_time
+                    
+                    # Add the new segment
+                    self.segments.append(new_other)
+        
+        # Remove segments that need to be removed
+        for other in segments_to_remove:
+            self.segments.remove(other)
+            
+        # Sort segments after all modifications
+        self._sort_segments()
     
     def clear(self):
         """Clear all segments from the timeline."""

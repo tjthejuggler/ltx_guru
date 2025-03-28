@@ -206,13 +206,22 @@ When the LLM calls a tool, the following sequence occurs:
 
 #### 6.1.1. Python Sandbox Environment
 
-The `execute_sequence_code` tool provides a secure sandbox for executing Python code to create complex light sequences. The sandbox environment includes:
+The `execute_sequence_code` tool provides a secure sandbox for executing Python code to create complex light sequences.
+
+**Important Notes:**
+- Do not use `import` statements in your code. All necessary functions and utilities are already provided.
+- The sandbox has restricted access to Python built-ins for security reasons.
+
+The sandbox environment includes:
 
 **Available Functions:**
 - `create_segment(timeline_index, start_time, end_time, color)`: Creates a segment on the specified timeline
 - `clear_timeline(timeline_index)`: Clears all segments from the specified timeline
 - `modify_segment(timeline_index, segment_index, start_time, end_time, color)`: Modifies an existing segment
 - `delete_segment(timeline_index, segment_index)`: Deletes a segment from the specified timeline
+- `get_lyrics_info()`: Gets information about the current lyrics, including word timestamps
+- `get_word_timestamps(word=None, start_time=None, end_time=None, limit=None)`: Gets timestamps for specific words in the lyrics
+- `find_first_word()`: Finds the first occurrence of a word in the lyrics
 
 **Available Utilities:**
 - `random_color()`: Generates a random RGB color
@@ -221,6 +230,7 @@ The `execute_sequence_code` tool provides a secure sandbox for executing Python 
 - `hsv_to_rgb(h, s, v)`: Converts HSV color to RGB
 - `rgb_to_hsv(r, g, b)`: Converts RGB color to HSV
 - `color_from_name(color_name)`: Converts a color name to RGB values
+- `print(*args)`: Prints messages to the application log (for debugging)
 
 **Available Data:**
 - `BEAT_TIMES`: List of beat timestamps in seconds
@@ -240,6 +250,35 @@ for i, beat_time in enumerate(BEAT_TIMES):
         offset_hue = (hue + (ball * 30)) % 360
         ball_color = hsv_to_rgb(offset_hue, 1.0, 1.0)
         create_segment(ball, beat_time, beat_time + 0.25, ball_color)
+```
+
+**Example: Creating segments based on lyrics:**
+```python
+# Make Ball 1 white during silence and blue when words are being spoken
+# First, clear the timeline
+clear_timeline(0)
+
+# Create white background for the entire song
+create_segment(0, 0, SONG_DURATION, [255, 255, 255])
+
+# Get lyrics information
+lyrics_info = get_lyrics_info()
+
+# Create blue segments for each word
+if lyrics_info and 'words' in lyrics_info:
+    # Sort all word occurrences by start time
+    all_words = sorted(lyrics_info['words'], key=lambda x: x['start_time'])
+    
+    # Process each word
+    for i, word_data in enumerate(all_words):
+        # Add blue segment for the word
+        create_segment(0, word_data['start_time'], word_data['end_time'], [0, 0, 255])
+        
+        # Add white segment after the word if there's a gap before the next word
+        if i < len(all_words) - 1:
+            next_start = all_words[i+1]['start_time']
+            if word_data['end_time'] < next_start:
+                create_segment(0, word_data['end_time'], next_start, [255, 255, 255])
 ```
 
 ### 6.2. Audio Tools
@@ -278,6 +317,27 @@ Return structured results that provide clear information about the outcome of th
 ### 7.5. Keep Handlers Focused
 
 Each handler should focus on a specific task. If a task is complex, consider breaking it down into multiple tools.
+
+### 7.6. Avoid Overlapping Timeline Segments
+
+When creating timeline segments, ensure that segments do not overlap in time. The timeline system is designed to prevent overlapping segments, as they can cause selection and editing issues. If you need to create adjacent color blocks, make sure they have distinct start and end times with no overlap.
+
+For example, instead of:
+```python
+# Incorrect - creates overlapping segments
+create_segment(0, 0.0, 10.0, [255, 255, 255])  # White background
+create_segment(0, 5.0, 6.0, [0, 0, 255])       # Blue segment overlaps with white
+```
+
+Use:
+```python
+# Correct - creates adjacent segments without overlap
+create_segment(0, 0.0, 5.0, [255, 255, 255])   # White segment until 5.0
+create_segment(0, 5.0, 6.0, [0, 0, 255])       # Blue segment from 5.0 to 6.0
+create_segment(0, 6.0, 10.0, [255, 255, 255])  # White segment after 6.0
+```
+
+The system will automatically handle any attempts to create overlapping segments by adjusting or removing segments as needed, but it's best practice to design your code to avoid creating overlaps in the first place.
 
 ## 8. Debugging Tools
 

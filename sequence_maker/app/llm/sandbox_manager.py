@@ -359,12 +359,100 @@ class SandboxManager:
                 self.logger.error(f"Error inside safe_get_word_timestamps logic: {e}", exc_info=True)
                 raise RuntimeError(f"Error getting word timestamps: {str(e)}")
         
+        # Safe wrapper for get_lyrics_info
+        def safe_get_lyrics_info():
+            """Get information about the current lyrics."""
+            try:
+                if not hasattr(self.app, 'lyrics_manager'):
+                    raise RuntimeError("Lyrics manager not available")
+                
+                # Check if the project has lyrics data
+                if not hasattr(self.app.project_manager, 'current_project') or not self.app.project_manager.current_project:
+                    raise RuntimeError("No project loaded")
+                
+                project = self.app.project_manager.current_project
+                if not hasattr(project, 'lyrics') or not project.lyrics:
+                    raise RuntimeError("No lyrics loaded")
+                
+                lyrics = project.lyrics
+                
+                # Get basic lyrics information
+                lyrics_text = lyrics.text if hasattr(lyrics, 'text') else ""
+                
+                # Get word timestamps
+                word_timestamps = []
+                unique_words = set()  # Set of unique word strings
+                if hasattr(lyrics, 'word_timestamps') and lyrics.word_timestamps:
+                    for word in lyrics.word_timestamps:
+                        if hasattr(word, 'word') and hasattr(word, 'start') and hasattr(word, 'end'):
+                            word_str = word.word
+                            unique_words.add(word_str)
+                            word_timestamps.append({
+                                "word": word_str,
+                                "start_time": word.start,
+                                "end_time": word.end,
+                                "line_index": getattr(word, 'line_index', 0),
+                                "word_index": getattr(word, 'word_index', 0)
+                            })
+                
+                return {
+                    "has_lyrics": True,
+                    "text": lyrics_text,
+                    "words": word_timestamps,
+                    "word_count": len(word_timestamps),
+                    "unique_words": list(unique_words)  # List of unique word strings
+                }
+            except Exception as e:
+                self.logger.error(f"Error in safe_get_lyrics_info: {e}")
+                raise RuntimeError(f"Error getting lyrics info: {str(e)}")
+        
+        # Safe wrapper for find_first_word
+        def safe_find_first_word():
+            """Find the first word in the lyrics."""
+            try:
+                if not hasattr(self.app, 'lyrics_manager'):
+                    raise RuntimeError("Lyrics manager not available")
+                
+                # Check if the project has lyrics data
+                if not hasattr(self.app.project_manager, 'current_project') or not self.app.project_manager.current_project:
+                    raise RuntimeError("No project loaded")
+                
+                project = self.app.project_manager.current_project
+                if not hasattr(project, 'lyrics') or not project.lyrics:
+                    raise RuntimeError("No lyrics loaded")
+                
+                lyrics = project.lyrics
+                
+                # Find the first word with a timestamp
+                first_word = None
+                if hasattr(lyrics, 'word_timestamps') and lyrics.word_timestamps:
+                    for word in lyrics.word_timestamps:
+                        if hasattr(word, 'start') and word.start is not None:
+                            first_word = word
+                            break
+                
+                if first_word is None:
+                    raise RuntimeError("No words with timestamps found")
+                
+                return {
+                    "word": first_word.word if hasattr(first_word, 'word') else "",
+                    "start_time": first_word.start,
+                    "end_time": first_word.end,
+                    "line_index": getattr(first_word, 'line_index', 0),
+                    "word_index": getattr(first_word, 'word_index', 0)
+                }
+            except Exception as e:
+                self.logger.error(f"Error in safe_find_first_word: {e}")
+                raise RuntimeError(f"Error finding first word: {str(e)}")
+        
         # Add wrappers to the dictionary
         safe_wrappers["create_segment"] = safe_create_segment
         safe_wrappers["clear_timeline"] = safe_clear_timeline
         safe_wrappers["modify_segment"] = safe_modify_segment
         safe_wrappers["delete_segment"] = safe_delete_segment
         safe_wrappers["get_word_timestamps"] = safe_get_word_timestamps
+        safe_wrappers["get_lyrics_info"] = safe_get_lyrics_info
+        safe_wrappers["find_first_word"] = safe_find_first_word
         
         return safe_wrappers
     
@@ -437,10 +525,14 @@ class SandboxManager:
         
         # Safe print function
         def safe_print(*args, **kwargs):
-            # Convert all arguments to strings and join them
-            output = " ".join(str(arg) for arg in args)
-            self.logger.info(f"Sandbox print: {output}")
-            return output
+            try:
+                # Convert all arguments to strings and join them
+                output = " ".join(str(arg) for arg in args)
+                self.logger.info(f"Sandbox print: {output}")
+                return None  # Print should return None, not the output string
+            except Exception as e:
+                self.logger.error(f"Error in safe_print: {e}")
+                return None
         
         # Add utilities to the dictionary
         safe_utilities["random_color"] = safe_random_color
@@ -475,9 +567,9 @@ class SandboxManager:
         # Add safe utilities
         sandbox_globals.update(safe_utilities)
         
-        # Ensure RestrictedPython's internal print guard uses our safe_print function
-        if 'print' in safe_utilities:
-            sandbox_globals['_print_'] = safe_utilities['print']
+        # Note: We're not overriding RestrictedPython's internal print handler (_print_)
+        # to avoid compatibility issues. Instead, we rely on the default safe implementation
+        # provided by safe_builtins, while still providing our 'print' function for logging.
         
         # Add safe built-ins
         sandbox_globals.update({
