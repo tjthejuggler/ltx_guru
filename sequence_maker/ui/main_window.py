@@ -213,6 +213,12 @@ class MainWindow(QMainWindow):
                 self.app.timeline_manager.duplicate_timeline(current_timeline.id)
                 self._update_ui()
     
+    def _on_view_jsons(self):
+        """Handle View JSONs action."""
+        from ui.dialogs.timeline_json_view_dialog import TimelineJsonViewDialog
+        dialog = TimelineJsonViewDialog(self, self.app)
+        dialog.exec()
+    
     def _on_play(self):
         on_play(self)
     

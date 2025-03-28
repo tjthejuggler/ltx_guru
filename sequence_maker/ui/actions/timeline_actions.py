@@ -38,3 +38,8 @@ class TimelineActions:
         self.duplicate_timeline_action = QAction("&Duplicate Timeline", self.main_window)
         self.duplicate_timeline_action.setStatusTip("Duplicate the selected timeline")
         self.duplicate_timeline_action.triggered.connect(self.main_window._on_duplicate_timeline)
+        
+        # View JSONs action
+        self.view_jsons_action = QAction("&View JSONs", self.main_window)
+        self.view_jsons_action.setStatusTip("View JSON representation of timelines")
+        self.view_jsons_action.triggered.connect(self.main_window._on_view_jsons)

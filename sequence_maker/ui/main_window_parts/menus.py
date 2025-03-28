@@ -78,6 +78,8 @@ def create_timeline_menu(main_window):
     main_window.timeline_menu.addAction(main_window.merge_segments_action)
     main_window.timeline_menu.addSeparator()
     main_window.timeline_menu.addAction(main_window.clear_timeline_action)
+    main_window.timeline_menu.addSeparator()
+    main_window.timeline_menu.addAction(main_window.view_jsons_action)
 
 
 def create_playback_menu(main_window):

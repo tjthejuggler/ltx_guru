@@ -101,6 +101,9 @@ def create_timeline_actions(main_window):
     main_window.clear_timeline_action = QAction("&Clear Timeline", main_window)
     main_window.clear_timeline_action.setStatusTip("Clear the timeline")
     main_window.clear_timeline_action.triggered.connect(main_window._on_clear_timeline)
+    
+    # Add view JSONs action from timeline_actions
+    main_window.view_jsons_action = main_window.timeline_actions.view_jsons_action
 
 
 def create_playback_actions(main_window):
