@@ -174,6 +174,20 @@ class LLMToolManager:
                             if "```" in content:
                                 self.logger.info("Content contains code blocks")
             
+            # Log the raw function call data before extraction
+            try:
+                raw_function_call_data = response.get("choices", [{}])[0].get("message", {}).get("function_call")
+                self.logger.debug(f"RAW function_call data from API: {raw_function_call_data}")
+                if raw_function_call_data:
+                    raw_function_name = raw_function_call_data.get("name")
+                    raw_arguments_str = raw_function_call_data.get("arguments", "{}")
+                    self.logger.info(f"Extracted function name from RAW: {raw_function_name}")
+                    self.logger.info(f"Extracted arguments string from RAW: {raw_arguments_str[:500]}...")
+                else:
+                    self.logger.info("No 'function_call' structure found in the message.")
+            except Exception as log_ex:
+                self.logger.error(f"Error during RAW function call logging/initial extraction: {log_ex}", exc_info=True)
+            
             # Extract function call information
             function_call = response["choices"][0]["message"].get("function_call")
             
@@ -188,7 +202,6 @@ class LLMToolManager:
             
             self.logger.info(f"Function name: {function_name}")
             self.logger.info(f"Arguments string: {arguments_str[:100]}...")
-            arguments_str = function_call.get("arguments", "{}")
             
             # Parse arguments
             try:

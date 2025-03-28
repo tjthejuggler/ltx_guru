@@ -216,13 +216,19 @@ class AnthropicClient(BaseLLMClient):
                 }
         
         # Look for direct function calls in the text (not in code blocks)
-        direct_function_call_pattern = r"(\w+)\s*\(\s*(.*?)\s*\)"
+        # Use a more specific pattern that targets known function names
+        known_functions = ["create_segment_for_word", "clear_all_timelines", "execute_sequence_code"]
+        known_functions_pattern = "|".join(known_functions)
+        direct_function_call_pattern = f"({known_functions_pattern})\\s*\\(\\s*(.*?)\\s*\\)"
+        
+        self.logger.info(f"Searching for direct function calls with pattern: {direct_function_call_pattern}")
         direct_function_match = re.search(direct_function_call_pattern, response_text)
         
         if direct_function_match:
             function_name = direct_function_match.group(1)
             arguments_str = direct_function_match.group(2)
             self.logger.info(f"Found direct function call: {function_name}")
+            self.logger.info(f"Raw arguments string: {arguments_str}")
             
             # Parse arguments
             try:

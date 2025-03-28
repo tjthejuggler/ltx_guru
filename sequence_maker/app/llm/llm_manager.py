@@ -369,6 +369,9 @@ class LLMManager(QObject):
                     prompt, system_message, temperature, max_tokens, functions
                 )
                 
+                # Log the complete raw API response for debugging
+                self.logger.debug(f"==== RAW API RESPONSE START ====\n{json.dumps(response, indent=2)}\n==== RAW API RESPONSE END ====")
+                
                 if self.interrupt_requested:
                     self.logger.info("LLM request interrupted")
                 else:
@@ -426,25 +429,35 @@ class LLMManager(QObject):
                 # Log the result received from tool manager
                 self.logger.info(f"Result received in LLMManager from tool '{function_name}': {result}")
                 
-                # Check if the function call was successful
-                if result.get('success') is False:
-                    self.logger.warning(f"Function call '{function_name}' failed: {result.get('error')}")
+                # Log the result received from tool manager
+                self.logger.info(f"Result received in LLMManager from tool '{function_name}': {result}")
+                
+                # Check explicitly for failure condition BEFORE assuming success
+                if result is not None and (result.get('success') is False or 'error' in result):
+                    self.logger.warning(f"Function call '{function_name}' failed. Result: {result}")
                     
                     # Only retry if we haven't exceeded the retry limit
                     max_retries = 2  # Limit to 2 retries to prevent infinite loops
                     if retry_count < max_retries:
                         self.logger.info(f"Attempting retry {retry_count + 1} of {max_retries}")
                         
+                        # Get a list of available tools
+                        available_tools_str = ", ".join(self.tool_manager.action_handlers.keys())
+                        self.logger.info(f"Available tools for retry: {available_tools_str}")
+                        
                         # Construct a new prompt explaining the failure
                         error_message = result.get('error', 'Unknown error')
-                        error_details = result.get('error_details', '')
                         
+                        # Create a more directive retry prompt
                         retry_prompt = (
-                            f"Your previous attempt to call function '{function_name}' failed with the error: "
-                            f"'{error_message}'. {error_details}\n\n"
-                            f"The function was called with these arguments: {arguments}\n\n"
-                            f"Please analyze the error and the function definition, then provide a corrected "
-                            f"function call or Python code to accomplish the original request:\n\n"
+                            f"Your previous attempt to call function '{function_name}' failed with the error: '{error_message}'. "
+                            f"That function is not available or the call was incorrect.\n\n"
+                            f"Please use one of these available tools: [{available_tools_str}].\n\n"
+                            f"For word-based color changes, use 'create_segment_for_word' with parameters:\n"
+                            f"- word: The word in lyrics to synchronize with (e.g., 'you')\n"
+                            f"- color: RGB values [R,G,B] or color name (e.g., 'red')\n"
+                            f"- balls: 'all' or specific ball indices\n\n"
+                            f"For complex sequences, use 'execute_sequence_code' with Python code.\n\n"
                             f"Original request: {prompt}"
                         )
                         
@@ -459,6 +472,12 @@ class LLMManager(QObject):
                         
                         # Return early, as we're handling this with a retry
                         return
+                elif result is not None and result.get('success') is True:
+                    # This is the SUCCESS path
+                    self.logger.info(f"Function call '{function_name}' succeeded.")
+                else:
+                    # Handle cases where result has an unexpected structure
+                    self.logger.warning(f"Unexpected result structure from tool '{function_name}': {result}")
                 
                 # Emit function call signal
                 self.logger.info(f"Emitting function_called signal for {function_name}")
