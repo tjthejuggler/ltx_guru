@@ -15,6 +15,7 @@ from RestrictedPython import compile_restricted
 from RestrictedPython.Guards import safe_builtins, full_write_guard
 from RestrictedPython.Eval import default_guarded_getiter
 from RestrictedPython.Guards import guarded_iter_unpack_sequence, guarded_unpack_sequence
+from RestrictedPython.PrintCollector import PrintCollector
 
 from utils.color_utils import (
     rgb_to_hsv, 
@@ -522,16 +523,17 @@ class SandboxManager:
             
             result = resolve_color_name(color_name)
             return list(result)
-        
         # Safe print function
         def safe_print(*args, **kwargs):
             try:
                 # Convert all arguments to strings and join them
                 output = " ".join(str(arg) for arg in args)
                 self.logger.info(f"Sandbox print: {output}")
-                return None  # Print should return None, not the output string
+                # IMPORTANT: Return None, as expected by standard print
+                return None
             except Exception as e:
-                self.logger.error(f"Error in safe_print: {e}")
+                self.logger.error(f"Error in safe_print: {e}", exc_info=True)
+                return None # Return None even on error
                 return None
         
         # Add utilities to the dictionary
@@ -544,9 +546,8 @@ class SandboxManager:
         safe_utilities["print"] = safe_print
         
         return safe_utilities
-    
-    def _create_sandbox_globals(self, safe_wrappers: Dict[str, Any], safe_utilities: Dict[str, Any], 
-                               available_context: Dict[str, Any]) -> Dict[str, Any]:
+    def _create_sandbox_globals(self, safe_wrappers: Dict[str, Any], safe_utilities: Dict[str, Any],
+                                available_context: Dict[str, Any]) -> Dict[str, Any]:
         """
         Create the global environment for the sandbox.
         
@@ -561,14 +562,23 @@ class SandboxManager:
         # Start with a minimal set of safe builtins
         sandbox_globals = safe_builtins.copy()
         
+        # Ensure RestrictedPython's internal print mechanism is correctly wired
+        # This links the execution of 'print()' statements to a safe collector.
+        sandbox_globals['_print_'] = PrintCollector
+        
         # Add safe wrappers
         sandbox_globals.update(safe_wrappers)
         
         # Add safe utilities
         sandbox_globals.update(safe_utilities)
         
-        # Note: We're not overriding RestrictedPython's internal print handler (_print_)
-        # to avoid compatibility issues. Instead, we rely on the default safe implementation
+        # Make sure 'print' still points to our safe_print for logging:
+        if 'print' not in safe_utilities: # Should already be there from _create_safe_utilities
+            self.logger.warning("safe_print utility missing, adding fallback.")
+            safe_utilities['print'] = self._create_safe_utilities()['print'] # Ensure it's created
+            sandbox_globals['print'] = safe_utilities['print']
+        else:
+            sandbox_globals['print'] = safe_utilities['print'] # Explicitly ensure it's set
         # provided by safe_builtins, while still providing our 'print' function for logging.
         
         # Add safe built-ins

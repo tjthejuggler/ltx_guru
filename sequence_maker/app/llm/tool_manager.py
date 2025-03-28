@@ -31,13 +31,12 @@ class LLMToolManager:
         # Action handlers
         self.action_handlers = {}
         
-        # Register lyrics function handlers
-        self.register_action_handler("get_lyrics_info", self._handle_get_lyrics_info)
-        self.register_action_handler("get_word_timestamps", self._handle_get_word_timestamps)
-        self.register_action_handler("find_first_word", self._handle_find_first_word)
+        # Register essential lyrics function handlers
+        # Note: get_lyrics_info and get_word_timestamps are kept for sandbox use but not as direct tools
         
-        # Register orchestrator function handlers
+        # Register essential orchestrator function handlers
         self.register_action_handler("create_segment_for_word", self._handle_create_segment_for_word)
+        self.register_action_handler("clear_all_timelines", self._handle_clear_all_timelines)
         
         # Initialize and register music data tools
         self.music_data_tools = MusicDataTools(app)
@@ -193,6 +192,8 @@ class LLMToolManager:
             
             # Parse arguments
             try:
+                # Log the exact string being parsed before attempting to parse it
+                self.logger.info(f"Raw arguments string for {function_name} (before parsing): {arguments_str}")
                 self.logger.debug(f"Attempting to parse arguments for {function_name}: {arguments_str}")
                 arguments = json.loads(arguments_str)
                 self.logger.debug(f"Successfully parsed arguments: {arguments}")
@@ -303,113 +304,6 @@ class LLMToolManager:
                 }
             },
             {
-                "name": "create_segment",
-                "description": "Create a new segment in a timeline",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "timeline_index": {
-                            "type": "integer",
-                            "description": "Index of the timeline to add the segment to"
-                        },
-                        "start_time": {
-                            "type": "number",
-                            "description": "Start time of the segment in seconds"
-                        },
-                        "end_time": {
-                            "type": "number",
-                            "description": "End time of the segment in seconds"
-                        },
-                        "color": {
-                            "type": "array",
-                            "description": "RGB color values (0-255)",
-                            "items": {
-                                "type": "integer",
-                                "minimum": 0,
-                                "maximum": 255
-                            },
-                            "minItems": 3,
-                            "maxItems": 3
-                        }
-                    },
-                    "required": ["timeline_index", "start_time", "end_time", "color"]
-                }
-            },
-            {
-                "name": "delete_segment",
-                "description": "Delete a segment from a timeline",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "timeline_index": {
-                            "type": "integer",
-                            "description": "Index of the timeline containing the segment"
-                        },
-                        "segment_index": {
-                            "type": "integer",
-                            "description": "Index of the segment to delete"
-                        }
-                    },
-                    "required": ["timeline_index", "segment_index"]
-                }
-            },
-            {
-                "name": "modify_segment",
-                "description": "Modify an existing segment in a timeline",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "timeline_index": {
-                            "type": "integer",
-                            "description": "Index of the timeline containing the segment"
-                        },
-                        "segment_index": {
-                            "type": "integer",
-                            "description": "Index of the segment to modify"
-                        },
-                        "properties": {
-                            "type": "object",
-                            "properties": {
-                                "start_time": {
-                                    "type": "number",
-                                    "description": "New start time of the segment in seconds"
-                                },
-                                "end_time": {
-                                    "type": "number",
-                                    "description": "New end time of the segment in seconds"
-                                },
-                                "color": {
-                                    "type": "array",
-                                    "description": "New RGB color values (0-255)",
-                                    "items": {
-                                        "type": "integer",
-                                        "minimum": 0,
-                                        "maximum": 255
-                                    },
-                                    "minItems": 3,
-                                    "maxItems": 3
-                                }
-                            }
-                        }
-                    },
-                    "required": ["timeline_index", "segment_index", "properties"]
-                }
-            },
-            {
-                "name": "clear_timeline",
-                "description": "Clear all segments from a timeline",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "timeline_index": {
-                            "type": "integer",
-                            "description": "Index of the timeline to clear"
-                        }
-                    },
-                    "required": ["timeline_index"]
-                }
-            },
-            {
                 "name": "clear_all_timelines",
                 "description": "Clear all segments from all timelines (all balls)",
                 "parameters": {
@@ -420,49 +314,6 @@ class LLMToolManager:
                             "description": "Whether to set all balls to black [0,0,0] (default: true)"
                         }
                     }
-                }
-            },
-            {
-                "name": "create_segments_batch",
-                "description": "Create multiple segments in a timeline in a single operation",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "timeline_index": {
-                            "type": "integer",
-                            "description": "Index of the timeline to add segments to"
-                        },
-                        "segments": {
-                            "type": "array",
-                            "description": "List of segment definitions",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "start_time": {
-                                        "type": "number",
-                                        "description": "Start time of the segment in seconds"
-                                    },
-                                    "end_time": {
-                                        "type": "number",
-                                        "description": "End time of the segment in seconds"
-                                    },
-                                    "color": {
-                                        "type": "array",
-                                        "description": "RGB color values (0-255)",
-                                        "items": {
-                                            "type": "integer",
-                                            "minimum": 0,
-                                            "maximum": 255
-                                        },
-                                        "minItems": 3,
-                                        "maxItems": 3
-                                    }
-                                },
-                                "required": ["start_time", "end_time", "color"]
-                            }
-                        }
-                    },
-                    "required": ["timeline_index", "segments"]
                 }
             }
         ]
@@ -529,49 +380,9 @@ class LLMToolManager:
         Returns:
             list: List of lyrics function definitions.
         """
-        return [
-            {
-                "name": "get_lyrics_info",
-                "description": "Get information about the current song lyrics",
-                "parameters": {
-                    "type": "object",
-                    "properties": {}
-                }
-            },
-            {
-                "name": "get_word_timestamps",
-                "description": "Get timestamps for words in the lyrics",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "word": {
-                            "type": "string",
-                            "description": "Specific word to find (optional). If not provided, returns all word timestamps."
-                        },
-                        "start_time": {
-                            "type": "number",
-                            "description": "Start time in seconds for filtering words (optional)"
-                        },
-                        "end_time": {
-                            "type": "number",
-                            "description": "End time in seconds for filtering words (optional)"
-                        },
-                        "limit": {
-                            "type": "integer",
-                            "description": "Maximum number of word timestamps to return (optional)"
-                        }
-                    }
-                }
-            },
-            {
-                "name": "find_first_word",
-                "description": "Find the first word in the lyrics",
-                "parameters": {
-                    "type": "object",
-                    "properties": {}
-                }
-            }
-        ]
+        # Note: These functions are no longer exposed directly to the LLM
+        # They are still available in the sandbox environment
+        return []
     
     # Handler implementations
     
@@ -1005,6 +816,56 @@ class LLMToolManager:
             formatted_result["variables"] = result["variables"]
         
         return formatted_result
+    
+    def _handle_clear_all_timelines(self, parameters):
+        """
+        Handle the clear_all_timelines action.
+        
+        Args:
+            parameters (dict): Action parameters.
+            
+        Returns:
+            dict: Result of the action.
+        """
+        if not hasattr(self.app, 'timeline_manager'):
+            return {"success": False, "error": "Timeline manager not available"}
+        
+        try:
+            # Extract parameters
+            set_black = parameters.get("set_black", True)
+            
+            # Get all timelines
+            timeline_manager = self.app.timeline_manager
+            timelines = timeline_manager.get_timelines()
+            
+            # Clear each timeline
+            cleared_count = 0
+            for i in range(len(timelines)):
+                timeline = timeline_manager.get_timeline(i)
+                if timeline:
+                    timeline.clear()
+                    cleared_count += 1
+                    
+                    # Set to black if requested
+                    if set_black:
+                        # Create a black segment for the entire duration
+                        if hasattr(self.app, 'audio_manager') and self.app.audio_manager.duration > 0:
+                            duration = self.app.audio_manager.duration
+                            timeline_manager.create_segment(i, 0, duration, [0, 0, 0])
+            
+            # Emit timeline modified signal
+            timeline_manager.timelines_modified.emit()
+            
+            return {
+                "success": True,
+                "message": f"Cleared {cleared_count} timelines",
+                "timelines_cleared": cleared_count,
+                "set_black": set_black
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error in _handle_clear_all_timelines: {e}", exc_info=True)
+            return {"success": False, "error": f"Error clearing timelines: {str(e)}"}
     
     def _format_time(self, seconds):
         """

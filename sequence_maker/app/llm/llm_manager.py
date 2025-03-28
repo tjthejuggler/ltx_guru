@@ -203,7 +203,7 @@ class LLMManager(QObject):
             self.logger.warning(f"Unknown provider: {provider}")
             return None
     
-    def send_request(self, prompt, system_message=None, temperature=None, max_tokens=None, use_functions=True, stream=False):
+    def send_request(self, prompt, system_message=None, temperature=None, max_tokens=None, use_functions=True, stream=False, retry_count=0):
         """
         Send a request to the LLM.
         
@@ -214,11 +214,13 @@ class LLMManager(QObject):
             max_tokens (int, optional): Maximum tokens to generate.
             use_functions (bool, optional): Whether to use function calling.
             stream (bool, optional): Whether to stream the response.
+            retry_count (int, optional): Number of retries attempted so far. Defaults to 0.
             
         Returns:
             bool: True if the request was sent, False otherwise.
         """
-        if self.is_processing:
+        if self.is_processing and retry_count == 0:
+            # Only block new requests, not retries
             self.logger.warning("LLM is already processing a request")
             return False
         
@@ -258,8 +260,9 @@ class LLMManager(QObject):
                 self.llm_error.emit("Failed to create API client")
                 return False
         
-        # Save version before operation
-        self._save_version_before_operation(prompt)
+        # Save version before operation (only for initial requests, not retries)
+        if retry_count == 0:
+            self._save_version_before_operation(prompt)
         
         # Start request thread
         self.is_processing = True
@@ -268,7 +271,7 @@ class LLMManager(QObject):
         
         self.request_thread = threading.Thread(
             target=self._request_worker,
-            args=(prompt, system_message, temperature, max_tokens, use_functions, stream)
+            args=(prompt, system_message, temperature, max_tokens, use_functions, stream, retry_count)
         )
         self.request_thread.daemon = True
         self.request_thread.start()
@@ -293,7 +296,27 @@ class LLMManager(QObject):
         self.logger.debug(f"  System message: {system_message}")
         self.logger.debug(f"  Prompt: {prompt}")
     
-    def _request_worker(self, prompt, system_message, temperature, max_tokens, use_functions=True, stream=False):
+    def _send_retry_request(self, retry_prompt, retry_count):
+        """
+        Send a retry request to the LLM with a corrective prompt.
+        
+        Args:
+            retry_prompt (str): The corrective prompt to send.
+            retry_count (int): The current retry count.
+        """
+        self.logger.info(f"Sending retry request (attempt {retry_count})")
+        
+        # Use the same parameters as the original request
+        system_message = None  # We're including the context in the retry prompt
+        temperature = self.config.temperature
+        max_tokens = self.config.max_tokens
+        use_functions = True
+        stream = False
+        
+        # Send the request
+        self.send_request(retry_prompt, system_message, temperature, max_tokens, use_functions, stream)
+        
+    def _request_worker(self, prompt, system_message, temperature, max_tokens, use_functions=True, stream=False, retry_count=0):
         """
         Worker thread for sending LLM requests.
         
@@ -304,6 +327,7 @@ class LLMManager(QObject):
             max_tokens (int): Maximum tokens to generate.
             use_functions (bool): Whether to use function calling.
             stream (bool): Whether to stream the response.
+            retry_count (int, optional): Number of retries attempted so far. Defaults to 0.
         """
         start_time = time.time()
         
@@ -337,7 +361,7 @@ class LLMManager(QObject):
                 
                 # Process the full response
                 end_time = time.time()
-                self._process_response(response, response_text, prompt, start_time, end_time)
+                self._process_response(response, response_text, prompt, start_time, end_time, retry_count)
                 
             else:
                 # Non-streaming request
@@ -353,7 +377,7 @@ class LLMManager(QObject):
                     
                     # Process the response
                     end_time = time.time()
-                    self._process_response(response, response_text, prompt, start_time, end_time)
+                    self._process_response(response, response_text, prompt, start_time, end_time, retry_count)
         
         except Exception as e:
             self.logger.error(f"Error in LLM request: {str(e)}")
@@ -363,7 +387,7 @@ class LLMManager(QObject):
             self.is_processing = False
             self.llm_ready.emit()
     
-    def _process_response(self, response, response_text, prompt, start_time, end_time):
+    def _process_response(self, response, response_text, prompt, start_time, end_time, retry_count=0):
         """
         Process an LLM response.
         
@@ -373,6 +397,7 @@ class LLMManager(QObject):
             prompt (str): The original prompt.
             start_time (float): Request start time.
             end_time (float): Request end time.
+            retry_count (int, optional): Number of retries attempted so far. Defaults to 0.
         """
         try:
             self.logger.info("=== PROCESSING LLM RESPONSE ===")
@@ -400,6 +425,40 @@ class LLMManager(QObject):
                 self.logger.info(f"Processing function call: {function_name}")
                 # Log the result received from tool manager
                 self.logger.info(f"Result received in LLMManager from tool '{function_name}': {result}")
+                
+                # Check if the function call was successful
+                if result.get('success') is False:
+                    self.logger.warning(f"Function call '{function_name}' failed: {result.get('error')}")
+                    
+                    # Only retry if we haven't exceeded the retry limit
+                    max_retries = 2  # Limit to 2 retries to prevent infinite loops
+                    if retry_count < max_retries:
+                        self.logger.info(f"Attempting retry {retry_count + 1} of {max_retries}")
+                        
+                        # Construct a new prompt explaining the failure
+                        error_message = result.get('error', 'Unknown error')
+                        error_details = result.get('error_details', '')
+                        
+                        retry_prompt = (
+                            f"Your previous attempt to call function '{function_name}' failed with the error: "
+                            f"'{error_message}'. {error_details}\n\n"
+                            f"The function was called with these arguments: {arguments}\n\n"
+                            f"Please analyze the error and the function definition, then provide a corrected "
+                            f"function call or Python code to accomplish the original request:\n\n"
+                            f"Original request: {prompt}"
+                        )
+                        
+                        self.logger.info(f"Sending retry prompt: {retry_prompt}")
+                        
+                        # Re-invoke send_request with the corrective prompt
+                        # We need to do this in a new thread to avoid blocking
+                        threading.Thread(
+                            target=self._send_retry_request,
+                            args=(retry_prompt, retry_count + 1)
+                        ).start()
+                        
+                        # Return early, as we're handling this with a retry
+                        return
                 
                 # Emit function call signal
                 self.logger.info(f"Emitting function_called signal for {function_name}")
