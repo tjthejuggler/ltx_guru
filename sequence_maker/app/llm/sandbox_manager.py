@@ -446,6 +446,46 @@ class SandboxManager:
                 self.logger.error(f"Error in safe_find_first_word: {e}")
                 raise RuntimeError(f"Error finding first word: {str(e)}")
         
+        # Safe wrapper for get_all_word_timestamps
+        def safe_get_all_word_timestamps():
+            """Get all word timestamps from the lyrics."""
+            try:
+                # Check if lyrics manager is available
+                if not hasattr(self.app, 'lyrics_manager'):
+                    self.logger.warning("Lyrics manager not available")
+                    return []
+                
+                # Check if project has lyrics
+                if not hasattr(self.app.project_manager, 'current_project') or not self.app.project_manager.current_project:
+                    self.logger.warning("No project loaded")
+                    return []
+                
+                project = self.app.project_manager.current_project
+                if not hasattr(project, 'lyrics') or not project.lyrics:
+                    self.logger.warning("No lyrics loaded")
+                    return []
+                
+                lyrics = project.lyrics
+                if not hasattr(lyrics, 'word_timestamps') or not lyrics.word_timestamps:
+                    self.logger.warning("Lyrics do not have timestamps")
+                    return []
+                
+                # Get all word timestamps
+                all_timestamps = []
+                for w in lyrics.word_timestamps:
+                    if hasattr(w, 'start') and w.start is not None:
+                        all_timestamps.append({
+                            "word": w.word if hasattr(w, 'word') else "",
+                            "start_time": w.start,
+                            "end_time": w.end
+                        })
+                
+                self.logger.debug(f"safe_get_all_word_timestamps returning {len(all_timestamps)} timestamps.")
+                return all_timestamps
+            except Exception as e:
+                self.logger.error(f"Error in safe_get_all_word_timestamps: {e}", exc_info=True)
+                raise RuntimeError(f"Error getting all word timestamps: {str(e)}")
+        
         # Add wrappers to the dictionary
         safe_wrappers["create_segment"] = safe_create_segment
         safe_wrappers["clear_timeline"] = safe_clear_timeline
@@ -454,6 +494,7 @@ class SandboxManager:
         safe_wrappers["get_word_timestamps"] = safe_get_word_timestamps
         safe_wrappers["get_lyrics_info"] = safe_get_lyrics_info
         safe_wrappers["find_first_word"] = safe_find_first_word
+        safe_wrappers["get_all_word_timestamps"] = safe_get_all_word_timestamps
         
         return safe_wrappers
     
@@ -466,19 +507,42 @@ class SandboxManager:
         """
         safe_utilities = {}
         
+        # Import random with alias to avoid name clash
+        import random as py_random
+        
         # Safe random color generator
         def safe_random_color():
-            import random
-            return [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+            return [py_random.randint(0, 255), py_random.randint(0, 255), py_random.randint(0, 255)]
         
         # Safe random float generator
         def safe_random_float(min_val, max_val):
-            import random
             if not isinstance(min_val, (int, float)) or not isinstance(max_val, (int, float)):
                 raise TypeError("min_val and max_val must be numbers")
             if min_val >= max_val:
                 raise ValueError("min_val must be less than max_val")
-            return random.uniform(min_val, max_val)
+            return py_random.uniform(min_val, max_val)
+        
+        # Safe random integer generator
+        def safe_random_randint(a, b):
+            if not isinstance(a, int) or not isinstance(b, int):
+                raise TypeError("a and b must be integers")
+            if a >= b:
+                raise ValueError("a must be less than b")
+            return py_random.randint(a, b)
+        
+        # Safe random choice from sequence
+        def safe_random_choice(seq):
+            if not seq:
+                raise ValueError("sequence cannot be empty")
+            return py_random.choice(seq)
+        
+        # Safe random uniform float
+        def safe_random_uniform(a, b):
+            if not isinstance(a, (int, float)) or not isinstance(b, (int, float)):
+                raise TypeError("a and b must be numbers")
+            if a >= b:
+                raise ValueError("a must be less than b")
+            return py_random.uniform(a, b)
         
         # Safe color interpolation
         def safe_interpolate_color(color1, color2, factor):
@@ -539,6 +603,9 @@ class SandboxManager:
         # Add utilities to the dictionary
         safe_utilities["random_color"] = safe_random_color
         safe_utilities["random_float"] = safe_random_float
+        safe_utilities["random_randint"] = safe_random_randint
+        safe_utilities["random_choice"] = safe_random_choice
+        safe_utilities["random_uniform"] = safe_random_uniform
         safe_utilities["interpolate_color"] = safe_interpolate_color
         safe_utilities["hsv_to_rgb"] = safe_hsv_to_rgb
         safe_utilities["rgb_to_hsv"] = safe_rgb_to_hsv
@@ -565,6 +632,10 @@ class SandboxManager:
         # Ensure RestrictedPython's internal print mechanism is correctly wired
         # This links the execution of 'print()' statements to a safe collector.
         sandbox_globals['_print_'] = PrintCollector
+        
+        # Explicitly disable __import__ to prevent imports
+        if '__import__' in sandbox_globals:
+            del sandbox_globals['__import__']
         
         # Add safe wrappers
         sandbox_globals.update(safe_wrappers)

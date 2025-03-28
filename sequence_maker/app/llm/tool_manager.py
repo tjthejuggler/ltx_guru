@@ -805,7 +805,7 @@ class LLMToolManager:
             
             return formatted_error
         
-        # Format success message
+        # Format success message with detailed summary
         formatted_result = {
             "success": True,
             "message": "Code executed successfully"
@@ -814,8 +814,82 @@ class LLMToolManager:
         # Add variables if available
         if "variables" in result:
             formatted_result["variables"] = result["variables"]
+            
+            # Try to extract operation counts from variables
+            try:
+                # Count segments created
+                segments_created = 0
+                segments_modified = 0
+                segments_deleted = 0
+                timelines_cleared = 0
+                
+                # Look for variables that might contain operation results
+                for var_name, var_value in result["variables"].items():
+                    if isinstance(var_value, list) and len(var_value) > 0:
+                        # Check if list items have segment_created key
+                        if isinstance(var_value[0], dict) and "segment_created" in var_value[0]:
+                            for item in var_value:
+                                if item.get("segment_created", False):
+                                    segments_created += 1
+                        # Check if list items have segment_modified key
+                        if isinstance(var_value[0], dict) and "segment_modified" in var_value[0]:
+                            for item in var_value:
+                                if item.get("segment_modified", False):
+                                    segments_modified += 1
+                        # Check if list items have segment_deleted key
+                        if isinstance(var_value[0], dict) and "segment_deleted" in var_value[0]:
+                            for item in var_value:
+                                if item.get("segment_deleted", False):
+                                    segments_deleted += 1
+                        # Check if list items have timeline_cleared key
+                        if isinstance(var_value[0], dict) and "timeline_cleared" in var_value[0]:
+                            for item in var_value:
+                                if item.get("timeline_cleared", False):
+                                    timelines_cleared += 1
+                
+                # Add operation summary to result
+                operation_summary = {}
+                if segments_created > 0:
+                    operation_summary["segments_created"] = segments_created
+                if segments_modified > 0:
+                    operation_summary["segments_modified"] = segments_modified
+                if segments_deleted > 0:
+                    operation_summary["segments_deleted"] = segments_deleted
+                if timelines_cleared > 0:
+                    operation_summary["timelines_cleared"] = timelines_cleared
+                
+                if operation_summary:
+                    formatted_result["operation_summary"] = operation_summary
+                    formatted_result["message"] = f"Code executed successfully. {self._format_operation_summary(operation_summary)}"
+            except Exception as e:
+                self.logger.error(f"Error extracting operation counts: {e}", exc_info=True)
         
         return formatted_result
+        
+    def _format_operation_summary(self, summary):
+        """
+        Format an operation summary into a human-readable string.
+        
+        Args:
+            summary (dict): Operation summary.
+            
+        Returns:
+            str: Formatted summary string.
+        """
+        parts = []
+        if "segments_created" in summary:
+            parts.append(f"{summary['segments_created']} segments created")
+        if "segments_modified" in summary:
+            parts.append(f"{summary['segments_modified']} segments modified")
+        if "segments_deleted" in summary:
+            parts.append(f"{summary['segments_deleted']} segments deleted")
+        if "timelines_cleared" in summary:
+            parts.append(f"{summary['timelines_cleared']} timelines cleared")
+        
+        if not parts:
+            return "No changes made."
+        
+        return "Summary: " + ", ".join(parts) + "."
     
     def _handle_clear_all_timelines(self, parameters):
         """

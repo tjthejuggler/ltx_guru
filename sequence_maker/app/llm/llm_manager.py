@@ -473,6 +473,10 @@ class LLMManager(QObject):
                     }
                 }
                 
+                # Create a summary message to feed back to the LLM
+                summary_message = self._create_result_summary(function_name, arguments, result)
+                self.logger.info(f"Result summary message: {summary_message}")
+                
                 # Log the response data that will be emitted
                 self.logger.info(f"Response data to be emitted for function '{function_name}': {response_data}")
                 
@@ -543,6 +547,59 @@ class LLMManager(QObject):
                 
                 # Save version using autosave_manager
                 self.app.autosave_manager.save_version("Before LLM operation")
+    
+    def _create_result_summary(self, function_name, arguments, result):
+        """
+        Create a summary of the function call result to feed back to the LLM.
+        
+        Args:
+            function_name (str): The name of the function called.
+            arguments (dict): The arguments passed to the function.
+            result (dict): The result of the function call.
+            
+        Returns:
+            str: A summary message describing the result.
+        """
+        # Check if the function call was successful
+        if not result.get('success', True):  # Default to True for backward compatibility
+            error_message = result.get('error', 'Unknown error')
+            return f"Function '{function_name}' failed with error: {error_message}"
+        
+        # Create a summary based on the function type
+        if function_name == "execute_sequence_code":
+            # Check if there's an operation summary
+            if "operation_summary" in result:
+                summary = result["operation_summary"]
+                parts = []
+                if "segments_created" in summary:
+                    parts.append(f"{summary['segments_created']} segments created")
+                if "segments_modified" in summary:
+                    parts.append(f"{summary['segments_modified']} segments modified")
+                if "segments_deleted" in summary:
+                    parts.append(f"{summary['segments_deleted']} segments deleted")
+                if "timelines_cleared" in summary:
+                    parts.append(f"{summary['timelines_cleared']} timelines cleared")
+                
+                if parts:
+                    return f"Code execution completed successfully. Summary: {', '.join(parts)}."
+            
+            # Default message if no operation summary
+            return "Code execution completed successfully."
+            
+        elif function_name == "create_segment_for_word":
+            word = arguments.get("word", "unknown")
+            occurrences = result.get("occurrences", 0)
+            segments_created = result.get("total_segments", 0)
+            return f"Created {segments_created} color segments for {occurrences} occurrences of the word '{word}'."
+            
+        elif function_name == "clear_all_timelines":
+            timelines_cleared = result.get("timelines_cleared", 0)
+            set_black = result.get("set_black", False)
+            black_msg = " and set to black" if set_black else ""
+            return f"Cleared {timelines_cleared} timelines{black_msg}."
+            
+        # Generic summary for other functions
+        return f"Function '{function_name}' executed successfully."
     
     def _save_version_after_operation(self, response_text):
         """
