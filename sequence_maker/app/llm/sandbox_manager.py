@@ -122,7 +122,7 @@ class SandboxManager:
             if not isinstance(timeline_index, int):
                 raise TypeError("timeline_index must be an integer")
             
-            if timeline_index < 0 or (hasattr(self.app, 'timeline_manager') and 
+            if timeline_index < 0 or (hasattr(self.app, 'timeline_manager') and
                                      timeline_index >= len(self.app.timeline_manager.get_timelines())):
                 raise ValueError(f"Invalid timeline_index: Must be between 0 and {len(self.app.timeline_manager.get_timelines())-1}")
             
@@ -135,31 +135,123 @@ class SandboxManager:
             if not isinstance(color, (list, tuple)) or len(color) != 3 or not all(isinstance(c, int) and 0 <= c <= 255 for c in color):
                 raise TypeError("color must be a list or tuple of 3 integers between 0 and 255")
             
-            # Call the actual application function
+            # Call the actual application function with overlap handling
             try:
                 timeline = self.app.timeline_manager.get_timeline(timeline_index)
                 if not timeline:
                     raise ValueError(f"Timeline with index {timeline_index} not found")
                 
-                segment = self.app.timeline_manager.add_segment(
-                    timeline, 
-                    start_time, 
-                    end_time, 
-                    tuple(color)
-                )
+                new_segment_start = start_time
+                new_segment_end = end_time
+                new_segment_color = tuple(color)
+                new_segment_pixels = timeline.default_pixels
                 
-                if segment:
-                    return {
-                        "segment_created": True,
-                        "timeline_index": timeline_index,
-                        "start_time": start_time,
-                        "end_time": end_time,
-                        "color": color
-                    }
-                else:
-                    return {"segment_created": False, "error": "Failed to create segment"}
+                # --- BEGIN NEW OVERLAP HANDLING LOGIC ---
+                self.logger.debug(f"Handling overlaps for new segment [{new_segment_start:.3f} - {new_segment_end:.3f}] on timeline {timeline_index}")
+                
+                segments_to_remove = []
+                segments_to_add = [] # For splits
+                
+                for existing_segment in list(timeline.segments): # Iterate over a copy
+                    # Check for overlap: (StartA < EndB) and (EndA > StartB)
+                    if existing_segment.start_time < new_segment_end and existing_segment.end_time > new_segment_start:
+                        self.logger.debug(f"  Overlap detected with existing: [{existing_segment.start_time:.3f} - {existing_segment.end_time:.3f}]")
+                        
+                        original_existing_end = existing_segment.end_time # Store original end for split case
+                        
+                        # Case 1: Existing is fully contained within New -> Remove Existing
+                        if existing_segment.start_time >= new_segment_start and existing_segment.end_time <= new_segment_end:
+                            self.logger.debug("    Case 1: Existing contained within New. Removing existing.")
+                            if existing_segment not in segments_to_remove:
+                                segments_to_remove.append(existing_segment)
+                        
+                        # Case 2: Existing overlaps start of New -> Trim Existing End
+                        elif existing_segment.start_time < new_segment_start and existing_segment.end_time > new_segment_start:
+                            self.logger.debug(f"    Case 2: Existing overlaps start. Trimming existing end to {new_segment_start:.3f}")
+                            existing_segment.end_time = new_segment_start
+                        
+                        # Case 3: Existing overlaps end of New -> Trim Existing Start
+                        elif existing_segment.start_time < new_segment_end and existing_segment.end_time > new_segment_end:
+                            self.logger.debug(f"    Case 3: Existing overlaps end. Trimming existing start to {new_segment_end:.3f}")
+                            existing_segment.start_time = new_segment_end
+                        
+                        # Case 4: Existing engulfs New -> Split Existing
+                        # This case is implicitly handled by Case 2 and 3 applied sequentially
+                        # If an existing segment starts before and ends after,
+                        # Case 2 will trim its end to new_segment_start.
+                        # It won't overlap anymore for Case 3. BUT we need to create the part *after*.
+                        if existing_segment.start_time < new_segment_start and original_existing_end > new_segment_end:
+                            self.logger.debug(f"    Case 4: Existing engulfs New. Splitting existing.")
+                            # Part 1: Trim end (handled by Case 2 logic already applied if we check start first)
+                            existing_segment.end_time = new_segment_start
+                            # Part 2: Create new segment for the tail end
+                            from models.segment import TimelineSegment
+                            split_segment = TimelineSegment(
+                                start_time=new_segment_end,
+                                end_time=original_existing_end,
+                                color=existing_segment.color, # Use existing's color/pixels
+                                pixels=existing_segment.pixels
+                                # TODO: Copy effects if necessary? Depends on desired behavior.
+                            )
+                            self.logger.debug(f"      Creating split segment: [{split_segment.start_time:.3f} - {split_segment.end_time:.3f}]")
+                            segments_to_add.append(split_segment)
+                
+                # Remove segments marked for removal
+                for seg in segments_to_remove:
+                    if seg in timeline.segments:
+                        self.logger.debug(f"  Removing segment: [{seg.start_time:.3f} - {seg.end_time:.3f}]")
+                        timeline.segments.remove(seg)
+                
+                # Remove any zero-duration segments created by trimming
+                non_zero_segments = [seg for seg in timeline.segments if seg.end_time > seg.start_time]
+                if len(non_zero_segments) != len(timeline.segments):
+                    self.logger.debug("  Removing zero-duration segments.")
+                    timeline.segments = non_zero_segments
+                
+                # Add the completely new segment
+                from models.segment import TimelineSegment
+                new_segment = TimelineSegment(
+                    start_time=new_segment_start,
+                    end_time=new_segment_end,
+                    color=new_segment_color,
+                    pixels=new_segment_pixels
+                )
+                self.logger.debug(f"  Adding the new segment: [{new_segment.start_time:.3f} - {new_segment.end_time:.3f}]")
+                timeline.segments.append(new_segment)
+                
+                # Add any segments created from splits
+                if segments_to_add:
+                    self.logger.debug(f"  Adding {len(segments_to_add)} segments from splits.")
+                    timeline.segments.extend(segments_to_add)
+                
+                # Sort the timeline segments
+                timeline._sort_segments()
+                # --- END NEW OVERLAP HANDLING LOGIC ---
+                
+                # Save state for undo *after* potential modifications
+                if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
+                    self.app.undo_manager.save_state("safe_create_segment_with_overlap") # Use distinct name
+                
+                # Emit signals (consider if modification signals are needed for adjusted segments)
+                self.app.timeline_manager.segment_added.emit(timeline, new_segment) # Signal for the main new segment
+                # Maybe emit modified for trimmed/split segments if UI needs update
+                self.app.timeline_manager.timeline_modified.emit(timeline)
+                
+                # Notify project manager that project has changed
+                if hasattr(self.app, 'project_manager'):
+                    self.app.project_manager.project_changed.emit()
+                
+                return { # Return info about the primary segment created
+                    "segment_created": True,
+                    "timeline_index": timeline_index,
+                    "start_time": new_segment_start,
+                    "end_time": new_segment_end,
+                    "color": list(new_segment_color)
+                    # Add info about segments removed/modified? Maybe too verbose.
+                }
             except Exception as e:
-                self.logger.error(f"Error in safe_create_segment: {e}")
+                self.logger.error(f"Error in safe_create_segment: {e}", exc_info=True)
+                # Important: Re-raise or wrap the exception so the sandbox knows it failed
                 raise RuntimeError(f"Error creating segment: {str(e)}")
         
         # Safe wrapper for clear_timeline
