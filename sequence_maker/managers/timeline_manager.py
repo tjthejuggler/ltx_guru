@@ -617,13 +617,13 @@ class TimelineManager(QObject):
         
         # Emit signal
         self.segment_selected.emit(None, None)
-    
-    def set_position(self, position):
+    def set_position(self, position, from_audio_manager=False):
         """
         Set the current position.
         
         Args:
             position (float): Position in seconds.
+            from_audio_manager (bool): Whether this call originated from the audio manager.
         """
         if position < 0:
             position = 0
@@ -632,8 +632,15 @@ class TimelineManager(QObject):
         
         self.position = position
         
+        # Update audio manager position if available and this call didn't come from the audio manager
+        if not from_audio_manager and hasattr(self.app, 'audio_manager') and not self.app.audio_manager.playing:
+            self.logger.debug(f"Updating audio manager position to {position:.3f}s")
+            # Use direct position update to avoid recursion
+            self.app.audio_manager.position = position
+        
         # Emit signal
         self.logger.debug(f"TimelineManager emitting position_changed signal with position={position:.3f}s")
+        self.position_changed.emit(position)
         self.position_changed.emit(position)
     
     def add_color_at_position(self, timeline_index, color, pixels=None):

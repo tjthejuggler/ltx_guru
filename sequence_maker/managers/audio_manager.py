@@ -398,7 +398,7 @@ class AudioManager(QObject):
         
         # Directly set the timeline manager position to 0.0
         self.logger.debug("Directly setting timeline manager position to 0.0")
-        self.app.timeline_manager.set_position(0.0)
+        self.app.timeline_manager.set_position(0.0, from_audio_manager=True)
         
         # Emit signals - ensure position change is properly propagated
         self.logger.debug("Emitting position_changed signal with position=0.0")
@@ -629,7 +629,7 @@ class AudioManager(QObject):
                     self.position_changed.emit(self.position)
                     
                     # Directly update timeline manager position to ensure it's updated
-                    self.app.timeline_manager.set_position(self.position)
+                    self.app.timeline_manager.set_position(self.position, from_audio_manager=True)
                     
                     # Log position occasionally
                     if int(self.position * 10) % 10 == 0:  # Log every second
@@ -719,7 +719,7 @@ class AudioManager(QObject):
                     self.position_changed.emit(self.position)
                     
                     # Directly update timeline manager position to ensure it's updated
-                    self.app.timeline_manager.set_position(self.position)
+                    self.app.timeline_manager.set_position(self.position, from_audio_manager=True)
                     
                     # Log position occasionally
                     if int(self.position * 10) % 10 == 0:  # Log every second
@@ -824,7 +824,6 @@ class AudioManager(QObject):
         data = data.astype(np.float32)
         
         return (data, pyaudio.paContinue)
-    
     def _update_timeline_position(self, position):
         """
         Update the timeline position when the audio position changes.
@@ -838,7 +837,7 @@ class AudioManager(QObject):
         # Always update the timeline position to ensure synchronization
         # This ensures that when play is clicked, the timeline always updates
         self.logger.debug(f"Updating timeline position to {position:.2f}s")
-        self.app.timeline_manager.set_position(position)
+        self.app.timeline_manager.set_position(position, from_audio_manager=True)
     
     def analyze_audio(self):
         """Analyze audio file to extract advanced musical features."""
