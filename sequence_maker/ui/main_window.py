@@ -350,9 +350,6 @@ class MainWindow(QMainWindow):
         self.cursor_hover_label.setVisible(False)
     
     # Timeline segment methods
-    def _on_add_segment(self):
-        self.timeline_widget.add_segment()
-    
     def _on_edit_segment(self):
         self.timeline_widget.edit_selected_segment()
     

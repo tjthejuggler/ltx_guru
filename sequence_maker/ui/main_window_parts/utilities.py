@@ -294,7 +294,6 @@ def update_ui(main_window):
     
     # Update timeline actions
     has_timeline = main_window.app.timeline_manager.selected_timeline is not None
-    main_window.add_segment_action.setEnabled(has_timeline)
     main_window.clear_timeline_action.setEnabled(has_timeline)
     
     # Update segment actions

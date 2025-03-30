@@ -78,10 +78,6 @@ def create_view_actions(main_window):
 def create_timeline_actions(main_window):
     """Create timeline-related actions."""
     # Create segment-related actions
-    main_window.add_segment_action = QAction("&Add Segment", main_window)
-    main_window.add_segment_action.setStatusTip("Add a new segment")
-    main_window.add_segment_action.triggered.connect(main_window._on_add_segment)
-    
     main_window.edit_segment_action = QAction("&Edit Segment", main_window)
     main_window.edit_segment_action.setStatusTip("Edit the selected segment")
     main_window.edit_segment_action.triggered.connect(main_window._on_edit_segment)

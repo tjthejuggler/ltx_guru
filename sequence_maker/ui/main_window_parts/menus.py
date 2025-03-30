@@ -70,7 +70,6 @@ def create_view_menu(main_window):
 def create_timeline_menu(main_window):
     """Create the timeline menu."""
     main_window.timeline_menu = main_window.menuBar().addMenu("&Timeline")
-    main_window.timeline_menu.addAction(main_window.add_segment_action)
     main_window.timeline_menu.addAction(main_window.edit_segment_action)
     main_window.timeline_menu.addAction(main_window.delete_segment_action)
     main_window.timeline_menu.addSeparator()
@@ -125,7 +124,6 @@ def create_toolbars(main_window):
     # Timeline toolbar
     main_window.timeline_toolbar = main_window.addToolBar("Timeline")
     main_window.timeline_toolbar.setObjectName("TimelineToolbar")
-    main_window.timeline_toolbar.addAction(main_window.add_segment_action)
     main_window.timeline_toolbar.addAction(main_window.edit_segment_action)
     main_window.timeline_toolbar.addAction(main_window.delete_segment_action)
     
