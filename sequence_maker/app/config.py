@@ -26,7 +26,7 @@ class Config:
         "timeline": {
             "default_duration": 60,  # seconds
             "default_pixels": 4,
-            "default_refresh_rate": 1,
+            "default_refresh_rate": 100,  # 100 Hz for 1/100th second precision
             "default_ball_count": 3,
             "zoom_step": 1.2,
             "timeline_height": 100,

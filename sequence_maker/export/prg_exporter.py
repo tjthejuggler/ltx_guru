@@ -124,6 +124,38 @@ class PRGExporter:
         
         self.logger.info(f"Exported {success_count}/{total_count} timelines to {directory}")
         return success_count, total_count
+    def export(self, file_path, refresh_rate=None):
+        """
+        Export the current timeline to a PRG file.
+        
+        This is a convenience method that exports the first timeline in the current project.
+        
+        Args:
+            file_path (str): Path to save the PRG file.
+            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
+        
+        Returns:
+            bool: True if successful, False otherwise.
+        """
+        # Check if project is loaded
+        if not self.app.project_manager.current_project:
+            self.logger.warning("Cannot export: No project loaded")
+            return False
+        
+        # Get project
+        project = self.app.project_manager.current_project
+        
+        # Check if there are any timelines
+        if not project.timelines:
+            self.logger.warning("Cannot export: No timelines in project")
+            return False
+        
+        # Get the first timeline
+        timeline = project.timelines[0]
+        
+        # Export timeline
+        return self.export_timeline(timeline, file_path, refresh_rate)
+    
     
     def export_project_with_json(self, directory, refresh_rate=None):
         """
@@ -172,9 +204,10 @@ class PRGExporter:
             # Export to JSON
             from export.json_exporter import JSONExporter
             json_exporter = JSONExporter(self.app)
-            
-            if json_exporter.export_timeline(timeline, json_path, refresh_rate):
+            # Always use 100 Hz refresh rate for JSON exports for 1/100th second precision
+            if json_exporter.export_timeline(timeline, json_path, 100):
                 json_success_count += 1
+            
             
             # Export to PRG
             if self.export_timeline(timeline, prg_path, refresh_rate):

@@ -33,6 +33,19 @@ Usage:
 python start_gentle.py
 ```
 
+## Project Utilities
+
+### update_refresh_rate.py
+
+This script updates the refresh rate of a project to 100 Hz for 1/100th second precision in exported JSON files.
+
+Usage:
+```
+python update_refresh_rate.py [project_file]
+```
+
+If no project file is specified, it will try to load the last opened project.
+
 ## Requirements
 
 These scripts require the following Python packages:

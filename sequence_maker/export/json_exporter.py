@@ -22,14 +22,14 @@ class JSONExporter:
         self.logger = logging.getLogger("SequenceMaker.JSONExporter")
         self.app = app
     
-    def export_timeline(self, timeline, file_path, refresh_rate=None):
+    def export_timeline(self, timeline, file_path, refresh_rate=100):
         """
         Export a timeline to a JSON file.
         
         Args:
             timeline: Timeline to export.
             file_path (str): Path to save the JSON file.
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
+            refresh_rate (int, optional): Refresh rate in Hz. Default is 100 Hz for 1/100th second precision.
         
         Returns:
             bool: True if successful, False otherwise.
@@ -52,7 +52,7 @@ class JSONExporter:
             self.logger.error(f"Error exporting timeline to JSON: {e}")
             return False
     
-    def export_project(self, directory, base_filename=None, refresh_rate=None):
+    def export_project(self, directory, base_filename=None, refresh_rate=100):
         """
         Export all timelines in the current project to JSON files.
         
@@ -61,7 +61,7 @@ class JSONExporter:
             base_filename (str, optional): Base filename to use for exports. If provided,
                                           files will be named {base_filename}_{timeline_name}.json.
                                           If None, project name will be used as base.
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
+            refresh_rate (int, optional): Refresh rate in Hz. Default is 100 Hz for 1/100th second precision.
         
         Returns:
             tuple: (success_count, total_count, exported_files)
@@ -81,9 +81,8 @@ class JSONExporter:
             # Remove extension if present
             base_filename = os.path.splitext(os.path.basename(base_filename))[0]
         
-        # Use project refresh rate if not specified
-        if refresh_rate is None:
-            refresh_rate = project.refresh_rate
+        # Always use 100 Hz refresh rate for 1/100th second precision
+        # (refresh_rate parameter is already defaulted to 100)
         
         # Create directory if it doesn't exist
         os.makedirs(directory, exist_ok=True)
