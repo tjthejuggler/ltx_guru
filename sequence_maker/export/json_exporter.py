@@ -52,24 +52,34 @@ class JSONExporter:
             self.logger.error(f"Error exporting timeline to JSON: {e}")
             return False
     
-    def export_project(self, directory, refresh_rate=None):
+    def export_project(self, directory, base_filename=None, refresh_rate=None):
         """
         Export all timelines in the current project to JSON files.
         
         Args:
             directory (str): Directory to save the JSON files.
+            base_filename (str, optional): Base filename to use for exports. If provided,
+                                          files will be named {base_filename}_{timeline_name}.json.
+                                          If None, project name will be used as base.
             refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
         
         Returns:
-            tuple: (success_count, total_count)
+            tuple: (success_count, total_count, exported_files)
         """
         # Check if project is loaded
         if not self.app.project_manager.current_project:
             self.logger.warning("Cannot export project: No project loaded")
-            return 0, 0
+            return 0, 0, []
         
         # Get project
         project = self.app.project_manager.current_project
+        
+        # Use project name as base filename if not specified
+        if base_filename is None:
+            base_filename = project.name.replace(' ', '_')
+        else:
+            # Remove extension if present
+            base_filename = os.path.splitext(os.path.basename(base_filename))[0]
         
         # Use project refresh rate if not specified
         if refresh_rate is None:
@@ -81,15 +91,17 @@ class JSONExporter:
         # Export each timeline
         success_count = 0
         total_count = len(project.timelines)
+        exported_files = []
         
         for i, timeline in enumerate(project.timelines):
-            # Create file path
-            file_name = f"{timeline.name.replace(' ', '_')}.json"
+            # Create file path with project name prefix
+            file_name = f"{base_filename}_{timeline.name.replace(' ', '_')}.json"
             file_path = os.path.join(directory, file_name)
             
             # Export timeline
             if self.export_timeline(timeline, file_path, refresh_rate):
                 success_count += 1
+                exported_files.append(file_path)
         
         self.logger.info(f"Exported {success_count}/{total_count} timelines to {directory}")
-        return success_count, total_count
+        return success_count, total_count, exported_files

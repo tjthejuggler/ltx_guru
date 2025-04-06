@@ -112,44 +112,68 @@ def on_load_audio(main_window):
 
 def on_export_json(main_window):
     """Handle the 'Export JSON' action."""
-    # Show file dialog
-    file_dialog = QFileDialog(main_window)
-    file_dialog.setWindowTitle("Export JSON")
-    file_dialog.setNameFilter("JSON Files (*.json)")
-    file_dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)
-    file_dialog.setDefaultSuffix("json")
+    # Show directory selection dialog
+    export_dir = QFileDialog.getExistingDirectory(
+        main_window,
+        "Select Directory for JSON Export",
+        "",
+        QFileDialog.Option.ShowDirsOnly
+    )
     
-    if file_dialog.exec():
-        file_paths = file_dialog.selectedFiles()
-        if file_paths:
-            json_path = file_paths[0]
-            try:
-                from export.json_exporter import export_json
-                export_json(main_window.app.project_manager.project, json_path)
-                main_window.statusBar().showMessage(f"Exported JSON to {json_path}", 3000)
-                
-                # Ask if user wants to open the exported file
-                reply = QMessageBox.question(
-                    main_window, "Export Complete",
-                    f"JSON exported to {json_path}. Would you like to open it?",
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                    QMessageBox.StandardButton.No
-                )
-                
-                if reply == QMessageBox.StandardButton.Yes:
-                    # Open the file with the default application
-                    import subprocess
-                    import platform
-                    
-                    if platform.system() == 'Windows':
-                        os.startfile(json_path)
-                    elif platform.system() == 'Darwin':  # macOS
-                        subprocess.call(('open', json_path))
-                    else:  # Linux
-                        subprocess.call(('xdg-open', json_path))
-            except Exception as e:
-                logging.error(f"Error exporting JSON: {e}")
-                QMessageBox.critical(main_window, "Error", f"Failed to export JSON: {str(e)}")
+    if not export_dir:
+        return  # User cancelled
+    
+    # Get a base filename (optional)
+    base_filename, ok = QFileDialog.getSaveFileName(
+        main_window,
+        "Enter Base Filename (Optional)",
+        os.path.join(export_dir, "export"),
+        "JSON Files (*.json)",
+        options=QFileDialog.Option.DontConfirmOverwrite
+    )
+    
+    if not ok and not base_filename:
+        # User cancelled or didn't provide a filename
+        # We'll still proceed with export using default naming
+        base_filename = None
+    
+    try:
+        from export.json_exporter import JSONExporter
+        exporter = JSONExporter(main_window.app)
+        success_count, total_count, exported_files = exporter.export_project(
+            export_dir,
+            os.path.basename(base_filename) if base_filename else None
+        )
+        
+        # Show success message
+        main_window.statusBar().showMessage(
+            f"Exported {success_count}/{total_count} JSON files to {export_dir}",
+            3000
+        )
+        
+        # Ask if user wants to open the export directory
+        reply = QMessageBox.question(
+            main_window,
+            "Export Complete",
+            f"JSON files exported to {export_dir}. Would you like to open this directory?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            # Open the directory with the default file manager
+            import subprocess
+            import platform
+            
+            if platform.system() == 'Windows':
+                os.startfile(export_dir)
+            elif platform.system() == 'Darwin':  # macOS
+                subprocess.call(('open', export_dir))
+            else:  # Linux
+                subprocess.call(('xdg-open', export_dir))
+    except Exception as e:
+        logging.error(f"Error exporting JSON: {e}")
+        QMessageBox.critical(main_window, "Error", f"Failed to export JSON: {str(e)}")
 
 
 def on_export_prg(main_window):

@@ -5,6 +5,7 @@ This module defines the FileHandlers class, which contains handlers for file-rel
 operations such as new, open, save, and export operations.
 """
 
+import os
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
 
@@ -120,23 +121,66 @@ class FileHandlers:
             )
             return
         
-        # Show file dialog
-        file_path, _ = QFileDialog.getSaveFileName(
+        # Show directory selection dialog
+        export_dir = QFileDialog.getExistingDirectory(
             self.main_window,
-            "Export to JSON",
+            "Select Directory for JSON Export",
             self.app.config.get("general", "default_export_dir"),
-            "JSON Files (*.json)"
+            QFileDialog.Option.ShowDirsOnly
         )
         
-        if file_path:
-            # Export to JSON
-            from export.json_exporter import JSONExporter
-            exporter = JSONExporter(self.app)
-            success = exporter.export(file_path)
+        if not export_dir:
+            return  # User cancelled
+        
+        # Get a base filename (optional)
+        base_filename, ok = QFileDialog.getSaveFileName(
+            self.main_window,
+            "Enter Base Filename (Optional)",
+            os.path.join(export_dir, "export"),
+            "JSON Files (*.json)",
+            options=QFileDialog.Option.DontConfirmOverwrite
+        )
+        
+        if not ok and not base_filename:
+            # User cancelled or didn't provide a filename
+            # We'll still proceed with export using default naming
+            base_filename = None
+        
+        # Export to JSON
+        from export.json_exporter import JSONExporter
+        exporter = JSONExporter(self.app)
+        success_count, total_count, exported_files = exporter.export_project(
+            export_dir,
+            os.path.basename(base_filename) if base_filename else None
+        )
+        
+        # Update UI
+        if success_count > 0:
+            self.main_window.statusBar().showMessage(
+                f"Exported {success_count}/{total_count} JSON files to {export_dir}",
+                3000
+            )
             
-            # Update UI
-            if success:
-                self.main_window.statusBar().showMessage(f"Exported to {file_path}", 3000)
+            # Ask if user wants to open the export directory
+            reply = QMessageBox.question(
+                self.main_window,
+                "Export Complete",
+                f"JSON files exported to {export_dir}. Would you like to open this directory?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                # Open the directory with the default file manager
+                import subprocess
+                import platform
+                
+                if platform.system() == 'Windows':
+                    os.startfile(export_dir)
+                elif platform.system() == 'Darwin':  # macOS
+                    subprocess.call(('open', export_dir))
+                else:  # Linux
+                    subprocess.call(('xdg-open', export_dir))
     
     def on_export_prg(self):
         """Export timeline to PRG format."""

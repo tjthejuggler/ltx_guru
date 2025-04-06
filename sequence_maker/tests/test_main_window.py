@@ -243,12 +243,20 @@ def test_export_json(qtbot, app_fixture, main_window_fixture, monkeypatch):
         if len(app_fixture.timeline_manager.timelines) == 0:
             app_fixture.timeline_manager.add_timeline()
         
-        # Mock the json exporter's export_timeline method
-        with patch('sequence_maker.export.json_exporter.export_timeline') as mock_export:
-            # Trigger the export JSON action
-            main_window_fixture._on_export_json()
+        # Mock the JSONExporter's export_project method to return a successful result
+        with patch('sequence_maker.export.json_exporter.JSONExporter.export_project') as mock_export:
+            # Configure the mock to return a successful result
+            mock_export.return_value = (1, 1, [os.path.join(temp_dir, 'test_export.json')])
             
-            # Check that the export_timeline method was called
+            # Mock the QFileDialog.getExistingDirectory to return our temp directory
+            with patch('PyQt6.QtWidgets.QFileDialog.getExistingDirectory', return_value=temp_dir):
+                # Mock the QFileDialog.getSaveFileName to return a filename
+                with patch('PyQt6.QtWidgets.QFileDialog.getSaveFileName',
+                          return_value=(os.path.join(temp_dir, 'test_export.json'), True)):
+                    # Trigger the export JSON action
+                    main_window_fixture._on_export_json()
+            
+            # Check that the export_project method was called
             assert mock_export.call_count > 0
 
 
