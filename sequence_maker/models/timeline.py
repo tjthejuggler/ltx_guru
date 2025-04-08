@@ -352,7 +352,7 @@ class Timeline:
         # Create sequence dictionary
         sequence = {}
         
-        for segment in sorted_segments:
+        for i, segment in enumerate(sorted_segments):
             # Convert time to time units based on refresh rate
             # We use round to avoid floating point precision issues
             time_units = round(segment.start_time * refresh_rate)
@@ -363,6 +363,33 @@ class Timeline:
                 "color": list(segment.color),
                 "pixels": segment.pixels
             }
+            
+            # Check if there's a gap between this segment and the next one
+            # If so, add a black color block at the end of this segment
+            next_segment = sorted_segments[i + 1] if i + 1 < len(sorted_segments) else None
+            
+            if next_segment:
+                # If there's a gap between the end of this segment and the start of the next
+                if segment.end_time < next_segment.start_time:
+                    # Add a black color block at the end of this segment
+                    end_time_units = round(segment.end_time * refresh_rate)
+                    end_time_key = str(end_time_units)
+                    
+                    # Add black color block with the same number of pixels
+                    sequence[end_time_key] = {
+                        "color": [0, 0, 0],  # Black color
+                        "pixels": segment.pixels
+                    }
+            else:
+                # If this is the last segment, add a black color block at its end
+                end_time_units = round(segment.end_time * refresh_rate)
+                end_time_key = str(end_time_units)
+                
+                # Add black color block with the same number of pixels
+                sequence[end_time_key] = {
+                    "color": [0, 0, 0],  # Black color
+                    "pixels": segment.pixels
+                }
         
         # Calculate end time in time units
         end_time_units = round(self.get_duration() * refresh_rate)

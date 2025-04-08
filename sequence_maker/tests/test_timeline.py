@@ -210,3 +210,60 @@ def test_add_and_remove_timeline(qtbot, app_fixture, main_window_fixture):
     
     # Check that the timeline was removed
     assert len(app_fixture.timeline_manager.timelines) == initial_count
+
+
+def test_json_sequence_with_gaps():
+    """
+    Test that the to_json_sequence method correctly adds black color blocks
+    for gaps between segments.
+    """
+    from models.timeline import Timeline
+    from models.segment import TimelineSegment
+    
+    # Create a timeline with segments that have gaps between them
+    timeline = Timeline(name="Test Timeline", default_pixels=4)
+    
+    # Add segments with gaps between them
+    # Segment 1: 0.0 - 1.0
+    segment1 = TimelineSegment(start_time=0.0, end_time=1.0, color=(255, 0, 0), pixels=4)
+    timeline.add_segment(segment1)
+    
+    # Segment 2: 2.0 - 3.0 (gap between 1.0 and 2.0)
+    segment2 = TimelineSegment(start_time=2.0, end_time=3.0, color=(0, 255, 0), pixels=4)
+    timeline.add_segment(segment2)
+    
+    # Segment 3: 4.0 - 5.0 (gap between 3.0 and 4.0)
+    segment3 = TimelineSegment(start_time=4.0, end_time=5.0, color=(0, 0, 255), pixels=4)
+    timeline.add_segment(segment3)
+    
+    # Convert to JSON sequence with refresh rate of 1 Hz for simplicity
+    json_data = timeline.to_json_sequence(refresh_rate=1)
+    
+    # Verify the sequence contains the expected entries
+    sequence = json_data["sequence"]
+    
+    # Check that we have entries for the start of each segment
+    assert "0" in sequence
+    assert sequence["0"]["color"] == [255, 0, 0]
+    
+    assert "2" in sequence
+    assert sequence["2"]["color"] == [0, 255, 0]
+    
+    assert "4" in sequence
+    assert sequence["4"]["color"] == [0, 0, 255]
+    
+    # Check that we have black color blocks at the end of each segment
+    # End of segment 1 (at time 1.0)
+    assert "1" in sequence
+    assert sequence["1"]["color"] == [0, 0, 0]
+    assert sequence["1"]["pixels"] == 4
+    
+    # End of segment 2 (at time 3.0)
+    assert "3" in sequence
+    assert sequence["3"]["color"] == [0, 0, 0]
+    assert sequence["3"]["pixels"] == 4
+    
+    # End of segment 3 (at time 5.0)
+    assert "5" in sequence
+    assert sequence["5"]["color"] == [0, 0, 0]
+    assert sequence["5"]["pixels"] == 4
