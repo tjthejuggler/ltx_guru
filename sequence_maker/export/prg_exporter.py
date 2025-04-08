@@ -42,11 +42,20 @@ class PRGExporter:
                 temp_json_path = temp_file.name
             
             # Get JSON data
+            self.logger.debug(f"Generating internal JSON for PRG export using refresh_rate: {refresh_rate}")
             json_data = timeline.to_json_sequence(refresh_rate)
             
             # Write JSON to temporary file
             with open(temp_json_path, 'w') as f:
                 json.dump(json_data, f, indent=2)
+            # --- BEGIN DEBUG LOGGING ---
+            try:
+                with open(temp_json_path, 'r') as f_read:
+                    temp_json_content = f_read.read()
+                self.logger.debug(f"Temporary JSON content for PRG export ({os.path.basename(file_path)}):\n{temp_json_content}")
+            except Exception as log_e:
+                self.logger.error(f"Error reading temporary JSON for logging: {log_e}")
+            # --- END DEBUG LOGGING ---
             
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
@@ -56,6 +65,8 @@ class PRGExporter:
             prg_generator_path = os.path.join(root_dir, "prg_generator.py")
             
             self.logger.debug(f"Using prg_generator at: {prg_generator_path}")
+            self.logger.debug(f"Calling prg_generator with: python3 {prg_generator_path} {temp_json_path} {file_path}")
+            
             
             result = subprocess.run(
                 ["python3", prg_generator_path, temp_json_path, file_path],
