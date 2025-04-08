@@ -178,44 +178,112 @@ def on_export_json(main_window):
 
 def on_export_prg(main_window):
     """Handle the 'Export PRG' action."""
-    # Show file dialog
-    file_dialog = QFileDialog(main_window)
-    file_dialog.setWindowTitle("Export PRG")
-    file_dialog.setNameFilter("PRG Files (*.prg)")
-    file_dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptSave)
-    file_dialog.setDefaultSuffix("prg")
+    # Check if a project is loaded
+    if not main_window.app.project_manager.current_project:
+        QMessageBox.warning(
+            main_window,
+            "No Project",
+            "No project is loaded. Please create or open a project first."
+        )
+        return
     
-    if file_dialog.exec():
-        file_paths = file_dialog.selectedFiles()
-        if file_paths:
-            prg_path = file_paths[0]
-            try:
-                from export.prg_exporter import export_prg
-                export_prg(main_window.app.project_manager.project, prg_path)
-                main_window.statusBar().showMessage(f"Exported PRG to {prg_path}", 3000)
+    # Show directory selection dialog
+    export_dir = QFileDialog.getExistingDirectory(
+        main_window,
+        "Select Directory for PRG and JSON Export",
+        "",
+        QFileDialog.Option.ShowDirsOnly
+    )
+    
+    if not export_dir:
+        return  # User cancelled
+    
+    try:
+        # Import exporters
+        from export.prg_exporter import PRGExporter
+        from export.json_exporter import JSONExporter
+        
+        # Create exporter instances
+        prg_exporter = PRGExporter(main_window.app)
+        json_exporter = JSONExporter(main_window.app)
+        
+        # Get the current project - be cautious about how we access it
+        project = main_window.app.project_manager.current_project
+        
+        # Check the project type to avoid attribute errors
+        if not hasattr(project, 'name') or not isinstance(project.name, str):
+            logging.warning(f"Project name has unexpected type: {type(project)}/{type(project.name) if hasattr(project, 'name') else 'no name attribute'}")
+            project_name = "project"  # Default name if we can't get the real one
+        else:
+            # Sanitize project name (replace spaces with underscores)
+            project_name = project.name.replace(' ', '_')
+        
+        # Check if project has timelines
+        if not hasattr(project, 'timelines') or not isinstance(project.timelines, list):
+            logging.error(f"Project timelines has unexpected type: {type(project)}/{type(project.timelines) if hasattr(project, 'timelines') else 'no timelines attribute'}")
+            QMessageBox.critical(main_window, "Error", "Unable to access project timelines. The project may be corrupted.")
+            return
+            
+        # Track success counts
+        json_success_count = 0
+        prg_success_count = 0
+        total_count = len(project.timelines)
+        
+        if total_count == 0:
+            QMessageBox.warning(main_window, "No Timelines", "The current project does not contain any timelines to export.")
+            return
+        
+        # Export each timeline
+        for i, timeline in enumerate(project.timelines):
+            # Make sure the timeline has a valid name
+            if not hasattr(timeline, 'name') or not isinstance(timeline.name, str):
+                timeline_name = f"Ball_{i+1}"
+            else:
+                timeline_name = timeline.name
                 
-                # Ask if user wants to open the exported file
-                reply = QMessageBox.question(
-                    main_window, "Export Complete",
-                    f"PRG exported to {prg_path}. Would you like to open it?",
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                    QMessageBox.StandardButton.No
-                )
-                
-                if reply == QMessageBox.StandardButton.Yes:
-                    # Open the file with the default application
-                    import subprocess
-                    import platform
-                    
-                    if platform.system() == 'Windows':
-                        os.startfile(prg_path)
-                    elif platform.system() == 'Darwin':  # macOS
-                        subprocess.call(('open', prg_path))
-                    else:  # Linux
-                        subprocess.call(('xdg-open', prg_path))
-            except Exception as e:
-                logging.error(f"Error exporting PRG: {e}")
-                QMessageBox.critical(main_window, "Error", f"Failed to export PRG: {str(e)}")
+            # Generate filenames with project name and ball number
+            base_name = f"{project_name}_Ball_{i+1}"
+            json_path = os.path.join(export_dir, f"{base_name}.json")
+            prg_path = os.path.join(export_dir, f"{base_name}.prg")
+            
+            # Export JSON
+            if json_exporter.export_timeline(timeline, json_path, refresh_rate=100):
+                json_success_count += 1
+            
+            # Export PRG
+            if prg_exporter.export_timeline(timeline, prg_path, refresh_rate=project.refresh_rate):
+                prg_success_count += 1
+        
+        # Show success message
+        main_window.statusBar().showMessage(
+            f"Exported {json_success_count}/{total_count} JSON files and "
+            f"{prg_success_count}/{total_count} PRG files to {export_dir}",
+            5000
+        )
+        
+        # Ask if user wants to open the export directory
+        reply = QMessageBox.question(
+            main_window,
+            "Export Complete",
+            f"Files exported to {export_dir}. Would you like to open this directory?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            # Open the directory with the default file manager
+            import subprocess
+            import platform
+            
+            if platform.system() == 'Windows':
+                os.startfile(export_dir)
+            elif platform.system() == 'Darwin':  # macOS
+                subprocess.call(('open', export_dir))
+            else:  # Linux
+                subprocess.call(('xdg-open', export_dir))
+    except Exception as e:
+        logging.error(f"Error exporting files: {e}")
+        QMessageBox.critical(main_window, "Error", f"Failed to export files: {str(e)}")
 
 
 def on_version_history(main_window):

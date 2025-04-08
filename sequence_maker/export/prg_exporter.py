@@ -52,7 +52,6 @@ class PRGExporter:
             os.makedirs(os.path.dirname(os.path.abspath(file_path)), exist_ok=True)
             
             # Call prg_generator.py with absolute path
-            import os
             root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
             prg_generator_path = os.path.join(root_dir, "prg_generator.py")
             
