@@ -118,6 +118,7 @@ def create_playback_actions(main_window):
 def create_tools_actions(main_window):
     """Create tools-related actions."""
     main_window.key_mapping_action = main_window.tools_actions.key_mapping_action
+    main_window.crop_audio_action = main_window.tools_actions.crop_audio_action
     main_window.connect_balls_action = main_window.tools_actions.connect_balls_action
     main_window.llm_chat_action = main_window.tools_actions.llm_chat_action
     main_window.llm_diagnostics_action = main_window.tools_actions.llm_diagnostics_action

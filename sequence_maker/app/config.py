@@ -38,7 +38,9 @@ class Config:
             "visualizations": ["waveform", "beats"],
             "beat_detection_threshold": 0.5,
             "waveform_color": [0, 0, 255],
-            "beats_color": [255, 0, 0]
+            "beats_color": [255, 0, 0],
+            "crop_ms": 1000,
+            "last_save_dir": ""
         },
         "colors": {
             "default_colors": [

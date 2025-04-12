@@ -8,6 +8,7 @@ import os
 import logging
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from app.constants import PROJECT_FILE_EXTENSION, AUDIO_FILE_EXTENSIONS
+from ui.dialogs.crop_audio_dialog import CropAudioDialog
 
 
 def on_new(main_window):
@@ -422,6 +423,28 @@ def on_key_mapping(main_window):
     from ui.dialogs.key_mapping_dialog import KeyMappingDialog
     
     dialog = KeyMappingDialog(main_window.app, main_window)
+    dialog.exec()
+
+
+def on_crop_audio(main_window):
+    """
+    Handle Crop Audio action.
+    
+    Args:
+        main_window: The main window instance.
+    """
+    # Check if audio is loaded
+    if not main_window.app.audio_manager.audio_file:
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.warning(
+            main_window,
+            "No Audio Loaded",
+            "Please load an audio file before cropping."
+        )
+        return
+    
+    # Create and show dialog
+    dialog = CropAudioDialog(main_window.app, main_window)
     dialog.exec()
 
 

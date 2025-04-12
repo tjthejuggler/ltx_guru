@@ -95,6 +95,13 @@ def create_tools_menu(main_window):
     """Create the tools menu."""
     main_window.tools_menu = main_window.menuBar().addMenu("&Tools")
     main_window.tools_menu.addAction(main_window.key_mapping_action)
+    
+    # Audio tools section
+    main_window.tools_menu.addSeparator()
+    main_window.tools_menu.addAction(main_window.crop_audio_action)
+    
+    # LLM tools section
+    main_window.tools_menu.addSeparator()
     main_window.tools_menu.addAction(main_window.llm_chat_action)
     main_window.tools_menu.addAction(main_window.llm_diagnostics_action)
     main_window.tools_menu.addAction(main_window.version_history_action)

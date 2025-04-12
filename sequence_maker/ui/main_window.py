@@ -22,6 +22,7 @@ from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
 from ui.dialogs.llm_chat_window import LLMChatWindow
 from ui.dialogs.version_history_dialog import VersionHistoryDialog
+from ui.dialogs.crop_audio_dialog import CropAudioDialog
 from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
 
 from ui.actions.file_actions import FileActions
@@ -51,7 +52,7 @@ from ui.main_window_parts.handlers import (
     on_version_history, on_undo, on_redo, on_cut, on_copy, on_paste,
     on_delete, on_select_all, on_preferences, on_zoom_in, on_zoom_out,
     on_zoom_fit, on_play, on_pause, on_stop, on_loop, on_key_mapping,
-    on_connect_balls, on_llm_chat, on_llm_diagnostics, on_about
+    on_connect_balls, on_llm_chat, on_llm_diagnostics, on_about, on_crop_audio
 )
 from ui.main_window_parts.editors import (
     show_segment_editor, hide_segment_editor, show_boundary_editor,
@@ -254,6 +255,9 @@ class MainWindow(QMainWindow):
     
     def _on_connect_balls(self):
         on_connect_balls(self)
+    
+    def _on_crop_audio(self):
+        on_crop_audio(self)
     
     def _on_llm_chat(self):
         on_llm_chat(self)
