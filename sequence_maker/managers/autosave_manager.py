@@ -173,8 +173,16 @@ class AutosaveManager:
             # Load project from version data
             project = self.app.project_manager.load_from_dict(version_data)
             
+            # Check if project is valid (not None or a boolean)
+            if project is None or isinstance(project, bool):
+                self.logger.error(f"Failed to load project from version data: project is {project} (type: {type(project)})")
+                return False
+                
             # Set current project
-            self.app.project_manager.set_current_project(project)
+            success = self.app.project_manager.set_current_project(project)
+            if not success:
+                self.logger.error(f"Failed to set current project: {project}")
+                return False
             
             self.logger.info(f"Restored version: {version_path}")
             

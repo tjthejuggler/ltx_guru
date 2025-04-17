@@ -95,6 +95,8 @@ class ProjectManager(QObject):
             project.add_timeline(timeline)
         
         # Set as current project
+        if isinstance(project, bool):
+            self.logger.error(f"Attempting to set current_project to a boolean value in new_project: {project}")
         self.current_project = project
         
         # New projects are considered "clean" (no unsaved changes)
@@ -129,6 +131,7 @@ class ProjectManager(QObject):
         if not file_path or file_path == "False":
             self.logger.error(f"Invalid project file path: {file_path}")
             self.logger.debug(f"Call stack: load_project called with invalid path")
+            # Make sure we return None, not False or any other boolean
             return None
         
         # Load the project
@@ -136,6 +139,8 @@ class ProjectManager(QObject):
         
         if project:
             # Set as current project
+            if isinstance(project, bool):
+                self.logger.error(f"Attempting to set current_project to a boolean value in load_project: {project}")
             self.current_project = project
             
             # Add to recent projects
@@ -162,6 +167,7 @@ class ProjectManager(QObject):
             return project
         else:
             self.logger.error(f"Failed to load project from: {file_path}")
+            # Make sure we return None, not False or any other boolean
             return None
     
     def save_project(self, file_path=None):
@@ -256,16 +262,30 @@ class ProjectManager(QObject):
     
     def _perform_autosave(self):
         """Perform an autosave operation."""
-        if not self.current_project:
+        # Check if current_project exists and is a valid Project object (not a boolean)
+        if self.current_project is None or isinstance(self.current_project, bool):
+            self.logger.warning(f"Skipping autosave: current_project is {self.current_project} (type: {type(self.current_project)})")
             return
         
+        # Check if current_project is a valid Project object with a name attribute
+        if not hasattr(self.current_project, 'name') or not isinstance(self.current_project.name, str):
+            self.logger.warning(f"Current project has unexpected type: {type(self.current_project)}/{type(self.current_project.name) if hasattr(self.current_project, 'name') else 'no name attribute'}")
+            project_name = "project"  # Default name if we can't get the real one
+        else:
+            # Sanitize project name (replace spaces with underscores)
+            project_name = self.current_project.name.replace(" ", "_")
+            
         # Generate autosave file path
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        project_name = self.current_project.name.replace(" ", "_")
         autosave_file = self.autosave_dir / f"autosave_{project_name}_{timestamp}{PROJECT_FILE_EXTENSION}"
         
         self.logger.info(f"Performing autosave to: {autosave_file}")
         
+        # Check if current_project is a valid Project object with a save method
+        if not hasattr(self.current_project, 'save'):
+            self.logger.error(f"Cannot autosave: current_project has no 'save' method. Type: {type(self.current_project)}")
+            return
+            
         # Save the project
         success = self.current_project.save(str(autosave_file))
         
@@ -348,6 +368,7 @@ class ProjectManager(QObject):
             return project
         except Exception as e:
             self.logger.error(f"Error loading project from dictionary: {e}")
+            # Make sure we return None, not False or any other boolean
             return None
     
     def set_current_project(self, project):
@@ -360,11 +381,13 @@ class ProjectManager(QObject):
         Returns:
             bool: True if successful, False otherwise.
         """
-        if not project:
-            self.logger.warning("Cannot set None as current project")
+        if project is None or isinstance(project, bool):
+            self.logger.warning(f"Cannot set {project} (type: {type(project)}) as current project")
             return False
         
         # Set as current project
+        if isinstance(project, bool):
+            self.logger.error(f"Attempting to set current_project to a boolean value in set_current_project: {project}")
         self.current_project = project
         
         # Reset unsaved changes flag
