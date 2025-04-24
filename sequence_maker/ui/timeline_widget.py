@@ -6,9 +6,10 @@ This module defines the TimelineWidget class, which displays and allows editing 
 
 import logging
 import math
+from pathlib import Path
 from PyQt6.QtWidgets import (
     QWidget, QScrollArea, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QSizePolicy, QMenu, QToolBar
+    QPushButton, QSizePolicy, QMenu, QToolBar, QFileDialog
 )
 from PyQt6.QtCore import Qt, QRect, QPoint, QSize, pyqtSignal
 from PyQt6.QtGui import (
@@ -1419,7 +1420,7 @@ class TimelineContainer(QWidget):
             
             if timeline:
                 # Get segment at position
-                segment, edge = self._get_segment_at_pos(timeline, event.pos())
+                segment, edge, boundary_info = self._get_segment_at_pos(timeline, event.pos())
                 
                 if segment:
                     # Select segment
@@ -2142,6 +2143,20 @@ class TimelineContainer(QWidget):
         
         menu.addSeparator()
         
+        # Add Clear All action
+        clear_action = menu.addAction("Clear All")
+        clear_action.triggered.connect(
+            lambda: self._clear_timeline(timeline)
+        )
+        
+        # Add Import JSON action
+        import_action = menu.addAction("Import JSON...")
+        import_action.triggered.connect(
+            lambda: self._import_json_to_timeline(timeline)
+        )
+        
+        menu.addSeparator()
+        
         remove_action = menu.addAction("Remove")
         remove_action.triggered.connect(
             lambda: self.app.timeline_manager.remove_timeline(timeline)
@@ -2149,6 +2164,103 @@ class TimelineContainer(QWidget):
         
         # Show menu
         menu.exec(self.mapToGlobal(pos))
+    
+    def _clear_timeline(self, timeline):
+        """
+        Clear all segments from a timeline.
+        
+        Args:
+            timeline: Timeline to clear.
+        """
+        if not timeline:
+            return
+            
+        # Save state for undo
+        if self.app.undo_manager:
+            self.app.undo_manager.save_state("clear_timeline")
+            
+        # Clear the timeline
+        timeline.clear()
+        
+        # Emit signal
+        self.app.timeline_manager.timeline_modified.emit(timeline)
+        
+        # Update the UI
+        self.update()
+    
+    def _import_json_to_timeline(self, timeline):
+        """
+        Import a JSON file into a timeline.
+        
+        Args:
+            timeline: Timeline to import into.
+        """
+        if not timeline:
+            return
+            
+        # Get the last directory used or default to home directory
+        last_dir = self.app.config.get("audio", "last_save_dir", str(Path.home()))
+        
+        # Create file dialog
+        file_dialog = QFileDialog(self)
+        file_dialog.setWindowTitle("Import JSON")
+        file_dialog.setNameFilter("JSON Files (*.json)")
+        file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+        file_dialog.setDirectory(last_dir)
+        
+        if file_dialog.exec():
+            file_paths = file_dialog.selectedFiles()
+            if file_paths:
+                file_path = file_paths[0]
+                
+                # Save the directory for next time
+                self.app.config.set("audio", "last_save_dir", str(Path(file_path).parent))
+                self.app.config.save()
+                
+                # Load the JSON file
+                from utils.json_utils import load_json
+                json_data = load_json(file_path)
+                
+                if json_data:
+                    # Save state for undo
+                    if self.app.undo_manager:
+                        self.app.undo_manager.save_state("import_json")
+                    
+                    # Check if it's a list of segments or a single segment
+                    if isinstance(json_data, list):
+                        segments_data = json_data
+                    else:
+                        segments_data = [json_data]
+                    
+                    # Import TimelineSegment
+                    from models.segment import TimelineSegment
+                    
+                    # Create segments from JSON data
+                    for segment_data in segments_data:
+                        # Check if the segment data has the expected format
+                        if "start_time" in segment_data and "end_time" in segment_data and "color" in segment_data:
+                            # Create segment
+                            segment = TimelineSegment(
+                                start_time=segment_data["start_time"],
+                                end_time=segment_data["end_time"],
+                                color=tuple(segment_data["color"]),
+                                pixels=segment_data.get("pixels", timeline.default_pixels)
+                            )
+                            
+                            # Add to timeline
+                            self.app.timeline_manager.add_segment_object(timeline, segment)
+                        elif "startTime" in segment_data and "endTime" in segment_data and "color" in segment_data:
+                            # Create segment using the from_dict method
+                            segment = TimelineSegment.from_dict(segment_data)
+                            
+                            # Add to timeline
+                            self.app.timeline_manager.add_segment_object(timeline, segment)
+                    
+                    # Emit signal
+                    self.app.timeline_manager.timeline_modified.emit(timeline)
+                    
+                    # Update the UI
+                    self.update()
     
     def _change_segment_color(self, color):
         """
