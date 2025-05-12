@@ -9,6 +9,7 @@ and extract musical features like beats, sections, and energy levels.
 import os
 import sys
 import logging
+import time
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -30,12 +31,24 @@ def main():
     
     audio_file_path = sys.argv[1]
     
-    # Initialize the analyzer
+    # Initialize the analyzer with default cache directory
     analyzer = AudioAnalyzer()
     
-    # Analyze the audio file
+    # Analyze the audio file (will use cache if available)
     logger.info(f"Analyzing audio file: {audio_file_path}")
     analysis_data = analyzer.analyze_audio(audio_file_path)
+    
+    # Get cache information
+    cache_info = analyzer.get_cache_info(audio_file_path)
+    if cache_info["cache_files"]:
+        cache_file = cache_info["cache_files"][0]
+        logger.info(f"Using cached analysis from: {cache_file['path']}")
+        logger.info(f"Cache created: {time.ctime(cache_file['created'])}")
+        logger.info(f"Cache size: {cache_file['size'] / 1024:.2f} KB")
+    
+    # You can force reanalysis if needed
+    # Uncomment the line below to force reanalysis
+    # analysis_data = analyzer.analyze_audio(audio_file_path, force_reanalysis=True)
     
     # Print basic metadata
     print("\n=== Song Metadata ===")

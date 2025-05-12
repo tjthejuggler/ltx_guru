@@ -36,6 +36,8 @@ ENV/
 # User-specific settings
 .sequence_maker/
 **/api_keys.json
+.ltx_sequence_maker/
+**/analysis_cache/
 
 # Directories to ignore
 pdf_extractor/

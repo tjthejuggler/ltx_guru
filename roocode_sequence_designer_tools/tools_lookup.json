@@ -1,0 +1,83 @@
+{
+  "version": "1.0",
+  "effects": [
+    {
+      "type_name": "solid_color",
+      "description": "Sets a solid color for a duration.",
+      "parameters": [
+        {"name": "color", "type": "ColorObject", "required": true, "description": "The color to display."}
+      ],
+      "timing_options": ["start_end", "start_duration"]
+    },
+    {
+      "type_name": "fade",
+      "description": "Fades between two colors over a duration.",
+      "parameters": [
+        {"name": "color_start", "type": "ColorObject", "required": true, "description": "The starting color."},
+        {"name": "color_end", "type": "ColorObject", "required": true, "description": "The ending color."},
+        {"name": "steps_per_second", "type": "integer", "required": false, "default": 20, "description": "Granularity of the fade."}
+      ],
+      "timing_options": ["start_end", "start_duration"]
+    },
+    {
+      "type_name": "pulse_on_beat",
+      "description": "Pulses a color on audio beats within a specified time window.",
+      "parameters": [
+        {"name": "color", "type": "ColorObject", "required": true, "description": "The color of the pulse."},
+        {"name": "beat_source", "type": "string", "required": true, "description": "Source of beats: 'all_beats', 'downbeats', or 'custom_times: [t1, t2,...]' (absolute song times in seconds)."},
+        {"name": "pulse_duration_seconds", "type": "float", "required": true, "description": "Duration of each pulse in seconds."},
+        {"name": "off_color", "type": "ColorObject", "required": false, "description": "Optional: Color to return to after pulse. If null/missing, returns to underlying color. (Conceptual for Roocode, compiler generates 'on' pulses only)"}
+      ],
+      "timing_options": ["start_end", "start_duration"],
+      "requires_audio_analysis": true
+    },
+    {
+      "type_name": "strobe",
+      "description": "Generates alternating on/off color segments.",
+      "parameters": [
+        {"name": "color_on", "type": "ColorObject", "required": true, "description": "The 'on' color of the strobe."},
+        {"name": "color_off", "type": "ColorObject", "required": true, "description": "The 'off' color of the strobe."},
+        {"name": "frequency_hz", "type": "float", "required": false, "description": "Frequency of the strobe in Hz (cycles per second). One cycle includes one 'on' and one 'off' period."},
+        {"name": "on_duration_seconds", "type": "float", "required": false, "description": "Explicit duration for the 'on' color part of the strobe cycle."},
+        {"name": "off_duration_seconds", "type": "float", "required": false, "description": "Explicit duration for the 'off' color part of the strobe cycle."}
+      ],
+      "timing_options": ["start_end", "start_duration"],
+      "requires_audio_analysis": false
+    },
+    {
+      "type_name": "apply_section_theme_from_audio",
+      "description": "Applies color themes to audio sections, with optional energy mapping.",
+      "parameters": [
+        {
+          "name": "section_themes",
+          "type": "array",
+          "required": true,
+          "description": "List of theme definitions. Each item: {'section_label': 'str', 'base_color': ColorObject, 'energy_mapping': 'brightness|saturation|none'}"
+        },
+        {
+          "name": "default_color_theme",
+          "type": "ColorObject",
+          "required": false,
+          "default": {"name": "grey"},
+          "description": "Default color theme for sections not explicitly themed."
+        }
+      ],
+      "timing_options": ["start_end", "start_duration"],
+      "requires_audio_analysis": true
+    }
+  ],
+  "cli_tools": [
+    {
+      "name": "extract_audio_features",
+      "script_path": "extract_audio_features.py",
+      "description": "Extracts specified features (beats, sections, etc.) from an audio file into JSON.",
+      "usage": "python extract_audio_features.py <audio_file_path> --features <comma_separated_list> [--output <json_file>]"
+    },
+    {
+      "name": "compile_designer_json",
+      "script_path": "compile_seqdesign.py",
+      "description": "Compiles a .seqdesign.json file to a .prg.json file.",
+      "usage": "python compile_seqdesign.py <input.seqdesign.json> <output.prg.json> [--audio-dir <path>]"
+    }
+  ]
+}

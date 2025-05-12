@@ -1,0 +1,126 @@
+{
+  "metadata": {
+    "project_name": "TestSequences",
+    "sequence_name": "rb_test",
+    "version": "1.0",
+    "description": "Alternates red and blue every 1.5 seconds for 5 cycles.",
+    "audio_file_path": null,
+    "audio_analysis_file_path": null,
+    "total_duration_seconds": 15.0,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "default_base_color": {"name": "black"}
+  },
+  "effects_timeline": [
+    {
+      "id": "effect_1",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 1.5
+      },
+      "params": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_2",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 1.5,
+        "end_seconds": 3.0
+      },
+      "params": {
+        "color": {"name": "blue"}
+      }
+    },
+    {
+      "id": "effect_3",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 3.0,
+        "end_seconds": 4.5
+      },
+      "params": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_4",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 4.5,
+        "end_seconds": 6.0
+      },
+      "params": {
+        "color": {"name": "blue"}
+      }
+    },
+    {
+      "id": "effect_5",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 6.0,
+        "end_seconds": 7.5
+      },
+      "params": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_6",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 7.5,
+        "end_seconds": 9.0
+      },
+      "params": {
+        "color": {"name": "blue"}
+      }
+    },
+    {
+      "id": "effect_7",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 9.0,
+        "end_seconds": 10.5
+      },
+      "params": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_8",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 10.5,
+        "end_seconds": 12.0
+      },
+      "params": {
+        "color": {"name": "blue"}
+      }
+    },
+    {
+      "id": "effect_9",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 12.0,
+        "end_seconds": 13.5
+      },
+      "params": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_10",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 13.5,
+        "end_seconds": 15.0
+      },
+      "params": {
+        "color": {"name": "blue"}
+      }
+    }
+  ]
+}

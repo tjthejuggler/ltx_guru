@@ -267,6 +267,56 @@ generator.save_sequence_to_json(sequence, "lyrics_sync.json")
 
 ## Advanced Usage
 
+### Audio Analysis Caching
+
+The `AudioAnalyzer` class includes a robust caching mechanism to avoid re-analyzing the same audio file unnecessarily. This is particularly useful when working with large audio files or when multiple tools need to analyze the same file.
+
+```python
+from audio_analyzer import AudioAnalyzer
+
+# Initialize the analyzer with default cache directory
+analyzer = AudioAnalyzer()  # Uses ~/.ltx_sequence_maker/analysis_cache by default
+
+# Or specify a custom cache directory
+analyzer = AudioAnalyzer(cache_dir="/path/to/custom/cache")
+
+# Analyze an audio file (will use cache if available)
+analysis_data = analyzer.analyze_audio("/path/to/your/audio.mp3")
+
+# Force reanalysis (ignore cache)
+analysis_data = analyzer.analyze_audio("/path/to/your/audio.mp3", force_reanalysis=True)
+
+# Analyze with specific parameters (will be included in cache key)
+analysis_data = analyzer.analyze_audio(
+    "/path/to/your/audio.mp3",
+    analysis_params={"sample_rate": 22050, "n_fft": 2048}
+)
+
+# Clear cache for a specific file
+analyzer.clear_cache("/path/to/your/audio.mp3")
+
+# Clear entire cache
+analyzer.clear_cache()
+
+# Get information about the cache
+cache_info = analyzer.get_cache_info()
+print(f"Cache directory: {cache_info['cache_directory']}")
+print(f"Number of cache files: {len(cache_info['cache_files'])}")
+
+# Get cache info for a specific file
+file_cache_info = analyzer.get_cache_info("/path/to/your/audio.mp3")
+```
+
+The caching system works as follows:
+
+1. **Cache Keys**: Generated based on the audio file path, file content hash, and analysis parameters.
+2. **Cache Validation**: Cache is considered valid if:
+   - The audio file hasn't been modified since the cache was created
+   - The file content hash matches
+   - The analysis parameters match
+3. **Cache Storage**: Cache files are stored in JSON format for compatibility and readability.
+4. **Cache Location**: By default, cache files are stored in `~/.ltx_sequence_maker/analysis_cache/`.
+
 ### Creating Custom Pattern Types
 
 You can create custom pattern types by extending the `SequenceGenerator` class:

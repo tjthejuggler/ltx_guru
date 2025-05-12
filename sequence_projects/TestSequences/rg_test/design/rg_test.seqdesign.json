@@ -1,0 +1,99 @@
+{
+  "project_name": "TestSequences",
+  "sequence_name": "rg_test",
+  "description": "The sequence should alternate between the color red and the color green. Each color should be displayed for 1.5 seconds. This alternation should repeat for a total of 5 cycles (i.e., 5 red segments and 5 green segments).",
+  "audio_file_path": null,
+  "total_duration_seconds": 15.0,
+  "effects_timeline": [
+    {
+      "id": "effect_0",
+      "type_name": "solid_color",
+      "start_time_seconds": 0.0,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_1",
+      "type_name": "solid_color",
+      "start_time_seconds": 1.5,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "green"}
+      }
+    },
+    {
+      "id": "effect_2",
+      "type_name": "solid_color",
+      "start_time_seconds": 3.0,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_3",
+      "type_name": "solid_color",
+      "start_time_seconds": 4.5,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "green"}
+      }
+    },
+    {
+      "id": "effect_4",
+      "type_name": "solid_color",
+      "start_time_seconds": 6.0,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_5",
+      "type_name": "solid_color",
+      "start_time_seconds": 7.5,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "green"}
+      }
+    },
+    {
+      "id": "effect_6",
+      "type_name": "solid_color",
+      "start_time_seconds": 9.0,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_7",
+      "type_name": "solid_color",
+      "start_time_seconds": 10.5,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "green"}
+      }
+    },
+    {
+      "id": "effect_8",
+      "type_name": "solid_color",
+      "start_time_seconds": 12.0,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "effect_9",
+      "type_name": "solid_color",
+      "start_time_seconds": 13.5,
+      "duration_seconds": 1.5,
+      "parameters": {
+        "color": {"name": "green"}
+      }
+    }
+  ]
+}
