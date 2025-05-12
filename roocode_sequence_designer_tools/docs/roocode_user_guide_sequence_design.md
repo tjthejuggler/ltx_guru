@@ -135,6 +135,28 @@ Once you're happy with your `.seqdesign.json` file, you need to compile it into 
 
 Roocode will then conceptually invoke a separate tool, like the [`compile_seqdesign.py`](./compile_seqdesign.py) script, providing it with your `.seqdesign.json` file and any other necessary information (like the path to audio analysis files).
 
+**Manual Compilation (Command Line):**
+
+If you need to compile a `.seqdesign.json` file manually using the command line (for example, if Roocode's automated process encounters an issue or for advanced use), you should use the following method. This ensures the script runs correctly within its package structure.
+
+1.  **Navigate to the project root directory:** Open your terminal in the root directory of the `ltx_guru` project (or wherever the `roocode_sequence_designer_tools` package is located).
+2.  **Run as a module:** Execute the script as a Python module using the `-m` flag.
+3.  **Provide paths:** The script takes two main arguments:
+    *   `input_seqdesign_json_path`: The path to your `.seqdesign.json` file.
+    *   `output_prg_json_path`: The desired path for the compiled `.prg.json` output file.
+
+**Command Format:**
+```bash
+python -m roocode_sequence_designer_tools.compile_seqdesign <path_to_your_input.seqdesign.json> <path_to_your_output.prg.json>
+```
+
+**Example:**
+Assuming your input file is `sequences/my_sequence.seqdesign.json` and you want the output in the same directory:
+```bash
+python -m roocode_sequence_designer_tools.compile_seqdesign sequences/my_sequence.seqdesign.json sequences/my_sequence.prg.json
+```
+This command will compile `my_sequence.seqdesign.json` and create `my_sequence.prg.json`.
+
 **Compilation Feedback:**
 Roocode will report back on the compilation process:
 *   "Okay, I've compiled 'Opening_Act_v1.seqdesign.json' to 'Opening_Act_v1.prg.json' successfully."

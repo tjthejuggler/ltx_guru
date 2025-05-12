@@ -77,7 +77,7 @@
       "name": "compile_designer_json",
       "script_path": "compile_seqdesign.py",
       "description": "Compiles a .seqdesign.json file to a .prg.json file.",
-      "usage": "python compile_seqdesign.py <input.seqdesign.json> <output.prg.json> [--audio-dir <path>]"
+      "usage": "python -m roocode_sequence_designer_tools.compile_seqdesign <input.seqdesign.json> <output.prg.json> [--audio-dir <path>]"
     }
   ]
 }

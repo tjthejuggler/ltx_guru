@@ -1,11 +1,6 @@
 {
   "metadata": {
-    "project_name": "TestSequences",
-    "sequence_name": "rb_test",
-    "version": "1.0",
-    "description": "Alternates red and blue every 1.5 seconds for 5 cycles.",
-    "audio_file_path": null,
-    "audio_analysis_file_path": null,
+    "title": "rb_test",
     "total_duration_seconds": 15.0,
     "target_prg_refresh_rate": 100,
     "default_pixels": 4,
@@ -13,8 +8,9 @@
   },
   "effects_timeline": [
     {
-      "id": "effect_1",
+      "id": "red_1",
       "type": "solid_color",
+      "description": "Solid red - cycle 1",
       "timing": {
         "start_seconds": 0.0,
         "end_seconds": 1.5
@@ -24,8 +20,9 @@
       }
     },
     {
-      "id": "effect_2",
+      "id": "blue_1",
       "type": "solid_color",
+      "description": "Solid blue - cycle 1",
       "timing": {
         "start_seconds": 1.5,
         "end_seconds": 3.0
@@ -35,8 +32,9 @@
       }
     },
     {
-      "id": "effect_3",
+      "id": "red_2",
       "type": "solid_color",
+      "description": "Solid red - cycle 2",
       "timing": {
         "start_seconds": 3.0,
         "end_seconds": 4.5
@@ -46,8 +44,9 @@
       }
     },
     {
-      "id": "effect_4",
+      "id": "blue_2",
       "type": "solid_color",
+      "description": "Solid blue - cycle 2",
       "timing": {
         "start_seconds": 4.5,
         "end_seconds": 6.0
@@ -57,8 +56,9 @@
       }
     },
     {
-      "id": "effect_5",
+      "id": "red_3",
       "type": "solid_color",
+      "description": "Solid red - cycle 3",
       "timing": {
         "start_seconds": 6.0,
         "end_seconds": 7.5
@@ -68,8 +68,9 @@
       }
     },
     {
-      "id": "effect_6",
+      "id": "blue_3",
       "type": "solid_color",
+      "description": "Solid blue - cycle 3",
       "timing": {
         "start_seconds": 7.5,
         "end_seconds": 9.0
@@ -79,8 +80,9 @@
       }
     },
     {
-      "id": "effect_7",
+      "id": "red_4",
       "type": "solid_color",
+      "description": "Solid red - cycle 4",
       "timing": {
         "start_seconds": 9.0,
         "end_seconds": 10.5
@@ -90,8 +92,9 @@
       }
     },
     {
-      "id": "effect_8",
+      "id": "blue_4",
       "type": "solid_color",
+      "description": "Solid blue - cycle 4",
       "timing": {
         "start_seconds": 10.5,
         "end_seconds": 12.0
@@ -101,8 +104,9 @@
       }
     },
     {
-      "id": "effect_9",
+      "id": "red_5",
       "type": "solid_color",
+      "description": "Solid red - cycle 5",
       "timing": {
         "start_seconds": 12.0,
         "end_seconds": 13.5
@@ -112,8 +116,9 @@
       }
     },
     {
-      "id": "effect_10",
+      "id": "blue_5",
       "type": "solid_color",
+      "description": "Solid blue - cycle 5",
       "timing": {
         "start_seconds": 13.5,
         "end_seconds": 15.0
