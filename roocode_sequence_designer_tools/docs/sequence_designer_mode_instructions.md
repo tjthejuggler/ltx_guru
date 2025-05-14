@@ -1,132 +1,74 @@
 # Sequence Designer Mode Instructions
 
-## Overview
-
-The Sequence Designer mode is a specialized mode for designing and managing captivating light sequences. This document provides instructions and best practices for working with audio analysis reports and other tools in this mode.
-
-## Handling Audio Analysis Reports
-
-### Important: Check Report Size Before Viewing
-
-Audio analysis reports can be very large, especially for longer audio files or when including comprehensive analysis data like lyrics with word-level timestamps. These large reports can cause context overflow issues when working with LLMs.
-
-**Always check the size of audio analysis reports before attempting to view them directly.**
-
-```bash
-python -m roocode_sequence_designer_tools.check_report_size <report_path>
-```
-
-### Strategies for Working with Large Reports
-
-1. **Use Time Range Filtering**: When analyzing long audio files, use the time range filtering options to focus on specific sections:
-   ```bash
-   python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file> --start-time 0 --end-time 60
-   ```
-
-2. **Use Feature Selection**: When you only need specific audio features, use the feature selection option:
-   ```bash
-   python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file> --features beats,sections
-   ```
-
-3. **Use Dedicated Tools**: For specific tasks like lyrics processing, use the dedicated tools:
-   ```bash
-   python -m roocode_sequence_designer_tools.extract_lyrics <audio_file>
-   ```
-
 ## Lyrics Processing Workflow
 
-When working with lyrics in the Sequence Designer mode, follow this workflow:
+When extracting lyrics timestamps from audio files, follow this exact workflow:
 
-1. **Initial Lyrics Processing**: When you need lyrics with timestamps, first attempt to process the audio file:
-   ```bash
-   python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --output lyrics.json
-   ```
+1. **Identify the song and artist**:
+   - First attempt to automatically detect the song name and artist using the extract_lyrics.py tool
+   - If automatic detection fails, immediately ask the user for the song name and artist
+   - Do not create placeholder content or make assumptions
 
-2. **Check Processing Status**: The tool will attempt to:
-   - Identify the song (title and artist)
-   - Retrieve the lyrics
-   - Align the lyrics with the audio to get timestamps
+2. **Obtain the lyrics**:
+   - With song name and artist, attempt to automatically retrieve lyrics
+   - If automatic retrieval fails, immediately ask the user to provide the lyrics
+   - Do not create placeholder lyrics or sample text
 
-3. **Handle Partial Success Cases**:
+3. **Generate timestamps**:
+   - Use the existing extract_lyrics.py tool with the provided lyrics to generate timestamps
+   - Do not write custom Python scripts or create new tools unless absolutely necessary
 
-   a. **If song identification succeeds but lyrics retrieval fails**:
-      - The tool will inform you that it identified the song but couldn't retrieve lyrics
-      - You should:
-        1. Find the lyrics for the identified song
-        2. Save them to a text file
-        3. Run the tool again with the lyrics file:
-           ```bash
-           python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt --output lyrics.json
-           ```
+4. **Present results**:
+   - Show the user the timestamps that were generated
+   - If the process fails at any point, clearly explain what happened and what's needed next
 
-   b. **If song identification fails**:
-      - The tool will inform you that it couldn't identify the song
-      - You should:
-        1. Manually identify the song
-        2. Find the lyrics
-        3. Save them to a text file
-        4. Run the tool again with the lyrics file:
-           ```bash
-           python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt --output lyrics.json
-           ```
+## API Keys Requirements
 
-   c. **If alignment fails**:
-      - The tool will inform you that it retrieved lyrics but couldn't align them with the audio
-      - This might happen due to poor audio quality or complex lyrics
-      - You can try using the conservative alignment option:
-        ```bash
-        python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt --conservative --output lyrics.json
-        ```
+The lyrics processing functionality requires API keys to work properly:
 
-4. **Use the Processed Lyrics**: Once you have successfully processed lyrics with timestamps, you can use them in your sequence design.
+1. **API Keys Location**:
+   - The system looks for API keys at: `~/.ltx_sequence_maker/api_keys.json`
+   - Alternative location: `~/.config/ltx_sequence_maker/api_keys.json`
 
-4. **Combine Approaches**: For the most efficient workflow, combine these approaches. For example:
-   ```bash
-   python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file> --start-time 0 --end-time 60 --features beats,sections
-   python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --start-time 0 --end-time 60
-   ```
+2. **Required API Keys**:
+   - `acr_access_key`: For ACRCloud song identification
+   - `acr_secret_key`: For ACRCloud song identification
+   - `acr_host`: For ACRCloud host URL
+   - `genius_api_key`: For Genius lyrics retrieval
 
-## Working with Audio-Driven Effects
+3. **Error Handling**:
+   - If API keys are missing, the system will report this in the logs
+   - When this happens, immediately ask the user for the required information (song name, artist, lyrics)
+   - Do not attempt to create workarounds or alternative solutions
 
-When designing light sequences that respond to audio features:
+## Important Guidelines
 
-1. **Analyze the Audio First**: Always analyze the audio file before designing effects that depend on audio features.
+- **Use existing tools**: Always use the tools that are already available in the roocode_sequence_designer_tools directory
+- **Don't create unnecessary files**: Avoid creating Python scripts or other files in the song directories
+- **Follow established patterns**: Look at examples in the codebase to understand the correct workflow
+- **Be efficient**: Don't waste tokens on unnecessary steps or explanations
+- **Ask directly**: When user input is needed, ask clearly and directly
+- **No placeholders**: Never use placeholder content when real content is needed
 
-2. **Use Appropriate Time Ranges**: For longer songs, break down your analysis and design into manageable time ranges.
+## Tool Usage Examples
 
-3. **Match Effects to Audio Features**: Choose effects that complement the audio features. For example:
-   - Use beat-driven effects for rhythmic sections
-   - Use energy-driven effects for dynamic sections
-   - Use section-based effects for structural changes in the music
+### Correct Lyrics Extraction Workflow
 
-4. **Test with Visualizations**: Use the visualization plots generated by the audio analysis report to understand the audio features and how they might translate to lighting effects.
+```bash
+# Step 1: Try to identify song and get lyrics
+python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --output lyrics_data.json
 
-## Best Practices for Sequence Design
+# Step 2: If identification fails, ask user for lyrics and then run:
+python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --lyrics-file user_provided_lyrics.txt --output lyrics_data.json
+```
 
-1. **Start Simple**: Begin with basic effects and gradually add complexity.
+### Checking API Keys Status
 
-2. **Layer Effects**: Combine multiple effects to create more interesting sequences.
+If you suspect API keys might be missing, you can check the error messages in the output. Look for messages like:
+- "API keys file not found at /home/twain/.ltx_sequence_maker/api_keys.json"
+- "Missing ACRCloud API keys, cannot identify song"
+- "Missing Genius API key, cannot fetch lyrics"
 
-3. **Consider Transitions**: Pay attention to transitions between effects and sections.
+When you see these messages, immediately ask the user for the required information rather than attempting complex workarounds.
 
-4. **Test Incrementally**: Test your sequence design after adding each new effect or section.
-
-5. **Document Your Design**: Keep notes on your design decisions and the reasoning behind them.
-
-## Troubleshooting
-
-If you encounter issues with your sequence design:
-
-1. **Check Audio Analysis**: Verify that the audio analysis data is correct and complete.
-
-2. **Validate Effect Parameters**: Ensure that all effect parameters are valid and within expected ranges.
-
-3. **Check Timing**: Verify that effect timings align with the audio features they're meant to respond to.
-
-4. **Simplify and Test**: If a complex sequence isn't working, simplify it and test each component separately.
-
-## Additional Resources
-
-- [Handling Large Reports Documentation](./handling_large_reports.md)
-- [Audio Analysis Report Tool Documentation](./audio_analysis_report_tool.md)
-- [Sequence Design JSON Schema](./seqdesign_json_schema.md)
+Remember that the sequence maker tools are designed to handle this workflow efficiently. Trust the existing tools and processes rather than creating new ones.
