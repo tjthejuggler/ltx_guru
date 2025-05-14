@@ -8,11 +8,16 @@ These Python scripts demonstrate how to use the effect implementation functions 
 
 - **`snap_on_flash_off_example.py`**: Demonstrates the snap_on_flash_off effect, which quickly changes from a pre-base color to a target color, then smoothly fades back to a post-base color.
 
+- **`audio_analysis_example.py`**: Demonstrates how to use the audio analysis report tool to generate comprehensive reports with visualizations and access the data programmatically.
+
 To run a Python example:
 
 ```bash
 # From the project root directory
 python -m roocode_sequence_designer_tools.examples.snap_on_flash_off_example
+
+# For the audio analysis example (requires an audio file)
+python -m roocode_sequence_designer_tools.examples.audio_analysis_example /path/to/your/audio.mp3
 ```
 
 ## Sequence Design Examples
@@ -49,3 +54,20 @@ The `snap_on_flash_off` effect is designed for quickly highlighting key moments 
 - **steps_per_second** (optional): Granularity of the fade-out (default: 20)
 
 This effect is particularly useful for highlighting specific moments in lyrics or emphasizing beats in music.
+
+## Tool Examples
+
+### Audio Analysis Report Tool
+
+The `audio_analysis_example.py` script demonstrates how to use the audio analysis report tool, which provides:
+
+1. Comprehensive capability testing for all audio analysis features
+2. Visualization generation (energy and onset strength plots)
+3. Structured JSON reporting
+4. Summary output for quick review
+
+The example shows both:
+- How to generate a report using the command-line interface
+- How to use the tool programmatically in your own Python scripts
+
+To learn more about the audio analysis report tool, see the [detailed documentation](../docs/audio_analysis_report_tool.md).

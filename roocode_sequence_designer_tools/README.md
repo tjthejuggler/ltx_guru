@@ -18,6 +18,9 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 *   **[`extract_audio_features.py`](./extract_audio_features.py):**
     *   A command-line interface (CLI) tool used for analyzing audio files and extracting relevant features (e.g., beats, onsets, loudness). The output is typically a JSON file consumed by audio-driven effects.
 
+*   **[`audio_analysis_report.py`](./audio_analysis_report.py):**
+    *   A comprehensive tool for generating detailed audio analysis reports with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities and creates visual plots of audio features.
+
 *   **[`effect_implementations/`](./effect_implementations/):**
     *   This directory houses Python modules that contain the actual logic for various lighting effects.
     *   **[`common_effects.py`](./effect_implementations/common_effects.py):** Implements common, often non-audio-driven, lighting effects (e.g., static color, fade, snap_on_flash_off).
@@ -34,6 +37,11 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
     *   Contains example files demonstrating various effects and features.
     *   Includes Python scripts showing how to use effect implementation functions directly.
     *   Contains sample `.seqdesign.json` files showing how to structure sequence designs with different effects.
+
+*   **[`docs/`](./docs/):**
+    *   Contains documentation for the various tools and components.
+    *   **[`seqdesign_json_schema.md`](./docs/seqdesign_json_schema.md):** Documents the schema for `.seqdesign.json` files.
+    *   **[`audio_analysis_report_tool.md`](./docs/audio_analysis_report_tool.md):** Detailed documentation for the audio analysis report tool.
 
 ## `tools_lookup.json`
 
@@ -147,6 +155,28 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     *   `<output_prg_json_path>`: Path where the output `.prg.json` file will be saved.
     *   `--audio-dir <path_to_audio_analysis_directory>`: (Optional) Path to a directory containing JSON files with audio analysis data (e.g., output from [`extract_audio_features.py`](./extract_audio_features.py)). Required if the sequence uses audio-dependent effects.
 
+### `extract_audio_features.py`
+
+*   **Purpose:** A CLI tool designed to analyze an audio file and extract various features like beats, onsets, tempo, and loudness contours. The extracted features are saved in a JSON format, which can then be used by audio-driven effects in [`compile_seqdesign.py`](./compile_seqdesign.py).
+*   **Command-Line Usage:**
+    ```bash
+    python roocode_sequence_designer_tools/extract_audio_features.py <audio_file_path> --features <feature1_name> [<feature2_name> ...] [--output <output_json_path>]
+    ```
+    *   `<audio_file_path>`: Path to the audio file to be analyzed (e.g., `.wav`, `.mp3`).
+    *   `--features <feature1_name> [<feature2_name> ...]`: A list of one or more features to extract (e.g., `beats`, `onsets`, `tempo`, `loudness`).
+    *   `--output <output_json_path>`: (Optional) Path to save the extracted features as a JSON file. If not provided, output might go to stdout or a default filename.
+
+### `audio_analysis_report.py`
+
+*   **Purpose:** A comprehensive tool for generating detailed audio analysis reports with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities, creates visual plots of audio features, and generates a structured JSON report.
+*   **Command-Line Usage:**
+    ```bash
+    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>]
+    ```
+    *   `<audio_file_path>`: Path to the audio file to be analyzed.
+    *   `--output-dir <dir>`: (Optional) Directory to save the report and visualizations. If not provided, uses the directory containing the audio file.
+*   **For detailed documentation, see [Audio Analysis Report Tool Documentation](./docs/audio_analysis_report_tool.md).**
+
 ## Important Considerations & Troubleshooting
 
 *   **Python Package Naming:** When creating or referencing Python packages (directories containing an `__init__.py` file), ensure directory names use underscores (e.g., `my_package`) rather than hyphens (e.g., `my-package`). Hyphens are not valid in Python import statements. If a script needs to import modules from a sibling directory that is a package, ensure the package directory is named appropriately.
@@ -154,14 +184,3 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 *   **Code Quality:**
     *   **Variable Shadowing:** Be mindful of variable names. Avoid using local variable names that shadow imported modules or built-in functions (e.g., naming a loop variable `os` if the `os` module is also used in the same scope). This can lead to `UnboundLocalError` or unexpected behavior.
     *   **Testing:** Thoroughly test new effects and changes to the compilation scripts to catch errors early.
-
-### `extract_audio_features.py`
-
-*   **Purpose:** A CLI tool designed to analyze an audio file and extract various features like beats, onsets, tempo, and loudness contours. The extracted features are saved in a JSON format, which can then be used by audio-driven effects in [`compile_seqdesign.py`](./compile_seqdesign.py).
-*   **Command-Line Usage:**
-    ```bash
-    python roocode_sequence_designer_tools/extract_audio_features.py <audio_file_path> --features <feature1_name> [<feature2_name> ...] [--output_json <output_json_path>]
-    ```
-    *   `<audio_file_path>`: Path to the audio file to be analyzed (e.g., `.wav`, `.mp3`).
-    *   `--features <feature1_name> [<feature2_name> ...]`: A list of one or more features to extract (e.g., `beats`, `onsets`, `tempo`, `loudness`).
-    *   `--output_json <output_json_path>`: (Optional) Path to save the extracted features as a JSON file. If not provided, output might go to stdout or a default filename.

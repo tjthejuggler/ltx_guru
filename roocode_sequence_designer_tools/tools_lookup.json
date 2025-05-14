@@ -91,6 +91,12 @@
       "script_path": "compile_seqdesign.py",
       "description": "Compiles a .seqdesign.json file to a .prg.json file.",
       "usage": "python -m roocode_sequence_designer_tools.compile_seqdesign <input.seqdesign.json> <output.prg.json> [--audio-dir <path>]"
+    },
+    {
+      "name": "audio_analysis_report",
+      "script_path": "audio_analysis_report.py",
+      "description": "Generates a comprehensive audio analysis report with visualizations and capability testing.",
+      "usage": "python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>]"
     }
   ]
 }
