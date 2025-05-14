@@ -109,6 +109,12 @@
       "script_path": "extract_lyrics.py",
       "description": "Extracts and processes lyrics from audio files with options for time range filtering and formatting.",
       "usage": "python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps]"
+    },
+    {
+      "name": "extract_lyrics_simple",
+      "script_path": "extract_lyrics_simple.py",
+      "description": "Simplified tool for extracting lyrics timestamps using user-provided lyrics. Bypasses API requirements and automatically ensures Gentle server is running.",
+      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics_simple <audio_file_path> <lyrics_file> <output_file> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"]"
     }
   ]
 }

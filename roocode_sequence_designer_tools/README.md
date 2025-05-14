@@ -257,19 +257,29 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     python -m roocode_sequence_designer_tools.extract_lyrics <audio_file>
     ```
 
-### Lyrics Processing Considerations
+### Lyrics Processing Considerations (CRITICAL WORKFLOW)
+
+*   **IMMEDIATELY ASK USER FOR LYRICS WHEN API KEYS ARE MISSING:** When you see ANY error about missing API keys or automatic identification failure, IMMEDIATELY ask the user to provide:
+    1. The song name and artist
+    2. The complete lyrics text
+    
+    DO NOT waste time trying multiple approaches or tools when API keys are missing.
 
 *   **Start Gentle Server First:** Always start the Gentle Docker container before attempting lyrics alignment:
     ```bash
     python -m sequence_maker.scripts.start_gentle
     ```
 
-*   **Use Conservative Alignment:** When providing your own lyrics, always use the `--conservative` flag for better alignment results:
+*   **Use Conservative Alignment:** When providing user-supplied lyrics, always use the `--conservative` flag for better alignment results:
     ```bash
     python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt --conservative
     ```
 
-*   **Skip Automatic Identification When API Keys Missing:** If you see API key errors, skip directly to providing lyrics manually rather than attempting multiple approaches.
+*   **Optimized Workflow Summary:**
+    1. Start Gentle server first
+    2. Check for API keys - if missing or if you see any error about them, IMMEDIATELY ask user for lyrics
+    3. Save user-provided lyrics to a text file
+    4. Process with conservative alignment
 
 ### Python Package Considerations
 

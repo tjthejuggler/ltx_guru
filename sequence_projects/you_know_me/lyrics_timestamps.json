@@ -1,6 +1,6 @@
 {
-  "song_title": null,
-  "artist_name": null,
+  "song_title": "You Know Me",
+  "artist_name": "Lubalin",
   "raw_lyrics": "you know me\nanytime you hit me it's just not a good time\nguess there's always something, they say that's a good sign\nmaybe good times don't come like they used to\nnever satisfied, you would think it's by design\nno matter what I'm doin it's just not enough\nthe way it hurts inside it's just like when you fall in love\nit's not enough to have it all, I want it all at once\noh that's all it was\nyou know me\nI'm just getting started baby this is just a test run\nI will take a fucking minute if I get one\nwouldn't know what to do with it if I did\nand if I did\nyou know me\nI'm still just as petty as the old me\nstill remember everything they told me\nso tell these motherfuckers they can blow me\nslowly\nyou know me\nyou know me\nyou know me\nyou know me\nyou know me\nI'm still pulling rabbits out of hats\nyou know I had to buff up all the stats\nfor charlotte goin plat' I got a plaque\nleft it in the box I don't know what to do with that\nlove is love but I could never settle for the background\ntook some time to figure out the vision but I'm back now\nme and J just plotted out the summer, got it mapped out\nlocked in, strapped down\nyou know me\nI'm not where I wanna be but it's a good start\nmaybe when we look back this'll be the good part\nthis might be the part where we knew but we didn't know\nand I'll pretend like that's how it was meant to go\nbut you know me\nI just never learned how to let it go\neven after everybody's headed home, headed home\nyou know me\nyou know me\nyou know me\nyou know me",
   "word_timestamps": [
     {
@@ -1345,11 +1345,10 @@
     }
   ],
   "processing_status": {
-    "song_identified": false,
+    "song_identified": true,
     "lyrics_retrieved": true,
     "lyrics_aligned": true,
-    "user_assistance_needed": true,
-    "assistance_type": "song_identification",
-    "message": "Could not identify song. Please provide song title and artist name."
+    "user_assistance_needed": false,
+    "message": "Lyrics aligned successfully."
   }
 }
