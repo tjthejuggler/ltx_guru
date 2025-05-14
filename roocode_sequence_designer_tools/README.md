@@ -29,6 +29,7 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 *   **[`extract_lyrics.py`](./extract_lyrics.py):**
     *   A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
     *   Supports time range filtering and formatted text output.
+    *   Requires the Gentle Docker container to be running for lyrics alignment.
 
 *   **[`effect_implementations/`](./effect_implementations/):**
     *   This directory houses Python modules that contain the actual logic for various lighting effects.
@@ -203,6 +204,22 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 ### `extract_lyrics.py`
 
 *   **Purpose:** A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
+*   **Optimized Workflow:**
+    1. **Start the Gentle server first** (critical prerequisite):
+       ```bash
+       python -m sequence_maker.scripts.start_gentle
+       ```
+    2. **Check for API keys** - if missing, skip directly to step 4
+    3. **Try automatic lyrics extraction** (if API keys are available):
+       ```bash
+       python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> --output lyrics_data.json
+       ```
+    4. **If automatic extraction fails, save lyrics to a text file** and use with conservative alignment:
+       ```bash
+       python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> --lyrics-file lyrics.txt --output lyrics_timestamps.json --conservative
+       ```
+       The `--conservative` flag is crucial for successful alignment.
+
 *   **Command-Line Usage:**
     ```bash
     python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps]
@@ -211,7 +228,7 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     *   `--output <output_path>`: (Optional) Path to save the lyrics JSON file. If not provided, only prints summary.
     *   `--start-time <seconds>`: (Optional) Start time in seconds for time-range extraction.
     *   `--end-time <seconds>`: (Optional) End time in seconds for time-range extraction.
-    *   `--conservative`: (Optional) Use conservative alignment for lyrics processing.
+    *   `--conservative`: (Optional) Use conservative alignment for lyrics processing (recommended when providing your own lyrics).
     *   `--lyrics-file <path>`: (Optional) Path to a text file containing user-provided lyrics.
     *   `--format-text`: (Optional) Format lyrics as readable text instead of JSON.
     *   `--include-timestamps`: (Optional) Include timestamps in formatted text output.
@@ -239,6 +256,20 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     ```bash
     python -m roocode_sequence_designer_tools.extract_lyrics <audio_file>
     ```
+
+### Lyrics Processing Considerations
+
+*   **Start Gentle Server First:** Always start the Gentle Docker container before attempting lyrics alignment:
+    ```bash
+    python -m sequence_maker.scripts.start_gentle
+    ```
+
+*   **Use Conservative Alignment:** When providing your own lyrics, always use the `--conservative` flag for better alignment results:
+    ```bash
+    python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt --conservative
+    ```
+
+*   **Skip Automatic Identification When API Keys Missing:** If you see API key errors, skip directly to providing lyrics manually rather than attempting multiple approaches.
 
 ### Python Package Considerations
 

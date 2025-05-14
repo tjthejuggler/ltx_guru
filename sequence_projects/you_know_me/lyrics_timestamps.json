@@ -1,0 +1,1355 @@
+{
+  "song_title": null,
+  "artist_name": null,
+  "raw_lyrics": "you know me\nanytime you hit me it's just not a good time\nguess there's always something, they say that's a good sign\nmaybe good times don't come like they used to\nnever satisfied, you would think it's by design\nno matter what I'm doin it's just not enough\nthe way it hurts inside it's just like when you fall in love\nit's not enough to have it all, I want it all at once\noh that's all it was\nyou know me\nI'm just getting started baby this is just a test run\nI will take a fucking minute if I get one\nwouldn't know what to do with it if I did\nand if I did\nyou know me\nI'm still just as petty as the old me\nstill remember everything they told me\nso tell these motherfuckers they can blow me\nslowly\nyou know me\nyou know me\nyou know me\nyou know me\nyou know me\nI'm still pulling rabbits out of hats\nyou know I had to buff up all the stats\nfor charlotte goin plat' I got a plaque\nleft it in the box I don't know what to do with that\nlove is love but I could never settle for the background\ntook some time to figure out the vision but I'm back now\nme and J just plotted out the summer, got it mapped out\nlocked in, strapped down\nyou know me\nI'm not where I wanna be but it's a good start\nmaybe when we look back this'll be the good part\nthis might be the part where we knew but we didn't know\nand I'll pretend like that's how it was meant to go\nbut you know me\nI just never learned how to let it go\neven after everybody's headed home, headed home\nyou know me\nyou know me\nyou know me\nyou know me",
+  "word_timestamps": [
+    {
+      "word": "you",
+      "start": 10.7,
+      "end": 11.03
+    },
+    {
+      "word": "know",
+      "start": 11.04,
+      "end": 11.329999999999998
+    },
+    {
+      "word": "me",
+      "start": 11.36,
+      "end": 11.7
+    },
+    {
+      "word": "anytime",
+      "start": 12.219999,
+      "end": 12.479999
+    },
+    {
+      "word": "you",
+      "start": 12.799999,
+      "end": 12.879999
+    },
+    {
+      "word": "hit",
+      "start": 12.879999,
+      "end": 12.989999
+    },
+    {
+      "word": "me",
+      "start": 13.049999,
+      "end": 13.199999
+    },
+    {
+      "word": "it's",
+      "start": 13.37,
+      "end": 13.409999999999998
+    },
+    {
+      "word": "just",
+      "start": 13.41,
+      "end": 13.57
+    },
+    {
+      "word": "not",
+      "start": 13.57,
+      "end": 13.75
+    },
+    {
+      "word": "a",
+      "start": 14.08,
+      "end": 14.1
+    },
+    {
+      "word": "good",
+      "start": 14.1,
+      "end": 14.2
+    },
+    {
+      "word": "time",
+      "start": 14.22,
+      "end": 14.56
+    },
+    {
+      "word": "guess",
+      "start": 14.97,
+      "end": 15.15
+    },
+    {
+      "word": "there's",
+      "start": 15.15,
+      "end": 15.379999999999999
+    },
+    {
+      "word": "always",
+      "start": 15.379999999999999,
+      "end": 15.64
+    },
+    {
+      "word": "something",
+      "start": 15.65,
+      "end": 16.11
+    },
+    {
+      "word": "they",
+      "start": 16.23,
+      "end": 16.32
+    },
+    {
+      "word": "say",
+      "start": 16.32,
+      "end": 16.44
+    },
+    {
+      "word": "that's",
+      "start": 16.44,
+      "end": 16.6
+    },
+    {
+      "word": "a",
+      "start": 16.6,
+      "end": 16.68
+    },
+    {
+      "word": "good",
+      "start": 16.94,
+      "end": 17.03
+    },
+    {
+      "word": "sign",
+      "start": 17.03,
+      "end": 17.509999999999998
+    },
+    {
+      "word": "maybe",
+      "start": 17.81,
+      "end": 18.15
+    },
+    {
+      "word": "good",
+      "start": 18.15,
+      "end": 18.310000000000002
+    },
+    {
+      "word": "times",
+      "start": 18.48,
+      "end": 18.85
+    },
+    {
+      "word": "don't",
+      "start": 18.85,
+      "end": 19.17
+    },
+    {
+      "word": "come",
+      "start": 19.48,
+      "end": 19.55
+    },
+    {
+      "word": "like",
+      "start": 19.55,
+      "end": 19.580000000000002
+    },
+    {
+      "word": "they",
+      "start": 19.72,
+      "end": 19.88
+    },
+    {
+      "word": "used",
+      "start": 19.88,
+      "end": 20.189999999999998
+    },
+    {
+      "word": "to",
+      "start": 20.25,
+      "end": 20.37
+    },
+    {
+      "word": "never",
+      "start": 20.39,
+      "end": 20.84
+    },
+    {
+      "word": "satisfied",
+      "start": 20.96,
+      "end": 21.7
+    },
+    {
+      "word": "you",
+      "start": 21.7,
+      "end": 21.86
+    },
+    {
+      "word": "it's",
+      "start": 22.31,
+      "end": 22.369999999999997
+    },
+    {
+      "word": "by",
+      "start": 22.37,
+      "end": 22.560000000000002
+    },
+    {
+      "word": "design",
+      "start": 22.56,
+      "end": 23.2
+    },
+    {
+      "word": "no",
+      "start": 23.97,
+      "end": 24.09
+    },
+    {
+      "word": "matter",
+      "start": 24.09,
+      "end": 24.45
+    },
+    {
+      "word": "what",
+      "start": 24.67,
+      "end": 24.720000000000002
+    },
+    {
+      "word": "i'm",
+      "start": 24.72,
+      "end": 24.83
+    },
+    {
+      "word": "<unk>",
+      "start": 24.83,
+      "end": 25.049999999999997
+    },
+    {
+      "word": "it's",
+      "start": 25.25,
+      "end": 25.38
+    },
+    {
+      "word": "just",
+      "start": 25.38,
+      "end": 25.56
+    },
+    {
+      "word": "not",
+      "start": 25.56,
+      "end": 25.799999999999997
+    },
+    {
+      "word": "enough",
+      "start": 25.97,
+      "end": 26.15
+    },
+    {
+      "word": "the",
+      "start": 26.229999999999997,
+      "end": 26.249999999999996
+    },
+    {
+      "word": "way",
+      "start": 26.49,
+      "end": 26.9
+    },
+    {
+      "word": "it",
+      "start": 26.9,
+      "end": 26.919999999999998
+    },
+    {
+      "word": "hurts",
+      "start": 26.919999999999998,
+      "end": 27.179999999999996
+    },
+    {
+      "word": "inside",
+      "start": 27.179999999999996,
+      "end": 27.589999999999996
+    },
+    {
+      "word": "it's",
+      "start": 27.589999999999996,
+      "end": 27.679999999999996
+    },
+    {
+      "word": "just",
+      "start": 27.679999999999996,
+      "end": 27.859999999999996
+    },
+    {
+      "word": "like",
+      "start": 27.859999999999996,
+      "end": 27.889999999999997
+    },
+    {
+      "word": "when",
+      "start": 27.889999999999997,
+      "end": 27.919999999999998
+    },
+    {
+      "word": "you",
+      "start": 28.21,
+      "end": 28.310000000000002
+    },
+    {
+      "word": "fall",
+      "start": 28.309998999999998,
+      "end": 28.479999
+    },
+    {
+      "word": "in",
+      "start": 28.639999,
+      "end": 28.719998999999998
+    },
+    {
+      "word": "love",
+      "start": 28.719998999999998,
+      "end": 28.749999
+    },
+    {
+      "word": "it's",
+      "start": 29.380000000000003,
+      "end": 29.450000000000003
+    },
+    {
+      "word": "not",
+      "start": 29.45,
+      "end": 29.689999999999998
+    },
+    {
+      "word": "enough",
+      "start": 29.689999999999998,
+      "end": 29.99
+    },
+    {
+      "word": "to",
+      "start": 29.990000000000002,
+      "end": 30.130000000000003
+    },
+    {
+      "word": "it",
+      "start": 30.389999,
+      "end": 30.589999
+    },
+    {
+      "word": "all",
+      "start": 30.59,
+      "end": 30.7
+    },
+    {
+      "word": "i",
+      "start": 30.880000000000003,
+      "end": 30.890000000000004
+    },
+    {
+      "word": "want",
+      "start": 30.889999,
+      "end": 31.119999
+    },
+    {
+      "word": "it",
+      "start": 31.119999999999997,
+      "end": 31.269999999999996
+    },
+    {
+      "word": "all",
+      "start": 31.27,
+      "end": 31.44
+    },
+    {
+      "word": "at",
+      "start": 31.439999999999998,
+      "end": 31.54
+    },
+    {
+      "word": "once",
+      "start": 31.66,
+      "end": 31.9
+    },
+    {
+      "word": "oh",
+      "start": 32.28,
+      "end": 32.44
+    },
+    {
+      "word": "that's",
+      "start": 33.04,
+      "end": 33.08
+    },
+    {
+      "word": "all",
+      "start": 33.08,
+      "end": 33.099999999999994
+    },
+    {
+      "word": "it",
+      "start": 33.099999999999994,
+      "end": 33.12
+    },
+    {
+      "word": "was",
+      "start": 33.12,
+      "end": 33.23
+    },
+    {
+      "word": "you",
+      "start": 33.3,
+      "end": 33.48
+    },
+    {
+      "word": "know",
+      "start": 33.57,
+      "end": 33.919999999999995
+    },
+    {
+      "word": "me",
+      "start": 33.93,
+      "end": 34.339999999999996
+    },
+    {
+      "word": "i'm",
+      "start": 34.78,
+      "end": 34.9
+    },
+    {
+      "word": "just",
+      "start": 34.9,
+      "end": 35.03
+    },
+    {
+      "word": "getting",
+      "start": 35.099999999999994,
+      "end": 35.349999999999994
+    },
+    {
+      "word": "started",
+      "start": 35.36,
+      "end": 35.849999999999994
+    },
+    {
+      "word": "baby",
+      "start": 35.87,
+      "end": 36.14
+    },
+    {
+      "word": "this",
+      "start": 36.14,
+      "end": 36.33
+    },
+    {
+      "word": "just",
+      "start": 36.5,
+      "end": 36.7
+    },
+    {
+      "word": "a",
+      "start": 36.7,
+      "end": 36.77
+    },
+    {
+      "word": "test",
+      "start": 36.77,
+      "end": 37.220000000000006
+    },
+    {
+      "word": "run",
+      "start": 37.22,
+      "end": 37.49
+    },
+    {
+      "word": "i",
+      "start": 37.57,
+      "end": 37.79
+    },
+    {
+      "word": "will",
+      "start": 37.88,
+      "end": 38.14
+    },
+    {
+      "word": "take",
+      "start": 38.14,
+      "end": 38.49
+    },
+    {
+      "word": "a",
+      "start": 38.49,
+      "end": 38.56
+    },
+    {
+      "word": "fucking",
+      "start": 38.56,
+      "end": 38.980000000000004
+    },
+    {
+      "word": "minute",
+      "start": 38.98,
+      "end": 39.41
+    },
+    {
+      "word": "i",
+      "start": 39.63,
+      "end": 39.64
+    },
+    {
+      "word": "get",
+      "start": 39.64,
+      "end": 39.93
+    },
+    {
+      "word": "one",
+      "start": 40.05,
+      "end": 40.32
+    },
+    {
+      "word": "wouldn't",
+      "start": 40.42,
+      "end": 40.59
+    },
+    {
+      "word": "know",
+      "start": 40.64,
+      "end": 41.14
+    },
+    {
+      "word": "what",
+      "start": 41.15,
+      "end": 41.25
+    },
+    {
+      "word": "to",
+      "start": 41.25,
+      "end": 41.41
+    },
+    {
+      "word": "do",
+      "start": 41.86,
+      "end": 41.879999999999995
+    },
+    {
+      "word": "with",
+      "start": 41.879999999999995,
+      "end": 42.019999999999996
+    },
+    {
+      "word": "it",
+      "start": 42.019999999999996,
+      "end": 42.18
+    },
+    {
+      "word": "i",
+      "start": 42.35,
+      "end": 42.43
+    },
+    {
+      "word": "did",
+      "start": 42.519999999999996,
+      "end": 42.879999999999995
+    },
+    {
+      "word": "and",
+      "start": 43.38,
+      "end": 43.59
+    },
+    {
+      "word": "if",
+      "start": 43.74,
+      "end": 43.800000000000004
+    },
+    {
+      "word": "i",
+      "start": 43.800000000000004,
+      "end": 43.900000000000006
+    },
+    {
+      "word": "did",
+      "start": 43.93000000000001,
+      "end": 44.150000000000006
+    },
+    {
+      "word": "you",
+      "start": 44.550000000000004,
+      "end": 44.75
+    },
+    {
+      "word": "know",
+      "start": 44.85,
+      "end": 45.21
+    },
+    {
+      "word": "me",
+      "start": 45.220000000000006,
+      "end": 45.620000000000005
+    },
+    {
+      "word": "just",
+      "start": 47.08,
+      "end": 47.3
+    },
+    {
+      "word": "as",
+      "start": 47.3,
+      "end": 47.44
+    },
+    {
+      "word": "petty",
+      "start": 47.44,
+      "end": 47.83
+    },
+    {
+      "word": "as",
+      "start": 47.83,
+      "end": 48.0
+    },
+    {
+      "word": "the",
+      "start": 48.0,
+      "end": 48.14
+    },
+    {
+      "word": "old",
+      "start": 48.17,
+      "end": 48.45
+    },
+    {
+      "word": "me",
+      "start": 48.480000000000004,
+      "end": 48.870000000000005
+    },
+    {
+      "word": "still",
+      "start": 49.4,
+      "end": 49.71
+    },
+    {
+      "word": "remember",
+      "start": 49.71,
+      "end": 50.300000000000004
+    },
+    {
+      "word": "everything",
+      "start": 50.33,
+      "end": 50.78
+    },
+    {
+      "word": "they",
+      "start": 50.82,
+      "end": 50.95
+    },
+    {
+      "word": "told",
+      "start": 50.95,
+      "end": 51.27
+    },
+    {
+      "word": "me",
+      "start": 51.309999,
+      "end": 51.659999
+    },
+    {
+      "word": "so",
+      "start": 52.16,
+      "end": 52.339999999999996
+    },
+    {
+      "word": "tell",
+      "start": 52.34,
+      "end": 52.57
+    },
+    {
+      "word": "these",
+      "start": 52.57,
+      "end": 52.72
+    },
+    {
+      "word": "motherfuckers",
+      "start": 52.719999,
+      "end": 53.439999
+    },
+    {
+      "word": "they",
+      "start": 53.449999,
+      "end": 53.629999
+    },
+    {
+      "word": "can",
+      "start": 53.629999,
+      "end": 53.769999
+    },
+    {
+      "word": "blow",
+      "start": 53.789999,
+      "end": 54.099999000000004
+    },
+    {
+      "word": "me",
+      "start": 54.109999,
+      "end": 54.839999
+    },
+    {
+      "word": "slowly",
+      "start": 55.069998999999996,
+      "end": 55.829999
+    },
+    {
+      "word": "you",
+      "start": 55.899999,
+      "end": 56.189999
+    },
+    {
+      "word": "know",
+      "start": 56.209998999999996,
+      "end": 56.469999
+    },
+    {
+      "word": "me",
+      "start": 56.619999,
+      "end": 56.969999
+    },
+    {
+      "word": "you",
+      "start": 57.229999,
+      "end": 57.259999
+    },
+    {
+      "word": "know",
+      "start": 57.259999,
+      "end": 57.279999
+    },
+    {
+      "word": "me",
+      "start": 58.279999,
+      "end": 58.519999
+    },
+    {
+      "word": "you",
+      "start": 61.499999,
+      "end": 61.679998999999995
+    },
+    {
+      "word": "know",
+      "start": 61.869999,
+      "end": 62.129999
+    },
+    {
+      "word": "me",
+      "start": 62.239999,
+      "end": 62.599999
+    },
+    {
+      "word": "i'm",
+      "start": 62.799999,
+      "end": 62.819998999999996
+    },
+    {
+      "word": "still",
+      "start": 62.819998999999996,
+      "end": 62.879999
+    },
+    {
+      "word": "pulling",
+      "start": 62.879999,
+      "end": 63.069998999999996
+    },
+    {
+      "word": "rabbits",
+      "start": 64.879999,
+      "end": 65.159999
+    },
+    {
+      "word": "you",
+      "start": 67.17,
+      "end": 67.31
+    },
+    {
+      "word": "know",
+      "start": 67.52,
+      "end": 67.83999999999999
+    },
+    {
+      "word": "i",
+      "start": 68.21000000000001,
+      "end": 68.22000000000001
+    },
+    {
+      "word": "had",
+      "start": 68.509999,
+      "end": 68.989999
+    },
+    {
+      "word": "to",
+      "start": 69.5,
+      "end": 69.58
+    },
+    {
+      "word": "buff",
+      "start": 69.58,
+      "end": 69.78999999999999
+    },
+    {
+      "word": "up",
+      "start": 70.379999,
+      "end": 70.489999
+    },
+    {
+      "word": "all",
+      "start": 70.6,
+      "end": 70.83
+    },
+    {
+      "word": "the",
+      "start": 84.719999,
+      "end": 84.769999
+    },
+    {
+      "word": "stats",
+      "start": 84.77,
+      "end": 85.16
+    },
+    {
+      "word": "for",
+      "start": 86.08,
+      "end": 86.2
+    },
+    {
+      "word": "charlotte",
+      "start": 86.2,
+      "end": 86.52
+    },
+    {
+      "word": "<unk>",
+      "start": 86.52,
+      "end": 87.17999999999999
+    },
+    {
+      "word": "i",
+      "start": 87.25,
+      "end": 87.32
+    },
+    {
+      "word": "got",
+      "start": 87.32,
+      "end": 87.52999999999999
+    },
+    {
+      "word": "a",
+      "start": 87.52999999999999,
+      "end": 87.53999999999999
+    },
+    {
+      "word": "plaque",
+      "start": 87.60999999999999,
+      "end": 88.04999999999998
+    },
+    {
+      "word": "left",
+      "start": 88.40999999999998,
+      "end": 88.48999999999998
+    },
+    {
+      "word": "it",
+      "start": 88.66,
+      "end": 88.8
+    },
+    {
+      "word": "in",
+      "start": 88.799999,
+      "end": 88.909999
+    },
+    {
+      "word": "the",
+      "start": 88.91,
+      "end": 89.03999999999999
+    },
+    {
+      "word": "box",
+      "start": 89.049999,
+      "end": 89.269999
+    },
+    {
+      "word": "know",
+      "start": 89.809999,
+      "end": 89.829999
+    },
+    {
+      "word": "what",
+      "start": 89.83,
+      "end": 90.01
+    },
+    {
+      "word": "to",
+      "start": 90.01,
+      "end": 90.04
+    },
+    {
+      "word": "do",
+      "start": 90.07,
+      "end": 90.38
+    },
+    {
+      "word": "with",
+      "start": 90.389999,
+      "end": 90.459999
+    },
+    {
+      "word": "that",
+      "start": 90.469999,
+      "end": 90.859999
+    },
+    {
+      "word": "love",
+      "start": 95.969999,
+      "end": 95.999999
+    },
+    {
+      "word": "but",
+      "start": 95.999999,
+      "end": 96.029999
+    },
+    {
+      "word": "i'm",
+      "start": 96.029999,
+      "end": 96.119999
+    },
+    {
+      "word": "back",
+      "start": 96.14999900000001,
+      "end": 96.439999
+    },
+    {
+      "word": "now",
+      "start": 96.469999,
+      "end": 96.719999
+    },
+    {
+      "word": "me",
+      "start": 96.869999,
+      "end": 97.089999
+    },
+    {
+      "word": "and",
+      "start": 97.089999,
+      "end": 97.189999
+    },
+    {
+      "word": "j",
+      "start": 97.189999,
+      "end": 97.379999
+    },
+    {
+      "word": "just",
+      "start": 97.379999,
+      "end": 97.559999
+    },
+    {
+      "word": "plotted",
+      "start": 97.559999,
+      "end": 97.689999
+    },
+    {
+      "word": "out",
+      "start": 97.999999,
+      "end": 98.059999
+    },
+    {
+      "word": "the",
+      "start": 98.099999,
+      "end": 98.229999
+    },
+    {
+      "word": "summer",
+      "start": 98.229999,
+      "end": 98.439999
+    },
+    {
+      "word": "got",
+      "start": 98.61,
+      "end": 98.84
+    },
+    {
+      "word": "it",
+      "start": 98.84,
+      "end": 98.95
+    },
+    {
+      "word": "mapped",
+      "start": 98.95,
+      "end": 99.39
+    },
+    {
+      "word": "out",
+      "start": 99.389999,
+      "end": 99.639999
+    },
+    {
+      "word": "locked",
+      "start": 99.65,
+      "end": 100.09
+    },
+    {
+      "word": "in",
+      "start": 100.09,
+      "end": 100.29
+    },
+    {
+      "word": "strapped",
+      "start": 100.28999999999999,
+      "end": 100.74999999999999
+    },
+    {
+      "word": "down",
+      "start": 100.75,
+      "end": 101.05
+    },
+    {
+      "word": "you",
+      "start": 101.059999,
+      "end": 101.369999
+    },
+    {
+      "word": "know",
+      "start": 101.4,
+      "end": 101.68
+    },
+    {
+      "word": "me",
+      "start": 101.69,
+      "end": 102.06
+    },
+    {
+      "word": "i'm",
+      "start": 102.49,
+      "end": 102.66
+    },
+    {
+      "word": "not",
+      "start": 102.66,
+      "end": 102.86999999999999
+    },
+    {
+      "word": "i",
+      "start": 103.23,
+      "end": 103.24000000000001
+    },
+    {
+      "word": "wanna",
+      "start": 103.24,
+      "end": 103.53
+    },
+    {
+      "word": "be",
+      "start": 103.559999,
+      "end": 103.75999900000001
+    },
+    {
+      "word": "it's",
+      "start": 104.11,
+      "end": 104.14
+    },
+    {
+      "word": "a",
+      "start": 104.139999,
+      "end": 104.209999
+    },
+    {
+      "word": "good",
+      "start": 104.28999999999999,
+      "end": 104.49
+    },
+    {
+      "word": "start",
+      "start": 104.509999,
+      "end": 104.989999
+    },
+    {
+      "word": "maybe",
+      "start": 106.489999,
+      "end": 106.529999
+    },
+    {
+      "word": "when",
+      "start": 106.529999,
+      "end": 106.55999899999999
+    },
+    {
+      "word": "we",
+      "start": 106.55999899999999,
+      "end": 106.579999
+    },
+    {
+      "word": "be",
+      "start": 106.75,
+      "end": 106.91
+    },
+    {
+      "word": "the",
+      "start": 106.91,
+      "end": 107.02
+    },
+    {
+      "word": "good",
+      "start": 107.049999,
+      "end": 107.389999
+    },
+    {
+      "word": "part",
+      "start": 108.099999,
+      "end": 108.139999
+    },
+    {
+      "word": "this",
+      "start": 108.169999,
+      "end": 108.329999
+    },
+    {
+      "word": "might",
+      "start": 108.329999,
+      "end": 108.529999
+    },
+    {
+      "word": "be",
+      "start": 108.529999,
+      "end": 108.689999
+    },
+    {
+      "word": "the",
+      "start": 108.689999,
+      "end": 108.839999
+    },
+    {
+      "word": "part",
+      "start": 108.859999,
+      "end": 109.189999
+    },
+    {
+      "word": "where",
+      "start": 109.309999,
+      "end": 109.379999
+    },
+    {
+      "word": "we",
+      "start": 109.379999,
+      "end": 109.56999900000001
+    },
+    {
+      "word": "but",
+      "start": 110.12,
+      "end": 110.15
+    },
+    {
+      "word": "we",
+      "start": 110.15,
+      "end": 110.26
+    },
+    {
+      "word": "didn't",
+      "start": 110.26,
+      "end": 110.53
+    },
+    {
+      "word": "know",
+      "start": 110.53,
+      "end": 111.19
+    },
+    {
+      "word": "and",
+      "start": 111.73,
+      "end": 111.78
+    },
+    {
+      "word": "i'll",
+      "start": 111.78,
+      "end": 111.87
+    },
+    {
+      "word": "pretend",
+      "start": 111.87,
+      "end": 112.22
+    },
+    {
+      "word": "like",
+      "start": 112.22,
+      "end": 112.25
+    },
+    {
+      "word": "that's",
+      "start": 112.39999999999999,
+      "end": 112.53999999999999
+    },
+    {
+      "word": "how",
+      "start": 112.53999999999999,
+      "end": 112.75
+    },
+    {
+      "word": "it",
+      "start": 112.75,
+      "end": 112.89
+    },
+    {
+      "word": "was",
+      "start": 113.0,
+      "end": 113.07
+    },
+    {
+      "word": "meant",
+      "start": 113.07,
+      "end": 113.28
+    },
+    {
+      "word": "to",
+      "start": 113.28,
+      "end": 113.39
+    },
+    {
+      "word": "go",
+      "start": 113.39,
+      "end": 114.50999999999999
+    },
+    {
+      "word": "but",
+      "start": 115.03999999999999,
+      "end": 115.21
+    },
+    {
+      "word": "you",
+      "start": 115.21,
+      "end": 115.5
+    },
+    {
+      "word": "know",
+      "start": 115.50999999999999,
+      "end": 115.81
+    },
+    {
+      "word": "me",
+      "start": 115.83,
+      "end": 116.63
+    },
+    {
+      "word": "i",
+      "start": 117.34,
+      "end": 117.49
+    },
+    {
+      "word": "just",
+      "start": 117.49,
+      "end": 117.66
+    },
+    {
+      "word": "never",
+      "start": 117.66,
+      "end": 118.50999999999999
+    },
+    {
+      "word": "to",
+      "start": 118.679999,
+      "end": 118.69999899999999
+    },
+    {
+      "word": "let",
+      "start": 118.7,
+      "end": 118.96000000000001
+    },
+    {
+      "word": "it",
+      "start": 118.96000000000001,
+      "end": 119.03
+    },
+    {
+      "word": "go",
+      "start": 119.08,
+      "end": 119.37
+    },
+    {
+      "word": "even",
+      "start": 120.469999,
+      "end": 120.569999
+    },
+    {
+      "word": "after",
+      "start": 120.57,
+      "end": 120.89999999999999
+    },
+    {
+      "word": "everybody's",
+      "start": 121.11,
+      "end": 121.62
+    },
+    {
+      "word": "headed",
+      "start": 121.77000000000001,
+      "end": 121.82000000000001
+    },
+    {
+      "word": "home",
+      "start": 121.82000000000001,
+      "end": 121.85000000000001
+    },
+    {
+      "word": "you",
+      "start": 121.85000000000001,
+      "end": 121.93
+    },
+    {
+      "word": "know",
+      "start": 121.93,
+      "end": 122.22
+    },
+    {
+      "word": "me",
+      "start": 123.23,
+      "end": 123.25
+    },
+    {
+      "word": "you",
+      "start": 123.25,
+      "end": 123.27000000000001
+    },
+    {
+      "word": "know",
+      "start": 123.27000000000001,
+      "end": 123.55000000000001
+    },
+    {
+      "word": "me",
+      "start": 123.56,
+      "end": 123.58
+    },
+    {
+      "word": "you",
+      "start": 123.60000000000001,
+      "end": 123.95
+    },
+    {
+      "word": "know",
+      "start": 123.96000000000001,
+      "end": 124.21000000000001
+    },
+    {
+      "word": "me",
+      "start": 124.21000000000001,
+      "end": 125.04
+    },
+    {
+      "word": "you",
+      "start": 129.19,
+      "end": 129.43
+    },
+    {
+      "word": "know",
+      "start": 129.62,
+      "end": 129.85
+    },
+    {
+      "word": "me",
+      "start": 129.85,
+      "end": 129.95000000000002
+    }
+  ],
+  "processing_status": {
+    "song_identified": false,
+    "lyrics_retrieved": true,
+    "lyrics_aligned": true,
+    "user_assistance_needed": true,
+    "assistance_type": "song_identification",
+    "message": "Could not identify song. Please provide song title and artist name."
+  }
+}

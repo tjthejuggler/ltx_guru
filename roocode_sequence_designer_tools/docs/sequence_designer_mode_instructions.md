@@ -2,73 +2,69 @@
 
 ## Lyrics Processing Workflow
 
-When extracting lyrics timestamps from audio files, follow this exact workflow:
+When extracting lyrics timestamps from audio files, follow this optimized workflow:
 
-1. **Identify the song and artist**:
+1. **Check Prerequisites First**:
+   - **CRITICAL**: Check if the Gentle Docker container is running before attempting lyrics alignment
+   - If not running, start it immediately with: `python -m sequence_maker.scripts.start_gentle`
+   - This step is essential and will save significant time and tokens
+
+2. **Identify the song and artist**:
    - First attempt to automatically detect the song name and artist using the extract_lyrics.py tool
-   - If automatic detection fails, immediately ask the user for the song name and artist
-   - Do not create placeholder content or make assumptions
+   - If automatic detection fails (which is likely if API keys are missing), immediately ask the user for:
+     1. The song name and artist
+     2. The complete lyrics text
+   - Do not waste time with multiple attempts if API keys are missing
 
-2. **Obtain the lyrics**:
-   - With song name and artist, attempt to automatically retrieve lyrics
-   - If automatic retrieval fails, immediately ask the user to provide the lyrics
-   - Do not create placeholder lyrics or sample text
-
-3. **Generate timestamps**:
-   - Use the existing extract_lyrics.py tool with the provided lyrics to generate timestamps
-   - Do not write custom Python scripts or create new tools unless absolutely necessary
+3. **Generate timestamps directly**:
+   - Save user-provided lyrics to a text file
+   - Use extract_lyrics.py with the `--conservative` flag (this is crucial for successful alignment)
+   - Command: `python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --lyrics-file lyrics.txt --output lyrics_timestamps.json --conservative`
 
 4. **Present results**:
    - Show the user the timestamps that were generated
-   - If the process fails at any point, clearly explain what happened and what's needed next
+   - If the process fails, clearly explain what happened and what's needed next
 
-## API Keys Requirements
+## API Keys and Common Issues
 
 The lyrics processing functionality requires API keys to work properly:
 
-1. **API Keys Location**:
-   - The system looks for API keys at: `~/.ltx_sequence_maker/api_keys.json`
-   - Alternative location: `~/.config/ltx_sequence_maker/api_keys.json`
+1. **API Keys Status Check**:
+   - If you see "API keys file not found" or "Missing ACRCloud API keys" messages, assume automatic identification won't work
+   - Skip directly to asking the user for lyrics rather than attempting multiple approaches
+   - This saves significant time and tokens
 
-2. **Required API Keys**:
-   - `acr_access_key`: For ACRCloud song identification
-   - `acr_secret_key`: For ACRCloud song identification
-   - `acr_host`: For ACRCloud host URL
-   - `genius_api_key`: For Genius lyrics retrieval
+2. **Gentle Server Requirements**:
+   - The Gentle server must be running for lyrics alignment to work
+   - If you see "Connection refused" errors when connecting to localhost:8765, the Gentle server is not running
+   - Always start the Gentle server first before attempting lyrics alignment
 
-3. **Error Handling**:
-   - If API keys are missing, the system will report this in the logs
-   - When this happens, immediately ask the user for the required information (song name, artist, lyrics)
-   - Do not attempt to create workarounds or alternative solutions
+3. **Conservative Alignment**:
+   - Always use the `--conservative` flag with extract_lyrics.py when providing user lyrics
+   - This significantly improves alignment success rates and prevents wasted attempts
+
+## Optimized Command Sequence
+
+For maximum efficiency, use this exact sequence of commands:
+
+```bash
+# Step 1: Start the Gentle server (ALWAYS do this first)
+python -m sequence_maker.scripts.start_gentle
+
+# Step 2: Save user-provided lyrics to a file
+# (Ask for lyrics immediately if you see API key errors)
+
+# Step 3: Run extraction with conservative alignment
+python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --lyrics-file lyrics.txt --output lyrics_timestamps.json --conservative
+```
 
 ## Important Guidelines
 
-- **Use existing tools**: Always use the tools that are already available in the roocode_sequence_designer_tools directory
-- **Don't create unnecessary files**: Avoid creating Python scripts or other files in the song directories
-- **Follow established patterns**: Look at examples in the codebase to understand the correct workflow
-- **Be efficient**: Don't waste tokens on unnecessary steps or explanations
-- **Ask directly**: When user input is needed, ask clearly and directly
-- **No placeholders**: Never use placeholder content when real content is needed
+- **Be direct and efficient**: Ask for all needed information upfront rather than in multiple steps
+- **Recognize common errors**: If you see API key errors, immediately ask for lyrics
+- **Use the conservative flag**: Always include `--conservative` when aligning user-provided lyrics
+- **Start Gentle first**: Always ensure the Gentle server is running before attempting alignment
+- **Check cached analysis**: Look for existing analysis files before running new analyses
+- **Avoid unnecessary explanations**: Focus on getting the task done with minimal token usage
 
-## Tool Usage Examples
-
-### Correct Lyrics Extraction Workflow
-
-```bash
-# Step 1: Try to identify song and get lyrics
-python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --output lyrics_data.json
-
-# Step 2: If identification fails, ask user for lyrics and then run:
-python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --lyrics-file user_provided_lyrics.txt --output lyrics_data.json
-```
-
-### Checking API Keys Status
-
-If you suspect API keys might be missing, you can check the error messages in the output. Look for messages like:
-- "API keys file not found at /home/twain/.ltx_sequence_maker/api_keys.json"
-- "Missing ACRCloud API keys, cannot identify song"
-- "Missing Genius API key, cannot fetch lyrics"
-
-When you see these messages, immediately ask the user for the required information rather than attempting complex workarounds.
-
-Remember that the sequence maker tools are designed to handle this workflow efficiently. Trust the existing tools and processes rather than creating new ones.
+Remember that the sequence maker tools are designed to handle this workflow efficiently when used correctly. Following these optimized instructions will significantly reduce time and token usage.

@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Example script demonstrating the lyrics processing workflow.
+Example script demonstrating the optimized lyrics processing workflow.
 
 This script shows how to:
-1. Attempt to process lyrics from an audio file
-2. Handle different partial success scenarios
-3. Provide user assistance when needed
+1. Start the Gentle server (critical first step)
+2. Check for API keys and determine the most efficient approach
+3. Process lyrics with the appropriate flags for best results
+4. Handle different scenarios efficiently
 
 Usage:
     python lyrics_processing_workflow_example.py <audio_file_path>
@@ -16,16 +17,71 @@ import sys
 import json
 import subprocess
 import argparse
+import time
 from pathlib import Path
 
 # Add parent directory to path so we can import our modules
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
 
-def initial_lyrics_processing(audio_path, output_path):
-    """Attempt initial lyrics processing."""
-    print("\n=== Step 1: Initial Lyrics Processing ===")
-    print("Attempting to identify song, retrieve lyrics, and align with audio...")
+def start_gentle_server():
+    """Start the Gentle server if it's not already running."""
+    print("\n=== Step 1: Starting Gentle Server ===")
+    print("Checking if Gentle server is running...")
+    
+    # Check if Gentle is already running
+    try:
+        import requests
+        response = requests.get("http://localhost:8765", timeout=2)
+        if response.status_code == 200:
+            print("Gentle server is already running.")
+            return True
+    except Exception:
+        print("Gentle server is not running. Starting it now...")
+    
+    # Start the Gentle server
+    cmd = [
+        "python", "-m", "sequence_maker.scripts.start_gentle"
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    
+    if "Gentle started successfully" in result.stdout or "Gentle is already running" in result.stdout:
+        print("Gentle server started successfully.")
+        return True
+    else:
+        print("Failed to start Gentle server. Check Docker installation.")
+        print(f"Output: {result.stdout}")
+        print(f"Error: {result.stderr}")
+        return False
+
+
+def check_api_keys():
+    """Check if API keys are available."""
+    print("\n=== Step 2: Checking API Keys ===")
+    
+    # Try a simple command that would show API key status in output
+    cmd = [
+        "python", "-m", "roocode_sequence_designer_tools.extract_lyrics",
+        "--help"
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    
+    api_keys_missing = "API keys file not found" in result.stderr or "Missing ACRCloud API keys" in result.stderr
+    
+    if api_keys_missing:
+        print("API keys are missing or incomplete.")
+        print("Automatic song identification will not work.")
+        print("We'll skip directly to manual lyrics processing.")
+        return False
+    else:
+        print("API keys appear to be configured.")
+        return True
+
+
+def attempt_automatic_processing(audio_path, output_path):
+    """Attempt automatic lyrics processing."""
+    print("\n=== Step 3a: Attempting Automatic Lyrics Processing ===")
+    print("Trying to identify song, retrieve lyrics, and align with audio...")
     
     cmd = [
         "python", "-m", "roocode_sequence_designer_tools.extract_lyrics",
@@ -38,105 +94,61 @@ def initial_lyrics_processing(audio_path, output_path):
     try:
         with open(output_path, 'r') as f:
             lyrics_data = json.load(f)
-        return lyrics_data
+        
+        status = lyrics_data.get("processing_status", {})
+        if status.get("lyrics_aligned", False):
+            print("Automatic processing succeeded!")
+            return lyrics_data, True
+        else:
+            print("Automatic processing failed to align lyrics.")
+            return lyrics_data, False
+    except Exception as e:
+        print(f"Error reading lyrics data: {e}")
+        return None, False
+
+
+def process_with_user_lyrics(audio_path, output_path, lyrics_text=None):
+    """Process lyrics with user-provided text."""
+    print("\n=== Step 3b: Processing with User-Provided Lyrics ===")
+    
+    # Create a lyrics file
+    lyrics_file = os.path.join(os.path.dirname(output_path), "user_lyrics.txt")
+    
+    if lyrics_text is None:
+        # In a real application, you would get this from user input
+        lyrics_text = "These are sample lyrics\nFor demonstration purposes\nProvided by the user"
+    
+    with open(lyrics_file, 'w') as f:
+        f.write(lyrics_text)
+    
+    print(f"Created lyrics file: {lyrics_file}")
+    print("Processing with conservative alignment for best results...")
+    
+    # Always use the --conservative flag for better alignment results
+    cmd = [
+        "python", "-m", "roocode_sequence_designer_tools.extract_lyrics",
+        audio_path,
+        "--lyrics-file", lyrics_file,
+        "--conservative",  # This flag is crucial for successful alignment
+        "--output", output_path
+    ]
+    subprocess.run(cmd)
+    
+    # Check the results
+    try:
+        with open(output_path, 'r') as f:
+            lyrics_data = json.load(f)
+        
+        status = lyrics_data.get("processing_status", {})
+        if status.get("lyrics_aligned", False):
+            print("Lyrics alignment succeeded!")
+            return lyrics_data
+        else:
+            print("Lyrics alignment failed even with conservative mode.")
+            return lyrics_data
     except Exception as e:
         print(f"Error reading lyrics data: {e}")
         return None
-
-
-def check_processing_status(lyrics_data):
-    """Check the processing status and determine next steps."""
-    print("\n=== Step 2: Checking Processing Status ===")
-    
-    if not lyrics_data or "processing_status" not in lyrics_data:
-        print("No processing status information available.")
-        return False, None
-    
-    status = lyrics_data["processing_status"]
-    
-    print(f"Song identified: {'Yes' if status['song_identified'] else 'No'}")
-    print(f"Lyrics retrieved: {'Yes' if status['lyrics_retrieved'] else 'No'}")
-    print(f"Lyrics aligned: {'Yes' if status['lyrics_aligned'] else 'No'}")
-    
-    if status["user_assistance_needed"]:
-        print("\n⚠️ User Assistance Needed:")
-        print(f"  {status['message']}")
-        return False, status["assistance_type"]
-    
-    return True, None
-
-
-def handle_song_identification_failure(audio_path, output_path):
-    """Handle the case where song identification failed."""
-    print("\n=== Step 3a: Handling Song Identification Failure ===")
-    print("In a real scenario, you would:")
-    print("1. Manually identify the song")
-    print("2. Find the lyrics")
-    print("3. Save them to a text file")
-    
-    # For this example, we'll create a sample lyrics file
-    lyrics_file = os.path.join(os.path.dirname(output_path), "sample_lyrics.txt")
-    with open(lyrics_file, 'w') as f:
-        f.write("These are sample lyrics\nFor demonstration purposes\nWhen song identification fails")
-    
-    print(f"\nCreated sample lyrics file: {lyrics_file}")
-    print("Now processing with the provided lyrics...")
-    
-    cmd = [
-        "python", "-m", "roocode_sequence_designer_tools.extract_lyrics",
-        audio_path,
-        "--lyrics-file", lyrics_file,
-        "--output", output_path
-    ]
-    subprocess.run(cmd)
-    
-    return lyrics_file
-
-
-def handle_lyrics_retrieval_failure(audio_path, output_path, lyrics_data):
-    """Handle the case where song was identified but lyrics retrieval failed."""
-    print("\n=== Step 3b: Handling Lyrics Retrieval Failure ===")
-    
-    song_title = lyrics_data.get("song_title", "Unknown")
-    artist_name = lyrics_data.get("artist_name", "Unknown")
-    
-    print(f"Song identified as: {song_title} by {artist_name}")
-    print("In a real scenario, you would:")
-    print(f"1. Find the lyrics for '{song_title}' by '{artist_name}'")
-    print("2. Save them to a text file")
-    
-    # For this example, we'll create a sample lyrics file
-    lyrics_file = os.path.join(os.path.dirname(output_path), "sample_lyrics.txt")
-    with open(lyrics_file, 'w') as f:
-        f.write(f"These are sample lyrics for {song_title}\nBy {artist_name}\nFor demonstration purposes")
-    
-    print(f"\nCreated sample lyrics file: {lyrics_file}")
-    print("Now processing with the provided lyrics...")
-    
-    cmd = [
-        "python", "-m", "roocode_sequence_designer_tools.extract_lyrics",
-        audio_path,
-        "--lyrics-file", lyrics_file,
-        "--output", output_path
-    ]
-    subprocess.run(cmd)
-    
-    return lyrics_file
-
-
-def handle_alignment_failure(audio_path, output_path, lyrics_file):
-    """Handle the case where lyrics were retrieved but alignment failed."""
-    print("\n=== Step 3c: Handling Alignment Failure ===")
-    print("Trying with conservative alignment...")
-    
-    cmd = [
-        "python", "-m", "roocode_sequence_designer_tools.extract_lyrics",
-        audio_path,
-        "--lyrics-file", lyrics_file,
-        "--conservative",
-        "--output", output_path
-    ]
-    subprocess.run(cmd)
 
 
 def use_processed_lyrics(lyrics_data):
@@ -161,9 +173,10 @@ def use_processed_lyrics(lyrics_data):
 
 
 def main():
-    """Main function to demonstrate the lyrics processing workflow."""
-    parser = argparse.ArgumentParser(description="Demonstrate the lyrics processing workflow.")
+    """Main function demonstrating the optimized lyrics processing workflow."""
+    parser = argparse.ArgumentParser(description="Demonstrate the optimized lyrics processing workflow.")
     parser.add_argument("audio_file_path", help="Path to the audio file to process")
+    parser.add_argument("--lyrics", help="Optional path to a lyrics text file")
     
     args = parser.parse_args()
     audio_path = args.audio_file_path
@@ -179,46 +192,47 @@ def main():
     # Output path for lyrics data
     output_path = os.path.join(output_dir, "lyrics_data.json")
     
-    # Step 1: Initial lyrics processing
-    lyrics_data = initial_lyrics_processing(audio_path, output_path)
+    # Step 1: Start the Gentle server (CRITICAL first step)
+    if not start_gentle_server():
+        print("Failed to start Gentle server. Exiting.")
+        sys.exit(1)
+    
+    # Step 2: Check if API keys are available
+    api_keys_available = check_api_keys()
+    
+    # Step 3: Process lyrics using the most efficient approach
+    lyrics_data = None
+    
+    if args.lyrics:
+        # If lyrics file is provided, use it directly with conservative alignment
+        print(f"Using provided lyrics file: {args.lyrics}")
+        with open(args.lyrics, 'r') as f:
+            lyrics_text = f.read()
+        lyrics_data = process_with_user_lyrics(audio_path, output_path, lyrics_text)
+    elif api_keys_available:
+        # Try automatic processing first
+        lyrics_data, success = attempt_automatic_processing(audio_path, output_path)
+        if not success:
+            # If automatic processing fails, fall back to user-provided lyrics
+            lyrics_data = process_with_user_lyrics(audio_path, output_path)
+    else:
+        # Skip directly to user-provided lyrics if API keys are missing
+        lyrics_data = process_with_user_lyrics(audio_path, output_path)
     
     if not lyrics_data:
         print("Failed to process lyrics. Exiting.")
         sys.exit(1)
-    
-    # Step 2: Check processing status
-    success, assistance_type = check_processing_status(lyrics_data)
-    
-    # Step 3: Handle partial success cases
-    lyrics_file = None
-    
-    if not success:
-        if assistance_type == "song_identification":
-            lyrics_file = handle_song_identification_failure(audio_path, output_path)
-        elif assistance_type == "lyrics_text":
-            lyrics_file = handle_lyrics_retrieval_failure(audio_path, output_path, lyrics_data)
-        
-        # Reload the lyrics data after handling
-        try:
-            with open(output_path, 'r') as f:
-                lyrics_data = json.load(f)
-            
-            # Check if alignment succeeded
-            status = lyrics_data.get("processing_status", {})
-            if not status.get("lyrics_aligned", False) and lyrics_file:
-                handle_alignment_failure(audio_path, output_path, lyrics_file)
-                
-                # Reload the lyrics data after handling alignment
-                with open(output_path, 'r') as f:
-                    lyrics_data = json.load(f)
-        except Exception as e:
-            print(f"Error reloading lyrics data: {e}")
     
     # Step 4: Use the processed lyrics
     use_processed_lyrics(lyrics_data)
     
     print("\n=== Workflow Example Complete ===")
     print(f"All outputs have been saved to: {output_dir}")
+    print("\nKey takeaways for efficient lyrics processing:")
+    print("1. Always start the Gentle server first")
+    print("2. Use the --conservative flag when providing lyrics")
+    print("3. Skip automatic identification if API keys are missing")
+    print("4. Process user-provided lyrics in a single step")
 
 
 if __name__ == "__main__":
