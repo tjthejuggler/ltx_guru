@@ -20,6 +20,15 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 
 *   **[`audio_analysis_report.py`](./audio_analysis_report.py):**
     *   A comprehensive tool for generating detailed audio analysis reports with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities and creates visual plots of audio features.
+    *   Supports time range filtering and feature selection to prevent context overflow with large reports.
+
+*   **[`check_report_size.py`](./check_report_size.py):**
+    *   A utility tool for checking the size of audio analysis reports before viewing them. This helps prevent context overflow when working with large reports.
+    *   Provides a summary of report contents and recommendations for handling large reports.
+
+*   **[`extract_lyrics.py`](./extract_lyrics.py):**
+    *   A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
+    *   Supports time range filtering and formatted text output.
 
 *   **[`effect_implementations/`](./effect_implementations/):**
     *   This directory houses Python modules that contain the actual logic for various lighting effects.
@@ -171,13 +180,67 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 *   **Purpose:** A comprehensive tool for generating detailed audio analysis reports with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities, creates visual plots of audio features, and generates a structured JSON report.
 *   **Command-Line Usage:**
     ```bash
-    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>]
+    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only]
     ```
     *   `<audio_file_path>`: Path to the audio file to be analyzed.
     *   `--output-dir <dir>`: (Optional) Directory to save the report and visualizations. If not provided, uses the directory containing the audio file.
+    *   `--start-time <seconds>`: (Optional) Start time in seconds for time-range analysis.
+    *   `--end-time <seconds>`: (Optional) End time in seconds for time-range analysis.
+    *   `--features <feature1,feature2,...>`: (Optional) Comma-separated list of features to include in the report (e.g., beats,sections,energy,lyrics).
+    *   `--check-size-only`: (Optional) Only check the size of an existing report without generating a new one.
 *   **For detailed documentation, see [Audio Analysis Report Tool Documentation](./docs/audio_analysis_report_tool.md).**
 
+### `check_report_size.py`
+
+*   **Purpose:** A utility tool for checking the size of audio analysis reports before viewing them. This helps prevent context overflow when working with large reports.
+*   **Command-Line Usage:**
+    ```bash
+    python -m roocode_sequence_designer_tools.check_report_size <report_path>
+    ```
+    *   `<report_path>`: Path to the report file to check.
+*   **Output:** Provides a summary of the report size, content, and recommendations for handling large reports.
+
+### `extract_lyrics.py`
+
+*   **Purpose:** A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
+*   **Command-Line Usage:**
+    ```bash
+    python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps]
+    ```
+    *   `<audio_file_path>`: Path to the audio file to extract lyrics from.
+    *   `--output <output_path>`: (Optional) Path to save the lyrics JSON file. If not provided, only prints summary.
+    *   `--start-time <seconds>`: (Optional) Start time in seconds for time-range extraction.
+    *   `--end-time <seconds>`: (Optional) End time in seconds for time-range extraction.
+    *   `--conservative`: (Optional) Use conservative alignment for lyrics processing.
+    *   `--lyrics-file <path>`: (Optional) Path to a text file containing user-provided lyrics.
+    *   `--format-text`: (Optional) Format lyrics as readable text instead of JSON.
+    *   `--include-timestamps`: (Optional) Include timestamps in formatted text output.
+
 ## Important Considerations & Troubleshooting
+
+### Handling Large Audio Analysis Reports
+
+*   **Check Report Size First:** Always check the size of audio analysis reports before attempting to view them directly. Large reports can cause context overflow issues with LLMs.
+    ```bash
+    python -m roocode_sequence_designer_tools.check_report_size <report_path>
+    ```
+
+*   **Use Time Range Filtering:** When analyzing long audio files, use the time range filtering options to focus on specific sections:
+    ```bash
+    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file> --start-time 0 --end-time 60
+    ```
+
+*   **Use Feature Selection:** When you only need specific audio features, use the feature selection option:
+    ```bash
+    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file> --features beats,sections
+    ```
+
+*   **Use Dedicated Tools:** For specific tasks like lyrics processing, use the dedicated tools:
+    ```bash
+    python -m roocode_sequence_designer_tools.extract_lyrics <audio_file>
+    ```
+
+### Python Package Considerations
 
 *   **Python Package Naming:** When creating or referencing Python packages (directories containing an `__init__.py` file), ensure directory names use underscores (e.g., `my_package`) rather than hyphens (e.g., `my-package`). Hyphens are not valid in Python import statements. If a script needs to import modules from a sibling directory that is a package, ensure the package directory is named appropriately.
 *   **Running Scripts as Modules:** If a script within a package uses relative imports (e.g., `from . import my_module`), it should typically be run as a module using `python -m package_name.script_name` from the parent directory of the package. This allows Python to correctly resolve the relative imports.

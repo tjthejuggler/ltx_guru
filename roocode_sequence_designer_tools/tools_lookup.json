@@ -95,8 +95,20 @@
     {
       "name": "audio_analysis_report",
       "script_path": "audio_analysis_report.py",
-      "description": "Generates a comprehensive audio analysis report with visualizations and capability testing.",
-      "usage": "python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>]"
+      "description": "Generates a comprehensive audio analysis report with visualizations and capability testing. Supports time range filtering and feature selection.",
+      "usage": "python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only]"
+    },
+    {
+      "name": "check_report_size",
+      "script_path": "check_report_size.py",
+      "description": "Checks the size of audio analysis reports before viewing them to prevent context overflow.",
+      "usage": "python -m roocode_sequence_designer_tools.check_report_size <report_path>"
+    },
+    {
+      "name": "extract_lyrics",
+      "script_path": "extract_lyrics.py",
+      "description": "Extracts and processes lyrics from audio files with options for time range filtering and formatting.",
+      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps]"
     }
   ]
 }

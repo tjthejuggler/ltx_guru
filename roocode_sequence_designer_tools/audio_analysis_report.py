@@ -26,6 +26,7 @@ import traceback
 from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
+from typing import Dict, List, Optional, Union, Any
 
 # Add parent directory to path so we can import our modules
 sys.path.append(str(Path(__file__).parent.parent))
@@ -117,7 +118,13 @@ def plot_audio_features(analysis_data, output_dir):
         traceback.print_exc()
         return False
 
-def analyze_audio_and_generate_report(audio_file_path, output_dir=None):
+def analyze_audio_and_generate_report(
+    audio_file_path: str,
+    output_dir: Optional[str] = None,
+    start_time: Optional[float] = None,
+    end_time: Optional[float] = None,
+    features: Optional[List[str]] = None
+) -> Dict[str, Any]:
     """
     Analyze audio file and generate a comprehensive report.
     
@@ -125,6 +132,12 @@ def analyze_audio_and_generate_report(audio_file_path, output_dir=None):
         audio_file_path (str): Path to the audio file to analyze
         output_dir (str, optional): Directory to save the report and visualizations.
             If not provided, uses the directory containing the audio file.
+        start_time (float, optional): Start time in seconds for time-range analysis.
+            If provided with end_time, only analyzes the specified time range.
+        end_time (float, optional): End time in seconds for time-range analysis.
+            If provided with start_time, only analyzes the specified time range.
+        features (List[str], optional): List of specific features to include in the report.
+            If not provided, includes all features.
             
     Returns:
         dict: The generated report data
@@ -152,6 +165,18 @@ def analyze_audio_and_generate_report(audio_file_path, output_dir=None):
         }
     }
     
+    # Add time range information if provided
+    if start_time is not None and end_time is not None:
+        report["time_range"] = {
+            "start_time": start_time,
+            "end_time": end_time,
+            "duration": end_time - start_time
+        }
+    
+    # Add feature selection information if provided
+    if features:
+        report["selected_features"] = features
+    
     # Initialize the analyzer
     try:
         analyzer = AudioAnalyzer()
@@ -167,7 +192,24 @@ def analyze_audio_and_generate_report(audio_file_path, output_dir=None):
     try:
         # First try without lyrics processing
         logger.info(f"Analyzing audio file: {audio_file_path}")
-        analysis_data = analyzer.analyze_audio(audio_file_path)
+        
+        # Prepare analysis parameters
+        analysis_params = {}
+        
+        # Analyze the audio
+        analysis_data = analyzer.analyze_audio(audio_file_path, analysis_params=analysis_params)
+        
+        # Filter data by time range if specified
+        if start_time is not None and end_time is not None:
+            logger.info(f"Filtering analysis data to time range: {start_time}-{end_time} seconds")
+            filtered_data = filter_analysis_by_time_range(analysis_data, start_time, end_time)
+            analysis_data = filtered_data
+        
+        # Filter data by selected features if specified
+        if features:
+            logger.info(f"Filtering analysis data to selected features: {features}")
+            filtered_data = filter_analysis_by_features(analysis_data, features)
+            analysis_data = filtered_data
         
         # Store the basic analysis results
         report["analysis_results"]["basic_analysis"] = analysis_data
@@ -209,26 +251,37 @@ def analyze_audio_and_generate_report(audio_file_path, output_dir=None):
         else:
             report["issues"].append("Time signature detection not working")
         
-        # Now try with lyrics processing
-        try:
-            logger.info("Attempting lyrics processing")
-            lyrics_params = {
-                'request_lyrics': True,
-                'conservative_lyrics_alignment': True
-            }
-            
-            lyrics_analysis = analyzer.analyze_audio(audio_file_path, analysis_params=lyrics_params)
-            
-            if 'lyrics_info' in lyrics_analysis:
-                report["capabilities"]["lyrics_processing"]["working"] = True
-                report["analysis_results"]["lyrics_analysis"] = lyrics_analysis['lyrics_info']
-                logger.info("Lyrics processing working")
-            else:
-                report["issues"].append("Lyrics processing not working or no lyrics found")
-        except Exception as e:
-            error_msg = f"Error during lyrics processing: {e}"
-            logger.error(error_msg)
-            report["issues"].append(error_msg)
+        # Now try with lyrics processing if requested
+        if not features or 'lyrics' in features:
+            try:
+                logger.info("Attempting lyrics processing")
+                lyrics_params = {
+                    'request_lyrics': True,
+                    'conservative_lyrics_alignment': True
+                }
+                
+                lyrics_analysis = analyzer.analyze_audio(audio_file_path, analysis_params=lyrics_params)
+                
+                if 'lyrics_info' in lyrics_analysis:
+                    report["capabilities"]["lyrics_processing"]["working"] = True
+                    
+                    # Filter lyrics by time range if specified
+                    if start_time is not None and end_time is not None and 'word_timestamps' in lyrics_analysis['lyrics_info']:
+                        filtered_words = [
+                            word for word in lyrics_analysis['lyrics_info']['word_timestamps']
+                            if start_time <= word['start'] < end_time
+                        ]
+                        lyrics_analysis['lyrics_info']['word_timestamps'] = filtered_words
+                        logger.info(f"Filtered lyrics to {len(filtered_words)} words in time range")
+                    
+                    report["analysis_results"]["lyrics_analysis"] = lyrics_analysis['lyrics_info']
+                    logger.info("Lyrics processing working")
+                else:
+                    report["issues"].append("Lyrics processing not working or no lyrics found")
+            except Exception as e:
+                error_msg = f"Error during lyrics processing: {e}"
+                logger.error(error_msg)
+                report["issues"].append(error_msg)
         
         # Create visualizations
         plot_dir = os.path.join(output_dir, "plots")
@@ -270,6 +323,125 @@ def print_report_summary(report):
     
     print("\nAnalysis complete!")
 
+def filter_analysis_by_time_range(analysis_data, start_time, end_time):
+    """
+    Filter analysis data to a specific time range.
+    
+    Args:
+        analysis_data (dict): The full analysis data
+        start_time (float): Start time in seconds
+        end_time (float): End time in seconds
+        
+    Returns:
+        dict: Filtered analysis data
+    """
+    filtered_data = {}
+    
+    # Copy non-time-series data
+    for key in ['song_title', 'duration_seconds', 'estimated_tempo', 'time_signature_guess']:
+        if key in analysis_data:
+            filtered_data[key] = analysis_data[key]
+    
+    # Filter beats
+    if 'beats' in analysis_data:
+        filtered_data['beats'] = [
+            beat for beat in analysis_data['beats']
+            if start_time <= beat < end_time
+        ]
+    
+    # Filter downbeats
+    if 'downbeats' in analysis_data:
+        filtered_data['downbeats'] = [
+            beat for beat in analysis_data['downbeats']
+            if start_time <= beat < end_time
+        ]
+    
+    # Filter sections
+    if 'sections' in analysis_data:
+        filtered_data['sections'] = [
+            section for section in analysis_data['sections']
+            if (section['start'] < end_time and section['end'] > start_time)
+        ]
+    
+    # Filter energy timeseries
+    if 'energy_timeseries' in analysis_data:
+        times = analysis_data['energy_timeseries']['times']
+        values = analysis_data['energy_timeseries']['values']
+        
+        filtered_times = []
+        filtered_values = []
+        
+        for i, t in enumerate(times):
+            if start_time <= t < end_time:
+                filtered_times.append(t)
+                filtered_values.append(values[i])
+        
+        filtered_data['energy_timeseries'] = {
+            'times': filtered_times,
+            'values': filtered_values
+        }
+    
+    # Filter onset strength timeseries
+    if 'onset_strength_timeseries' in analysis_data:
+        times = analysis_data['onset_strength_timeseries']['times']
+        values = analysis_data['onset_strength_timeseries']['values']
+        
+        filtered_times = []
+        filtered_values = []
+        
+        for i, t in enumerate(times):
+            if start_time <= t < end_time:
+                filtered_times.append(t)
+                filtered_values.append(values[i])
+        
+        filtered_data['onset_strength_timeseries'] = {
+            'times': filtered_times,
+            'values': filtered_values
+        }
+    
+    return filtered_data
+
+def filter_analysis_by_features(analysis_data, features):
+    """
+    Filter analysis data to include only specified features.
+    
+    Args:
+        analysis_data (dict): The full analysis data
+        features (list): List of feature names to include
+        
+    Returns:
+        dict: Filtered analysis data
+    """
+    filtered_data = {}
+    
+    # Map feature names to keys in analysis_data
+    feature_map = {
+        'beats': 'beats',
+        'downbeats': 'downbeats',
+        'sections': 'sections',
+        'energy': 'energy_timeseries',
+        'onset': 'onset_strength_timeseries',
+        'tempo': 'estimated_tempo',
+        'time_signature': 'time_signature_guess',
+        'duration': 'duration_seconds',
+        'song_title': 'song_title'
+    }
+    
+    # Include requested features
+    for feature in features:
+        feature_key = feature_map.get(feature, feature)
+        if feature_key in analysis_data:
+            filtered_data[feature_key] = analysis_data[feature_key]
+    
+    # Always include song_title and duration for context
+    if 'song_title' in analysis_data and 'song_title' not in filtered_data:
+        filtered_data['song_title'] = analysis_data['song_title']
+    
+    if 'duration_seconds' in analysis_data and 'duration_seconds' not in filtered_data:
+        filtered_data['duration_seconds'] = analysis_data['duration_seconds']
+    
+    return filtered_data
+
 def main():
     """Main function to parse arguments and run the analysis."""
     parser = argparse.ArgumentParser(description="Generate a comprehensive audio analysis report.")
@@ -278,16 +450,73 @@ def main():
         "--output-dir",
         help="Directory to save the report and visualizations. If not provided, uses the directory containing the audio file."
     )
+    parser.add_argument(
+        "--start-time",
+        type=float,
+        help="Start time in seconds for time-range analysis"
+    )
+    parser.add_argument(
+        "--end-time",
+        type=float,
+        help="End time in seconds for time-range analysis"
+    )
+    parser.add_argument(
+        "--features",
+        help="Comma-separated list of features to include in the report (e.g., beats,sections,energy,lyrics)"
+    )
+    parser.add_argument(
+        "--check-size-only",
+        action="store_true",
+        help="Only check the size of an existing report without generating a new one"
+    )
     
     args = parser.parse_args()
+    
+    # Check if we're only checking the size of an existing report
+    if args.check_size_only:
+        # Import the report size checker
+        try:
+            from roocode_sequence_designer_tools.check_report_size import check_report_size, print_report_summary as print_size_summary
+            
+            # Determine the report path
+            if os.path.isdir(args.audio_file_path):
+                report_path = os.path.join(args.audio_file_path, "analysis_report.json")
+            else:
+                report_path = args.audio_file_path
+            
+            # Check the report size
+            report_info = check_report_size(report_path)
+            
+            # Print the summary
+            if report_info:
+                print_size_summary(report_info)
+            else:
+                print(f"Error: Could not analyze report at {report_path}")
+                sys.exit(1)
+            
+            # Exit early
+            return
+        except ImportError:
+            logger.error("Could not import check_report_size module. Continuing with normal analysis.")
     
     # Check if the audio file exists
     if not os.path.exists(args.audio_file_path):
         logger.error(f"Audio file not found: {args.audio_file_path}")
         sys.exit(1)
     
+    # Parse features if provided
+    features = None
+    if args.features:
+        features = [f.strip() for f in args.features.split(',')]
+    
     # Run the analysis
-    report = analyze_audio_and_generate_report(args.audio_file_path, args.output_dir)
+    report = analyze_audio_and_generate_report(
+        args.audio_file_path,
+        args.output_dir,
+        args.start_time,
+        args.end_time,
+        features
+    )
     
     # Print the summary
     print_report_summary(report)
