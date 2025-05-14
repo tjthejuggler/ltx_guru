@@ -303,3 +303,115 @@ if __name__ == "__main__":
     print(f"Strobe segments: {len(strobe_segments)} segments generated")
     for i, segment in enumerate(strobe_segments):
         print(f"  Segment {i}: {segment}")
+
+
+def apply_snap_on_flash_off_effect(
+    effect_start_sec: float,
+    effect_end_sec: float,
+    params: Dict[str, Any],
+    metadata: Dict[str, Any],
+    audio_analysis_data=None
+) -> List[Tuple[float, float, Tuple[int, int, int], int]]:
+    """
+    Apply a snap-on-flash-off effect that quickly changes from a pre-base color to a target color,
+    then smoothly fades back to a post-base color.
+    
+    Args:
+        effect_start_sec: Start time of the effect in seconds
+        effect_end_sec: End time of the effect in seconds
+        params: Dictionary of parameters for this effect instance
+                Expected to contain:
+                - 'pre_base_color': Starting color specification
+                - 'target_color': Flash color specification
+                - 'post_base_color': Color to fade back to
+                - 'fade_out_duration': Duration of the fade-out in seconds
+                - 'steps_per_second': Optional, number of steps per second for fade (default: 20)
+        metadata: The metadata section from the .seqdesign.json file
+                 Expected to contain 'default_pixels' key
+        audio_analysis_data: Optional audio analysis data (not used by this effect)
+    
+    Returns:
+        A list of segment tuples: [(start_sec, end_sec, color_rgb_tuple, pixels_int), ...]
+        The first segment is the target color flash, followed by segments for the fade back to post-base color.
+        
+        Returns an empty list if effect_end_sec <= effect_start_sec
+    """
+    # Validate effect duration
+    effect_duration = effect_end_sec - effect_start_sec
+    if effect_duration <= 0:
+        return []
+    
+    # Validate required parameters
+    if 'pre_base_color' not in params:
+        raise ValueError("Missing required 'pre_base_color' parameter for snap_on_flash_off effect")
+    if 'target_color' not in params:
+        raise ValueError("Missing required 'target_color' parameter for snap_on_flash_off effect")
+    if 'post_base_color' not in params:
+        raise ValueError("Missing required 'post_base_color' parameter for snap_on_flash_off effect")
+    if 'fade_out_duration' not in params:
+        raise ValueError("Missing required 'fade_out_duration' parameter for snap_on_flash_off effect")
+    
+    # Parse the colors
+    pre_base_color_rgb = parse_color(params['pre_base_color'])
+    target_color_rgb = parse_color(params['target_color'])
+    post_base_color_rgb = parse_color(params['post_base_color'])
+    
+    # Get the fade out duration
+    try:
+        fade_out_duration = float(params['fade_out_duration'])
+        if fade_out_duration <= 0:
+            raise ValueError("fade_out_duration must be positive")
+    except (ValueError, TypeError):
+        raise ValueError(f"Invalid fade_out_duration: {params['fade_out_duration']}")
+    
+    # Ensure fade_out_duration doesn't exceed the total effect duration
+    fade_out_duration = min(fade_out_duration, effect_duration)
+    
+    # Calculate the flash duration (instant change to target color)
+    flash_duration = effect_duration - fade_out_duration
+    
+    # Get the default pixels from metadata
+    if 'default_pixels' not in metadata:
+        raise ValueError("Missing required 'default_pixels' in metadata")
+    
+    pixels = metadata['default_pixels']
+    
+    # Initialize segments list
+    segments = []
+    
+    # Add the flash segment (target color)
+    if flash_duration > 0:
+        segments.append((effect_start_sec, effect_start_sec + flash_duration, target_color_rgb, pixels))
+    
+    # If there's a fade out duration, add fade segments from target color to post-base color
+    if fade_out_duration > 0:
+        fade_start_sec = effect_start_sec + flash_duration
+        
+        # Determine the number of steps based on steps_per_second
+        steps_per_second = params.get('steps_per_second', 20)
+        num_steps = max(2, round(fade_out_duration * steps_per_second))
+        
+        # Calculate the duration of each step
+        step_duration = fade_out_duration / num_steps
+        
+        # Generate the segments for the fade
+        for i in range(num_steps):
+            # Calculate the start and end time for this segment
+            segment_start = fade_start_sec + (i * step_duration)
+            
+            # Ensure the last segment ends exactly at effect_end_sec
+            if i == num_steps - 1:
+                segment_end = effect_end_sec
+            else:
+                segment_end = fade_start_sec + ((i + 1) * step_duration)
+            
+            # Calculate the interpolation factor for this step
+            factor = i / (num_steps - 1) if num_steps > 1 else 0
+            
+            # Interpolate the color for this step
+            color_rgb = interpolate_color(target_color_rgb, post_base_color_rgb, factor)
+            
+            # Add the segment to the list
+            segments.append((segment_start, segment_end, color_rgb, pixels))
+    
+    return segments

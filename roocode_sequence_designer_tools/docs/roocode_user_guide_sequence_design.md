@@ -91,6 +91,7 @@ Some effects are designed to work closely with an audio track. Roocode will use 
 **Examples of Audio-Dependent Commands:**
 *   "For the section from 10 to 30 seconds, apply a theme with a base color of purple for the 'verse' sections and orange for 'chorus' sections. Map the audio energy to brightness." (This uses an effect like `apply_section_theme_from_audio`).
 *   "I want a blue pulse on every downbeat from the start of the song until 15 seconds. Each pulse should be 0.2 seconds long." (This uses an effect like `pulse_on_beat`).
+*   "At 45 seconds, when the lyrics say 'shine', I want a quick flash of bright white that smoothly fades back to blue over 2 seconds." (This uses an effect like `snap_on_flash_off`).
 
 Roocode will use the pre-analyzed data from your audio file (e.g., beat locations, section labels like 'verse', 'chorus') to place and shape these effects accurately.
 

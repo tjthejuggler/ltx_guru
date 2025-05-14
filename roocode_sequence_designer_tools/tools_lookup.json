@@ -64,6 +64,19 @@
       ],
       "timing_options": ["start_end", "start_duration"],
       "requires_audio_analysis": true
+    },
+    {
+      "type_name": "snap_on_flash_off",
+      "description": "Quickly changes from a pre-base color to a target color, then smoothly fades back to a post-base color.",
+      "parameters": [
+        {"name": "pre_base_color", "type": "ColorObject", "required": true, "description": "The starting color before the flash."},
+        {"name": "target_color", "type": "ColorObject", "required": true, "description": "The color to flash to."},
+        {"name": "post_base_color", "type": "ColorObject", "required": true, "description": "The color to fade back to after the flash."},
+        {"name": "fade_out_duration", "type": "float", "required": true, "description": "Duration of the fade-out in seconds."},
+        {"name": "steps_per_second", "type": "integer", "required": false, "default": 20, "description": "Granularity of the fade-out."}
+      ],
+      "timing_options": ["start_end", "start_duration"],
+      "requires_audio_analysis": false
     }
   ],
   "cli_tools": [

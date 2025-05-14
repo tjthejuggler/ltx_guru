@@ -215,6 +215,21 @@ The `timing` object within each effect defines its temporal boundaries.
         "color_start": {"rgb": [75, 0, 130]},
         "color_end": {"name": "black"}
       }
+    },
+    {
+      "id": "lyric_highlight",
+      "type": "snap_on_flash_off",
+      "description": "Quick flash on a key lyric word that fades back smoothly.",
+      "timing": {
+        "start_seconds": 15.0,
+        "duration_seconds": 2.5
+      },
+      "params": {
+        "pre_base_color": {"rgb": [75, 0, 130]},
+        "target_color": {"name": "white"},
+        "post_base_color": {"rgb": [75, 0, 130]},
+        "fade_out_duration": 2.0
+      }
     }
   ]
 }

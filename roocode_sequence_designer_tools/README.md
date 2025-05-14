@@ -20,7 +20,7 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 
 *   **[`effect_implementations/`](./effect_implementations/):**
     *   This directory houses Python modules that contain the actual logic for various lighting effects.
-    *   **[`common_effects.py`](./effect_implementations/common_effects.py):** Implements common, often non-audio-driven, lighting effects (e.g., static color, fade).
+    *   **[`common_effects.py`](./effect_implementations/common_effects.py):** Implements common, often non-audio-driven, lighting effects (e.g., static color, fade, snap_on_flash_off).
     *   **[`audio_driven_effects.py`](./effect_implementations/audio_driven_effects.py):** Implements effects that dynamically respond to audio features extracted from a music track.
 
 *   **[`tool_utils/`](./tool_utils/):**
@@ -29,6 +29,11 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 
 *   **[`tools_lookup.json`](./tools_lookup.json):**
     *   A crucial JSON file that serves as a catalog or manifest of all available effects and CLI tools that Roocode can utilize.
+
+*   **[`examples/`](./examples/):**
+    *   Contains example files demonstrating various effects and features.
+    *   Includes Python scripts showing how to use effect implementation functions directly.
+    *   Contains sample `.seqdesign.json` files showing how to structure sequence designs with different effects.
 
 ## `tools_lookup.json`
 

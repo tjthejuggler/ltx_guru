@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "title": "Snap-On Flash-Off Effect Demo",
+    "total_duration_seconds": 30.0,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "default_base_color": {"name": "black"}
+  },
+  "effects_timeline": [
+    {
+      "id": "background_color",
+      "type": "solid_color",
+      "description": "Base blue background for the sequence",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 30.0
+      },
+      "params": {
+        "color": {"rgb": [0, 0, 100]}
+      }
+    },
+    {
+      "id": "lyric_highlight_1",
+      "type": "snap_on_flash_off",
+      "description": "Flash on first key lyric word",
+      "timing": {
+        "start_seconds": 5.0,
+        "duration_seconds": 2.0
+      },
+      "params": {
+        "pre_base_color": {"rgb": [0, 0, 100]},
+        "target_color": {"name": "white"},
+        "post_base_color": {"rgb": [0, 0, 100]},
+        "fade_out_duration": 1.5
+      }
+    },
+    {
+      "id": "lyric_highlight_2",
+      "type": "snap_on_flash_off",
+      "description": "Flash on second key lyric word",
+      "timing": {
+        "start_seconds": 10.0,
+        "duration_seconds": 3.0
+      },
+      "params": {
+        "pre_base_color": {"rgb": [0, 0, 100]},
+        "target_color": {"rgb": [255, 255, 0]},
+        "post_base_color": {"rgb": [0, 0, 100]},
+        "fade_out_duration": 2.5
+      }
+    },
+    {
+      "id": "lyric_highlight_3",
+      "type": "snap_on_flash_off",
+      "description": "Flash on third key lyric word",
+      "timing": {
+        "start_seconds": 15.0,
+        "duration_seconds": 1.5
+      },
+      "params": {
+        "pre_base_color": {"rgb": [0, 0, 100]},
+        "target_color": {"rgb": [255, 0, 0]},
+        "post_base_color": {"rgb": [0, 0, 100]},
+        "fade_out_duration": 1.0
+      }
+    },
+    {
+      "id": "lyric_highlight_4",
+      "type": "snap_on_flash_off",
+      "description": "Flash on fourth key lyric word",
+      "timing": {
+        "start_seconds": 20.0,
+        "duration_seconds": 2.5
+      },
+      "params": {
+        "pre_base_color": {"rgb": [0, 0, 100]},
+        "target_color": {"rgb": [0, 255, 0]},
+        "post_base_color": {"rgb": [0, 0, 100]},
+        "fade_out_duration": 2.0,
+        "steps_per_second": 30
+      }
+    },
+    {
+      "id": "outro_fade",
+      "type": "fade",
+      "description": "Fade out to black at the end",
+      "timing": {
+        "start_seconds": 25.0,
+        "end_seconds": 30.0
+      },
+      "params": {
+        "color_start": {"rgb": [0, 0, 100]},
+        "color_end": {"name": "black"}
+      }
+    }
+  ]
+}

@@ -476,6 +476,13 @@ def main() -> None:
                     )
                 else:  # Should not happen if imports are correct
                     print(f"Warning: audio_driven_effects module not available for effect type '{effect_type}'. Skipping.")
+            elif effect_type == "snap_on_flash_off":
+                if common_effects:  # Check if module was imported
+                    newly_generated_segments_for_this_effect = common_effects.apply_snap_on_flash_off_effect(
+                        effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
+                    )
+                else:  # Should not happen if imports are correct
+                    print(f"Warning: common_effects module not available for effect type '{effect_type}'. Skipping.")
             else:
                 print(f"Warning: Unknown effect type '{effect_type}' for effect '{effect_id}'. Skipping.")
                 continue

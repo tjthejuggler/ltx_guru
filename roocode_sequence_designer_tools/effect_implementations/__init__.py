@@ -9,7 +9,8 @@ for the Roocode Sequence Designer system.
 from roocode_sequence_designer_tools.effect_implementations.common_effects import (
     apply_solid_color_effect,
     apply_fade_effect,
-    apply_strobe_effect
+    apply_strobe_effect,
+    apply_snap_on_flash_off_effect
 )
 
 # Import audio-driven effects
