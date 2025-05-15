@@ -6,7 +6,7 @@ Welcome to Roocode Sequence Designer! This guide will help you understand how to
 
 Roocode is your conversational assistant for designing intricate light sequences for your projects, whether it's for a juggling act, a stage performance, or any creative endeavor involving programmable lights.
 
-You'll tell Roocode what you want your lights to do using natural language, and Roocode will translate your instructions into a special design file. The primary goal is to create a **`.seqdesign.json`** file. This file contains all the details of your light sequence, which can then be "compiled" by another tool into a format that your lighting hardware can understand and play.
+You'll tell Roocode what you want your lights to do using natural language, and Roocode will translate your instructions into a special design file. The primary goal is to create a **`.seqdesign.json`** file. This file contains all the details of your light sequence, which can then be "compiled" by another tool into a `.prg.json` format that your lighting hardware can understand and play.
 
 ## 2. Getting Started
 
@@ -130,7 +130,7 @@ Roocode will typically save the `.seqdesign.json` file automatically as you make
 *   "Roocode, save the current sequence."
 
 **Compiling Your Design:**
-Once you're happy with your `.seqdesign.json` file, you need to compile it into a format your lighting hardware can use (often a `.prg.json` file or similar).
+Once you're happy with your `.seqdesign.json` file, you need to compile it into a format your lighting hardware can use (a `.prg.json` file).
 *   "Roocode, compile this sequence."
 *   "Compile 'Opening_Act_v1' from 'My_Juggling_Show'."
 
@@ -162,6 +162,23 @@ This command will compile `my_sequence.seqdesign.json` and create `my_sequence.p
 Roocode will report back on the compilation process:
 *   "Okay, I've compiled 'Opening_Act_v1.seqdesign.json' to 'Opening_Act_v1.prg.json' successfully."
 *   "There was an error during compilation: [Error message from compiler]. You might need to check the parameters for the 'main_strobe' effect."
+
+## 11. File Types in the LTX Guru Ecosystem
+
+Throughout your work with Roocode Sequence Designer, you'll encounter various file types with standardized extensions:
+
+| File Type | Extension | Description |
+|-----------|-----------|-------------|
+| Sequence Design Files | `.seqdesign.json` | High-level sequence design files that you create with Roocode |
+| PRG JSON Files | `.prg.json` | Compiled program files for LTX balls (created from .seqdesign.json) |
+| Raw Song Lyrics | `.lyrics.txt` | Raw lyrics text files (input for lyrics processing) |
+| Timestamped Song Lyrics | `.synced_lyrics.json` | Timestamped/aligned lyrics (output from lyrics processing) |
+| Ball Color Change Sequences | `.ballseq.json` | Ball-specific color sequences |
+| Audio Analysis Reports | `.analysis_report.json` | Audio analysis data from the audio analysis tool |
+| Beat Patterns | `.beatpattern.json` | Beat-synchronized patterns |
+| Section Themes | `.sectiontheme.json` | Section-based color themes |
+
+When working with these files, always maintain the correct file extension to ensure compatibility with all tools in the ecosystem.
 
 ## 10. (Briefly) Proposing New Effects (Tool Creation Workflow)
 

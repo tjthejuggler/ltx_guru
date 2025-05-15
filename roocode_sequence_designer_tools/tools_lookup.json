@@ -102,19 +102,19 @@
       "name": "check_report_size",
       "script_path": "check_report_size.py",
       "description": "Checks the size of audio analysis reports before viewing them to prevent context overflow.",
-      "usage": "python -m roocode_sequence_designer_tools.check_report_size <report_path>"
+      "usage": "python -m roocode_sequence_designer_tools.check_report_size <report_path.analysis_report.json>"
     },
     {
       "name": "extract_lyrics",
       "script_path": "extract_lyrics.py",
       "description": "Extracts and processes lyrics from audio files with options for time range filtering and formatting.",
-      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps]"
+      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path.synced_lyrics.json>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path.lyrics.txt>] [--format-text] [--include-timestamps]"
     },
     {
       "name": "extract_lyrics_simple",
       "script_path": "extract_lyrics_simple.py",
       "description": "Simplified tool for extracting lyrics timestamps using user-provided lyrics. Bypasses API requirements and automatically ensures Gentle server is running.",
-      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics_simple <audio_file_path> <lyrics_file> <output_file> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"]"
+      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics_simple <audio_file_path> <lyrics_file.lyrics.txt> <output_file.synced_lyrics.json> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"]"
     }
   ]
 }

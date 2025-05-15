@@ -80,8 +80,8 @@ class LyricsManager(QObject):
             
             # Check if there are word timestamps
             if hasattr(project.lyrics, 'word_timestamps') and project.lyrics.word_timestamps:
-                self.logger.info(f"Project has {len(project.lyrics.word_timestamps)} word timestamps")
-                print(f"[LyricsManager] Project has {len(project.lyrics.word_timestamps)} word timestamps")
+                self.logger.info(f"Project has {len(project.lyrics.word_timestamps)} word timestamps from .synced_lyrics.json")
+                print(f"[LyricsManager] Project has {len(project.lyrics.word_timestamps)} word timestamps from .synced_lyrics.json")
                 
                 # Log some sample timestamps for debugging
                 if len(project.lyrics.word_timestamps) > 0:

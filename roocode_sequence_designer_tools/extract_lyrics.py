@@ -121,6 +121,12 @@ def extract_lyrics(audio_file_path, output_path=None, time_range=None, conservat
             # Create directory if it doesn't exist
             os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
             
+            # Ensure the output path has the correct extension
+            if not output_path.endswith('.synced_lyrics.json'):
+                base_path = output_path.rsplit('.', 1)[0] if '.' in output_path else output_path
+                output_path = f"{base_path}.synced_lyrics.json"
+                logger.info(f"Adjusting output path to use standardized extension: {output_path}")
+            
             with open(output_path, 'w') as f:
                 json.dump(lyrics_data, f, indent=2)
             logger.info(f"Lyrics data saved to {output_path}")
@@ -200,13 +206,13 @@ def print_lyrics_summary(lyrics_data):
             
             if status["assistance_type"] == "lyrics_text":
                 print("\n  To provide lyrics and process them:")
-                print("  1. Save lyrics to a text file (e.g., lyrics.txt)")
-                print("  2. Run: python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt")
+                print("  1. Save lyrics to a text file with .lyrics.txt extension (e.g., song.lyrics.txt)")
+                print("  2. Run: python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file song.lyrics.txt --output song.synced_lyrics.json")
             elif status["assistance_type"] == "song_identification":
                 print("\n  To manually process with known song info:")
                 print("  1. Find lyrics for the song")
-                print("  2. Save lyrics to a text file (e.g., lyrics.txt)")
-                print("  3. Run: python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt")
+                print("  2. Save lyrics to a text file with .lyrics.txt extension (e.g., song.lyrics.txt)")
+                print("  3. Run: python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file song.lyrics.txt --output song.synced_lyrics.json")
     
     # Print song info
     if lyrics_data.get('song_title') and lyrics_data.get('artist_name'):
@@ -285,14 +291,33 @@ def main():
     # Load user-provided lyrics if specified
     user_lyrics = None
     if args.lyrics_file:
-        if not os.path.exists(args.lyrics_file):
-            logger.error(f"Lyrics file not found: {args.lyrics_file}")
-            sys.exit(1)
+        # Check if the lyrics file exists
+        lyrics_file_path = args.lyrics_file
+        if not os.path.exists(lyrics_file_path):
+            # Try adding the .lyrics.txt extension if it's missing
+            if not lyrics_file_path.endswith('.lyrics.txt'):
+                potential_path = f"{lyrics_file_path}.lyrics.txt"
+                if os.path.exists(potential_path):
+                    lyrics_file_path = potential_path
+                    logger.info(f"Using standardized lyrics file path: {lyrics_file_path}")
+                else:
+                    # Also try replacing any existing extension with .lyrics.txt
+                    base_path = lyrics_file_path.rsplit('.', 1)[0] if '.' in lyrics_file_path else lyrics_file_path
+                    potential_path = f"{base_path}.lyrics.txt"
+                    if os.path.exists(potential_path):
+                        lyrics_file_path = potential_path
+                        logger.info(f"Using standardized lyrics file path: {lyrics_file_path}")
+                    else:
+                        logger.error(f"Lyrics file not found: {args.lyrics_file}")
+                        sys.exit(1)
+            else:
+                logger.error(f"Lyrics file not found: {args.lyrics_file}")
+                sys.exit(1)
         
         try:
-            with open(args.lyrics_file, 'r') as f:
+            with open(lyrics_file_path, 'r') as f:
                 user_lyrics = f.read()
-            logger.info(f"Loaded user-provided lyrics from {args.lyrics_file}")
+            logger.info(f"Loaded user-provided lyrics from {lyrics_file_path}")
         except Exception as e:
             logger.error(f"Error loading lyrics file: {e}")
             sys.exit(1)

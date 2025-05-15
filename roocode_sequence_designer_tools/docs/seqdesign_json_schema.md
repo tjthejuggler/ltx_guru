@@ -2,7 +2,7 @@
 
 ## 1. Overview
 
-The Designer-JSON format, using the `.seqdesign.json` file extension, is a high-level, human-readable, and Roocode-friendly way to define color sequences for LTX juggling balls. It describes sequences using abstract "effects" and timings in seconds, which are then compiled by `compile_seqdesign.py` into the more detailed PRG-JSON format required by `prg_generator.py`.
+The Designer-JSON format, using the `.seqdesign.json` file extension, is a high-level, human-readable, and Roocode-friendly way to define color sequences for LTX juggling balls. It describes sequences using abstract "effects" and timings in seconds, which are then compiled by `compile_seqdesign.py` into the more detailed PRG-JSON format (`.prg.json`) required by `prg_generator.py`.
 
 ## 2. File Extension
 
@@ -239,5 +239,20 @@ The `timing` object within each effect defines its temporal boundaries.
 
 The `type` field in each Effect Object (e.g., `"fade"`, `"solid_color"`) directly corresponds to an effect definition in the `roocode_sequence_designer_tools/tools_lookup.json` file. This `tools_lookup.json` file catalogs available effects, their parameters, and how they should be used, acting as a schema and guide for both Roocode and `compile_seqdesign.py`.
 
+## 10. Related File Types
+
+The LTX Guru project uses several standardized file extensions for different types of data:
+
+| File Type | Extension | Description |
+|-----------|-----------|-------------|
+| Sequence Design Files | `.seqdesign.json` | High-level sequence design files (this document) |
+| PRG JSON Files | `.prg.json` | Compiled program files for LTX balls |
+| Raw Song Lyrics | `.lyrics.txt` | Raw lyrics text files |
+| Timestamped Song Lyrics | `.synced_lyrics.json` | Timestamped/aligned lyrics |
+| Ball Color Change Sequences | `.ballseq.json` | Ball-specific color sequences |
+| Audio Analysis Reports | `.analysis_report.json` | Audio analysis data |
+| Beat Patterns | `.beatpattern.json` | Beat-synchronized patterns |
+| Section Themes | `.sectiontheme.json` | Section-based color themes |
+
 ---
-This documentation should provide a solid reference for understanding and creating `.seqdesign.json` files.
+This documentation should provide a solid reference for understanding and creating `.seqdesign.json` files and related file types in the LTX Guru ecosystem.

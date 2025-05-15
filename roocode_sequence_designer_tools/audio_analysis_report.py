@@ -45,6 +45,12 @@ logger = logging.getLogger("AudioAnalysisReport")
 def create_report_file(report_data, output_path):
     """Save the report data to a JSON file."""
     try:
+        # Ensure the output path has the correct extension
+        if not output_path.endswith('.analysis_report.json'):
+            base_path = output_path.rsplit('.', 1)[0] if '.' in output_path else output_path
+            output_path = f"{base_path}.analysis_report.json"
+            logger.info(f"Adjusting output path to use standardized extension: {output_path}")
+            
         with open(output_path, 'w') as f:
             json.dump(report_data, f, indent=2)
         logger.info(f"Report saved to {output_path}")
@@ -316,7 +322,7 @@ def print_report_summary(report):
     for i, issue in enumerate(report["issues"]):
         print(f"{i+1}. {issue}")
     
-    report_path = os.path.join(os.path.dirname(report['audio_file']), "analysis_report.json")
+    report_path = os.path.join(os.path.dirname(report['audio_file']), "analysis_report.analysis_report.json")
     print(f"\nFull report saved to: {report_path}")
     if "visualization_path" in report:
         print(f"Visualizations saved to: {report['visualization_path']}")
@@ -480,9 +486,18 @@ def main():
             
             # Determine the report path
             if os.path.isdir(args.audio_file_path):
-                report_path = os.path.join(args.audio_file_path, "analysis_report.json")
+                report_path = os.path.join(args.audio_file_path, "analysis_report.analysis_report.json")
             else:
-                report_path = args.audio_file_path
+                # If the path doesn't have the correct extension, check if a standardized version exists
+                if not args.audio_file_path.endswith('.analysis_report.json'):
+                    base_path = args.audio_file_path.rsplit('.', 1)[0] if '.' in args.audio_file_path else args.audio_file_path
+                    standardized_path = f"{base_path}.analysis_report.json"
+                    if os.path.exists(standardized_path):
+                        report_path = standardized_path
+                    else:
+                        report_path = args.audio_file_path
+                else:
+                    report_path = args.audio_file_path
             
             # Check the report size
             report_info = check_report_size(report_path)

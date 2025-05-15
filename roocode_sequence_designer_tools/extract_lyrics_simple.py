@@ -6,10 +6,10 @@ This script provides a simplified workflow for extracting and aligning lyrics wi
 It bypasses the song identification step and directly uses user-provided lyrics.
 
 Usage:
-    python -m roocode_sequence_designer_tools.extract_lyrics_simple audio_file lyrics_file output_file
+    python -m roocode_sequence_designer_tools.extract_lyrics_simple audio_file lyrics_file.lyrics.txt output_file.synced_lyrics.json
 
 Example:
-    python -m roocode_sequence_designer_tools.extract_lyrics_simple song.mp3 lyrics.txt timestamps.json
+    python -m roocode_sequence_designer_tools.extract_lyrics_simple song.mp3 song.lyrics.txt song.synced_lyrics.json
 """
 
 import os
@@ -90,6 +90,16 @@ def align_lyrics(audio_path, lyrics_path, output_path, song_title="Unknown Song"
     if not os.path.exists(audio_path):
         logger.error(f"Audio file does not exist: {audio_path}")
         return False
+    
+    # Ensure lyrics path has the correct extension
+    if not lyrics_path.endswith('.lyrics.txt'):
+        base_path = lyrics_path.rsplit('.', 1)[0] if '.' in lyrics_path else lyrics_path
+        standardized_lyrics_path = f"{base_path}.lyrics.txt"
+        
+        # If the file doesn't exist but a standardized version does, use that
+        if not os.path.exists(lyrics_path) and os.path.exists(standardized_lyrics_path):
+            lyrics_path = standardized_lyrics_path
+            logger.info(f"Using standardized lyrics file path: {lyrics_path}")
     
     # Load the lyrics
     try:
@@ -177,6 +187,12 @@ def align_lyrics(audio_path, lyrics_path, output_path, song_title="Unknown Song"
     try:
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+        
+        # Ensure output path has the correct extension
+        if not output_path.endswith('.synced_lyrics.json'):
+            base_path = output_path.rsplit('.', 1)[0] if '.' in output_path else output_path
+            output_path = f"{base_path}.synced_lyrics.json"
+            logger.info(f"Adjusting output path to use standardized extension: {output_path}")
         
         with open(output_path, 'w') as f:
             json.dump(lyrics_data, f, indent=2)

@@ -257,7 +257,27 @@ def find_sequence_files(directory_path: Union[str, Path]) -> List[Path]:
     Returns:
         list: List of Path objects for sequence files
     """
-    return find_files_by_extension(directory_path, ".json")
+    # Find files with standardized extensions
+    seqdesign_files = find_files_by_extension(directory_path, ".seqdesign.json")
+    prg_files = find_files_by_extension(directory_path, ".prg.json")
+    ballseq_files = find_files_by_extension(directory_path, ".ballseq.json")
+    
+    # For backward compatibility, also find generic .json files that might be sequences
+    # but exclude files that already have standardized extensions
+    all_json_files = find_files_by_extension(directory_path, ".json")
+    
+    # Filter out files that already have standardized extensions
+    generic_json_files = [
+        f for f in all_json_files
+        if not any(suffix in f.name for suffix in [
+            '.seqdesign.json', '.prg.json', '.ballseq.json',
+            '.synced_lyrics.json', '.analysis_report.json',
+            '.beatpattern.json', '.sectiontheme.json'
+        ])
+    ]
+    
+    # Combine all sequence files
+    return seqdesign_files + prg_files + ballseq_files + generic_json_files
 
 def get_sequence_metadata(file_path: Union[str, Path]) -> Optional[Dict[str, Any]]:
     """
@@ -318,6 +338,10 @@ def convert_sequence_format(input_path: Union[str, Path], output_path: Union[str
     Returns:
         bool: True if successful, False otherwise
     """
+    # Ensure output path has the correct extension
+    if not str(output_path).endswith('.ballseq.json'):
+        output_path = Path(str(output_path).rsplit('.', 1)[0] + '.ballseq.json')
+        logger.info(f"Adjusting output path to use standardized extension: {output_path}")
     try:
         # Load the input file
         segments = load_json(input_path)
@@ -369,7 +393,7 @@ if __name__ == "__main__":
     }
     
     # Save the test sequence
-    test_file = test_dir / "test_sequence.json"
+    test_file = test_dir / "test_sequence.ballseq.json"
     save_json(test_sequence, test_file)
     
     # Load the test sequence

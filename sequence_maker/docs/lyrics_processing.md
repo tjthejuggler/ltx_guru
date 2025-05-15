@@ -43,7 +43,7 @@ Guess there's always something, they say that's a good sign
 Use our simplified extraction tool:
 
 ```bash
-python -m roocode_sequence_designer_tools.extract_lyrics_simple song.mp3 lyrics.txt output.json
+python -m roocode_sequence_designer_tools.extract_lyrics_simple song.mp3 lyrics.txt output.synced_lyrics.json
 ```
 
 This will:
@@ -75,6 +75,8 @@ The output JSON file contains word-level timestamps that can be used in your seq
 }
 ```
 
+This file will be saved with the `.synced_lyrics.json` extension to follow the standardized naming convention.
+
 ## Detailed Usage
 
 ### Command-Line Options
@@ -82,7 +84,7 @@ The output JSON file contains word-level timestamps that can be used in your seq
 The `extract_lyrics_simple.py` tool accepts the following parameters:
 
 ```bash
-python -m roocode_sequence_designer_tools.extract_lyrics_simple [audio_file] [lyrics_file] [output_file] [options]
+python -m roocode_sequence_designer_tools.extract_lyrics_simple [audio_file] [lyrics_file] [output_file.synced_lyrics.json] [options]
 ```
 
 Options:
@@ -94,7 +96,7 @@ Options:
 If you prefer to use the original extraction tool with more options:
 
 ```bash
-python -m roocode_sequence_designer_tools.extract_lyrics [audio_file] --lyrics-file [lyrics_file] --output [output_file] --conservative
+python -m roocode_sequence_designer_tools.extract_lyrics [audio_file] --lyrics-file [lyrics_file.lyrics.txt] --output [output_file.synced_lyrics.json] --conservative
 ```
 
 The `--conservative` flag is crucial for successful alignment and should always be used when providing your own lyrics.
@@ -149,8 +151,19 @@ For users who want to use the automatic song identification and lyrics retrieval
 
 4. Use the standard extraction tool:
    ```
-   python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --output lyrics_data.json
+   python -m roocode_sequence_designer_tools.extract_lyrics path/to/audio.mp3 --output lyrics_data.synced_lyrics.json
    ```
+
+## File Naming Conventions
+
+To maintain consistency across the LTX Guru ecosystem, please use these standardized file extensions:
+
+| File Type | Extension | Example |
+|-----------|-----------|---------|
+| Raw Lyrics | `.lyrics.txt` | `song_name.lyrics.txt` |
+| Timestamped Lyrics | `.synced_lyrics.json` | `song_name.synced_lyrics.json` |
+
+Using these standardized extensions helps ensure compatibility with all tools in the ecosystem.
 
 ## Privacy and Data Usage
 

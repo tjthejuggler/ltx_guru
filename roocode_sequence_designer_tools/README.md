@@ -8,6 +8,23 @@ The tools within this directory facilitate the translation of abstract effect de
 
 For details on the structure of `.seqdesign.json` files, please refer to the [Sequence Design JSON Schema](./docs/seqdesign_json_schema.md).
 
+## File Naming Conventions
+
+The LTX Guru project uses standardized file extensions for different types of data:
+
+| File Type | Extension | Description |
+|-----------|-----------|-------------|
+| Sequence Design Files | `.seqdesign.json` | High-level sequence design files |
+| PRG JSON Files | `.prg.json` | Compiled program files for LTX balls |
+| Raw Song Lyrics | `.lyrics.txt` | Raw lyrics text files |
+| Timestamped Song Lyrics | `.synced_lyrics.json` | Timestamped/aligned lyrics |
+| Ball Color Change Sequences | `.ballseq.json` | Ball-specific color sequences |
+| Audio Analysis Reports | `.analysis_report.json` | Audio analysis data |
+| Beat Patterns | `.beatpattern.json` | Beat-synchronized patterns |
+| Section Themes | `.sectiontheme.json` | Section-based color themes |
+
+Using these standardized extensions helps ensure compatibility with all tools in the ecosystem.
+
 ## Directory Structure
 
 Below is an overview of the key subdirectories and files within `roocode_sequence_designer_tools/`:
@@ -19,7 +36,7 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
     *   A command-line interface (CLI) tool used for analyzing audio files and extracting relevant features (e.g., beats, onsets, loudness). The output is typically a JSON file consumed by audio-driven effects.
 
 *   **[`audio_analysis_report.py`](./audio_analysis_report.py):**
-    *   A comprehensive tool for generating detailed audio analysis reports with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities and creates visual plots of audio features.
+    *   A comprehensive tool for generating detailed audio analysis reports (`.analysis_report.json`) with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities and creates visual plots of audio features.
     *   Supports time range filtering and feature selection to prevent context overflow with large reports.
 
 *   **[`check_report_size.py`](./check_report_size.py):**
@@ -28,6 +45,7 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 
 *   **[`extract_lyrics.py`](./extract_lyrics.py):**
     *   A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
+    *   Produces `.synced_lyrics.json` files from raw `.lyrics.txt` files or automatically fetched lyrics.
     *   Supports time range filtering and formatted text output.
     *   Requires the Gentle Docker container to be running for lyrics alignment.
 
@@ -184,7 +202,7 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only]
     ```
     *   `<audio_file_path>`: Path to the audio file to be analyzed.
-    *   `--output-dir <dir>`: (Optional) Directory to save the report and visualizations. If not provided, uses the directory containing the audio file.
+    *   `--output-dir <dir>`: (Optional) Directory to save the report (as `analysis_report.json`) and visualizations. If not provided, uses the directory containing the audio file.
     *   `--start-time <seconds>`: (Optional) Start time in seconds for time-range analysis.
     *   `--end-time <seconds>`: (Optional) End time in seconds for time-range analysis.
     *   `--features <feature1,feature2,...>`: (Optional) Comma-separated list of features to include in the report (e.g., beats,sections,energy,lyrics).
@@ -196,9 +214,9 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 *   **Purpose:** A utility tool for checking the size of audio analysis reports before viewing them. This helps prevent context overflow when working with large reports.
 *   **Command-Line Usage:**
     ```bash
-    python -m roocode_sequence_designer_tools.check_report_size <report_path>
+    python -m roocode_sequence_designer_tools.check_report_size <report_path.analysis_report.json>
     ```
-    *   `<report_path>`: Path to the report file to check.
+    *   `<report_path.analysis_report.json>`: Path to the report file to check.
 *   **Output:** Provides a summary of the report size, content, and recommendations for handling large reports.
 
 ### `extract_lyrics.py`

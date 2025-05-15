@@ -83,6 +83,13 @@ class AudioAnalysisManager:
         
         # Generate analysis file path based on audio file path
         analysis_path = self._get_analysis_path_for_audio(audio_file_path)
+        
+        # Ensure the analysis path has the correct extension
+        if not str(analysis_path).endswith('.analysis_report.json'):
+            base_path = str(analysis_path).rsplit('.', 1)[0] if '.' in str(analysis_path) else str(analysis_path)
+            analysis_path = Path(f"{base_path}.analysis_report.json")
+            self.logger.info(f"Adjusting analysis path to use standardized extension: {analysis_path}")
+        
         self.current_analysis_path = analysis_path
         
         # Check if analysis already exists and is recent
@@ -214,11 +221,11 @@ class AudioAnalysisManager:
             Path: Path to the analysis JSON file
         """
         if not audio_file_path:
-            return self.analysis_cache_dir / "unknown_audio_analysis.json"
+            return self.analysis_cache_dir / "unknown_audio_analysis.analysis_report.json"
         
         # Create a hash of the audio path to use as filename
         path_hash = hashlib.md5(str(audio_file_path).encode()).hexdigest()
-        return self.analysis_cache_dir / f"{path_hash}_analysis.json"
+        return self.analysis_cache_dir / f"{path_hash}_analysis.analysis_report.json"
     
     def get_analysis_path(self):
         """
