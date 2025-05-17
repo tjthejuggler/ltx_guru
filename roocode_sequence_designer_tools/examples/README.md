@@ -10,6 +10,10 @@ These Python scripts demonstrate how to use the effect implementation functions 
 
 - **`audio_analysis_example.py`**: Demonstrates how to use the audio analysis report tool to generate comprehensive reports with visualizations and access the data programmatically.
 
+- **`lyrics_extraction_example.py`**: Shows how to extract lyrics timestamps using the extract_lyrics_simple.py tool.
+
+- **`direct_lyrics_alignment_example.py`**: Demonstrates the most efficient method for extracting lyrics timestamps using the align_lyrics.py tool.
+
 To run a Python example:
 
 ```bash
@@ -18,6 +22,10 @@ python -m roocode_sequence_designer_tools.examples.snap_on_flash_off_example
 
 # For the audio analysis example (requires an audio file)
 python -m roocode_sequence_designer_tools.examples.audio_analysis_example /path/to/your/audio.mp3
+
+# For the lyrics extraction examples (requires an audio file)
+python -m roocode_sequence_designer_tools.examples.lyrics_extraction_example /path/to/your/audio.mp3
+python -m roocode_sequence_designer_tools.examples.direct_lyrics_alignment_example /path/to/your/audio.mp3
 ```
 
 ## Sequence Design Examples
@@ -71,3 +79,34 @@ The example shows both:
 - How to use the tool programmatically in your own Python scripts
 
 To learn more about the audio analysis report tool, see the [detailed documentation](../docs/audio_analysis_report_tool.md).
+
+### Lyrics Extraction Tools
+
+The project provides multiple tools for extracting lyrics timestamps from audio files:
+
+#### Direct Lyrics Alignment (Recommended)
+
+The `direct_lyrics_alignment_example.py` script demonstrates the most efficient method for extracting lyrics timestamps using the align_lyrics.py tool. This approach:
+
+1. Automatically starts the Gentle server if needed
+2. Processes the audio and lyrics in a single command
+3. Generates precise word-level timestamps for synchronizing light effects with lyrics
+
+Example usage:
+```bash
+python -m roocode_sequence_designer_tools.examples.direct_lyrics_alignment_example /path/to/your/audio.mp3
+```
+
+#### Alternative Lyrics Extraction
+
+The `lyrics_extraction_example.py` script demonstrates an alternative approach using the extract_lyrics_simple.py tool. This method:
+
+1. Uses the extract_lyrics_simple.py tool from the roocode_sequence_designer_tools package
+2. Requires more setup steps but provides similar functionality
+
+Example usage:
+```bash
+python -m roocode_sequence_designer_tools.examples.lyrics_extraction_example /path/to/your/audio.mp3
+```
+
+To learn more about lyrics extraction and alignment, see the [detailed documentation](../docs/lyrics_extraction_guide.md).

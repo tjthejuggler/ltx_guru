@@ -1,7 +1,15 @@
 #!/usr/bin/env python3
 """
-Direct lyrics alignment script for "You Know Me" by Lubalin.
-This script uses the same approach as the LyricsManager class in sequence_maker.
+Lyrics Alignment Tool
+
+This script aligns lyrics with audio files using the Gentle forced alignment API.
+It automatically ensures the Gentle server is running and provides timestamps for each word.
+
+Usage:
+    python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title "Song Title"] [--artist-name "Artist Name"] [--no-conservative]
+
+Example:
+    python align_lyrics.py song.mp3 lyrics.txt timestamps.json --song-title "My Song" --artist-name "My Artist"
 """
 
 import os
@@ -9,6 +17,7 @@ import sys
 import json
 import requests
 import time
+import argparse
 from pathlib import Path
 
 def check_gentle_server():
@@ -129,8 +138,8 @@ def align_lyrics(audio_path, lyrics_path, output_path, conservative=True):
     
     # Create the output data
     lyrics_data = {
-        "song_title": "You Know Me",
-        "artist_name": "Lubalin",
+        "song_title": song_title,
+        "artist_name": artist_name,
         "raw_lyrics": lyrics_text,
         "word_timestamps": word_timestamps,
         "processing_status": {
@@ -162,20 +171,90 @@ def align_lyrics(audio_path, lyrics_path, output_path, conservative=True):
     
     return True
 
+def start_gentle_server():
+    """
+    Attempt to start the Gentle server if it's not already running.
+    
+    Returns:
+        bool: True if server is running or was started successfully, False otherwise
+    """
+    if check_gentle_server():
+        return True
+        
+    print("Attempting to start Gentle server...")
+    try:
+        # Try to find and run the start_gentle.py script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_dir = os.path.dirname(script_dir)
+        
+        # Check common locations for the start_gentle.py script
+        possible_paths = [
+            os.path.join(project_dir, "sequence_maker", "scripts", "start_gentle.py"),
+            os.path.join(project_dir, "scripts", "start_gentle.py"),
+            os.path.join(script_dir, "start_gentle.py")
+        ]
+        
+        for path in possible_paths:
+            if os.path.exists(path):
+                print(f"Found start_gentle.py at {path}")
+                result = os.system(f"{sys.executable} {path}")
+                if result == 0 and check_gentle_server():
+                    print("Successfully started Gentle server")
+                    return True
+        
+        print("Could not find or start the Gentle server")
+        return False
+    except Exception as e:
+        print(f"Error starting Gentle server: {e}")
+        return False
+
 if __name__ == "__main__":
-    audio_path = "sequence_projects/you_know_me/lubalin_you_know_me.mp3"
-    lyrics_path = "you_know_me_lyrics.txt"
-    output_path = "you_know_me_lyrics_timestamps.json"
+    parser = argparse.ArgumentParser(description="Align lyrics with audio using Gentle forced alignment")
+    parser.add_argument("audio_file", help="Path to the audio file")
+    parser.add_argument("lyrics_file", help="Path to the lyrics text file")
+    parser.add_argument("output_file", help="Path to save the output JSON file with timestamps")
+    parser.add_argument("--song-title", default=None, help="Title of the song")
+    parser.add_argument("--artist-name", default=None, help="Name of the artist")
+    parser.add_argument("--no-conservative", action="store_true", help="Disable conservative alignment mode")
     
-    if not os.path.exists(audio_path):
-        print(f"Error: Audio file not found: {audio_path}")
+    args = parser.parse_args()
+    
+    # Determine song title and artist name from filename if not provided
+    song_title = args.song_title
+    artist_name = args.artist_name
+    
+    if song_title is None or artist_name is None:
+        # Try to extract from filename
+        filename = os.path.basename(args.audio_file)
+        name_parts = os.path.splitext(filename)[0].split('_')
+        
+        if len(name_parts) >= 2 and song_title is None:
+            song_title = ' '.join(name_parts[:-1]).title()
+        elif song_title is None:
+            song_title = name_parts[0].title()
+            
+        if artist_name is None and len(name_parts) >= 2:
+            artist_name = name_parts[-1].title()
+        elif artist_name is None:
+            artist_name = "Unknown Artist"
+    
+    # Ensure the Gentle server is running
+    if not start_gentle_server():
+        print("Error: Gentle server is required for lyrics alignment")
         sys.exit(1)
     
-    if not os.path.exists(lyrics_path):
-        print(f"Error: Lyrics file not found: {lyrics_path}")
+    # Check if files exist
+    if not os.path.exists(args.audio_file):
+        print(f"Error: Audio file not found: {args.audio_file}")
         sys.exit(1)
     
-    success = align_lyrics(audio_path, lyrics_path, output_path, conservative=True)
+    if not os.path.exists(args.lyrics_file):
+        print(f"Error: Lyrics file not found: {args.lyrics_file}")
+        sys.exit(1)
+    
+    # Run alignment
+    conservative = not args.no_conservative
+    success = align_lyrics(args.audio_file, args.lyrics_file, args.output_file, conservative=conservative)
     
     if success:
         print("\nLyrics alignment completed successfully!")

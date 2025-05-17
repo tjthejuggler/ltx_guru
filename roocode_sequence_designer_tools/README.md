@@ -219,6 +219,26 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     *   `<report_path.analysis_report.json>`: Path to the report file to check.
 *   **Output:** Provides a summary of the report size, content, and recommendations for handling large reports.
 
+### `align_lyrics.py`
+
+*   **Purpose:** A direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. This is the most efficient method for extracting lyrics timestamps.
+*   **Key Features:**
+    - Automatically starts the Gentle server if needed
+    - Handles all alignment steps in a single command
+    - Uses conservative alignment for better results
+    - Supports song title and artist name metadata
+
+*   **Command-Line Usage:**
+    ```bash
+    python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title "Song Title"] [--artist-name "Artist Name"] [--no-conservative]
+    ```
+    *   `<audio_file>`: Path to the audio file to extract lyrics from.
+    *   `<lyrics_file>`: Path to a text file containing the lyrics.
+    *   `<output_file>`: Path to save the output JSON file with timestamps.
+    *   `--song-title "Song Title"`: (Optional) Title of the song.
+    *   `--artist-name "Artist Name"`: (Optional) Name of the artist.
+    *   `--no-conservative`: (Optional) Disable conservative alignment mode (not recommended).
+
 ### `extract_lyrics.py`
 
 *   **Purpose:** A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
@@ -275,29 +295,73 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     python -m roocode_sequence_designer_tools.extract_lyrics <audio_file>
     ```
 
+### File Organization
+
+*   **Project Organization:** Always organize related files in the same subdirectory within the sequence_projects folder:
+    ```
+    sequence_projects/
+    └── song_name/                # Create a subdirectory for each song
+        ├── artist_song_name.mp3  # Original audio file
+        ├── lyrics.txt            # Raw lyrics text file
+        ├── lyrics_timestamps.json # Generated timestamps
+        ├── analysis_report.json  # Audio analysis data
+        └── song_name.seqdesign.json # Sequence design file
+    ```
+    This organization:
+    - Keeps all related files together
+    - Makes it easier to find and manage project files
+    - Prevents clutter in the root directory
+    - Simplifies backup and sharing of complete projects
+
 ### Lyrics Processing Considerations (CRITICAL WORKFLOW)
 
-*   **IMMEDIATELY ASK USER FOR LYRICS WHEN API KEYS ARE MISSING:** When you see ANY error about missing API keys or automatic identification failure, IMMEDIATELY ask the user to provide:
-    1. The song name and artist
-    2. The complete lyrics text
-    
-    DO NOT waste time trying multiple approaches or tools when API keys are missing.
+*   **RECOMMENDED APPROACH: Use align_lyrics.py** This is the most efficient method for extracting lyrics timestamps:
+    ```bash
+    python align_lyrics.py sequence_projects/song_name/artist_song_name.mp3 sequence_projects/song_name/lyrics.txt sequence_projects/song_name/lyrics_timestamps.json --song-title "Song Title" --artist-name "Artist Name"
+    ```
+    This single command handles everything automatically, including starting the Gentle server if needed.
 
-*   **Start Gentle Server First:** Always start the Gentle Docker container before attempting lyrics alignment:
+*   **TOKEN EFFICIENCY GUIDELINES:**
+    - Ask for all needed information in a single step
+    - NEVER display the entire JSON output - only show a sample of 5-10 timestamps
+    - Infer song title and artist from filename when possible
+    - Skip automatic identification attempts when API keys are missing
+    - Use the most direct approach (align_lyrics.py) whenever possible
+
+*   **Start Gentle Server First:** Always check if the Gentle Docker container is running before attempting lyrics alignment:
     ```bash
     python -m sequence_maker.scripts.start_gentle
     ```
 
 *   **Use Conservative Alignment:** When providing user-supplied lyrics, always use the `--conservative` flag for better alignment results:
     ```bash
-    python -m roocode_sequence_designer_tools.extract_lyrics <audio_file> --lyrics-file lyrics.txt --conservative
+    python -m roocode_sequence_designer_tools.extract_lyrics sequence_projects/song_name/artist_song_name.mp3 --lyrics-file sequence_projects/song_name/lyrics.txt --output sequence_projects/song_name/lyrics_timestamps.json --conservative
     ```
 
 *   **Optimized Workflow Summary:**
-    1. Start Gentle server first
-    2. Check for API keys - if missing or if you see any error about them, IMMEDIATELY ask user for lyrics
-    3. Save user-provided lyrics to a text file
-    4. Process with conservative alignment
+    1. **RECOMMENDED:** Use align_lyrics.py for a one-step process
+       ```bash
+       python align_lyrics.py sequence_projects/song_name/artist_song_name.mp3 sequence_projects/song_name/lyrics.txt sequence_projects/song_name/lyrics_timestamps.json --song-title "Song Title" --artist-name "Artist Name"
+       ```
+    
+    2. **ALTERNATIVE:** If align_lyrics.py is not available:
+       - Start Gentle server first
+       - Ask for lyrics in a single step
+       - Save user-provided lyrics to a text file in the same directory as the MP3 file
+       - Process with conservative alignment
+       
+    3. **ALWAYS maintain proper file organization:**
+       - Store all related files in the same subdirectory as the MP3 file
+       - Use the sequence_projects directory structure
+       - Keep project files organized by song
+
+*   **For detailed documentation, see:**
+    - [Lyrics Extraction Guide](./docs/lyrics_extraction_guide.md) - Comprehensive documentation on all lyrics extraction tools
+    - [Lyrics Extraction Efficiency](./docs/lyrics_extraction_efficiency.md) - Best practices for efficient lyrics extraction
+    - [Sequence Designer Mode Instructions](./docs/sequence_designer_mode_instructions.md) - Optimized workflows for the Sequence Designer mode
+
+*   **Example Implementation:**
+    - [Efficient Lyrics Extraction Example](./examples/efficient_lyrics_extraction.py) - A reference implementation of the most efficient approach
 
 ### Python Package Considerations
 

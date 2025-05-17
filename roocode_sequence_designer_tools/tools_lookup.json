@@ -115,6 +115,12 @@
       "script_path": "extract_lyrics_simple.py",
       "description": "Simplified tool for extracting lyrics timestamps using user-provided lyrics. Bypasses API requirements and automatically ensures Gentle server is running.",
       "usage": "python -m roocode_sequence_designer_tools.extract_lyrics_simple <audio_file_path> <lyrics_file.lyrics.txt> <output_file.synced_lyrics.json> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"]"
+    },
+    {
+      "name": "align_lyrics",
+      "script_path": "align_lyrics.py",
+      "description": "Direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. Automatically ensures Gentle server is running and handles all alignment steps in one command.",
+      "usage": "python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"] [--no-conservative]"
     }
   ]
 }

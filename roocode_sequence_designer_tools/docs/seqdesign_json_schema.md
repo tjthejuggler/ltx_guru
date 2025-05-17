@@ -235,11 +235,122 @@ The `timing` object within each effect defines its temporal boundaries.
 }
 ```
 
-## 9. Relationship to `tools_lookup.json`
+## 9. Using Lyrics Timestamps in Sequence Designs
+
+Lyrics timestamps extracted using the `align_lyrics.py` or other lyrics extraction tools can be incorporated into sequence designs to create effects that synchronize with specific words in a song.
+
+### 9.1. Lyrics Timestamp Format
+
+The lyrics extraction tools produce a JSON file with the following structure:
+
+```json
+{
+  "song_title": "Song Title",
+  "artist_name": "Artist Name",
+  "raw_lyrics": "Full lyrics text...",
+  "word_timestamps": [
+    {
+      "word": "first",
+      "start": 10.2,
+      "end": 10.5
+    },
+    {
+      "word": "word",
+      "start": 10.6,
+      "end": 10.9
+    },
+    ...
+  ]
+}
+```
+
+### 9.2. Using Word Timestamps with `pulse_on_beat`
+
+The `pulse_on_beat` effect can be used with custom timestamps from lyrics:
+
+```json
+{
+  "id": "lyrics_pulse",
+  "type": "pulse_on_beat",
+  "description": "Pulse on specific lyrics",
+  "timing": {
+    "start_seconds": 0.0,
+    "end_seconds": 180.0
+  },
+  "params": {
+    "color": {"name": "red"},
+    "beat_source": "custom_times: [10.2, 10.6, 15.3, 20.1]",
+    "pulse_duration_seconds": 0.3
+  }
+}
+```
+
+The `beat_source` parameter accepts a string in the format `"custom_times: [t1, t2, t3, ...]"` where each `t` is a timestamp in seconds. These timestamps can be extracted from the `word_timestamps` array in the lyrics JSON file.
+
+### 9.3. Using Word Timestamps with `snap_on_flash_off`
+
+For highlighting specific words with a flash effect:
+
+```json
+{
+  "id": "key_word_highlight",
+  "type": "snap_on_flash_off",
+  "description": "Flash on key lyrics",
+  "timing": {
+    "start_seconds": 10.2,  // Start time of the word
+    "duration_seconds": 0.5  // Slightly longer than the word duration
+  },
+  "params": {
+    "pre_base_color": {"rgb": [0, 0, 100]},
+    "target_color": {"name": "white"},
+    "post_base_color": {"rgb": [0, 0, 100]},
+    "fade_out_duration": 0.4
+  }
+}
+```
+
+### 9.4. Creating Multiple Effects for Different Words
+
+You can create multiple effects for different words or phrases:
+
+```json
+"effects_timeline": [
+  {
+    "id": "chorus_word_1",
+    "type": "snap_on_flash_off",
+    "timing": {
+      "start_seconds": 60.5,  // Timestamp of first chorus word
+      "duration_seconds": 0.4
+    },
+    "params": {
+      "pre_base_color": {"name": "blue"},
+      "target_color": {"name": "yellow"},
+      "post_base_color": {"name": "blue"},
+      "fade_out_duration": 0.3
+    }
+  },
+  {
+    "id": "chorus_word_2",
+    "type": "snap_on_flash_off",
+    "timing": {
+      "start_seconds": 61.2,  // Timestamp of second chorus word
+      "duration_seconds": 0.4
+    },
+    "params": {
+      "pre_base_color": {"name": "blue"},
+      "target_color": {"name": "yellow"},
+      "post_base_color": {"name": "blue"},
+      "fade_out_duration": 0.3
+    }
+  }
+]
+```
+
+## 10. Relationship to `tools_lookup.json`
 
 The `type` field in each Effect Object (e.g., `"fade"`, `"solid_color"`) directly corresponds to an effect definition in the `roocode_sequence_designer_tools/tools_lookup.json` file. This `tools_lookup.json` file catalogs available effects, their parameters, and how they should be used, acting as a schema and guide for both Roocode and `compile_seqdesign.py`.
 
-## 10. Related File Types
+## 11. Related File Types
 
 The LTX Guru project uses several standardized file extensions for different types of data:
 
@@ -248,7 +359,7 @@ The LTX Guru project uses several standardized file extensions for different typ
 | Sequence Design Files | `.seqdesign.json` | High-level sequence design files (this document) |
 | PRG JSON Files | `.prg.json` | Compiled program files for LTX balls |
 | Raw Song Lyrics | `.lyrics.txt` | Raw lyrics text files |
-| Timestamped Song Lyrics | `.synced_lyrics.json` | Timestamped/aligned lyrics |
+| Timestamped Song Lyrics | `.synced_lyrics.json` | Timestamped/aligned lyrics from tools like align_lyrics.py |
 | Ball Color Change Sequences | `.ballseq.json` | Ball-specific color sequences |
 | Audio Analysis Reports | `.analysis_report.json` | Audio analysis data |
 | Beat Patterns | `.beatpattern.json` | Beat-synchronized patterns |
