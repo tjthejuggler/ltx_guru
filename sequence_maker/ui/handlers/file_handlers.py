@@ -6,7 +6,11 @@ operations such as new, open, save, and export operations.
 """
 
 import os
-from PyQt6.QtWidgets import QFileDialog, QMessageBox
+import json
+from PyQt6.QtWidgets import QFileDialog, QMessageBox, QColorDialog
+from models.timeline import Timeline
+from models.segment import TimelineSegment
+from utils.file_type_utils import is_valid_ball_sequence, is_valid_seqdesign, is_valid_lyrics_timestamps
 
 
 class FileHandlers:
@@ -245,3 +249,219 @@ class FileHandlers:
         else:
             # Cancel
             return False
+            
+    def on_import_ball_sequence(self):
+        """Import a ball sequence file."""
+        # Show file dialog
+        file_path, _ = QFileDialog.getOpenFileName(
+            self.main_window,
+            "Import Ball Sequence",
+            self.app.config.get("general", "default_project_dir"),
+            "Ball Sequence Files (*.ball.json)"
+        )
+        
+        if file_path:
+            # Load ball sequence
+            try:
+                with open(file_path, 'r') as f:
+                    ball_data = json.load(f)
+                
+                # Create a new timeline
+                timeline = Timeline(
+                    name=ball_data.get("metadata", {}).get("name", "Imported Ball"),
+                    default_pixels=ball_data.get("metadata", {}).get("default_pixels", 4)
+                )
+                
+                # Add segments to timeline
+                for segment in ball_data.get("segments", []):
+                    timeline_segment = TimelineSegment(
+                        start_time=segment["start_time"],
+                        end_time=segment["end_time"],
+                        color=tuple(segment["color"]),
+                        pixels=segment["pixels"]
+                    )
+                    timeline.add_segment(timeline_segment)
+                
+                # Add timeline to project
+                self.app.project_manager.current_project.add_timeline(timeline)
+                
+                # Update UI
+                self.main_window._update_ui()
+                self.main_window.statusBar().showMessage(f"Imported ball sequence from {file_path}", 3000)
+            except Exception as e:
+                QMessageBox.warning(
+                    self.main_window,
+                    "Import Error",
+                    f"Failed to import ball sequence: {str(e)}"
+                )
+    
+    def on_export_ball_sequence(self):
+        """Export timeline to ball sequence format."""
+        # Check if project exists
+        if not self.app.project_manager.current_project:
+            QMessageBox.warning(
+                self.main_window,
+                "No Project",
+                "No project is currently loaded."
+            )
+            return
+        
+        # Get selected timeline
+        timeline = self.main_window.timeline_widget.get_selected_timeline()
+        if not timeline:
+            QMessageBox.warning(
+                self.main_window,
+                "No Timeline Selected",
+                "Please select a timeline to export."
+            )
+            return
+        
+        # Show file dialog
+        file_path, _ = QFileDialog.getSaveFileName(
+            self.main_window,
+            "Export to Ball Sequence",
+            self.app.config.get("general", "default_export_dir"),
+            "Ball Sequence Files (*.ball.json)"
+        )
+        
+        if file_path:
+            # Ensure file has .ball.json extension
+            if not file_path.endswith(".ball.json"):
+                file_path += ".ball.json"
+            
+            # Create ball sequence data
+            ball_data = {
+                "metadata": {
+                    "name": timeline.name,
+                    "default_pixels": timeline.default_pixels,
+                    "refresh_rate": 50,
+                    "total_duration": timeline.get_duration(),
+                    "audio_file": self.app.audio_manager.get_audio_file_path() or ""
+                },
+                "segments": []
+            }
+            
+            # Add segments
+            for segment in timeline.segments:
+                ball_data["segments"].append({
+                    "start_time": segment.start_time,
+                    "end_time": segment.end_time,
+                    "color": list(segment.color),
+                    "pixels": segment.pixels
+                })
+            
+            # Write to file
+            try:
+                with open(file_path, 'w') as f:
+                    json.dump(ball_data, f, indent=2)
+                
+                self.main_window.statusBar().showMessage(f"Exported to {file_path}", 3000)
+            except Exception as e:
+                QMessageBox.warning(
+                    self.main_window,
+                    "Export Error",
+                    f"Failed to export ball sequence: {str(e)}"
+                )
+    
+    def on_import_lyrics_timestamps(self):
+        """Import lyrics timestamps and convert to a timeline."""
+        # Show file dialog
+        file_path, _ = QFileDialog.getOpenFileName(
+            self.main_window,
+            "Import Lyrics Timestamps",
+            self.app.config.get("general", "default_project_dir"),
+            "Lyrics Timestamps Files (*.lyrics.json *.json)"
+        )
+        
+        if file_path:
+            # Check if file is valid
+            if not is_valid_lyrics_timestamps(file_path):
+                QMessageBox.warning(
+                    self.main_window,
+                    "Import Error",
+                    f"Invalid lyrics timestamps file: {file_path}"
+                )
+                return
+            
+            # Ask for color preferences
+            color_dialog = QColorDialog(self.main_window)
+            color_dialog.setWindowTitle("Select Color for Words")
+            if color_dialog.exec():
+                word_color = color_dialog.selectedColor().getRgb()[:3]  # Get RGB values
+            else:
+                word_color = [0, 0, 255]  # Default blue
+            
+            background_color = [0, 0, 0]  # Default black
+            
+            # Load lyrics timestamps
+            try:
+                with open(file_path, 'r') as f:
+                    lyrics_data = json.load(f)
+                
+                # Extract metadata
+                song_title = lyrics_data.get("song_title", "Unknown")
+                artist_name = lyrics_data.get("artist_name", "Unknown")
+                word_timestamps = lyrics_data.get("word_timestamps", [])
+                
+                # Create a new timeline
+                timeline = Timeline(
+                    name=f"{song_title} - {artist_name} - Word Flash",
+                    default_pixels=4
+                )
+                
+                # Find total duration
+                total_duration = 0
+                if word_timestamps:
+                    total_duration = max(word["end"] for word in word_timestamps) + 5.0  # Add 5 seconds buffer
+                
+                # Add initial black segment if first word doesn't start at 0
+                if word_timestamps and word_timestamps[0]["start"] > 0:
+                    timeline.add_segment(TimelineSegment(
+                        start_time=0.0,
+                        end_time=word_timestamps[0]["start"],
+                        color=tuple(background_color),
+                        pixels=4
+                    ))
+                
+                # Add segments for each word and gap
+                for i, word in enumerate(word_timestamps):
+                    # Add segment for the word
+                    timeline.add_segment(TimelineSegment(
+                        start_time=word["start"],
+                        end_time=word["end"],
+                        color=tuple(word_color),
+                        pixels=4
+                    ))
+                    
+                    # Add segment for the gap after this word (if not the last word)
+                    if i < len(word_timestamps) - 1:
+                        next_word = word_timestamps[i + 1]
+                        if word["end"] < next_word["start"]:
+                            timeline.add_segment(TimelineSegment(
+                                start_time=word["end"],
+                                end_time=next_word["start"],
+                                color=tuple(background_color),
+                                pixels=4
+                            ))
+                
+                # Add final black segment after the last word
+                if word_timestamps:
+                    timeline.add_segment(TimelineSegment(
+                        start_time=word_timestamps[-1]["end"],
+                        end_time=total_duration,
+                        color=tuple(background_color),
+                        pixels=4
+                    ))
+                
+                # Add timeline to project
+                self.app.project_manager.current_project.add_timeline(timeline)
+                
+                # Update UI
+                self.main_window._update_ui()
+                self.main_window.statusBar().showMessage(f"Imported lyrics timestamps from {file_path}", 3000)
+            except Exception as e:
+                QMessageBox.warning(
+                    self.main_window,
+                    "Import Error",
+                    f"Failed to import lyrics timestamps: {str(e)}"
+                )

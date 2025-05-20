@@ -89,6 +89,10 @@ class MainWindow(QMainWindow):
         # Initialize UI components
         self._init_ui()
         
+        # Initialize handlers first
+        from ui.handlers.file_handlers import FileHandlers
+        self.file_handler = FileHandlers(self)
+        
         # Initialize action classes
         self.file_actions = FileActions(self)
         self.edit_actions = EditActions(self)

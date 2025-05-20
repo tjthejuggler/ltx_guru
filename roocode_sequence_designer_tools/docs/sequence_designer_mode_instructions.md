@@ -1,18 +1,29 @@
 # Sequence Designer Mode Instructions
 
-## File Organization
+## File Organization and Types
 
-Always organize project files in the sequence_projects directory using the following structure:
+Always organize project files in the sequence_projects directory using the following structure and file extensions:
 
 ```
 sequence_projects/
 └── song_name/                # Create a subdirectory for each song
     ├── artist_song_name.mp3  # Original audio file
     ├── lyrics.txt            # Raw lyrics text file
-    ├── lyrics_timestamps.json # Generated timestamps
-    ├── analysis_report.json  # Audio analysis data
-    └── song_name.seqdesign.json # Sequence design file
+    ├── lyrics.json           # Timestamped lyrics
+    ├── song_name.ball.json   # Ball sequence file
+    ├── song_name.seqdesign.json # Sequence design file
+    └── song_name.prg.json    # Compiled program file
 ```
+
+### File Types and Extensions
+
+| File Type | Extension | Description |
+|-----------|-----------|-------------|
+| Sequence Design Files | `.seqdesign.json` | High-level sequence design files |
+| PRG JSON Files | `.prg.json` | Compiled program files for LTX balls |
+| Ball Sequence Files | `.ball.json` | Single ball color sequences |
+| Lyrics Timestamps | `.lyrics.json` | Timestamped/aligned lyrics |
+| Audio Analysis Reports | `.analysis.json` | Audio analysis data |
 
 This organization:
 - Keeps all related files together in one place
@@ -121,8 +132,10 @@ sequence_projects/
 └── you_know_me/
     ├── lubalin_you_know_me.mp3
     ├── lyrics.txt
-    ├── lyrics_timestamps.json
-    └── you_know_me.seqdesign.json
+    ├── lyrics.json
+    ├── you_know_me.ball.json
+    ├── you_know_me.seqdesign.json
+    └── you_know_me.prg.json
 ```
 
 ### Incorrect Organization
@@ -130,7 +143,8 @@ sequence_projects/
 ```
 sequence_projects/you_know_me/lubalin_you_know_me.mp3
 lyrics.txt                    # In root directory
-lyrics_timestamps.json        # In root directory
+lyrics.json                   # In root directory
+you_know_me.ball.json         # In root directory
 ```
 
 Always maintain proper file organization to keep projects clean and manageable.

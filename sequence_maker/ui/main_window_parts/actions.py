@@ -35,6 +35,11 @@ def create_file_actions(main_window):
     main_window.export_json_action = main_window.file_actions.export_json_action
     main_window.export_prg_action = main_window.file_actions.export_prg_action
     main_window.exit_action = main_window.file_actions.exit_action
+    
+    # Ball sequence actions
+    main_window.import_ball_sequence_action = main_window.file_actions.import_ball_sequence_action
+    main_window.export_ball_sequence_action = main_window.file_actions.export_ball_sequence_action
+    main_window.import_lyrics_timestamps_action = main_window.file_actions.import_lyrics_timestamps_action
 
 
 def create_edit_actions(main_window):

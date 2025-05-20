@@ -72,3 +72,22 @@ class FileActions:
         self.exit_action.setShortcut(QKeySequence.StandardKey.Quit)
         self.exit_action.setStatusTip("Exit the application")
         self.exit_action.triggered.connect(self.main_window.close)
+        
+        # Ball sequence actions
+        self.import_ball_sequence_action = QAction("Import Ball Sequence...", self.main_window)
+        self.import_ball_sequence_action.setStatusTip("Import a ball sequence file")
+        self.import_ball_sequence_action.triggered.connect(
+            self.main_window.file_handler.on_import_ball_sequence
+        )
+        
+        self.export_ball_sequence_action = QAction("Export Ball Sequence...", self.main_window)
+        self.export_ball_sequence_action.setStatusTip("Export timeline to ball sequence format")
+        self.export_ball_sequence_action.triggered.connect(
+            self.main_window.file_handler.on_export_ball_sequence
+        )
+        
+        self.import_lyrics_timestamps_action = QAction("Import Lyrics Timestamps...", self.main_window)
+        self.import_lyrics_timestamps_action.setStatusTip("Import lyrics timestamps and convert to a timeline")
+        self.import_lyrics_timestamps_action.triggered.connect(
+            self.main_window.file_handler.on_import_lyrics_timestamps
+        )

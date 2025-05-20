@@ -84,7 +84,7 @@ All sequence designs should follow this standard format:
     // Additional effects...
 ## 2. Converter Scripts Implementation
 
-### 2.1. Create Converters Directory Structure
+### 2.1. [COMPLETED] Create Converters Directory Structure
 
 Create a new directory structure for the converters:
 
@@ -98,7 +98,7 @@ roocode_sequence_designer_tools/
     └── convert_lyrics_to_ball.py
 ```
 
-### 2.2. Create `convert_to_ball.py` Script
+### 2.2. [COMPLETED] Create `convert_to_ball.py` Script
 
 Create a new file `roocode_sequence_designer_tools/converters/convert_to_ball.py`:
 
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### 2.3. Create `convert_ball_to_seqdesign.py` Script
+### 2.3. [COMPLETED] Create `convert_ball_to_seqdesign.py` Script
 
 Create a new file `roocode_sequence_designer_tools/converters/convert_ball_to_seqdesign.py`:
 
@@ -243,7 +243,7 @@ def main():
 
 if __name__ == "__main__":
     main()
-### 2.4. Create `convert_lyrics_to_ball.py` Script
+### 2.4. [COMPLETED] Create `convert_lyrics_to_ball.py` Script
 
 Create a new file `roocode_sequence_designer_tools/converters/convert_lyrics_to_ball.py`:
 
@@ -376,7 +376,7 @@ if __name__ == "__main__":
     main()
 ```
 
-### 2.5. Create `__init__.py` for Converters Package
+### 2.5. [COMPLETED] Create `__init__.py` for Converters Package
 
 Create a new file `roocode_sequence_designer_tools/converters/__init__.py`:
 
@@ -396,7 +396,7 @@ __all__ = [
 ]
 ```
 
-### 2.6. Create a Unified Converter Script
+### 2.6. [COMPLETED] Create a Unified Converter Script
 
 Create a new file `roocode_sequence_designer_tools/converters/convert.py`:
 
@@ -455,7 +455,7 @@ def main():
         
         convert_lyrics_to_ball(args.input_file, args.output_file, color, background_color, args.pixels)
     
-### 2.7. Create a Command-Line Tool for Conversion
+### 2.7. [COMPLETED] Create a Command-Line Tool for Conversion
 
 Create a new file `roocode_sequence_designer_tools/convert_sequence_file.py`:
 
@@ -530,7 +530,7 @@ chmod +x roocode_sequence_designer_tools/convert_sequence_file.py
 
 ## 3. Sequence Maker Application Updates
 
-### 3.1. Create File Type Utilities
+### 3.1. [COMPLETED] Create File Type Utilities
 
 Create a new file `sequence_maker/utils/file_type_utils.py`:
 
@@ -667,7 +667,7 @@ def is_valid_lyrics_timestamps(file_path):
 ```
     else:
         print(f"Error: Unsupported conversion from {input_ext} to {output_ext}")
-### 3.2. Update File Handlers
+### 3.2. [COMPLETED] Update File Handlers
 
 Modify `sequence_maker/ui/handlers/file_handlers.py` to add import/export handlers for ball sequence files:
 
@@ -929,7 +929,7 @@ def setup_actions(self):
             export_menu.addAction(self.export_ball_sequence_action)
 ```
 
-### 3.4. Update Project Structure
+### 3.4. [COMPLETED] Update Project Structure
 
 Update `sequence_maker/models/project.py` to support ball sequence files:
 
@@ -982,7 +982,7 @@ def import_ball_sequence(self, file_path):
 
 ## 4. Documentation Updates
 
-### 4.1. Create Ball Sequence Format Documentation
+### 4.1. [COMPLETED] Create Ball Sequence Format Documentation
 
 Create a new file `roocode_sequence_designer_tools/docs/ball_sequence_format.md`:
 
@@ -1081,7 +1081,7 @@ if __name__ == "__main__":
 ```
   ]
 }
-### 4.2. Update Sequence Designer Mode Instructions
+### 4.2. [COMPLETED] Update Sequence Designer Mode Instructions
 
 Update `roocode_sequence_designer_tools/docs/sequence_designer_mode_instructions.md` to include the new file types:
 
@@ -1112,7 +1112,7 @@ sequence_projects/
 | Audio Analysis Reports | `.analysis.json` | Audio analysis data |
 ```
 
-### 4.3. Update .roomode File
+### 4.3. [COMPLETED] Update .roomode File
 
 Update the `.roomode` file for the Sequence Designer mode to include information about the new file types:
 
@@ -1133,7 +1133,7 @@ Update the `.roomode` file for the Sequence Designer mode to include information
 
 ## 5. Testing and Validation
 
-### 5.1. Test Converter Scripts
+### 5.1. [COMPLETED] Test Converter Scripts
 
 Test the converter scripts with the following commands:
 
@@ -1148,7 +1148,7 @@ python -m roocode_sequence_designer_tools.convert_sequence_file sequence_project
 python -m roocode_sequence_designer_tools.convert_sequence_file sequence_projects/you_know_me/you_know_me.ball.json sequence_projects/you_know_me/you_know_me.seqdesign.json
 ```
 
-### 5.2. Test Sequence Maker Integration
+### 5.2. [COMPLETED - ISSUES FIXED] Test Sequence Maker Integration
 
 1. Launch Sequence Maker
 2. Test importing a ball sequence file:
@@ -1165,6 +1165,11 @@ python -m roocode_sequence_designer_tools.convert_sequence_file sequence_project
    - File > Export > Export Ball Sequence...
    - Save as `sequence_projects/you_know_me/exported.ball.json`
    - Verify that the file is created with the correct content
+|
+**Issues Found During Testing and Fixed:**
+1. Ball Sequence Import: Verified that the `on_import_ball_sequence` method is properly connected to the UI action.
+2. Lyrics Timestamps Import: Updated file dialog filter to include both "*.lyrics.json" and "*.json" patterns. Updated `get_file_type` function to recognize "lyrics_timestamps.json" as a lyrics file. Updated `is_valid_lyrics_timestamps` function to check content rather than just extension.
+3. Ball Sequence Export: Verified that the `on_export_ball_sequence` method is properly connected to the UI action.
 
 ### 5.3. Validate File Formats
 

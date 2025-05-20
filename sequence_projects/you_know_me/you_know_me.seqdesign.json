@@ -1,0 +1,7646 @@
+{
+  "metadata": {
+    "title": "You Know Me - Word Flash",
+    "total_duration_seconds": 134.95000000000002,
+    "target_prg_refresh_rate": 50,
+    "default_pixels": 4,
+    "audio_file_path": "sequence_projects/you_know_me/lubalin_you_know_me.mp3",
+    "default_base_color": {
+      "name": "black"
+    }
+  },
+  "effects_timeline": [
+    {
+      "id": "segment_38e37209",
+      "type": "solid_color",
+      "description": "Segment from 0.0 to 10.7",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 10.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4a9cd4d9",
+      "type": "solid_color",
+      "description": "Segment from 10.7 to 11.03",
+      "timing": {
+        "start_seconds": 10.7,
+        "end_seconds": 11.03
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_74754175",
+      "type": "solid_color",
+      "description": "Segment from 11.03 to 11.04",
+      "timing": {
+        "start_seconds": 11.03,
+        "end_seconds": 11.04
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_48432c95",
+      "type": "solid_color",
+      "description": "Segment from 11.04 to 11.329999999999998",
+      "timing": {
+        "start_seconds": 11.04,
+        "end_seconds": 11.329999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ed7a85e8",
+      "type": "solid_color",
+      "description": "Segment from 11.329999999999998 to 11.36",
+      "timing": {
+        "start_seconds": 11.329999999999998,
+        "end_seconds": 11.36
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a5689ed7",
+      "type": "solid_color",
+      "description": "Segment from 11.36 to 11.7",
+      "timing": {
+        "start_seconds": 11.36,
+        "end_seconds": 11.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bcfac582",
+      "type": "solid_color",
+      "description": "Segment from 11.7 to 12.219999",
+      "timing": {
+        "start_seconds": 11.7,
+        "end_seconds": 12.219999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1fe3376c",
+      "type": "solid_color",
+      "description": "Segment from 12.219999 to 12.479999",
+      "timing": {
+        "start_seconds": 12.219999,
+        "end_seconds": 12.479999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_dc84a44d",
+      "type": "solid_color",
+      "description": "Segment from 12.479999 to 12.799999",
+      "timing": {
+        "start_seconds": 12.479999,
+        "end_seconds": 12.799999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8bc6d50a",
+      "type": "solid_color",
+      "description": "Segment from 12.799999 to 12.879999",
+      "timing": {
+        "start_seconds": 12.799999,
+        "end_seconds": 12.879999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_93af089a",
+      "type": "solid_color",
+      "description": "Segment from 12.879999 to 12.989999",
+      "timing": {
+        "start_seconds": 12.879999,
+        "end_seconds": 12.989999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f838be45",
+      "type": "solid_color",
+      "description": "Segment from 12.989999 to 13.049999",
+      "timing": {
+        "start_seconds": 12.989999,
+        "end_seconds": 13.049999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ebdf8bc5",
+      "type": "solid_color",
+      "description": "Segment from 13.049999 to 13.199999",
+      "timing": {
+        "start_seconds": 13.049999,
+        "end_seconds": 13.199999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3670788f",
+      "type": "solid_color",
+      "description": "Segment from 13.199999 to 13.37",
+      "timing": {
+        "start_seconds": 13.199999,
+        "end_seconds": 13.37
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c5ad436f",
+      "type": "solid_color",
+      "description": "Segment from 13.37 to 13.409999999999998",
+      "timing": {
+        "start_seconds": 13.37,
+        "end_seconds": 13.409999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7cef3e18",
+      "type": "solid_color",
+      "description": "Segment from 13.409999999999998 to 13.41",
+      "timing": {
+        "start_seconds": 13.409999999999998,
+        "end_seconds": 13.41
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6c5e836d",
+      "type": "solid_color",
+      "description": "Segment from 13.41 to 13.57",
+      "timing": {
+        "start_seconds": 13.41,
+        "end_seconds": 13.57
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d1f30b9b",
+      "type": "solid_color",
+      "description": "Segment from 13.57 to 13.75",
+      "timing": {
+        "start_seconds": 13.57,
+        "end_seconds": 13.75
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7374e7ac",
+      "type": "solid_color",
+      "description": "Segment from 13.75 to 14.08",
+      "timing": {
+        "start_seconds": 13.75,
+        "end_seconds": 14.08
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8684670e",
+      "type": "solid_color",
+      "description": "Segment from 14.08 to 14.1",
+      "timing": {
+        "start_seconds": 14.08,
+        "end_seconds": 14.1
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e8ba536c",
+      "type": "solid_color",
+      "description": "Segment from 14.1 to 14.2",
+      "timing": {
+        "start_seconds": 14.1,
+        "end_seconds": 14.2
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_dcc1cb68",
+      "type": "solid_color",
+      "description": "Segment from 14.2 to 14.22",
+      "timing": {
+        "start_seconds": 14.2,
+        "end_seconds": 14.22
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8f9c3bb5",
+      "type": "solid_color",
+      "description": "Segment from 14.22 to 14.56",
+      "timing": {
+        "start_seconds": 14.22,
+        "end_seconds": 14.56
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e74c4ade",
+      "type": "solid_color",
+      "description": "Segment from 14.56 to 14.97",
+      "timing": {
+        "start_seconds": 14.56,
+        "end_seconds": 14.97
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_246d3776",
+      "type": "solid_color",
+      "description": "Segment from 14.97 to 15.15",
+      "timing": {
+        "start_seconds": 14.97,
+        "end_seconds": 15.15
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_00228f0c",
+      "type": "solid_color",
+      "description": "Segment from 15.15 to 15.379999999999999",
+      "timing": {
+        "start_seconds": 15.15,
+        "end_seconds": 15.379999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_54c09ff3",
+      "type": "solid_color",
+      "description": "Segment from 15.379999999999999 to 15.64",
+      "timing": {
+        "start_seconds": 15.379999999999999,
+        "end_seconds": 15.64
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f74f55f4",
+      "type": "solid_color",
+      "description": "Segment from 15.64 to 15.65",
+      "timing": {
+        "start_seconds": 15.64,
+        "end_seconds": 15.65
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3d33c896",
+      "type": "solid_color",
+      "description": "Segment from 15.65 to 16.11",
+      "timing": {
+        "start_seconds": 15.65,
+        "end_seconds": 16.11
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e364ba97",
+      "type": "solid_color",
+      "description": "Segment from 16.11 to 16.23",
+      "timing": {
+        "start_seconds": 16.11,
+        "end_seconds": 16.23
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_961294a4",
+      "type": "solid_color",
+      "description": "Segment from 16.23 to 16.32",
+      "timing": {
+        "start_seconds": 16.23,
+        "end_seconds": 16.32
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d0c271f7",
+      "type": "solid_color",
+      "description": "Segment from 16.32 to 16.44",
+      "timing": {
+        "start_seconds": 16.32,
+        "end_seconds": 16.44
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1d7325bd",
+      "type": "solid_color",
+      "description": "Segment from 16.44 to 16.6",
+      "timing": {
+        "start_seconds": 16.44,
+        "end_seconds": 16.6
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ba8c9c0e",
+      "type": "solid_color",
+      "description": "Segment from 16.6 to 16.68",
+      "timing": {
+        "start_seconds": 16.6,
+        "end_seconds": 16.68
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d8aa104b",
+      "type": "solid_color",
+      "description": "Segment from 16.68 to 16.94",
+      "timing": {
+        "start_seconds": 16.68,
+        "end_seconds": 16.94
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2294d58d",
+      "type": "solid_color",
+      "description": "Segment from 16.94 to 17.03",
+      "timing": {
+        "start_seconds": 16.94,
+        "end_seconds": 17.03
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5b6bf67e",
+      "type": "solid_color",
+      "description": "Segment from 17.03 to 17.509999999999998",
+      "timing": {
+        "start_seconds": 17.03,
+        "end_seconds": 17.509999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7417720c",
+      "type": "solid_color",
+      "description": "Segment from 17.509999999999998 to 17.81",
+      "timing": {
+        "start_seconds": 17.509999999999998,
+        "end_seconds": 17.81
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a7aa1ab0",
+      "type": "solid_color",
+      "description": "Segment from 17.81 to 18.15",
+      "timing": {
+        "start_seconds": 17.81,
+        "end_seconds": 18.15
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_db09bcec",
+      "type": "solid_color",
+      "description": "Segment from 18.15 to 18.310000000000002",
+      "timing": {
+        "start_seconds": 18.15,
+        "end_seconds": 18.310000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a3cb236c",
+      "type": "solid_color",
+      "description": "Segment from 18.310000000000002 to 18.48",
+      "timing": {
+        "start_seconds": 18.310000000000002,
+        "end_seconds": 18.48
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1421c6a4",
+      "type": "solid_color",
+      "description": "Segment from 18.48 to 18.85",
+      "timing": {
+        "start_seconds": 18.48,
+        "end_seconds": 18.85
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7a8bf699",
+      "type": "solid_color",
+      "description": "Segment from 18.85 to 19.17",
+      "timing": {
+        "start_seconds": 18.85,
+        "end_seconds": 19.17
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a29ad84e",
+      "type": "solid_color",
+      "description": "Segment from 19.17 to 19.48",
+      "timing": {
+        "start_seconds": 19.17,
+        "end_seconds": 19.48
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_dde5485b",
+      "type": "solid_color",
+      "description": "Segment from 19.48 to 19.55",
+      "timing": {
+        "start_seconds": 19.48,
+        "end_seconds": 19.55
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1beb74c0",
+      "type": "solid_color",
+      "description": "Segment from 19.55 to 19.580000000000002",
+      "timing": {
+        "start_seconds": 19.55,
+        "end_seconds": 19.580000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_36277721",
+      "type": "solid_color",
+      "description": "Segment from 19.580000000000002 to 19.72",
+      "timing": {
+        "start_seconds": 19.580000000000002,
+        "end_seconds": 19.72
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d4b2e8bf",
+      "type": "solid_color",
+      "description": "Segment from 19.72 to 19.88",
+      "timing": {
+        "start_seconds": 19.72,
+        "end_seconds": 19.88
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_dc97188a",
+      "type": "solid_color",
+      "description": "Segment from 19.88 to 20.189999999999998",
+      "timing": {
+        "start_seconds": 19.88,
+        "end_seconds": 20.189999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a5250f57",
+      "type": "solid_color",
+      "description": "Segment from 20.189999999999998 to 20.25",
+      "timing": {
+        "start_seconds": 20.189999999999998,
+        "end_seconds": 20.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8eddec6c",
+      "type": "solid_color",
+      "description": "Segment from 20.25 to 20.37",
+      "timing": {
+        "start_seconds": 20.25,
+        "end_seconds": 20.37
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e8343138",
+      "type": "solid_color",
+      "description": "Segment from 20.37 to 20.39",
+      "timing": {
+        "start_seconds": 20.37,
+        "end_seconds": 20.39
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ca4dc765",
+      "type": "solid_color",
+      "description": "Segment from 20.39 to 20.84",
+      "timing": {
+        "start_seconds": 20.39,
+        "end_seconds": 20.84
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_573421f8",
+      "type": "solid_color",
+      "description": "Segment from 20.84 to 20.96",
+      "timing": {
+        "start_seconds": 20.84,
+        "end_seconds": 20.96
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_57dfd910",
+      "type": "solid_color",
+      "description": "Segment from 20.96 to 21.7",
+      "timing": {
+        "start_seconds": 20.96,
+        "end_seconds": 21.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7ac6cf68",
+      "type": "solid_color",
+      "description": "Segment from 21.7 to 21.86",
+      "timing": {
+        "start_seconds": 21.7,
+        "end_seconds": 21.86
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8b1c605f",
+      "type": "solid_color",
+      "description": "Segment from 21.86 to 22.31",
+      "timing": {
+        "start_seconds": 21.86,
+        "end_seconds": 22.31
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_09191d9d",
+      "type": "solid_color",
+      "description": "Segment from 22.31 to 22.369999999999997",
+      "timing": {
+        "start_seconds": 22.31,
+        "end_seconds": 22.369999999999997
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5c4e699b",
+      "type": "solid_color",
+      "description": "Segment from 22.369999999999997 to 22.37",
+      "timing": {
+        "start_seconds": 22.369999999999997,
+        "end_seconds": 22.37
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_586f1fda",
+      "type": "solid_color",
+      "description": "Segment from 22.37 to 22.560000000000002",
+      "timing": {
+        "start_seconds": 22.37,
+        "end_seconds": 22.560000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_798347a5",
+      "type": "solid_color",
+      "description": "Segment from 22.56 to 23.2",
+      "timing": {
+        "start_seconds": 22.56,
+        "end_seconds": 23.2
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ecb4c031",
+      "type": "solid_color",
+      "description": "Segment from 23.2 to 23.97",
+      "timing": {
+        "start_seconds": 23.2,
+        "end_seconds": 23.97
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_188bf003",
+      "type": "solid_color",
+      "description": "Segment from 23.97 to 24.09",
+      "timing": {
+        "start_seconds": 23.97,
+        "end_seconds": 24.09
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_747f761d",
+      "type": "solid_color",
+      "description": "Segment from 24.09 to 24.45",
+      "timing": {
+        "start_seconds": 24.09,
+        "end_seconds": 24.45
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6e80910b",
+      "type": "solid_color",
+      "description": "Segment from 24.45 to 24.67",
+      "timing": {
+        "start_seconds": 24.45,
+        "end_seconds": 24.67
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f90aea3a",
+      "type": "solid_color",
+      "description": "Segment from 24.67 to 24.720000000000002",
+      "timing": {
+        "start_seconds": 24.67,
+        "end_seconds": 24.720000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_15760b69",
+      "type": "solid_color",
+      "description": "Segment from 24.72 to 24.83",
+      "timing": {
+        "start_seconds": 24.72,
+        "end_seconds": 24.83
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e46b023c",
+      "type": "solid_color",
+      "description": "Segment from 24.83 to 25.049999999999997",
+      "timing": {
+        "start_seconds": 24.83,
+        "end_seconds": 25.049999999999997
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9491106e",
+      "type": "solid_color",
+      "description": "Segment from 25.049999999999997 to 25.25",
+      "timing": {
+        "start_seconds": 25.049999999999997,
+        "end_seconds": 25.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d1e28a44",
+      "type": "solid_color",
+      "description": "Segment from 25.25 to 25.38",
+      "timing": {
+        "start_seconds": 25.25,
+        "end_seconds": 25.38
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7cfad793",
+      "type": "solid_color",
+      "description": "Segment from 25.38 to 25.56",
+      "timing": {
+        "start_seconds": 25.38,
+        "end_seconds": 25.56
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_28b68e05",
+      "type": "solid_color",
+      "description": "Segment from 25.56 to 25.799999999999997",
+      "timing": {
+        "start_seconds": 25.56,
+        "end_seconds": 25.799999999999997
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ffd9b7e3",
+      "type": "solid_color",
+      "description": "Segment from 25.799999999999997 to 25.97",
+      "timing": {
+        "start_seconds": 25.799999999999997,
+        "end_seconds": 25.97
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6c66b186",
+      "type": "solid_color",
+      "description": "Segment from 25.97 to 26.15",
+      "timing": {
+        "start_seconds": 25.97,
+        "end_seconds": 26.15
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2e5ebb6c",
+      "type": "solid_color",
+      "description": "Segment from 26.15 to 26.229999999999997",
+      "timing": {
+        "start_seconds": 26.15,
+        "end_seconds": 26.229999999999997
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e12b2399",
+      "type": "solid_color",
+      "description": "Segment from 26.229999999999997 to 26.249999999999996",
+      "timing": {
+        "start_seconds": 26.229999999999997,
+        "end_seconds": 26.249999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ebb85a40",
+      "type": "solid_color",
+      "description": "Segment from 26.249999999999996 to 26.49",
+      "timing": {
+        "start_seconds": 26.249999999999996,
+        "end_seconds": 26.49
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c5965830",
+      "type": "solid_color",
+      "description": "Segment from 26.49 to 26.9",
+      "timing": {
+        "start_seconds": 26.49,
+        "end_seconds": 26.9
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_fd9794b4",
+      "type": "solid_color",
+      "description": "Segment from 26.9 to 26.919999999999998",
+      "timing": {
+        "start_seconds": 26.9,
+        "end_seconds": 26.919999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7e7b1cc9",
+      "type": "solid_color",
+      "description": "Segment from 26.919999999999998 to 27.179999999999996",
+      "timing": {
+        "start_seconds": 26.919999999999998,
+        "end_seconds": 27.179999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_64406c8f",
+      "type": "solid_color",
+      "description": "Segment from 27.179999999999996 to 27.589999999999996",
+      "timing": {
+        "start_seconds": 27.179999999999996,
+        "end_seconds": 27.589999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cd61c33b",
+      "type": "solid_color",
+      "description": "Segment from 27.589999999999996 to 27.679999999999996",
+      "timing": {
+        "start_seconds": 27.589999999999996,
+        "end_seconds": 27.679999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0553e031",
+      "type": "solid_color",
+      "description": "Segment from 27.679999999999996 to 27.859999999999996",
+      "timing": {
+        "start_seconds": 27.679999999999996,
+        "end_seconds": 27.859999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ab5d0197",
+      "type": "solid_color",
+      "description": "Segment from 27.859999999999996 to 27.889999999999997",
+      "timing": {
+        "start_seconds": 27.859999999999996,
+        "end_seconds": 27.889999999999997
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b68de298",
+      "type": "solid_color",
+      "description": "Segment from 27.889999999999997 to 27.919999999999998",
+      "timing": {
+        "start_seconds": 27.889999999999997,
+        "end_seconds": 27.919999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3d14c31e",
+      "type": "solid_color",
+      "description": "Segment from 27.919999999999998 to 28.21",
+      "timing": {
+        "start_seconds": 27.919999999999998,
+        "end_seconds": 28.21
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3bdff60e",
+      "type": "solid_color",
+      "description": "Segment from 28.21 to 28.310000000000002",
+      "timing": {
+        "start_seconds": 28.21,
+        "end_seconds": 28.310000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_65da9cee",
+      "type": "solid_color",
+      "description": "Segment from 28.309998999999998 to 28.479999",
+      "timing": {
+        "start_seconds": 28.309998999999998,
+        "end_seconds": 28.479999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c205cd41",
+      "type": "solid_color",
+      "description": "Segment from 28.479999 to 28.639999",
+      "timing": {
+        "start_seconds": 28.479999,
+        "end_seconds": 28.639999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_fcdecf05",
+      "type": "solid_color",
+      "description": "Segment from 28.639999 to 28.719998999999998",
+      "timing": {
+        "start_seconds": 28.639999,
+        "end_seconds": 28.719998999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8d769f5a",
+      "type": "solid_color",
+      "description": "Segment from 28.719998999999998 to 28.749999",
+      "timing": {
+        "start_seconds": 28.719998999999998,
+        "end_seconds": 28.749999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1ac850d9",
+      "type": "solid_color",
+      "description": "Segment from 28.749999 to 29.380000000000003",
+      "timing": {
+        "start_seconds": 28.749999,
+        "end_seconds": 29.380000000000003
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5217bdb1",
+      "type": "solid_color",
+      "description": "Segment from 29.380000000000003 to 29.450000000000003",
+      "timing": {
+        "start_seconds": 29.380000000000003,
+        "end_seconds": 29.450000000000003
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bc51c0c2",
+      "type": "solid_color",
+      "description": "Segment from 29.45 to 29.689999999999998",
+      "timing": {
+        "start_seconds": 29.45,
+        "end_seconds": 29.689999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a6d6f006",
+      "type": "solid_color",
+      "description": "Segment from 29.689999999999998 to 29.99",
+      "timing": {
+        "start_seconds": 29.689999999999998,
+        "end_seconds": 29.99
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0d6342e0",
+      "type": "solid_color",
+      "description": "Segment from 29.99 to 29.990000000000002",
+      "timing": {
+        "start_seconds": 29.99,
+        "end_seconds": 29.990000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_62fba2cf",
+      "type": "solid_color",
+      "description": "Segment from 29.990000000000002 to 30.130000000000003",
+      "timing": {
+        "start_seconds": 29.990000000000002,
+        "end_seconds": 30.130000000000003
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3c2d0aea",
+      "type": "solid_color",
+      "description": "Segment from 30.130000000000003 to 30.389999",
+      "timing": {
+        "start_seconds": 30.130000000000003,
+        "end_seconds": 30.389999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2d465e0a",
+      "type": "solid_color",
+      "description": "Segment from 30.389999 to 30.589999",
+      "timing": {
+        "start_seconds": 30.389999,
+        "end_seconds": 30.589999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6a8ce1e1",
+      "type": "solid_color",
+      "description": "Segment from 30.589999 to 30.59",
+      "timing": {
+        "start_seconds": 30.589999,
+        "end_seconds": 30.59
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e43bb757",
+      "type": "solid_color",
+      "description": "Segment from 30.59 to 30.7",
+      "timing": {
+        "start_seconds": 30.59,
+        "end_seconds": 30.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_01268c0b",
+      "type": "solid_color",
+      "description": "Segment from 30.7 to 30.880000000000003",
+      "timing": {
+        "start_seconds": 30.7,
+        "end_seconds": 30.880000000000003
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4a67e6a7",
+      "type": "solid_color",
+      "description": "Segment from 30.880000000000003 to 30.890000000000004",
+      "timing": {
+        "start_seconds": 30.880000000000003,
+        "end_seconds": 30.890000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_194b3edd",
+      "type": "solid_color",
+      "description": "Segment from 30.889999 to 31.119999",
+      "timing": {
+        "start_seconds": 30.889999,
+        "end_seconds": 31.119999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1f6e6506",
+      "type": "solid_color",
+      "description": "Segment from 31.119999 to 31.119999999999997",
+      "timing": {
+        "start_seconds": 31.119999,
+        "end_seconds": 31.119999999999997
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a48d598b",
+      "type": "solid_color",
+      "description": "Segment from 31.119999999999997 to 31.269999999999996",
+      "timing": {
+        "start_seconds": 31.119999999999997,
+        "end_seconds": 31.269999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_18beb6e7",
+      "type": "solid_color",
+      "description": "Segment from 31.269999999999996 to 31.27",
+      "timing": {
+        "start_seconds": 31.269999999999996,
+        "end_seconds": 31.27
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3bab3a1d",
+      "type": "solid_color",
+      "description": "Segment from 31.27 to 31.44",
+      "timing": {
+        "start_seconds": 31.27,
+        "end_seconds": 31.44
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8dcae0cc",
+      "type": "solid_color",
+      "description": "Segment from 31.439999999999998 to 31.54",
+      "timing": {
+        "start_seconds": 31.439999999999998,
+        "end_seconds": 31.54
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b306bb88",
+      "type": "solid_color",
+      "description": "Segment from 31.54 to 31.66",
+      "timing": {
+        "start_seconds": 31.54,
+        "end_seconds": 31.66
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6143d64e",
+      "type": "solid_color",
+      "description": "Segment from 31.66 to 31.9",
+      "timing": {
+        "start_seconds": 31.66,
+        "end_seconds": 31.9
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8a78ff32",
+      "type": "solid_color",
+      "description": "Segment from 31.9 to 32.28",
+      "timing": {
+        "start_seconds": 31.9,
+        "end_seconds": 32.28
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_466e947a",
+      "type": "solid_color",
+      "description": "Segment from 32.28 to 32.44",
+      "timing": {
+        "start_seconds": 32.28,
+        "end_seconds": 32.44
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bc28bfb1",
+      "type": "solid_color",
+      "description": "Segment from 32.44 to 33.04",
+      "timing": {
+        "start_seconds": 32.44,
+        "end_seconds": 33.04
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_27494ed1",
+      "type": "solid_color",
+      "description": "Segment from 33.04 to 33.08",
+      "timing": {
+        "start_seconds": 33.04,
+        "end_seconds": 33.08
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a8d9796a",
+      "type": "solid_color",
+      "description": "Segment from 33.08 to 33.099999999999994",
+      "timing": {
+        "start_seconds": 33.08,
+        "end_seconds": 33.099999999999994
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a6d5a9a1",
+      "type": "solid_color",
+      "description": "Segment from 33.099999999999994 to 33.12",
+      "timing": {
+        "start_seconds": 33.099999999999994,
+        "end_seconds": 33.12
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_29ccef75",
+      "type": "solid_color",
+      "description": "Segment from 33.12 to 33.23",
+      "timing": {
+        "start_seconds": 33.12,
+        "end_seconds": 33.23
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0834ea68",
+      "type": "solid_color",
+      "description": "Segment from 33.23 to 33.3",
+      "timing": {
+        "start_seconds": 33.23,
+        "end_seconds": 33.3
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5c474540",
+      "type": "solid_color",
+      "description": "Segment from 33.3 to 33.48",
+      "timing": {
+        "start_seconds": 33.3,
+        "end_seconds": 33.48
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2ca1e7e6",
+      "type": "solid_color",
+      "description": "Segment from 33.48 to 33.57",
+      "timing": {
+        "start_seconds": 33.48,
+        "end_seconds": 33.57
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b095bf51",
+      "type": "solid_color",
+      "description": "Segment from 33.57 to 33.919999999999995",
+      "timing": {
+        "start_seconds": 33.57,
+        "end_seconds": 33.919999999999995
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a17be84a",
+      "type": "solid_color",
+      "description": "Segment from 33.919999999999995 to 33.93",
+      "timing": {
+        "start_seconds": 33.919999999999995,
+        "end_seconds": 33.93
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_849bc882",
+      "type": "solid_color",
+      "description": "Segment from 33.93 to 34.339999999999996",
+      "timing": {
+        "start_seconds": 33.93,
+        "end_seconds": 34.339999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_23eeccfe",
+      "type": "solid_color",
+      "description": "Segment from 34.339999999999996 to 34.78",
+      "timing": {
+        "start_seconds": 34.339999999999996,
+        "end_seconds": 34.78
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5d4c6bbf",
+      "type": "solid_color",
+      "description": "Segment from 34.78 to 34.9",
+      "timing": {
+        "start_seconds": 34.78,
+        "end_seconds": 34.9
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a7452b87",
+      "type": "solid_color",
+      "description": "Segment from 34.9 to 35.03",
+      "timing": {
+        "start_seconds": 34.9,
+        "end_seconds": 35.03
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_35241e95",
+      "type": "solid_color",
+      "description": "Segment from 35.03 to 35.099999999999994",
+      "timing": {
+        "start_seconds": 35.03,
+        "end_seconds": 35.099999999999994
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a3733a76",
+      "type": "solid_color",
+      "description": "Segment from 35.099999999999994 to 35.349999999999994",
+      "timing": {
+        "start_seconds": 35.099999999999994,
+        "end_seconds": 35.349999999999994
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2a1ed8cc",
+      "type": "solid_color",
+      "description": "Segment from 35.349999999999994 to 35.36",
+      "timing": {
+        "start_seconds": 35.349999999999994,
+        "end_seconds": 35.36
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e15af32f",
+      "type": "solid_color",
+      "description": "Segment from 35.36 to 35.849999999999994",
+      "timing": {
+        "start_seconds": 35.36,
+        "end_seconds": 35.849999999999994
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bb718f8e",
+      "type": "solid_color",
+      "description": "Segment from 35.849999999999994 to 35.87",
+      "timing": {
+        "start_seconds": 35.849999999999994,
+        "end_seconds": 35.87
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_64195a96",
+      "type": "solid_color",
+      "description": "Segment from 35.87 to 36.14",
+      "timing": {
+        "start_seconds": 35.87,
+        "end_seconds": 36.14
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_87dfc5a0",
+      "type": "solid_color",
+      "description": "Segment from 36.14 to 36.33",
+      "timing": {
+        "start_seconds": 36.14,
+        "end_seconds": 36.33
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0b8d89da",
+      "type": "solid_color",
+      "description": "Segment from 36.33 to 36.5",
+      "timing": {
+        "start_seconds": 36.33,
+        "end_seconds": 36.5
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e55bd4ae",
+      "type": "solid_color",
+      "description": "Segment from 36.5 to 36.7",
+      "timing": {
+        "start_seconds": 36.5,
+        "end_seconds": 36.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_85bc5f70",
+      "type": "solid_color",
+      "description": "Segment from 36.7 to 36.77",
+      "timing": {
+        "start_seconds": 36.7,
+        "end_seconds": 36.77
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c1220027",
+      "type": "solid_color",
+      "description": "Segment from 36.77 to 37.220000000000006",
+      "timing": {
+        "start_seconds": 36.77,
+        "end_seconds": 37.220000000000006
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cd2b86df",
+      "type": "solid_color",
+      "description": "Segment from 37.22 to 37.49",
+      "timing": {
+        "start_seconds": 37.22,
+        "end_seconds": 37.49
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5880cd5b",
+      "type": "solid_color",
+      "description": "Segment from 37.49 to 37.57",
+      "timing": {
+        "start_seconds": 37.49,
+        "end_seconds": 37.57
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ca8a1da8",
+      "type": "solid_color",
+      "description": "Segment from 37.57 to 37.79",
+      "timing": {
+        "start_seconds": 37.57,
+        "end_seconds": 37.79
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_71e821cf",
+      "type": "solid_color",
+      "description": "Segment from 37.79 to 37.88",
+      "timing": {
+        "start_seconds": 37.79,
+        "end_seconds": 37.88
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_282eccaf",
+      "type": "solid_color",
+      "description": "Segment from 37.88 to 38.14",
+      "timing": {
+        "start_seconds": 37.88,
+        "end_seconds": 38.14
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9002de10",
+      "type": "solid_color",
+      "description": "Segment from 38.14 to 38.49",
+      "timing": {
+        "start_seconds": 38.14,
+        "end_seconds": 38.49
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_63f91c21",
+      "type": "solid_color",
+      "description": "Segment from 38.49 to 38.56",
+      "timing": {
+        "start_seconds": 38.49,
+        "end_seconds": 38.56
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_de0a1dcb",
+      "type": "solid_color",
+      "description": "Segment from 38.56 to 38.980000000000004",
+      "timing": {
+        "start_seconds": 38.56,
+        "end_seconds": 38.980000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6dce556c",
+      "type": "solid_color",
+      "description": "Segment from 38.98 to 39.41",
+      "timing": {
+        "start_seconds": 38.98,
+        "end_seconds": 39.41
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_149188e0",
+      "type": "solid_color",
+      "description": "Segment from 39.41 to 39.63",
+      "timing": {
+        "start_seconds": 39.41,
+        "end_seconds": 39.63
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_57374c85",
+      "type": "solid_color",
+      "description": "Segment from 39.63 to 39.64",
+      "timing": {
+        "start_seconds": 39.63,
+        "end_seconds": 39.64
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b4713388",
+      "type": "solid_color",
+      "description": "Segment from 39.64 to 39.93",
+      "timing": {
+        "start_seconds": 39.64,
+        "end_seconds": 39.93
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5e0d3d1b",
+      "type": "solid_color",
+      "description": "Segment from 39.93 to 40.05",
+      "timing": {
+        "start_seconds": 39.93,
+        "end_seconds": 40.05
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_fd122abe",
+      "type": "solid_color",
+      "description": "Segment from 40.05 to 40.32",
+      "timing": {
+        "start_seconds": 40.05,
+        "end_seconds": 40.32
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6d165ed9",
+      "type": "solid_color",
+      "description": "Segment from 40.32 to 40.42",
+      "timing": {
+        "start_seconds": 40.32,
+        "end_seconds": 40.42
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_eeefb26e",
+      "type": "solid_color",
+      "description": "Segment from 40.42 to 40.59",
+      "timing": {
+        "start_seconds": 40.42,
+        "end_seconds": 40.59
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cab0c100",
+      "type": "solid_color",
+      "description": "Segment from 40.59 to 40.64",
+      "timing": {
+        "start_seconds": 40.59,
+        "end_seconds": 40.64
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_209d0d84",
+      "type": "solid_color",
+      "description": "Segment from 40.64 to 41.14",
+      "timing": {
+        "start_seconds": 40.64,
+        "end_seconds": 41.14
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4eae433b",
+      "type": "solid_color",
+      "description": "Segment from 41.14 to 41.15",
+      "timing": {
+        "start_seconds": 41.14,
+        "end_seconds": 41.15
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_50cad46b",
+      "type": "solid_color",
+      "description": "Segment from 41.15 to 41.25",
+      "timing": {
+        "start_seconds": 41.15,
+        "end_seconds": 41.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cc0f7e5f",
+      "type": "solid_color",
+      "description": "Segment from 41.25 to 41.41",
+      "timing": {
+        "start_seconds": 41.25,
+        "end_seconds": 41.41
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_006883de",
+      "type": "solid_color",
+      "description": "Segment from 41.41 to 41.86",
+      "timing": {
+        "start_seconds": 41.41,
+        "end_seconds": 41.86
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a24b1b18",
+      "type": "solid_color",
+      "description": "Segment from 41.86 to 41.879999999999995",
+      "timing": {
+        "start_seconds": 41.86,
+        "end_seconds": 41.879999999999995
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_eb7acfc7",
+      "type": "solid_color",
+      "description": "Segment from 41.879999999999995 to 42.019999999999996",
+      "timing": {
+        "start_seconds": 41.879999999999995,
+        "end_seconds": 42.019999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ef8eff12",
+      "type": "solid_color",
+      "description": "Segment from 42.019999999999996 to 42.18",
+      "timing": {
+        "start_seconds": 42.019999999999996,
+        "end_seconds": 42.18
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4c33de63",
+      "type": "solid_color",
+      "description": "Segment from 42.18 to 42.35",
+      "timing": {
+        "start_seconds": 42.18,
+        "end_seconds": 42.35
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d5e697a2",
+      "type": "solid_color",
+      "description": "Segment from 42.35 to 42.43",
+      "timing": {
+        "start_seconds": 42.35,
+        "end_seconds": 42.43
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_296228ed",
+      "type": "solid_color",
+      "description": "Segment from 42.43 to 42.519999999999996",
+      "timing": {
+        "start_seconds": 42.43,
+        "end_seconds": 42.519999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_541e8556",
+      "type": "solid_color",
+      "description": "Segment from 42.519999999999996 to 42.879999999999995",
+      "timing": {
+        "start_seconds": 42.519999999999996,
+        "end_seconds": 42.879999999999995
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f7208512",
+      "type": "solid_color",
+      "description": "Segment from 42.879999999999995 to 43.38",
+      "timing": {
+        "start_seconds": 42.879999999999995,
+        "end_seconds": 43.38
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_df85b3ac",
+      "type": "solid_color",
+      "description": "Segment from 43.38 to 43.59",
+      "timing": {
+        "start_seconds": 43.38,
+        "end_seconds": 43.59
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5721e957",
+      "type": "solid_color",
+      "description": "Segment from 43.59 to 43.74",
+      "timing": {
+        "start_seconds": 43.59,
+        "end_seconds": 43.74
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3386494e",
+      "type": "solid_color",
+      "description": "Segment from 43.74 to 43.800000000000004",
+      "timing": {
+        "start_seconds": 43.74,
+        "end_seconds": 43.800000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ab01c512",
+      "type": "solid_color",
+      "description": "Segment from 43.800000000000004 to 43.900000000000006",
+      "timing": {
+        "start_seconds": 43.800000000000004,
+        "end_seconds": 43.900000000000006
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_14db90af",
+      "type": "solid_color",
+      "description": "Segment from 43.900000000000006 to 43.93000000000001",
+      "timing": {
+        "start_seconds": 43.900000000000006,
+        "end_seconds": 43.93000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4aa09b0f",
+      "type": "solid_color",
+      "description": "Segment from 43.93000000000001 to 44.150000000000006",
+      "timing": {
+        "start_seconds": 43.93000000000001,
+        "end_seconds": 44.150000000000006
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b055dbe5",
+      "type": "solid_color",
+      "description": "Segment from 44.150000000000006 to 44.550000000000004",
+      "timing": {
+        "start_seconds": 44.150000000000006,
+        "end_seconds": 44.550000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_16250170",
+      "type": "solid_color",
+      "description": "Segment from 44.550000000000004 to 44.75",
+      "timing": {
+        "start_seconds": 44.550000000000004,
+        "end_seconds": 44.75
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7a225e2a",
+      "type": "solid_color",
+      "description": "Segment from 44.75 to 44.85",
+      "timing": {
+        "start_seconds": 44.75,
+        "end_seconds": 44.85
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7959bed8",
+      "type": "solid_color",
+      "description": "Segment from 44.85 to 45.21",
+      "timing": {
+        "start_seconds": 44.85,
+        "end_seconds": 45.21
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9728fa7c",
+      "type": "solid_color",
+      "description": "Segment from 45.21 to 45.220000000000006",
+      "timing": {
+        "start_seconds": 45.21,
+        "end_seconds": 45.220000000000006
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_899972f4",
+      "type": "solid_color",
+      "description": "Segment from 45.220000000000006 to 45.620000000000005",
+      "timing": {
+        "start_seconds": 45.220000000000006,
+        "end_seconds": 45.620000000000005
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_739dd3d9",
+      "type": "solid_color",
+      "description": "Segment from 45.620000000000005 to 47.08",
+      "timing": {
+        "start_seconds": 45.620000000000005,
+        "end_seconds": 47.08
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6362b7d2",
+      "type": "solid_color",
+      "description": "Segment from 47.08 to 47.3",
+      "timing": {
+        "start_seconds": 47.08,
+        "end_seconds": 47.3
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ce54c2ae",
+      "type": "solid_color",
+      "description": "Segment from 47.3 to 47.44",
+      "timing": {
+        "start_seconds": 47.3,
+        "end_seconds": 47.44
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c84ed3e9",
+      "type": "solid_color",
+      "description": "Segment from 47.44 to 47.83",
+      "timing": {
+        "start_seconds": 47.44,
+        "end_seconds": 47.83
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1a27db62",
+      "type": "solid_color",
+      "description": "Segment from 47.83 to 48.0",
+      "timing": {
+        "start_seconds": 47.83,
+        "end_seconds": 48.0
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ba0cd23e",
+      "type": "solid_color",
+      "description": "Segment from 48.0 to 48.14",
+      "timing": {
+        "start_seconds": 48.0,
+        "end_seconds": 48.14
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ee915b80",
+      "type": "solid_color",
+      "description": "Segment from 48.14 to 48.17",
+      "timing": {
+        "start_seconds": 48.14,
+        "end_seconds": 48.17
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_24553277",
+      "type": "solid_color",
+      "description": "Segment from 48.17 to 48.45",
+      "timing": {
+        "start_seconds": 48.17,
+        "end_seconds": 48.45
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b3be426a",
+      "type": "solid_color",
+      "description": "Segment from 48.45 to 48.480000000000004",
+      "timing": {
+        "start_seconds": 48.45,
+        "end_seconds": 48.480000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_066cc81e",
+      "type": "solid_color",
+      "description": "Segment from 48.480000000000004 to 48.870000000000005",
+      "timing": {
+        "start_seconds": 48.480000000000004,
+        "end_seconds": 48.870000000000005
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cdb290a4",
+      "type": "solid_color",
+      "description": "Segment from 48.870000000000005 to 49.4",
+      "timing": {
+        "start_seconds": 48.870000000000005,
+        "end_seconds": 49.4
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_58777775",
+      "type": "solid_color",
+      "description": "Segment from 49.4 to 49.71",
+      "timing": {
+        "start_seconds": 49.4,
+        "end_seconds": 49.71
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_54a09396",
+      "type": "solid_color",
+      "description": "Segment from 49.71 to 50.300000000000004",
+      "timing": {
+        "start_seconds": 49.71,
+        "end_seconds": 50.300000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_59b6d2b0",
+      "type": "solid_color",
+      "description": "Segment from 50.300000000000004 to 50.33",
+      "timing": {
+        "start_seconds": 50.300000000000004,
+        "end_seconds": 50.33
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c90cbe6c",
+      "type": "solid_color",
+      "description": "Segment from 50.33 to 50.78",
+      "timing": {
+        "start_seconds": 50.33,
+        "end_seconds": 50.78
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9d48f54c",
+      "type": "solid_color",
+      "description": "Segment from 50.78 to 50.82",
+      "timing": {
+        "start_seconds": 50.78,
+        "end_seconds": 50.82
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_904539ba",
+      "type": "solid_color",
+      "description": "Segment from 50.82 to 50.95",
+      "timing": {
+        "start_seconds": 50.82,
+        "end_seconds": 50.95
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f6489940",
+      "type": "solid_color",
+      "description": "Segment from 50.95 to 51.27",
+      "timing": {
+        "start_seconds": 50.95,
+        "end_seconds": 51.27
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_87bf4cd2",
+      "type": "solid_color",
+      "description": "Segment from 51.27 to 51.309999",
+      "timing": {
+        "start_seconds": 51.27,
+        "end_seconds": 51.309999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e2b91c61",
+      "type": "solid_color",
+      "description": "Segment from 51.309999 to 51.659999",
+      "timing": {
+        "start_seconds": 51.309999,
+        "end_seconds": 51.659999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_40313a0f",
+      "type": "solid_color",
+      "description": "Segment from 51.659999 to 52.16",
+      "timing": {
+        "start_seconds": 51.659999,
+        "end_seconds": 52.16
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_96feb51b",
+      "type": "solid_color",
+      "description": "Segment from 52.16 to 52.339999999999996",
+      "timing": {
+        "start_seconds": 52.16,
+        "end_seconds": 52.339999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a8a68184",
+      "type": "solid_color",
+      "description": "Segment from 52.339999999999996 to 52.34",
+      "timing": {
+        "start_seconds": 52.339999999999996,
+        "end_seconds": 52.34
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ef4671b5",
+      "type": "solid_color",
+      "description": "Segment from 52.34 to 52.57",
+      "timing": {
+        "start_seconds": 52.34,
+        "end_seconds": 52.57
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d91cf422",
+      "type": "solid_color",
+      "description": "Segment from 52.57 to 52.72",
+      "timing": {
+        "start_seconds": 52.57,
+        "end_seconds": 52.72
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6113f749",
+      "type": "solid_color",
+      "description": "Segment from 52.719999 to 53.439999",
+      "timing": {
+        "start_seconds": 52.719999,
+        "end_seconds": 53.439999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3893e5fa",
+      "type": "solid_color",
+      "description": "Segment from 53.439999 to 53.449999",
+      "timing": {
+        "start_seconds": 53.439999,
+        "end_seconds": 53.449999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ecf8d26b",
+      "type": "solid_color",
+      "description": "Segment from 53.449999 to 53.629999",
+      "timing": {
+        "start_seconds": 53.449999,
+        "end_seconds": 53.629999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a82f367e",
+      "type": "solid_color",
+      "description": "Segment from 53.629999 to 53.769999",
+      "timing": {
+        "start_seconds": 53.629999,
+        "end_seconds": 53.769999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b43a3e29",
+      "type": "solid_color",
+      "description": "Segment from 53.769999 to 53.789999",
+      "timing": {
+        "start_seconds": 53.769999,
+        "end_seconds": 53.789999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_65b75e2f",
+      "type": "solid_color",
+      "description": "Segment from 53.789999 to 54.099999000000004",
+      "timing": {
+        "start_seconds": 53.789999,
+        "end_seconds": 54.099999000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f44ab5f8",
+      "type": "solid_color",
+      "description": "Segment from 54.099999000000004 to 54.109999",
+      "timing": {
+        "start_seconds": 54.099999000000004,
+        "end_seconds": 54.109999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6fdca1d1",
+      "type": "solid_color",
+      "description": "Segment from 54.109999 to 54.839999",
+      "timing": {
+        "start_seconds": 54.109999,
+        "end_seconds": 54.839999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cd7301b2",
+      "type": "solid_color",
+      "description": "Segment from 54.839999 to 55.069998999999996",
+      "timing": {
+        "start_seconds": 54.839999,
+        "end_seconds": 55.069998999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c5cfe24e",
+      "type": "solid_color",
+      "description": "Segment from 55.069998999999996 to 55.829999",
+      "timing": {
+        "start_seconds": 55.069998999999996,
+        "end_seconds": 55.829999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_27ca799c",
+      "type": "solid_color",
+      "description": "Segment from 55.829999 to 55.899999",
+      "timing": {
+        "start_seconds": 55.829999,
+        "end_seconds": 55.899999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_03a9de27",
+      "type": "solid_color",
+      "description": "Segment from 55.899999 to 56.189999",
+      "timing": {
+        "start_seconds": 55.899999,
+        "end_seconds": 56.189999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b9620491",
+      "type": "solid_color",
+      "description": "Segment from 56.189999 to 56.209998999999996",
+      "timing": {
+        "start_seconds": 56.189999,
+        "end_seconds": 56.209998999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7f4320e8",
+      "type": "solid_color",
+      "description": "Segment from 56.209998999999996 to 56.469999",
+      "timing": {
+        "start_seconds": 56.209998999999996,
+        "end_seconds": 56.469999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4b299cb5",
+      "type": "solid_color",
+      "description": "Segment from 56.469999 to 56.619999",
+      "timing": {
+        "start_seconds": 56.469999,
+        "end_seconds": 56.619999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5dffd35f",
+      "type": "solid_color",
+      "description": "Segment from 56.619999 to 56.969999",
+      "timing": {
+        "start_seconds": 56.619999,
+        "end_seconds": 56.969999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c12f830a",
+      "type": "solid_color",
+      "description": "Segment from 56.969999 to 57.229999",
+      "timing": {
+        "start_seconds": 56.969999,
+        "end_seconds": 57.229999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_18ca1cd2",
+      "type": "solid_color",
+      "description": "Segment from 57.229999 to 57.259999",
+      "timing": {
+        "start_seconds": 57.229999,
+        "end_seconds": 57.259999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_521e9e21",
+      "type": "solid_color",
+      "description": "Segment from 57.259999 to 57.279999",
+      "timing": {
+        "start_seconds": 57.259999,
+        "end_seconds": 57.279999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_68fb286d",
+      "type": "solid_color",
+      "description": "Segment from 57.279999 to 58.279999",
+      "timing": {
+        "start_seconds": 57.279999,
+        "end_seconds": 58.279999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_be7b9d15",
+      "type": "solid_color",
+      "description": "Segment from 58.279999 to 58.519999",
+      "timing": {
+        "start_seconds": 58.279999,
+        "end_seconds": 58.519999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0a62e1e4",
+      "type": "solid_color",
+      "description": "Segment from 58.519999 to 61.499999",
+      "timing": {
+        "start_seconds": 58.519999,
+        "end_seconds": 61.499999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b4153f65",
+      "type": "solid_color",
+      "description": "Segment from 61.499999 to 61.679998999999995",
+      "timing": {
+        "start_seconds": 61.499999,
+        "end_seconds": 61.679998999999995
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c9ed1f78",
+      "type": "solid_color",
+      "description": "Segment from 61.679998999999995 to 61.869999",
+      "timing": {
+        "start_seconds": 61.679998999999995,
+        "end_seconds": 61.869999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_03cd1d2d",
+      "type": "solid_color",
+      "description": "Segment from 61.869999 to 62.129999",
+      "timing": {
+        "start_seconds": 61.869999,
+        "end_seconds": 62.129999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_19c30398",
+      "type": "solid_color",
+      "description": "Segment from 62.129999 to 62.239999",
+      "timing": {
+        "start_seconds": 62.129999,
+        "end_seconds": 62.239999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_45bec8fc",
+      "type": "solid_color",
+      "description": "Segment from 62.239999 to 62.599999",
+      "timing": {
+        "start_seconds": 62.239999,
+        "end_seconds": 62.599999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8b335599",
+      "type": "solid_color",
+      "description": "Segment from 62.599999 to 62.799999",
+      "timing": {
+        "start_seconds": 62.599999,
+        "end_seconds": 62.799999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3c98be9b",
+      "type": "solid_color",
+      "description": "Segment from 62.799999 to 62.819998999999996",
+      "timing": {
+        "start_seconds": 62.799999,
+        "end_seconds": 62.819998999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5e69d08e",
+      "type": "solid_color",
+      "description": "Segment from 62.819998999999996 to 62.879999",
+      "timing": {
+        "start_seconds": 62.819998999999996,
+        "end_seconds": 62.879999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0e8c9fc0",
+      "type": "solid_color",
+      "description": "Segment from 62.879999 to 63.069998999999996",
+      "timing": {
+        "start_seconds": 62.879999,
+        "end_seconds": 63.069998999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ba53d22f",
+      "type": "solid_color",
+      "description": "Segment from 63.069998999999996 to 64.879999",
+      "timing": {
+        "start_seconds": 63.069998999999996,
+        "end_seconds": 64.879999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e4cbb91a",
+      "type": "solid_color",
+      "description": "Segment from 64.879999 to 65.159999",
+      "timing": {
+        "start_seconds": 64.879999,
+        "end_seconds": 65.159999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_29c9b2fe",
+      "type": "solid_color",
+      "description": "Segment from 65.159999 to 67.17",
+      "timing": {
+        "start_seconds": 65.159999,
+        "end_seconds": 67.17
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_946c0a03",
+      "type": "solid_color",
+      "description": "Segment from 67.17 to 67.31",
+      "timing": {
+        "start_seconds": 67.17,
+        "end_seconds": 67.31
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_91b94257",
+      "type": "solid_color",
+      "description": "Segment from 67.31 to 67.52",
+      "timing": {
+        "start_seconds": 67.31,
+        "end_seconds": 67.52
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c692fc29",
+      "type": "solid_color",
+      "description": "Segment from 67.52 to 67.83999999999999",
+      "timing": {
+        "start_seconds": 67.52,
+        "end_seconds": 67.83999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e4d9c786",
+      "type": "solid_color",
+      "description": "Segment from 67.83999999999999 to 68.21000000000001",
+      "timing": {
+        "start_seconds": 67.83999999999999,
+        "end_seconds": 68.21000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3cc74be3",
+      "type": "solid_color",
+      "description": "Segment from 68.21000000000001 to 68.22000000000001",
+      "timing": {
+        "start_seconds": 68.21000000000001,
+        "end_seconds": 68.22000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_538a1f58",
+      "type": "solid_color",
+      "description": "Segment from 68.22000000000001 to 68.509999",
+      "timing": {
+        "start_seconds": 68.22000000000001,
+        "end_seconds": 68.509999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b1389138",
+      "type": "solid_color",
+      "description": "Segment from 68.509999 to 68.989999",
+      "timing": {
+        "start_seconds": 68.509999,
+        "end_seconds": 68.989999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c0dcc534",
+      "type": "solid_color",
+      "description": "Segment from 68.989999 to 69.5",
+      "timing": {
+        "start_seconds": 68.989999,
+        "end_seconds": 69.5
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f4a07697",
+      "type": "solid_color",
+      "description": "Segment from 69.5 to 69.58",
+      "timing": {
+        "start_seconds": 69.5,
+        "end_seconds": 69.58
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_51f20e1c",
+      "type": "solid_color",
+      "description": "Segment from 69.58 to 69.78999999999999",
+      "timing": {
+        "start_seconds": 69.58,
+        "end_seconds": 69.78999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_92765264",
+      "type": "solid_color",
+      "description": "Segment from 69.78999999999999 to 70.379999",
+      "timing": {
+        "start_seconds": 69.78999999999999,
+        "end_seconds": 70.379999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_146a6b1b",
+      "type": "solid_color",
+      "description": "Segment from 70.379999 to 70.489999",
+      "timing": {
+        "start_seconds": 70.379999,
+        "end_seconds": 70.489999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a7122029",
+      "type": "solid_color",
+      "description": "Segment from 70.489999 to 70.6",
+      "timing": {
+        "start_seconds": 70.489999,
+        "end_seconds": 70.6
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_fc93116a",
+      "type": "solid_color",
+      "description": "Segment from 70.6 to 70.83",
+      "timing": {
+        "start_seconds": 70.6,
+        "end_seconds": 70.83
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_408acdbd",
+      "type": "solid_color",
+      "description": "Segment from 70.83 to 84.719999",
+      "timing": {
+        "start_seconds": 70.83,
+        "end_seconds": 84.719999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2c6bd822",
+      "type": "solid_color",
+      "description": "Segment from 84.719999 to 84.769999",
+      "timing": {
+        "start_seconds": 84.719999,
+        "end_seconds": 84.769999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_58d99549",
+      "type": "solid_color",
+      "description": "Segment from 84.769999 to 84.77",
+      "timing": {
+        "start_seconds": 84.769999,
+        "end_seconds": 84.77
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_df5584fe",
+      "type": "solid_color",
+      "description": "Segment from 84.77 to 85.16",
+      "timing": {
+        "start_seconds": 84.77,
+        "end_seconds": 85.16
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_315b9bca",
+      "type": "solid_color",
+      "description": "Segment from 85.16 to 86.08",
+      "timing": {
+        "start_seconds": 85.16,
+        "end_seconds": 86.08
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_59b73d23",
+      "type": "solid_color",
+      "description": "Segment from 86.08 to 86.2",
+      "timing": {
+        "start_seconds": 86.08,
+        "end_seconds": 86.2
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_654a4b89",
+      "type": "solid_color",
+      "description": "Segment from 86.2 to 86.52",
+      "timing": {
+        "start_seconds": 86.2,
+        "end_seconds": 86.52
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9f33a2bc",
+      "type": "solid_color",
+      "description": "Segment from 86.52 to 87.17999999999999",
+      "timing": {
+        "start_seconds": 86.52,
+        "end_seconds": 87.17999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f5f7f020",
+      "type": "solid_color",
+      "description": "Segment from 87.17999999999999 to 87.25",
+      "timing": {
+        "start_seconds": 87.17999999999999,
+        "end_seconds": 87.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_84f5e226",
+      "type": "solid_color",
+      "description": "Segment from 87.25 to 87.32",
+      "timing": {
+        "start_seconds": 87.25,
+        "end_seconds": 87.32
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_50202873",
+      "type": "solid_color",
+      "description": "Segment from 87.32 to 87.52999999999999",
+      "timing": {
+        "start_seconds": 87.32,
+        "end_seconds": 87.52999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_782d2c13",
+      "type": "solid_color",
+      "description": "Segment from 87.52999999999999 to 87.53999999999999",
+      "timing": {
+        "start_seconds": 87.52999999999999,
+        "end_seconds": 87.53999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_49de0d9f",
+      "type": "solid_color",
+      "description": "Segment from 87.53999999999999 to 87.60999999999999",
+      "timing": {
+        "start_seconds": 87.53999999999999,
+        "end_seconds": 87.60999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e7c46307",
+      "type": "solid_color",
+      "description": "Segment from 87.60999999999999 to 88.04999999999998",
+      "timing": {
+        "start_seconds": 87.60999999999999,
+        "end_seconds": 88.04999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_435664d9",
+      "type": "solid_color",
+      "description": "Segment from 88.04999999999998 to 88.40999999999998",
+      "timing": {
+        "start_seconds": 88.04999999999998,
+        "end_seconds": 88.40999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4d392940",
+      "type": "solid_color",
+      "description": "Segment from 88.40999999999998 to 88.48999999999998",
+      "timing": {
+        "start_seconds": 88.40999999999998,
+        "end_seconds": 88.48999999999998
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_dd1876f3",
+      "type": "solid_color",
+      "description": "Segment from 88.48999999999998 to 88.66",
+      "timing": {
+        "start_seconds": 88.48999999999998,
+        "end_seconds": 88.66
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_412a233e",
+      "type": "solid_color",
+      "description": "Segment from 88.66 to 88.8",
+      "timing": {
+        "start_seconds": 88.66,
+        "end_seconds": 88.8
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b99b1539",
+      "type": "solid_color",
+      "description": "Segment from 88.799999 to 88.909999",
+      "timing": {
+        "start_seconds": 88.799999,
+        "end_seconds": 88.909999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5a43a6d0",
+      "type": "solid_color",
+      "description": "Segment from 88.909999 to 88.91",
+      "timing": {
+        "start_seconds": 88.909999,
+        "end_seconds": 88.91
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_db5e7dd5",
+      "type": "solid_color",
+      "description": "Segment from 88.91 to 89.03999999999999",
+      "timing": {
+        "start_seconds": 88.91,
+        "end_seconds": 89.03999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ae117943",
+      "type": "solid_color",
+      "description": "Segment from 89.03999999999999 to 89.049999",
+      "timing": {
+        "start_seconds": 89.03999999999999,
+        "end_seconds": 89.049999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_13147a62",
+      "type": "solid_color",
+      "description": "Segment from 89.049999 to 89.269999",
+      "timing": {
+        "start_seconds": 89.049999,
+        "end_seconds": 89.269999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_924d293e",
+      "type": "solid_color",
+      "description": "Segment from 89.269999 to 89.809999",
+      "timing": {
+        "start_seconds": 89.269999,
+        "end_seconds": 89.809999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5653896a",
+      "type": "solid_color",
+      "description": "Segment from 89.809999 to 89.829999",
+      "timing": {
+        "start_seconds": 89.809999,
+        "end_seconds": 89.829999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_119b67a9",
+      "type": "solid_color",
+      "description": "Segment from 89.829999 to 89.83",
+      "timing": {
+        "start_seconds": 89.829999,
+        "end_seconds": 89.83
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bdb20c8a",
+      "type": "solid_color",
+      "description": "Segment from 89.83 to 90.01",
+      "timing": {
+        "start_seconds": 89.83,
+        "end_seconds": 90.01
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5a9f1fdd",
+      "type": "solid_color",
+      "description": "Segment from 90.01 to 90.04",
+      "timing": {
+        "start_seconds": 90.01,
+        "end_seconds": 90.04
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f519227d",
+      "type": "solid_color",
+      "description": "Segment from 90.04 to 90.07",
+      "timing": {
+        "start_seconds": 90.04,
+        "end_seconds": 90.07
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9f83cd88",
+      "type": "solid_color",
+      "description": "Segment from 90.07 to 90.38",
+      "timing": {
+        "start_seconds": 90.07,
+        "end_seconds": 90.38
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a74e7d18",
+      "type": "solid_color",
+      "description": "Segment from 90.38 to 90.389999",
+      "timing": {
+        "start_seconds": 90.38,
+        "end_seconds": 90.389999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e28b9f8f",
+      "type": "solid_color",
+      "description": "Segment from 90.389999 to 90.459999",
+      "timing": {
+        "start_seconds": 90.389999,
+        "end_seconds": 90.459999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_17a6ddc1",
+      "type": "solid_color",
+      "description": "Segment from 90.459999 to 90.469999",
+      "timing": {
+        "start_seconds": 90.459999,
+        "end_seconds": 90.469999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_38c2ac61",
+      "type": "solid_color",
+      "description": "Segment from 90.469999 to 90.859999",
+      "timing": {
+        "start_seconds": 90.469999,
+        "end_seconds": 90.859999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7ffc6435",
+      "type": "solid_color",
+      "description": "Segment from 90.859999 to 95.969999",
+      "timing": {
+        "start_seconds": 90.859999,
+        "end_seconds": 95.969999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_519d2b07",
+      "type": "solid_color",
+      "description": "Segment from 95.969999 to 95.999999",
+      "timing": {
+        "start_seconds": 95.969999,
+        "end_seconds": 95.999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e2b8766b",
+      "type": "solid_color",
+      "description": "Segment from 95.999999 to 96.029999",
+      "timing": {
+        "start_seconds": 95.999999,
+        "end_seconds": 96.029999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_842681aa",
+      "type": "solid_color",
+      "description": "Segment from 96.029999 to 96.119999",
+      "timing": {
+        "start_seconds": 96.029999,
+        "end_seconds": 96.119999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7ccdeb23",
+      "type": "solid_color",
+      "description": "Segment from 96.119999 to 96.14999900000001",
+      "timing": {
+        "start_seconds": 96.119999,
+        "end_seconds": 96.14999900000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6d20caf9",
+      "type": "solid_color",
+      "description": "Segment from 96.14999900000001 to 96.439999",
+      "timing": {
+        "start_seconds": 96.14999900000001,
+        "end_seconds": 96.439999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_43f6f7f6",
+      "type": "solid_color",
+      "description": "Segment from 96.439999 to 96.469999",
+      "timing": {
+        "start_seconds": 96.439999,
+        "end_seconds": 96.469999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6a9cb9e2",
+      "type": "solid_color",
+      "description": "Segment from 96.469999 to 96.719999",
+      "timing": {
+        "start_seconds": 96.469999,
+        "end_seconds": 96.719999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1c576b64",
+      "type": "solid_color",
+      "description": "Segment from 96.719999 to 96.869999",
+      "timing": {
+        "start_seconds": 96.719999,
+        "end_seconds": 96.869999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_80a9d615",
+      "type": "solid_color",
+      "description": "Segment from 96.869999 to 97.089999",
+      "timing": {
+        "start_seconds": 96.869999,
+        "end_seconds": 97.089999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c426af19",
+      "type": "solid_color",
+      "description": "Segment from 97.089999 to 97.189999",
+      "timing": {
+        "start_seconds": 97.089999,
+        "end_seconds": 97.189999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e63abc94",
+      "type": "solid_color",
+      "description": "Segment from 97.189999 to 97.379999",
+      "timing": {
+        "start_seconds": 97.189999,
+        "end_seconds": 97.379999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_617cb02f",
+      "type": "solid_color",
+      "description": "Segment from 97.379999 to 97.559999",
+      "timing": {
+        "start_seconds": 97.379999,
+        "end_seconds": 97.559999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ee2877f1",
+      "type": "solid_color",
+      "description": "Segment from 97.559999 to 97.689999",
+      "timing": {
+        "start_seconds": 97.559999,
+        "end_seconds": 97.689999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_27981dd3",
+      "type": "solid_color",
+      "description": "Segment from 97.689999 to 97.999999",
+      "timing": {
+        "start_seconds": 97.689999,
+        "end_seconds": 97.999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c11be883",
+      "type": "solid_color",
+      "description": "Segment from 97.999999 to 98.059999",
+      "timing": {
+        "start_seconds": 97.999999,
+        "end_seconds": 98.059999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6324b766",
+      "type": "solid_color",
+      "description": "Segment from 98.059999 to 98.099999",
+      "timing": {
+        "start_seconds": 98.059999,
+        "end_seconds": 98.099999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c54d2853",
+      "type": "solid_color",
+      "description": "Segment from 98.099999 to 98.229999",
+      "timing": {
+        "start_seconds": 98.099999,
+        "end_seconds": 98.229999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_74efd553",
+      "type": "solid_color",
+      "description": "Segment from 98.229999 to 98.439999",
+      "timing": {
+        "start_seconds": 98.229999,
+        "end_seconds": 98.439999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_635f5d51",
+      "type": "solid_color",
+      "description": "Segment from 98.439999 to 98.61",
+      "timing": {
+        "start_seconds": 98.439999,
+        "end_seconds": 98.61
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_46bd7968",
+      "type": "solid_color",
+      "description": "Segment from 98.61 to 98.84",
+      "timing": {
+        "start_seconds": 98.61,
+        "end_seconds": 98.84
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2c3de309",
+      "type": "solid_color",
+      "description": "Segment from 98.84 to 98.95",
+      "timing": {
+        "start_seconds": 98.84,
+        "end_seconds": 98.95
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d86678b0",
+      "type": "solid_color",
+      "description": "Segment from 98.95 to 99.39",
+      "timing": {
+        "start_seconds": 98.95,
+        "end_seconds": 99.39
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_afcaaac1",
+      "type": "solid_color",
+      "description": "Segment from 99.389999 to 99.639999",
+      "timing": {
+        "start_seconds": 99.389999,
+        "end_seconds": 99.639999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_30d7b85d",
+      "type": "solid_color",
+      "description": "Segment from 99.639999 to 99.65",
+      "timing": {
+        "start_seconds": 99.639999,
+        "end_seconds": 99.65
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4fbd1422",
+      "type": "solid_color",
+      "description": "Segment from 99.65 to 100.09",
+      "timing": {
+        "start_seconds": 99.65,
+        "end_seconds": 100.09
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a8add462",
+      "type": "solid_color",
+      "description": "Segment from 100.09 to 100.29",
+      "timing": {
+        "start_seconds": 100.09,
+        "end_seconds": 100.29
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_43d3c9b1",
+      "type": "solid_color",
+      "description": "Segment from 100.28999999999999 to 100.74999999999999",
+      "timing": {
+        "start_seconds": 100.28999999999999,
+        "end_seconds": 100.74999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_07ceef57",
+      "type": "solid_color",
+      "description": "Segment from 100.74999999999999 to 100.75",
+      "timing": {
+        "start_seconds": 100.74999999999999,
+        "end_seconds": 100.75
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c42060e0",
+      "type": "solid_color",
+      "description": "Segment from 100.75 to 101.05",
+      "timing": {
+        "start_seconds": 100.75,
+        "end_seconds": 101.05
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_39a31242",
+      "type": "solid_color",
+      "description": "Segment from 101.05 to 101.059999",
+      "timing": {
+        "start_seconds": 101.05,
+        "end_seconds": 101.059999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1fdb65ee",
+      "type": "solid_color",
+      "description": "Segment from 101.059999 to 101.369999",
+      "timing": {
+        "start_seconds": 101.059999,
+        "end_seconds": 101.369999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_77b434ff",
+      "type": "solid_color",
+      "description": "Segment from 101.369999 to 101.4",
+      "timing": {
+        "start_seconds": 101.369999,
+        "end_seconds": 101.4
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_56e6b59d",
+      "type": "solid_color",
+      "description": "Segment from 101.4 to 101.68",
+      "timing": {
+        "start_seconds": 101.4,
+        "end_seconds": 101.68
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_11e2b7ec",
+      "type": "solid_color",
+      "description": "Segment from 101.68 to 101.69",
+      "timing": {
+        "start_seconds": 101.68,
+        "end_seconds": 101.69
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c5458bac",
+      "type": "solid_color",
+      "description": "Segment from 101.69 to 102.06",
+      "timing": {
+        "start_seconds": 101.69,
+        "end_seconds": 102.06
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e035d07d",
+      "type": "solid_color",
+      "description": "Segment from 102.06 to 102.49",
+      "timing": {
+        "start_seconds": 102.06,
+        "end_seconds": 102.49
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9a75b362",
+      "type": "solid_color",
+      "description": "Segment from 102.49 to 102.66",
+      "timing": {
+        "start_seconds": 102.49,
+        "end_seconds": 102.66
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f8ffd27b",
+      "type": "solid_color",
+      "description": "Segment from 102.66 to 102.86999999999999",
+      "timing": {
+        "start_seconds": 102.66,
+        "end_seconds": 102.86999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f2f32c07",
+      "type": "solid_color",
+      "description": "Segment from 102.86999999999999 to 103.23",
+      "timing": {
+        "start_seconds": 102.86999999999999,
+        "end_seconds": 103.23
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0c0f3b9f",
+      "type": "solid_color",
+      "description": "Segment from 103.23 to 103.24000000000001",
+      "timing": {
+        "start_seconds": 103.23,
+        "end_seconds": 103.24000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a81d5396",
+      "type": "solid_color",
+      "description": "Segment from 103.24 to 103.53",
+      "timing": {
+        "start_seconds": 103.24,
+        "end_seconds": 103.53
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8bfd00d5",
+      "type": "solid_color",
+      "description": "Segment from 103.53 to 103.559999",
+      "timing": {
+        "start_seconds": 103.53,
+        "end_seconds": 103.559999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1a098f8e",
+      "type": "solid_color",
+      "description": "Segment from 103.559999 to 103.75999900000001",
+      "timing": {
+        "start_seconds": 103.559999,
+        "end_seconds": 103.75999900000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f9327ff3",
+      "type": "solid_color",
+      "description": "Segment from 103.75999900000001 to 104.11",
+      "timing": {
+        "start_seconds": 103.75999900000001,
+        "end_seconds": 104.11
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ffee6618",
+      "type": "solid_color",
+      "description": "Segment from 104.11 to 104.14",
+      "timing": {
+        "start_seconds": 104.11,
+        "end_seconds": 104.14
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9d4e48c7",
+      "type": "solid_color",
+      "description": "Segment from 104.139999 to 104.209999",
+      "timing": {
+        "start_seconds": 104.139999,
+        "end_seconds": 104.209999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_694a6f8f",
+      "type": "solid_color",
+      "description": "Segment from 104.209999 to 104.28999999999999",
+      "timing": {
+        "start_seconds": 104.209999,
+        "end_seconds": 104.28999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c928ca4a",
+      "type": "solid_color",
+      "description": "Segment from 104.28999999999999 to 104.49",
+      "timing": {
+        "start_seconds": 104.28999999999999,
+        "end_seconds": 104.49
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cd92d924",
+      "type": "solid_color",
+      "description": "Segment from 104.49 to 104.509999",
+      "timing": {
+        "start_seconds": 104.49,
+        "end_seconds": 104.509999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_82092000",
+      "type": "solid_color",
+      "description": "Segment from 104.509999 to 104.989999",
+      "timing": {
+        "start_seconds": 104.509999,
+        "end_seconds": 104.989999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ac8036fe",
+      "type": "solid_color",
+      "description": "Segment from 104.989999 to 106.489999",
+      "timing": {
+        "start_seconds": 104.989999,
+        "end_seconds": 106.489999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7819f7d6",
+      "type": "solid_color",
+      "description": "Segment from 106.489999 to 106.529999",
+      "timing": {
+        "start_seconds": 106.489999,
+        "end_seconds": 106.529999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e76af2f1",
+      "type": "solid_color",
+      "description": "Segment from 106.529999 to 106.55999899999999",
+      "timing": {
+        "start_seconds": 106.529999,
+        "end_seconds": 106.55999899999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b01d23d8",
+      "type": "solid_color",
+      "description": "Segment from 106.55999899999999 to 106.579999",
+      "timing": {
+        "start_seconds": 106.55999899999999,
+        "end_seconds": 106.579999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6a149934",
+      "type": "solid_color",
+      "description": "Segment from 106.579999 to 106.75",
+      "timing": {
+        "start_seconds": 106.579999,
+        "end_seconds": 106.75
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f75c0b11",
+      "type": "solid_color",
+      "description": "Segment from 106.75 to 106.91",
+      "timing": {
+        "start_seconds": 106.75,
+        "end_seconds": 106.91
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ff5b6175",
+      "type": "solid_color",
+      "description": "Segment from 106.91 to 107.02",
+      "timing": {
+        "start_seconds": 106.91,
+        "end_seconds": 107.02
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2d1d8fd7",
+      "type": "solid_color",
+      "description": "Segment from 107.02 to 107.049999",
+      "timing": {
+        "start_seconds": 107.02,
+        "end_seconds": 107.049999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c9955706",
+      "type": "solid_color",
+      "description": "Segment from 107.049999 to 107.389999",
+      "timing": {
+        "start_seconds": 107.049999,
+        "end_seconds": 107.389999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e76a6b25",
+      "type": "solid_color",
+      "description": "Segment from 107.389999 to 108.099999",
+      "timing": {
+        "start_seconds": 107.389999,
+        "end_seconds": 108.099999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2975baae",
+      "type": "solid_color",
+      "description": "Segment from 108.099999 to 108.139999",
+      "timing": {
+        "start_seconds": 108.099999,
+        "end_seconds": 108.139999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8baa37c9",
+      "type": "solid_color",
+      "description": "Segment from 108.139999 to 108.169999",
+      "timing": {
+        "start_seconds": 108.139999,
+        "end_seconds": 108.169999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9faba3d9",
+      "type": "solid_color",
+      "description": "Segment from 108.169999 to 108.329999",
+      "timing": {
+        "start_seconds": 108.169999,
+        "end_seconds": 108.329999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9fc3b6b3",
+      "type": "solid_color",
+      "description": "Segment from 108.329999 to 108.529999",
+      "timing": {
+        "start_seconds": 108.329999,
+        "end_seconds": 108.529999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5aa2cb65",
+      "type": "solid_color",
+      "description": "Segment from 108.529999 to 108.689999",
+      "timing": {
+        "start_seconds": 108.529999,
+        "end_seconds": 108.689999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1c8ca837",
+      "type": "solid_color",
+      "description": "Segment from 108.689999 to 108.839999",
+      "timing": {
+        "start_seconds": 108.689999,
+        "end_seconds": 108.839999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4f46b18b",
+      "type": "solid_color",
+      "description": "Segment from 108.839999 to 108.859999",
+      "timing": {
+        "start_seconds": 108.839999,
+        "end_seconds": 108.859999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_755ef0a5",
+      "type": "solid_color",
+      "description": "Segment from 108.859999 to 109.189999",
+      "timing": {
+        "start_seconds": 108.859999,
+        "end_seconds": 109.189999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e0691a52",
+      "type": "solid_color",
+      "description": "Segment from 109.189999 to 109.309999",
+      "timing": {
+        "start_seconds": 109.189999,
+        "end_seconds": 109.309999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f59c3f4a",
+      "type": "solid_color",
+      "description": "Segment from 109.309999 to 109.379999",
+      "timing": {
+        "start_seconds": 109.309999,
+        "end_seconds": 109.379999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ce957014",
+      "type": "solid_color",
+      "description": "Segment from 109.379999 to 109.56999900000001",
+      "timing": {
+        "start_seconds": 109.379999,
+        "end_seconds": 109.56999900000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1a03973c",
+      "type": "solid_color",
+      "description": "Segment from 109.56999900000001 to 110.12",
+      "timing": {
+        "start_seconds": 109.56999900000001,
+        "end_seconds": 110.12
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_eff56842",
+      "type": "solid_color",
+      "description": "Segment from 110.12 to 110.15",
+      "timing": {
+        "start_seconds": 110.12,
+        "end_seconds": 110.15
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_97a9bc99",
+      "type": "solid_color",
+      "description": "Segment from 110.15 to 110.26",
+      "timing": {
+        "start_seconds": 110.15,
+        "end_seconds": 110.26
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c7f924aa",
+      "type": "solid_color",
+      "description": "Segment from 110.26 to 110.53",
+      "timing": {
+        "start_seconds": 110.26,
+        "end_seconds": 110.53
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0cddf342",
+      "type": "solid_color",
+      "description": "Segment from 110.53 to 111.19",
+      "timing": {
+        "start_seconds": 110.53,
+        "end_seconds": 111.19
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_fac2a090",
+      "type": "solid_color",
+      "description": "Segment from 111.19 to 111.73",
+      "timing": {
+        "start_seconds": 111.19,
+        "end_seconds": 111.73
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_35f265a1",
+      "type": "solid_color",
+      "description": "Segment from 111.73 to 111.78",
+      "timing": {
+        "start_seconds": 111.73,
+        "end_seconds": 111.78
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5ec2624d",
+      "type": "solid_color",
+      "description": "Segment from 111.78 to 111.87",
+      "timing": {
+        "start_seconds": 111.78,
+        "end_seconds": 111.87
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_60615cfc",
+      "type": "solid_color",
+      "description": "Segment from 111.87 to 112.22",
+      "timing": {
+        "start_seconds": 111.87,
+        "end_seconds": 112.22
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_91044094",
+      "type": "solid_color",
+      "description": "Segment from 112.22 to 112.25",
+      "timing": {
+        "start_seconds": 112.22,
+        "end_seconds": 112.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8465128f",
+      "type": "solid_color",
+      "description": "Segment from 112.25 to 112.39999999999999",
+      "timing": {
+        "start_seconds": 112.25,
+        "end_seconds": 112.39999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b02b6e21",
+      "type": "solid_color",
+      "description": "Segment from 112.39999999999999 to 112.53999999999999",
+      "timing": {
+        "start_seconds": 112.39999999999999,
+        "end_seconds": 112.53999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a938b5a3",
+      "type": "solid_color",
+      "description": "Segment from 112.53999999999999 to 112.75",
+      "timing": {
+        "start_seconds": 112.53999999999999,
+        "end_seconds": 112.75
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_23ce2e59",
+      "type": "solid_color",
+      "description": "Segment from 112.75 to 112.89",
+      "timing": {
+        "start_seconds": 112.75,
+        "end_seconds": 112.89
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_29e32497",
+      "type": "solid_color",
+      "description": "Segment from 112.89 to 113.0",
+      "timing": {
+        "start_seconds": 112.89,
+        "end_seconds": 113.0
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_962c4469",
+      "type": "solid_color",
+      "description": "Segment from 113.0 to 113.07",
+      "timing": {
+        "start_seconds": 113.0,
+        "end_seconds": 113.07
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b00271e8",
+      "type": "solid_color",
+      "description": "Segment from 113.07 to 113.28",
+      "timing": {
+        "start_seconds": 113.07,
+        "end_seconds": 113.28
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cfc2bb22",
+      "type": "solid_color",
+      "description": "Segment from 113.28 to 113.39",
+      "timing": {
+        "start_seconds": 113.28,
+        "end_seconds": 113.39
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_70aac2db",
+      "type": "solid_color",
+      "description": "Segment from 113.39 to 114.50999999999999",
+      "timing": {
+        "start_seconds": 113.39,
+        "end_seconds": 114.50999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_254fca63",
+      "type": "solid_color",
+      "description": "Segment from 114.50999999999999 to 115.03999999999999",
+      "timing": {
+        "start_seconds": 114.50999999999999,
+        "end_seconds": 115.03999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_e7955772",
+      "type": "solid_color",
+      "description": "Segment from 115.03999999999999 to 115.21",
+      "timing": {
+        "start_seconds": 115.03999999999999,
+        "end_seconds": 115.21
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_95183c67",
+      "type": "solid_color",
+      "description": "Segment from 115.21 to 115.5",
+      "timing": {
+        "start_seconds": 115.21,
+        "end_seconds": 115.5
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_51b13df4",
+      "type": "solid_color",
+      "description": "Segment from 115.5 to 115.50999999999999",
+      "timing": {
+        "start_seconds": 115.5,
+        "end_seconds": 115.50999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a613c19f",
+      "type": "solid_color",
+      "description": "Segment from 115.50999999999999 to 115.81",
+      "timing": {
+        "start_seconds": 115.50999999999999,
+        "end_seconds": 115.81
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2708d40b",
+      "type": "solid_color",
+      "description": "Segment from 115.81 to 115.83",
+      "timing": {
+        "start_seconds": 115.81,
+        "end_seconds": 115.83
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7fc962cc",
+      "type": "solid_color",
+      "description": "Segment from 115.83 to 116.63",
+      "timing": {
+        "start_seconds": 115.83,
+        "end_seconds": 116.63
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_10fc5289",
+      "type": "solid_color",
+      "description": "Segment from 116.63 to 117.34",
+      "timing": {
+        "start_seconds": 116.63,
+        "end_seconds": 117.34
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8fb6b6f5",
+      "type": "solid_color",
+      "description": "Segment from 117.34 to 117.49",
+      "timing": {
+        "start_seconds": 117.34,
+        "end_seconds": 117.49
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5ec1c935",
+      "type": "solid_color",
+      "description": "Segment from 117.49 to 117.66",
+      "timing": {
+        "start_seconds": 117.49,
+        "end_seconds": 117.66
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_663cc15b",
+      "type": "solid_color",
+      "description": "Segment from 117.66 to 118.50999999999999",
+      "timing": {
+        "start_seconds": 117.66,
+        "end_seconds": 118.50999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f98ceded",
+      "type": "solid_color",
+      "description": "Segment from 118.50999999999999 to 118.679999",
+      "timing": {
+        "start_seconds": 118.50999999999999,
+        "end_seconds": 118.679999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a762a0ea",
+      "type": "solid_color",
+      "description": "Segment from 118.679999 to 118.69999899999999",
+      "timing": {
+        "start_seconds": 118.679999,
+        "end_seconds": 118.69999899999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6f902e10",
+      "type": "solid_color",
+      "description": "Segment from 118.69999899999999 to 118.7",
+      "timing": {
+        "start_seconds": 118.69999899999999,
+        "end_seconds": 118.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1f32c742",
+      "type": "solid_color",
+      "description": "Segment from 118.7 to 118.96000000000001",
+      "timing": {
+        "start_seconds": 118.7,
+        "end_seconds": 118.96000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f4ad8020",
+      "type": "solid_color",
+      "description": "Segment from 118.96000000000001 to 119.03",
+      "timing": {
+        "start_seconds": 118.96000000000001,
+        "end_seconds": 119.03
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8eae9917",
+      "type": "solid_color",
+      "description": "Segment from 119.03 to 119.08",
+      "timing": {
+        "start_seconds": 119.03,
+        "end_seconds": 119.08
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5e4dbb1e",
+      "type": "solid_color",
+      "description": "Segment from 119.08 to 119.37",
+      "timing": {
+        "start_seconds": 119.08,
+        "end_seconds": 119.37
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a281a780",
+      "type": "solid_color",
+      "description": "Segment from 119.37 to 120.469999",
+      "timing": {
+        "start_seconds": 119.37,
+        "end_seconds": 120.469999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_fd51a53f",
+      "type": "solid_color",
+      "description": "Segment from 120.469999 to 120.569999",
+      "timing": {
+        "start_seconds": 120.469999,
+        "end_seconds": 120.569999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4ba590ed",
+      "type": "solid_color",
+      "description": "Segment from 120.569999 to 120.57",
+      "timing": {
+        "start_seconds": 120.569999,
+        "end_seconds": 120.57
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_08331fcd",
+      "type": "solid_color",
+      "description": "Segment from 120.57 to 120.89999999999999",
+      "timing": {
+        "start_seconds": 120.57,
+        "end_seconds": 120.89999999999999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0e243595",
+      "type": "solid_color",
+      "description": "Segment from 120.89999999999999 to 121.11",
+      "timing": {
+        "start_seconds": 120.89999999999999,
+        "end_seconds": 121.11
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_04be349a",
+      "type": "solid_color",
+      "description": "Segment from 121.11 to 121.62",
+      "timing": {
+        "start_seconds": 121.11,
+        "end_seconds": 121.62
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_29eddb16",
+      "type": "solid_color",
+      "description": "Segment from 121.62 to 121.77000000000001",
+      "timing": {
+        "start_seconds": 121.62,
+        "end_seconds": 121.77000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f035c908",
+      "type": "solid_color",
+      "description": "Segment from 121.77000000000001 to 121.82000000000001",
+      "timing": {
+        "start_seconds": 121.77000000000001,
+        "end_seconds": 121.82000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2738156f",
+      "type": "solid_color",
+      "description": "Segment from 121.82000000000001 to 121.85000000000001",
+      "timing": {
+        "start_seconds": 121.82000000000001,
+        "end_seconds": 121.85000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f84ed296",
+      "type": "solid_color",
+      "description": "Segment from 121.85000000000001 to 121.93",
+      "timing": {
+        "start_seconds": 121.85000000000001,
+        "end_seconds": 121.93
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_15dddbbc",
+      "type": "solid_color",
+      "description": "Segment from 121.93 to 122.22",
+      "timing": {
+        "start_seconds": 121.93,
+        "end_seconds": 122.22
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c948efa2",
+      "type": "solid_color",
+      "description": "Segment from 122.22 to 123.23",
+      "timing": {
+        "start_seconds": 122.22,
+        "end_seconds": 123.23
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2e32b930",
+      "type": "solid_color",
+      "description": "Segment from 123.23 to 123.25",
+      "timing": {
+        "start_seconds": 123.23,
+        "end_seconds": 123.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_938a0d76",
+      "type": "solid_color",
+      "description": "Segment from 123.25 to 123.27000000000001",
+      "timing": {
+        "start_seconds": 123.25,
+        "end_seconds": 123.27000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6b671430",
+      "type": "solid_color",
+      "description": "Segment from 123.27000000000001 to 123.55000000000001",
+      "timing": {
+        "start_seconds": 123.27000000000001,
+        "end_seconds": 123.55000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_f4e43b7e",
+      "type": "solid_color",
+      "description": "Segment from 123.55000000000001 to 123.56",
+      "timing": {
+        "start_seconds": 123.55000000000001,
+        "end_seconds": 123.56
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_efd7fd21",
+      "type": "solid_color",
+      "description": "Segment from 123.56 to 123.58",
+      "timing": {
+        "start_seconds": 123.56,
+        "end_seconds": 123.58
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b6270ce5",
+      "type": "solid_color",
+      "description": "Segment from 123.58 to 123.60000000000001",
+      "timing": {
+        "start_seconds": 123.58,
+        "end_seconds": 123.60000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2a022de8",
+      "type": "solid_color",
+      "description": "Segment from 123.60000000000001 to 123.95",
+      "timing": {
+        "start_seconds": 123.60000000000001,
+        "end_seconds": 123.95
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1660ec1d",
+      "type": "solid_color",
+      "description": "Segment from 123.95 to 123.96000000000001",
+      "timing": {
+        "start_seconds": 123.95,
+        "end_seconds": 123.96000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1f497191",
+      "type": "solid_color",
+      "description": "Segment from 123.96000000000001 to 124.21000000000001",
+      "timing": {
+        "start_seconds": 123.96000000000001,
+        "end_seconds": 124.21000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4dbb47c3",
+      "type": "solid_color",
+      "description": "Segment from 124.21000000000001 to 125.04",
+      "timing": {
+        "start_seconds": 124.21000000000001,
+        "end_seconds": 125.04
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_834ac884",
+      "type": "solid_color",
+      "description": "Segment from 125.04 to 129.19",
+      "timing": {
+        "start_seconds": 125.04,
+        "end_seconds": 129.19
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d934fcc1",
+      "type": "solid_color",
+      "description": "Segment from 129.19 to 129.43",
+      "timing": {
+        "start_seconds": 129.19,
+        "end_seconds": 129.43
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cdc4f8c7",
+      "type": "solid_color",
+      "description": "Segment from 129.43 to 129.62",
+      "timing": {
+        "start_seconds": 129.43,
+        "end_seconds": 129.62
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_476baa2a",
+      "type": "solid_color",
+      "description": "Segment from 129.62 to 129.85",
+      "timing": {
+        "start_seconds": 129.62,
+        "end_seconds": 129.85
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9b6c288f",
+      "type": "solid_color",
+      "description": "Segment from 129.85 to 129.95000000000002",
+      "timing": {
+        "start_seconds": 129.85,
+        "end_seconds": 129.95000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bc2c35ba",
+      "type": "solid_color",
+      "description": "Segment from 129.95000000000002 to 134.95000000000002",
+      "timing": {
+        "start_seconds": 129.95000000000002,
+        "end_seconds": 134.95000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ]
+}

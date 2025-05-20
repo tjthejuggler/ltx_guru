@@ -13,6 +13,9 @@ from pathlib import Path
 
 from app.constants import APP_VERSION, PROJECT_FILE_EXTENSION
 from models.lyrics import Lyrics
+from models.timeline import Timeline
+from models.segment import TimelineSegment
+from utils.file_type_utils import is_valid_ball_sequence, is_valid_seqdesign
 
 
 class Project:
@@ -358,3 +361,44 @@ class Project:
             
         if word_timestamps is not None:
             self.lyrics.word_timestamps = word_timestamps
+    
+    def import_ball_sequence(self, file_path):
+        """
+        Import a ball sequence file.
+        
+        Args:
+            file_path (str): Path to the ball sequence file
+            
+        Returns:
+            Timeline: The imported timeline, or None if import failed
+        """
+        if not is_valid_ball_sequence(file_path):
+            return None
+        
+        try:
+            with open(file_path, 'r') as f:
+                ball_data = json.load(f)
+            
+            # Create a new timeline
+            timeline = Timeline(
+                name=ball_data.get("metadata", {}).get("name", "Imported Ball"),
+                default_pixels=ball_data.get("metadata", {}).get("default_pixels", 4)
+            )
+            
+            # Add segments to timeline
+            for segment in ball_data.get("segments", []):
+                timeline_segment = TimelineSegment(
+                    start_time=segment["start_time"],
+                    end_time=segment["end_time"],
+                    color=tuple(segment["color"]),
+                    pixels=segment["pixels"]
+                )
+                timeline.add_segment(timeline_segment)
+            
+            # Add timeline to project
+            self.add_timeline(timeline)
+            
+            return timeline
+        except Exception as e:
+            print(f"Error importing ball sequence: {str(e)}")
+            return None

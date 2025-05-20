@@ -26,11 +26,17 @@ def create_file_menu(main_window):
     main_window.file_menu.addAction(main_window.save_action)
     main_window.file_menu.addAction(main_window.save_as_action)
     main_window.file_menu.addSeparator()
+    # Import submenu
+    main_window.import_menu = main_window.file_menu.addMenu("Import")
+    main_window.import_menu.addAction(main_window.import_ball_sequence_action)
+    main_window.import_menu.addAction(main_window.import_lyrics_timestamps_action)
     
     # Export submenu
     main_window.export_menu = main_window.file_menu.addMenu("Export")
     main_window.export_menu.addAction(main_window.export_json_action)
     main_window.export_menu.addAction(main_window.export_prg_action)
+    main_window.export_menu.addAction(main_window.export_ball_sequence_action)
+    
     
     # Recent files submenu
     main_window.recent_files_menu = main_window.file_menu.addMenu("Recent Files")
