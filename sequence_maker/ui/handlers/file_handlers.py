@@ -252,6 +252,65 @@ class FileHandlers:
             
     def on_import_ball_sequence(self):
         """Import a ball sequence file."""
+        self.app.logger.info("Starting ball sequence import")
+        
+        # Check if there are any existing timelines
+        existing_timelines = self.app.timeline_manager.get_timelines()
+        self.app.logger.debug(f"Found {len(existing_timelines)} existing timelines")
+        
+        # If there are existing timelines, ask if the user wants to import into an existing timeline
+        import_to_existing = False
+        selected_timeline = None
+        
+        if existing_timelines:
+            from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton, QHBoxLayout
+            
+            dialog = QDialog(self.main_window)
+            dialog.setWindowTitle("Import Ball Sequence")
+            layout = QVBoxLayout(dialog)
+            
+            # Add label
+            layout.addWidget(QLabel("How would you like to import the ball sequence?"))
+            
+            # Add radio buttons
+            import_option = QComboBox()
+            import_option.addItem("Create a new timeline")
+            import_option.addItem("Import into an existing timeline")
+            layout.addWidget(import_option)
+            
+            # Add timeline selection combo box (initially hidden)
+            timeline_selection_label = QLabel("Select timeline:")
+            timeline_selection = QComboBox()
+            for i, timeline in enumerate(existing_timelines):
+                timeline_selection.addItem(f"{i+1}: {timeline.name}")
+            
+            timeline_selection_label.setVisible(False)
+            timeline_selection.setVisible(False)
+            layout.addWidget(timeline_selection_label)
+            layout.addWidget(timeline_selection)
+            
+            # Add buttons
+            button_layout = QHBoxLayout()
+            ok_button = QPushButton("OK")
+            cancel_button = QPushButton("Cancel")
+            button_layout.addWidget(ok_button)
+            button_layout.addWidget(cancel_button)
+            layout.addLayout(button_layout)
+            
+            # Connect signals
+            import_option.currentIndexChanged.connect(
+                lambda index: (timeline_selection_label.setVisible(index == 1),
+                              timeline_selection.setVisible(index == 1))
+            )
+            ok_button.clicked.connect(dialog.accept)
+            cancel_button.clicked.connect(dialog.reject)
+            
+            # Show dialog
+            if dialog.exec():
+                import_to_existing = import_option.currentIndex() == 1
+                if import_to_existing:
+                    selected_timeline = existing_timelines[timeline_selection.currentIndex()]
+        
         # Show file dialog
         file_path, _ = QFileDialog.getOpenFileName(
             self.main_window,
@@ -263,32 +322,62 @@ class FileHandlers:
         if file_path:
             # Load ball sequence
             try:
+                self.app.logger.info(f"Loading ball sequence from {file_path}")
                 with open(file_path, 'r') as f:
                     ball_data = json.load(f)
                 
-                # Create a new timeline
-                timeline = Timeline(
-                    name=ball_data.get("metadata", {}).get("name", "Imported Ball"),
-                    default_pixels=ball_data.get("metadata", {}).get("default_pixels", 4)
-                )
+                self.app.logger.debug(f"Ball data loaded: {len(ball_data.get('segments', []))} segments found")
                 
-                # Add segments to timeline
-                for segment in ball_data.get("segments", []):
-                    timeline_segment = TimelineSegment(
-                        start_time=segment["start_time"],
-                        end_time=segment["end_time"],
-                        color=tuple(segment["color"]),
-                        pixels=segment["pixels"]
+                if import_to_existing and selected_timeline:
+                    # Import into existing timeline
+                    self.app.logger.info(f"Importing ball sequence into existing timeline: {selected_timeline.name}")
+                    
+                    # Add segments to timeline
+                    for segment in ball_data.get("segments", []):
+                        timeline_segment = TimelineSegment(
+                            start_time=segment["start_time"],
+                            end_time=segment["end_time"],
+                            color=tuple(segment["color"]),
+                            pixels=segment["pixels"]
+                        )
+                        selected_timeline.add_segment(timeline_segment)
+                    
+                    # Emit signal to update UI
+                    self.app.logger.debug(f"Emitting timeline_modified signal for timeline: {selected_timeline.name}")
+                    self.app.timeline_manager.timeline_modified.emit(selected_timeline)
+                    
+                    # Update UI
+                    self.main_window._update_ui()
+                    self.main_window.statusBar().showMessage(
+                        f"Imported ball sequence from {file_path} into {selected_timeline.name}", 3000)
+                else:
+                    # Create a new timeline
+                    self.app.logger.info("Creating new timeline for ball sequence import")
+                    
+                    timeline = Timeline(
+                        name=ball_data.get("metadata", {}).get("name", "Imported Ball"),
+                        default_pixels=ball_data.get("metadata", {}).get("default_pixels", 4)
                     )
-                    timeline.add_segment(timeline_segment)
-                
-                # Add timeline to project
-                self.app.project_manager.current_project.add_timeline(timeline)
-                
-                # Update UI
-                self.main_window._update_ui()
-                self.main_window.statusBar().showMessage(f"Imported ball sequence from {file_path}", 3000)
+                    
+                    # Add segments to timeline
+                    for segment in ball_data.get("segments", []):
+                        timeline_segment = TimelineSegment(
+                            start_time=segment["start_time"],
+                            end_time=segment["end_time"],
+                            color=tuple(segment["color"]),
+                            pixels=segment["pixels"]
+                        )
+                        timeline.add_segment(timeline_segment)
+                    
+                    # Add timeline to project
+                    self.app.project_manager.current_project.add_timeline(timeline)
+                    
+                    # Update UI
+                    self.app.logger.info("Updating UI after ball sequence import")
+                    self.main_window._update_ui()
+                    self.main_window.statusBar().showMessage(f"Imported ball sequence from {file_path}", 3000)
             except Exception as e:
+                self.app.logger.error(f"Error importing ball sequence: {str(e)}", exc_info=True)
                 QMessageBox.warning(
                     self.main_window,
                     "Import Error",

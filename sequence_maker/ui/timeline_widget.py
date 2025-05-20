@@ -2196,7 +2196,10 @@ class TimelineContainer(QWidget):
             timeline: Timeline to import into.
         """
         if not timeline:
+            self.logger.warning("Cannot import JSON: No timeline provided")
             return
+            
+        self.logger.info(f"Starting JSON import into timeline: {timeline.name}")
             
         # Get the last directory used or default to home directory
         last_dir = self.app.config.get("audio", "last_save_dir", str(Path.home()))
@@ -2204,7 +2207,7 @@ class TimelineContainer(QWidget):
         # Create file dialog
         file_dialog = QFileDialog(self)
         file_dialog.setWindowTitle("Import JSON")
-        file_dialog.setNameFilter("JSON Files (*.json)")
+        file_dialog.setNameFilter("Ball Sequence Files (*.ball.json);;JSON Files (*.json)")
         file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
         file_dialog.setDirectory(last_dir)
         
@@ -2212,6 +2215,7 @@ class TimelineContainer(QWidget):
             file_paths = file_dialog.selectedFiles()
             if file_paths:
                 file_path = file_paths[0]
+                self.logger.info(f"Selected file for import: {file_path}")
                 
                 # Save the directory for next time
                 self.app.config.set("audio", "last_save_dir", str(Path(file_path).parent))
@@ -2219,9 +2223,11 @@ class TimelineContainer(QWidget):
                 
                 # Load the JSON file
                 from utils.json_utils import load_json
+                self.logger.debug(f"Loading JSON data from {file_path}")
                 json_data = load_json(file_path)
                 
                 if json_data:
+                    self.logger.debug(f"JSON data loaded successfully, type: {type(json_data)}")
                     # Save state for undo
                     if self.app.undo_manager:
                         self.app.undo_manager.save_state("import_json")
@@ -2237,8 +2243,37 @@ class TimelineContainer(QWidget):
                     
                     # Create segments from JSON data
                     for segment_data in segments_data:
+                        # Log the segment data for debugging
+                        self.logger.debug(f"Processing segment data: {segment_data}")
+                        
+                        # Check if this is a ball.json format (segments directly in the data)
+                        if "segments" in data and isinstance(data["segments"], list) and "metadata" in data:
+                            self.logger.info("Detected ball.json format with segments array")
+                            self.logger.debug(f"Ball.json metadata: {data['metadata']}")
+                            self.logger.debug(f"Found {len(data['segments'])} segments in ball.json file")
+                            segments_data = data["segments"]
+                            
+                            # Process all segments from the ball.json file
+                            for ball_segment in data["segments"]:
+                                if "start_time" in ball_segment and "end_time" in ball_segment and "color" in ball_segment:
+                                    # Create segment
+                                    segment = TimelineSegment(
+                                        start_time=ball_segment["start_time"],
+                                        end_time=ball_segment["end_time"],
+                                        color=tuple(ball_segment["color"]),
+                                        pixels=ball_segment.get("pixels", timeline.default_pixels)
+                                    )
+                                    
+                                    # Add to timeline
+                                    self.app.timeline_manager.add_segment_object(timeline, segment)
+                                    self.logger.debug(f"Added ball.json segment: {segment.start_time:.3f}-{segment.end_time:.3f}, color: {segment.color}")
+                            
+                            # We've processed all segments from the ball.json file, so we can break out of the loop
+                            break
+                        
                         # Check if the segment data has the expected format
                         if "start_time" in segment_data and "end_time" in segment_data and "color" in segment_data:
+                            self.logger.debug(f"Found segment with start_time/end_time format: {segment_data['start_time']:.3f}-{segment_data['end_time']:.3f}")
                             # Create segment
                             segment = TimelineSegment(
                                 start_time=segment_data["start_time"],
@@ -2249,17 +2284,28 @@ class TimelineContainer(QWidget):
                             
                             # Add to timeline
                             self.app.timeline_manager.add_segment_object(timeline, segment)
+                            self.logger.debug(f"Added segment: {segment.start_time}-{segment.end_time}")
                         elif "startTime" in segment_data and "endTime" in segment_data and "color" in segment_data:
+                            self.logger.debug(f"Found segment with startTime/endTime format: {segment_data['startTime']:.3f}-{segment_data['endTime']:.3f}")
                             # Create segment using the from_dict method
                             segment = TimelineSegment.from_dict(segment_data)
                             
                             # Add to timeline
                             self.app.timeline_manager.add_segment_object(timeline, segment)
+                            self.logger.debug(f"Added segment using from_dict: {segment.start_time}-{segment.end_time}")
+                    
+                    # Show a message in the status bar
+                    if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'statusBar'):
+                        message = f"Imported segments from {file_path}"
+                        self.logger.info(message)
+                        self.app.main_window.statusBar().showMessage(message, 3000)
                     
                     # Emit signal
+                    self.logger.debug(f"Emitting timeline_modified signal for timeline: {timeline.name}")
                     self.app.timeline_manager.timeline_modified.emit(timeline)
                     
                     # Update the UI
+                    self.logger.debug("Updating UI after JSON import")
                     self.update()
     
     def _change_segment_color(self, color):
