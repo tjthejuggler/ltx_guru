@@ -1,0 +1,626 @@
+{
+  "metadata": {
+    "title": "You Know Me - Lubalin - Me Only",
+    "total_duration_seconds": 129.95000000000002,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "audio_file_path": "you_know_me/lubalin_you_know_me.mp3",
+    "default_base_color": {
+      "name": "black"
+    }
+  },
+  "effects_timeline": [
+    {
+      "id": "segment_6c8fc33a",
+      "type": "solid_color",
+      "description": "Segment from 0 to 11.36",
+      "timing": {
+        "start_seconds": 0,
+        "end_seconds": 11.36
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ea5eba2c",
+      "type": "solid_color",
+      "description": "Segment from 11.36 to 11.7",
+      "timing": {
+        "start_seconds": 11.36,
+        "end_seconds": 11.7
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_1c4ae8a9",
+      "type": "solid_color",
+      "description": "Segment from 11.7 to 13.049999",
+      "timing": {
+        "start_seconds": 11.7,
+        "end_seconds": 13.049999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8788b42f",
+      "type": "solid_color",
+      "description": "Segment from 13.049999 to 13.199999",
+      "timing": {
+        "start_seconds": 13.049999,
+        "end_seconds": 13.199999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9f02cd9f",
+      "type": "solid_color",
+      "description": "Segment from 13.199999 to 33.93",
+      "timing": {
+        "start_seconds": 13.199999,
+        "end_seconds": 33.93
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4347d00f",
+      "type": "solid_color",
+      "description": "Segment from 33.93 to 34.339999999999996",
+      "timing": {
+        "start_seconds": 33.93,
+        "end_seconds": 34.339999999999996
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_db161504",
+      "type": "solid_color",
+      "description": "Segment from 34.339999999999996 to 45.220000000000006",
+      "timing": {
+        "start_seconds": 34.339999999999996,
+        "end_seconds": 45.220000000000006
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_5813ce3d",
+      "type": "solid_color",
+      "description": "Segment from 45.220000000000006 to 45.620000000000005",
+      "timing": {
+        "start_seconds": 45.220000000000006,
+        "end_seconds": 45.620000000000005
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_34d12552",
+      "type": "solid_color",
+      "description": "Segment from 45.620000000000005 to 48.480000000000004",
+      "timing": {
+        "start_seconds": 45.620000000000005,
+        "end_seconds": 48.480000000000004
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9adfff16",
+      "type": "solid_color",
+      "description": "Segment from 48.480000000000004 to 48.870000000000005",
+      "timing": {
+        "start_seconds": 48.480000000000004,
+        "end_seconds": 48.870000000000005
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_92a7c4b7",
+      "type": "solid_color",
+      "description": "Segment from 48.870000000000005 to 51.309999",
+      "timing": {
+        "start_seconds": 48.870000000000005,
+        "end_seconds": 51.309999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9683c74a",
+      "type": "solid_color",
+      "description": "Segment from 51.309999 to 51.659999",
+      "timing": {
+        "start_seconds": 51.309999,
+        "end_seconds": 51.659999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_af186256",
+      "type": "solid_color",
+      "description": "Segment from 51.659999 to 54.109999",
+      "timing": {
+        "start_seconds": 51.659999,
+        "end_seconds": 54.109999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ec24c4e4",
+      "type": "solid_color",
+      "description": "Segment from 54.109999 to 54.839999",
+      "timing": {
+        "start_seconds": 54.109999,
+        "end_seconds": 54.839999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_2c83b3e2",
+      "type": "solid_color",
+      "description": "Segment from 54.839999 to 56.619999",
+      "timing": {
+        "start_seconds": 54.839999,
+        "end_seconds": 56.619999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_b11c649b",
+      "type": "solid_color",
+      "description": "Segment from 56.619999 to 56.969999",
+      "timing": {
+        "start_seconds": 56.619999,
+        "end_seconds": 56.969999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_a6b7f9e0",
+      "type": "solid_color",
+      "description": "Segment from 56.969999 to 58.279999",
+      "timing": {
+        "start_seconds": 56.969999,
+        "end_seconds": 58.279999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_3236cfdb",
+      "type": "solid_color",
+      "description": "Segment from 58.279999 to 58.519999",
+      "timing": {
+        "start_seconds": 58.279999,
+        "end_seconds": 58.519999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_c3dc5d33",
+      "type": "solid_color",
+      "description": "Segment from 58.519999 to 62.239999",
+      "timing": {
+        "start_seconds": 58.519999,
+        "end_seconds": 62.239999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_53ac105d",
+      "type": "solid_color",
+      "description": "Segment from 62.239999 to 62.599999",
+      "timing": {
+        "start_seconds": 62.239999,
+        "end_seconds": 62.599999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0877388d",
+      "type": "solid_color",
+      "description": "Segment from 62.599999 to 96.869999",
+      "timing": {
+        "start_seconds": 62.599999,
+        "end_seconds": 96.869999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_8f1bb19d",
+      "type": "solid_color",
+      "description": "Segment from 96.869999 to 97.089999",
+      "timing": {
+        "start_seconds": 96.869999,
+        "end_seconds": 97.089999
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_58ae5c78",
+      "type": "solid_color",
+      "description": "Segment from 97.089999 to 101.69",
+      "timing": {
+        "start_seconds": 97.089999,
+        "end_seconds": 101.69
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_d163ba6c",
+      "type": "solid_color",
+      "description": "Segment from 101.69 to 102.06",
+      "timing": {
+        "start_seconds": 101.69,
+        "end_seconds": 102.06
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0821c5e7",
+      "type": "solid_color",
+      "description": "Segment from 102.06 to 115.83",
+      "timing": {
+        "start_seconds": 102.06,
+        "end_seconds": 115.83
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_ecca4d4b",
+      "type": "solid_color",
+      "description": "Segment from 115.83 to 116.63",
+      "timing": {
+        "start_seconds": 115.83,
+        "end_seconds": 116.63
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_4b611659",
+      "type": "solid_color",
+      "description": "Segment from 116.63 to 123.23",
+      "timing": {
+        "start_seconds": 116.63,
+        "end_seconds": 123.23
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_6940e7d7",
+      "type": "solid_color",
+      "description": "Segment from 123.23 to 123.25",
+      "timing": {
+        "start_seconds": 123.23,
+        "end_seconds": 123.25
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_bcd1e1b9",
+      "type": "solid_color",
+      "description": "Segment from 123.25 to 123.56",
+      "timing": {
+        "start_seconds": 123.25,
+        "end_seconds": 123.56
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0a82cd86",
+      "type": "solid_color",
+      "description": "Segment from 123.56 to 123.58",
+      "timing": {
+        "start_seconds": 123.56,
+        "end_seconds": 123.58
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_cb51d795",
+      "type": "solid_color",
+      "description": "Segment from 123.58 to 124.21000000000001",
+      "timing": {
+        "start_seconds": 123.58,
+        "end_seconds": 124.21000000000001
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_7b6988e8",
+      "type": "solid_color",
+      "description": "Segment from 124.21000000000001 to 125.04",
+      "timing": {
+        "start_seconds": 124.21000000000001,
+        "end_seconds": 125.04
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_9c88b153",
+      "type": "solid_color",
+      "description": "Segment from 125.04 to 129.85",
+      "timing": {
+        "start_seconds": 125.04,
+        "end_seconds": 129.85
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": "segment_0b792fc4",
+      "type": "solid_color",
+      "description": "Segment from 129.85 to 129.95000000000002",
+      "timing": {
+        "start_seconds": 129.85,
+        "end_seconds": 129.95000000000002
+      },
+      "params": {
+        "color": {
+          "rgb": [
+            255,
+            0,
+            255
+          ]
+        }
+      }
+    }
+  ]
+}

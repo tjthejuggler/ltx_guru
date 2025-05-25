@@ -1,0 +1,371 @@
+{
+  "name": "You Know Me - Lubalin - You Only",
+  "defaultPixels": 4,
+  "created": "2025-05-21T12:09:49.723461",
+  "modified": "2025-05-21T12:09:49.723487",
+  "segments": [
+    {
+      "start_time": 0,
+      "end_time": 10.7,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 10.7,
+      "end_time": 11.03,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 11.03,
+      "end_time": 12.799999,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 12.799999,
+      "end_time": 12.879999,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 12.879999,
+      "end_time": 21.7,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 21.7,
+      "end_time": 21.86,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 21.86,
+      "end_time": 28.21,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 28.21,
+      "end_time": 28.310000000000002,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 28.310000000000002,
+      "end_time": 33.3,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 33.3,
+      "end_time": 33.48,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 33.48,
+      "end_time": 44.550000000000004,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 44.550000000000004,
+      "end_time": 44.75,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 44.75,
+      "end_time": 55.899999,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 55.899999,
+      "end_time": 56.189999,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 56.189999,
+      "end_time": 57.229999,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 57.229999,
+      "end_time": 57.259999,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 57.259999,
+      "end_time": 61.499999,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 61.499999,
+      "end_time": 61.679998999999995,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 61.679998999999995,
+      "end_time": 67.17,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 67.17,
+      "end_time": 67.31,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 67.31,
+      "end_time": 101.059999,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 101.059999,
+      "end_time": 101.369999,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 101.369999,
+      "end_time": 115.21,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 115.21,
+      "end_time": 115.5,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 115.5,
+      "end_time": 121.85000000000001,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 121.85000000000001,
+      "end_time": 121.93,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 121.93,
+      "end_time": 123.25,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 123.25,
+      "end_time": 123.27000000000001,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 123.27000000000001,
+      "end_time": 123.60000000000001,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 123.60000000000001,
+      "end_time": 123.95,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 123.95,
+      "end_time": 129.19,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 129.19,
+      "end_time": 129.43,
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 4,
+      "effects": []
+    },
+    {
+      "start_time": 129.43,
+      "end_time": 129.95000000000002,
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4,
+      "effects": []
+    }
+  ]
+}
