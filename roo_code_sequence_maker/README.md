@@ -11,7 +11,7 @@ This toolkit provides Python scripts and utilities that allow Roo agents to:
 3. Create color sequences synchronized to music
 4. Generate JSON files compatible with LTX juggling balls
 
-Instead of using MCP servers directly, this toolkit provides standalone Python scripts that can be executed directly, making it easier for Roo agents to understand and modify the code as needed.
+This toolkit provides standalone Python scripts that can be executed directly, making it easier for Roo agents to understand and modify the code as needed.
 
 ## Directory Structure
 
