@@ -121,6 +121,51 @@
       "script_path": "align_lyrics.py",
       "description": "Direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. Automatically ensures Gentle server is running and handles all alignment steps in one command.",
       "usage": "python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"] [--no-conservative]"
+    },
+    {
+      "name": "pattern_templates",
+      "script_path": "pattern_templates.py",
+      "description": "Expands pattern templates (meta-effects) in .seqdesign.json files into concrete effects. Supports WarningThenEvent, LyricHighlight, and BeatSync patterns.",
+      "usage": "python -m roocode_sequence_designer_tools.pattern_templates <input.seqdesign.json> <output.seqdesign.json> [--lyrics-file <synced_lyrics.json>] [--audio-analysis <analysis.json>]"
+    }
+  ],
+  "pattern_templates": [
+    {
+      "pattern_type": "WarningThenEvent",
+      "description": "Creates a warning effect before a main event, triggered by lyrics, beats, or custom times.",
+      "parameters": [
+        {"name": "trigger_type", "type": "string", "required": true, "description": "Type of trigger: 'lyric', 'custom_times', or 'beat_number'"},
+        {"name": "trigger_lyric", "type": "string", "required": false, "description": "Word to trigger on (required if trigger_type is 'lyric')"},
+        {"name": "custom_times", "type": "array", "required": false, "description": "Array of timestamps in seconds (required if trigger_type is 'custom_times')"},
+        {"name": "warning_offset_seconds", "type": "float", "required": false, "default": -1.0, "description": "Time offset for warning before main event (negative means before)"},
+        {"name": "event_definition", "type": "EffectObject", "required": true, "description": "Definition of the main event effect"},
+        {"name": "warning_definition", "type": "EffectObject", "required": true, "description": "Definition of the warning effect"},
+        {"name": "target_ball_selection_strategy", "type": "string", "required": false, "default": "round_robin", "description": "Strategy for selecting target balls: 'round_robin', 'ball_1', 'ball_2', 'ball_3', 'ball_4', 'random'"},
+        {"name": "case_sensitive", "type": "boolean", "required": false, "default": false, "description": "Whether lyric matching is case sensitive"}
+      ],
+      "requires_lyrics": true
+    },
+    {
+      "pattern_type": "LyricHighlight",
+      "description": "Highlights specific words or phrases in lyrics with visual effects.",
+      "parameters": [
+        {"name": "target_words", "type": "array", "required": true, "description": "Array of words to highlight"},
+        {"name": "effect_definition", "type": "EffectObject", "required": true, "description": "Definition of the highlight effect"},
+        {"name": "target_ball_selection_strategy", "type": "string", "required": false, "default": "round_robin", "description": "Strategy for selecting target balls"},
+        {"name": "case_sensitive", "type": "boolean", "required": false, "default": false, "description": "Whether word matching is case sensitive"}
+      ],
+      "requires_lyrics": true
+    },
+    {
+      "pattern_type": "BeatSync",
+      "description": "Synchronizes effects with audio beats within a specified time window.",
+      "parameters": [
+        {"name": "beat_type", "type": "string", "required": false, "default": "all_beats", "description": "Type of beats to sync with: 'all_beats' or 'downbeats'"},
+        {"name": "effect_definition", "type": "EffectObject", "required": true, "description": "Definition of the beat-synchronized effect"},
+        {"name": "target_ball_selection_strategy", "type": "string", "required": false, "default": "round_robin", "description": "Strategy for selecting target balls"},
+        {"name": "time_window", "type": "object", "required": false, "description": "Time window with start_seconds and end_seconds"}
+      ],
+      "requires_audio_analysis": true
     }
   ]
 }

@@ -1,0 +1,250 @@
+{
+    "metadata": {
+        "title": "Pattern Templates Demo Sequence",
+        "audio_file_path": "demo_song.mp3",
+        "total_duration_seconds": 180.0,
+        "target_prg_refresh_rate": 100,
+        "default_pixels": 4,
+        "default_base_color": {
+            "rgb": [
+                5,
+                5,
+                20
+            ]
+        }
+    },
+    "effects_timeline": [
+        {
+            "id": "base_atmosphere",
+            "type": "solid_color",
+            "description": "Base atmospheric color throughout the song",
+            "timing": {
+                "start_seconds": 0.0,
+                "end_seconds": 180.0
+            },
+            "params": {
+                "color": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                }
+            }
+        },
+        {
+            "id": "intro_fade",
+            "type": "fade",
+            "description": "Gentle fade in at the beginning",
+            "timing": {
+                "start_seconds": 0.0,
+                "end_seconds": 4.0
+            },
+            "params": {
+                "color_start": {
+                    "name": "black"
+                },
+                "color_end": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "steps_per_second": 20
+            }
+        },
+        {
+            "id": "warning_climax_custom_events_0",
+            "type": "strobe",
+            "description": "Warning effect for pattern trigger at 30.5s",
+            "timing": {
+                "start_seconds": 29.5,
+                "duration_seconds": 0.8
+            },
+            "params": {
+                "color_on": {
+                    "name": "orange"
+                },
+                "color_off": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "frequency_hz": 5.0,
+                "duration_seconds": 0.8
+            },
+            "target_ball": 1
+        },
+        {
+            "id": "event_climax_custom_events_0",
+            "type": "fade",
+            "description": "Main event for pattern trigger at 30.5s",
+            "timing": {
+                "start_seconds": 30.5,
+                "duration_seconds": 2.0
+            },
+            "params": {
+                "color_start": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "color_end": {
+                    "name": "gold"
+                },
+                "duration_seconds": 2.0,
+                "steps_per_second": 25
+            },
+            "target_ball": 1
+        },
+        {
+            "id": "warning_climax_custom_events_1",
+            "type": "strobe",
+            "description": "Warning effect for pattern trigger at 60.2s",
+            "timing": {
+                "start_seconds": 59.2,
+                "duration_seconds": 0.8
+            },
+            "params": {
+                "color_on": {
+                    "name": "orange"
+                },
+                "color_off": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "frequency_hz": 5.0,
+                "duration_seconds": 0.8
+            },
+            "target_ball": 2
+        },
+        {
+            "id": "event_climax_custom_events_1",
+            "type": "fade",
+            "description": "Main event for pattern trigger at 60.2s",
+            "timing": {
+                "start_seconds": 60.2,
+                "duration_seconds": 2.0
+            },
+            "params": {
+                "color_start": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "color_end": {
+                    "name": "gold"
+                },
+                "duration_seconds": 2.0,
+                "steps_per_second": 25
+            },
+            "target_ball": 2
+        },
+        {
+            "id": "warning_climax_custom_events_2",
+            "type": "strobe",
+            "description": "Warning effect for pattern trigger at 90.8s",
+            "timing": {
+                "start_seconds": 89.8,
+                "duration_seconds": 0.8
+            },
+            "params": {
+                "color_on": {
+                    "name": "orange"
+                },
+                "color_off": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "frequency_hz": 5.0,
+                "duration_seconds": 0.8
+            },
+            "target_ball": 3
+        },
+        {
+            "id": "event_climax_custom_events_2",
+            "type": "fade",
+            "description": "Main event for pattern trigger at 90.8s",
+            "timing": {
+                "start_seconds": 90.8,
+                "duration_seconds": 2.0
+            },
+            "params": {
+                "color_start": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "color_end": {
+                    "name": "gold"
+                },
+                "duration_seconds": 2.0,
+                "steps_per_second": 25
+            },
+            "target_ball": 3
+        },
+        {
+            "id": "warning_climax_custom_events_3",
+            "type": "strobe",
+            "description": "Warning effect for pattern trigger at 150.3s",
+            "timing": {
+                "start_seconds": 149.3,
+                "duration_seconds": 0.8
+            },
+            "params": {
+                "color_on": {
+                    "name": "orange"
+                },
+                "color_off": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "frequency_hz": 5.0,
+                "duration_seconds": 0.8
+            },
+            "target_ball": 4
+        },
+        {
+            "id": "event_climax_custom_events_3",
+            "type": "fade",
+            "description": "Main event for pattern trigger at 150.3s",
+            "timing": {
+                "start_seconds": 150.3,
+                "duration_seconds": 2.0
+            },
+            "params": {
+                "color_start": {
+                    "rgb": [
+                        5,
+                        5,
+                        20
+                    ]
+                },
+                "color_end": {
+                    "name": "gold"
+                },
+                "duration_seconds": 2.0,
+                "steps_per_second": 25
+            },
+            "target_ball": 4
+        }
+    ]
+}

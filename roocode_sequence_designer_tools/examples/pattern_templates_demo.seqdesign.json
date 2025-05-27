@@ -1,0 +1,173 @@
+{
+  "metadata": {
+    "title": "Pattern Templates Demo Sequence",
+    "audio_file_path": "demo_song.mp3",
+    "total_duration_seconds": 180.0,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "default_base_color": {"rgb": [5, 5, 20]}
+  },
+  "effects_timeline": [
+    {
+      "id": "base_atmosphere",
+      "type": "solid_color",
+      "description": "Base atmospheric color throughout the song",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 180.0
+      },
+      "params": {
+        "color": {"rgb": [5, 5, 20]}
+      }
+    },
+    {
+      "id": "intro_fade",
+      "type": "fade",
+      "description": "Gentle fade in at the beginning",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 4.0
+      },
+      "params": {
+        "color_start": {"name": "black"},
+        "color_end": {"rgb": [5, 5, 20]},
+        "steps_per_second": 20
+      }
+    }
+  ],
+  "pattern_templates": [
+    {
+      "id": "love_word_warnings",
+      "pattern_type": "WarningThenEvent",
+      "description": "Yellow warning flash 0.5 seconds before every 'love' word, followed by red main event",
+      "params": {
+        "trigger_type": "lyric",
+        "trigger_lyric": "love",
+        "warning_offset_seconds": -0.5,
+        "target_ball_selection_strategy": "round_robin",
+        "case_sensitive": false,
+        "event_definition": {
+          "type": "solid_color",
+          "params": {
+            "color": {"name": "red"},
+            "duration_seconds": 0.4
+          }
+        },
+        "warning_definition": {
+          "type": "solid_color",
+          "params": {
+            "color": {"name": "yellow"},
+            "duration_seconds": 0.2
+          }
+        }
+      }
+    },
+    {
+      "id": "emotional_highlights",
+      "pattern_type": "LyricHighlight",
+      "description": "Highlight emotional words with white flash and fade",
+      "params": {
+        "target_words": ["heart", "soul", "dream", "hope", "forever", "beautiful"],
+        "target_ball_selection_strategy": "round_robin",
+        "case_sensitive": false,
+        "effect_definition": {
+          "type": "snap_on_flash_off",
+          "params": {
+            "pre_base_color": {"rgb": [5, 5, 20]},
+            "target_color": {"name": "white"},
+            "post_base_color": {"rgb": [5, 5, 20]},
+            "fade_out_duration": 0.8,
+            "duration_seconds": 1.0
+          }
+        }
+      }
+    },
+    {
+      "id": "chorus_beat_sync",
+      "pattern_type": "BeatSync",
+      "description": "Cyan pulses on every beat during the chorus sections",
+      "params": {
+        "beat_type": "all_beats",
+        "target_ball_selection_strategy": "round_robin",
+        "time_window": {
+          "start_seconds": 45.0,
+          "end_seconds": 75.0
+        },
+        "effect_definition": {
+          "type": "pulse_on_beat",
+          "params": {
+            "color": {"name": "cyan"},
+            "pulse_duration_seconds": 0.1,
+            "duration_seconds": 0.1
+          }
+        }
+      }
+    },
+    {
+      "id": "bridge_downbeats",
+      "pattern_type": "BeatSync",
+      "description": "Purple pulses on downbeats during the bridge",
+      "params": {
+        "beat_type": "downbeats",
+        "target_ball_selection_strategy": "ball_1",
+        "time_window": {
+          "start_seconds": 120.0,
+          "end_seconds": 150.0
+        },
+        "effect_definition": {
+          "type": "solid_color",
+          "params": {
+            "color": {"rgb": [128, 0, 128]},
+            "duration_seconds": 0.2
+          }
+        }
+      }
+    },
+    {
+      "id": "climax_custom_events",
+      "pattern_type": "WarningThenEvent",
+      "description": "Custom timed dramatic events with strobe warnings",
+      "params": {
+        "trigger_type": "custom_times",
+        "custom_times": [30.5, 60.2, 90.8, 150.3],
+        "warning_offset_seconds": -1.0,
+        "target_ball_selection_strategy": "random",
+        "event_definition": {
+          "type": "fade",
+          "params": {
+            "color_start": {"rgb": [5, 5, 20]},
+            "color_end": {"name": "gold"},
+            "duration_seconds": 2.0,
+            "steps_per_second": 25
+          }
+        },
+        "warning_definition": {
+          "type": "strobe",
+          "params": {
+            "color_on": {"name": "orange"},
+            "color_off": {"rgb": [5, 5, 20]},
+            "frequency_hz": 5.0,
+            "duration_seconds": 0.8
+          }
+        }
+      }
+    },
+    {
+      "id": "you_word_highlights",
+      "pattern_type": "LyricHighlight",
+      "description": "Special blue highlights for 'you' words",
+      "params": {
+        "target_words": ["you"],
+        "target_ball_selection_strategy": "ball_2",
+        "case_sensitive": false,
+        "effect_definition": {
+          "type": "solid_color",
+          "params": {
+            "color": {"rgb": [0, 100, 255]},
+            "duration_seconds": 0.3
+          }
+        }
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@
 
 This directory, [`roocode_sequence_designer_tools/`](./), contains Python tools and configurations that are integral to the Roocode Sequence Designer System. These components are primarily utilized by the Roocode agent (the LLM) and the [`compile_seqdesign.py`](./compile_seqdesign.py) script to interpret, process, and compile lighting sequence designs.
 
-The tools within this directory facilitate the translation of abstract effect descriptions (as understood by Roocode) into concrete, executable lighting programs.
+The tools within this directory facilitate the translation of abstract effect descriptions (as understood by Roocode) into concrete, executable lighting programs. Advanced features include **Pattern Templates** for creating sophisticated sequences with minimal manual work.
 
 For details on the structure of `.seqdesign.json` files, please refer to the [Sequence Design JSON Schema](./docs/seqdesign_json_schema.md).
 
@@ -49,6 +49,12 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
     *   Supports time range filtering and formatted text output.
     *   Requires the Gentle Docker container to be running for lyrics alignment.
 
+*   **[`pattern_templates.py`](./pattern_templates.py):**
+    *   A powerful tool for expanding "Pattern Templates" or "Parameterized Meta-Effects" into concrete effects.
+    *   Supports WarningThenEvent, LyricHighlight, and BeatSync pattern types.
+    *   Enables sophisticated sequence creation with minimal manual effect definition.
+    *   Integrates with lyrics timestamps and audio analysis data for intelligent effect generation.
+
 *   **[`effect_implementations/`](./effect_implementations/):**
     *   This directory houses Python modules that contain the actual logic for various lighting effects.
     *   **[`common_effects.py`](./effect_implementations/common_effects.py):** Implements common, often non-audio-driven, lighting effects (e.g., static color, fade, snap_on_flash_off).
@@ -68,7 +74,9 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 
 *   **[`docs/`](./docs/):**
     *   Contains documentation for the various tools and components.
-    *   **[`seqdesign_json_schema.md`](./docs/seqdesign_json_schema.md):** Documents the schema for `.seqdesign.json` files.
+    *   **[`seqdesign_json_schema.md`](./docs/seqdesign_json_schema.md):** Documents the schema for `.seqdesign.json` files including pattern templates.
+    *   **[`pattern_templates_guide.md`](./docs/pattern_templates_guide.md):** Comprehensive guide to using pattern templates for sophisticated sequence design.
+    *   **[`sequence_designer_mode_instructions.md`](./docs/sequence_designer_mode_instructions.md):** Optimized workflows and instructions for the Sequence Designer mode.
     *   **[`audio_analysis_report_tool.md`](./docs/audio_analysis_report_tool.md):** Detailed documentation for the audio analysis report tool.
 
 ## `tools_lookup.json`
@@ -271,6 +279,32 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     *   `--format-text`: (Optional) Format lyrics as readable text instead of JSON.
     *   `--include-timestamps`: (Optional) Include timestamps in formatted text output.
 
+### `pattern_templates.py`
+
+*   **Purpose:** A powerful tool for expanding "Pattern Templates" or "Parameterized Meta-Effects" into concrete effects. This enables sophisticated sequence creation with minimal manual work by defining high-level patterns that get automatically expanded based on lyrics, audio analysis, or custom timing data.
+*   **Key Features:**
+    - **WarningThenEvent**: Creates warning effects before main events triggered by lyrics, beats, or custom times
+    - **LyricHighlight**: Highlights specific words or phrases with visual effects
+    - **BeatSync**: Synchronizes effects with audio beats within specified time windows
+    - **Intelligent Ball Selection**: Supports various ball selection strategies (round-robin, specific balls, random)
+    - **Data Integration**: Seamlessly integrates with lyrics timestamps and audio analysis data
+
+*   **Command-Line Usage:**
+    ```bash
+    python -m roocode_sequence_designer_tools.pattern_templates <input.seqdesign.json> <output.seqdesign.json> [--lyrics-file <synced_lyrics.json>] [--audio-analysis <analysis.json>]
+    ```
+    *   `<input.seqdesign.json>`: Path to the input `.seqdesign.json` file containing pattern templates.
+    *   `<output.seqdesign.json>`: Path for the output `.seqdesign.json` file with expanded concrete effects.
+    *   `--lyrics-file <synced_lyrics.json>`: (Optional) Path to synced lyrics file for lyric-based patterns.
+    *   `--audio-analysis <analysis.json>`: (Optional) Path to audio analysis data for beat-based patterns.
+
+*   **Workflow:**
+    1. **Design Phase**: Add pattern templates to the `pattern_templates` array in your `.seqdesign.json`
+    2. **Expansion Phase**: Use this tool to expand templates into concrete effects
+    3. **Compilation Phase**: Compile the expanded file normally with `compile_seqdesign.py`
+
+*   **For detailed documentation, see [Pattern Templates Guide](./docs/pattern_templates_guide.md).**
+
 ## Important Considerations & Troubleshooting
 
 ### Handling Large Audio Analysis Reports
@@ -358,6 +392,7 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 *   **For detailed documentation, see:**
     - [Lyrics Extraction Guide](./docs/lyrics_extraction_guide.md) - Comprehensive documentation on all lyrics extraction tools
     - [Lyrics Extraction Efficiency](./docs/lyrics_extraction_efficiency.md) - Best practices for efficient lyrics extraction
+    - [Pattern Templates Guide](./docs/pattern_templates_guide.md) - Comprehensive guide to using pattern templates for sophisticated sequence design
     - [Sequence Designer Mode Instructions](./docs/sequence_designer_mode_instructions.md) - Optimized workflows for the Sequence Designer mode
 
 *   **Example Implementation:**

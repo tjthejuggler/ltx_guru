@@ -10,15 +10,17 @@ Files using this format should have the extension: `.seqdesign.json`
 
 ## 3. Top-Level Structure
 
-A `.seqdesign.json` file is a JSON object with two main top-level keys:
+A `.seqdesign.json` file is a JSON object with three main top-level keys:
 
 *   `metadata`: An object containing global information about the sequence.
 *   `effects_timeline`: An array of effect objects defining the sequence of visual changes.
+*   `pattern_templates`: An optional array of pattern template objects that get expanded into concrete effects.
 
 ```json
 {
   "metadata": { ... },
-  "effects_timeline": [ ... ]
+  "effects_timeline": [ ... ],
+  "pattern_templates": [ ... ]
 }
 ```
 
@@ -364,6 +366,260 @@ The LTX Guru project uses several standardized file extensions for different typ
 | Audio Analysis Reports | `.analysis_report.json` | Audio analysis data |
 | Beat Patterns | `.beatpattern.json` | Beat-synchronized patterns |
 | Section Themes | `.sectiontheme.json` | Section-based color themes |
+
+## 12. Pattern Templates
+
+Pattern templates are high-level, parameterized meta-effects that get expanded into multiple concrete effects during compilation. They provide a way to encapsulate common, complex temporal relationships and behaviors into reusable, configurable units.
+
+### 12.1. Pattern Templates Array
+
+The optional `pattern_templates` array contains pattern template objects that define high-level patterns like "WarningThenEvent" or "LyricHighlight". These patterns are expanded into concrete effects before compilation.
+
+```json
+{
+  "metadata": { ... },
+  "effects_timeline": [ ... ],
+  "pattern_templates": [
+    {
+      "id": "chorus_warning_pattern",
+      "pattern_type": "WarningThenEvent",
+      "description": "Flash warning before chorus words",
+      "params": { ... }
+    }
+  ]
+}
+```
+
+### 12.2. Pattern Template Object Structure
+
+Each pattern template object has the following structure:
+
+| Key             | Type         | Required | Description                                                                                                                                                                                          |
+| :-------------- | :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`            | String       | Yes      | A unique identifier for this pattern template instance (e.g., "chorus_warning", "verse_highlights").                                                                                                |
+| `pattern_type`  | String       | Yes      | The type of pattern template (e.g., "WarningThenEvent", "LyricHighlight", "BeatSync").                                                                                                              |
+| `description`   | String       | No       | An optional human-readable description of what this pattern template does.                                                                                                                          |
+| `params`        | Object       | Yes      | An object containing parameters specific to the pattern type. The structure varies based on the pattern type.                                                                                       |
+
+### 12.3. WarningThenEvent Pattern
+
+Creates a warning effect before a main event, triggered by lyrics, beats, or custom times.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `trigger_type` | String | Yes | - | Type of trigger: "lyric", "custom_times", or "beat_number" |
+| `trigger_lyric` | String | Conditional | - | Word to trigger on (required if trigger_type is "lyric") |
+| `custom_times` | Array | Conditional | - | Array of timestamps in seconds (required if trigger_type is "custom_times") |
+| `warning_offset_seconds` | Float | No | -1.0 | Time offset for warning before main event (negative means before) |
+| `event_definition` | Object | Yes | - | Definition of the main event effect (standard effect object) |
+| `warning_definition` | Object | Yes | - | Definition of the warning effect (standard effect object) |
+| `target_ball_selection_strategy` | String | No | "round_robin" | Strategy for selecting target balls: "round_robin", "ball_1", "ball_2", "ball_3", "ball_4", "random" |
+| `case_sensitive` | Boolean | No | false | Whether lyric matching is case sensitive |
+
+**Example:**
+
+```json
+{
+  "id": "love_word_warning",
+  "pattern_type": "WarningThenEvent",
+  "description": "Flash white warning 0.5s before 'love' words turn red",
+  "params": {
+    "trigger_type": "lyric",
+    "trigger_lyric": "love",
+    "warning_offset_seconds": -0.5,
+    "target_ball_selection_strategy": "round_robin",
+    "event_definition": {
+      "type": "solid_color",
+      "params": {
+        "color": {"name": "red"},
+        "duration_seconds": 0.3
+      }
+    },
+    "warning_definition": {
+      "type": "solid_color",
+      "params": {
+        "color": {"name": "white"},
+        "duration_seconds": 0.2
+      }
+    }
+  }
+}
+```
+
+### 12.4. LyricHighlight Pattern
+
+Highlights specific words or phrases in lyrics with visual effects.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `target_words` | Array | Yes | - | Array of words to highlight |
+| `effect_definition` | Object | Yes | - | Definition of the highlight effect (standard effect object) |
+| `target_ball_selection_strategy` | String | No | "round_robin" | Strategy for selecting target balls |
+| `case_sensitive` | Boolean | No | false | Whether word matching is case sensitive |
+
+**Example:**
+
+```json
+{
+  "id": "key_words_highlight",
+  "pattern_type": "LyricHighlight",
+  "description": "Highlight key emotional words",
+  "params": {
+    "target_words": ["love", "heart", "soul", "dream"],
+    "target_ball_selection_strategy": "round_robin",
+    "effect_definition": {
+      "type": "snap_on_flash_off",
+      "params": {
+        "pre_base_color": {"name": "blue"},
+        "target_color": {"name": "yellow"},
+        "post_base_color": {"name": "blue"},
+        "fade_out_duration": 0.4,
+        "duration_seconds": 0.6
+      }
+    }
+  }
+}
+```
+
+### 12.5. BeatSync Pattern
+
+Synchronizes effects with audio beats within a specified time window.
+
+**Parameters:**
+
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `beat_type` | String | No | "all_beats" | Type of beats to sync with: "all_beats" or "downbeats" |
+| `effect_definition` | Object | Yes | - | Definition of the beat-synchronized effect |
+| `target_ball_selection_strategy` | String | No | "round_robin" | Strategy for selecting target balls |
+| `time_window` | Object | No | - | Time window with start_seconds and end_seconds |
+
+**Example:**
+
+```json
+{
+  "id": "chorus_beat_sync",
+  "pattern_type": "BeatSync",
+  "description": "Pulse on every beat during chorus",
+  "params": {
+    "beat_type": "all_beats",
+    "target_ball_selection_strategy": "round_robin",
+    "time_window": {
+      "start_seconds": 60.0,
+      "end_seconds": 120.0
+    },
+    "effect_definition": {
+      "type": "pulse_on_beat",
+      "params": {
+        "color": {"name": "cyan"},
+        "pulse_duration_seconds": 0.1,
+        "duration_seconds": 0.1
+      }
+    }
+  }
+}
+```
+
+### 12.6. Pattern Template Processing
+
+Pattern templates are processed by the [`pattern_templates.py`](../pattern_templates.py) tool before compilation:
+
+1. **Expansion Phase**: Pattern templates are expanded into concrete effect objects based on their parameters and external data (lyrics, audio analysis).
+
+2. **Integration Phase**: The generated effects are added to the `effects_timeline` array.
+
+3. **Compilation Phase**: The standard compilation process handles the expanded effects normally.
+
+**Usage:**
+
+```bash
+python -m roocode_sequence_designer_tools.pattern_templates input.seqdesign.json output.seqdesign.json --lyrics-file lyrics.synced_lyrics.json
+```
+
+### 12.7. Ball Selection Strategies
+
+Pattern templates support various ball selection strategies:
+
+- **`round_robin`**: Cycles through balls 1, 2, 3, 4 for each trigger occurrence
+- **`ball_1`**, **`ball_2`**, **`ball_3`**, **`ball_4`**: Always uses the specified ball
+- **`random`**: Pseudo-random ball selection (currently uses modulo for deterministic results)
+
+### 12.8. Complete Example with Pattern Templates
+
+```json
+{
+  "metadata": {
+    "title": "Song with Pattern Templates",
+    "audio_file_path": "song.mp3",
+    "total_duration_seconds": 180.0,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "default_base_color": {"name": "black"}
+  },
+  "effects_timeline": [
+    {
+      "id": "base_color",
+      "type": "solid_color",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 180.0
+      },
+      "params": {
+        "color": {"rgb": [20, 20, 50]}
+      }
+    }
+  ],
+  "pattern_templates": [
+    {
+      "id": "chorus_warnings",
+      "pattern_type": "WarningThenEvent",
+      "description": "Warning flashes before chorus words",
+      "params": {
+        "trigger_type": "lyric",
+        "trigger_lyric": "chorus",
+        "warning_offset_seconds": -0.8,
+        "target_ball_selection_strategy": "round_robin",
+        "event_definition": {
+          "type": "solid_color",
+          "params": {
+            "color": {"name": "red"},
+            "duration_seconds": 0.5
+          }
+        },
+        "warning_definition": {
+          "type": "solid_color",
+          "params": {
+            "color": {"name": "yellow"},
+            "duration_seconds": 0.3
+          }
+        }
+      }
+    },
+    {
+      "id": "emotional_highlights",
+      "pattern_type": "LyricHighlight",
+      "description": "Highlight emotional words",
+      "params": {
+        "target_words": ["love", "heart", "dream", "hope"],
+        "effect_definition": {
+          "type": "snap_on_flash_off",
+          "params": {
+            "pre_base_color": {"rgb": [20, 20, 50]},
+            "target_color": {"name": "white"},
+            "post_base_color": {"rgb": [20, 20, 50]},
+            "fade_out_duration": 1.0,
+            "duration_seconds": 1.2
+          }
+        }
+      }
+    }
+  ]
+}
+```
 
 ---
 This documentation should provide a solid reference for understanding and creating `.seqdesign.json` files and related file types in the LTX Guru ecosystem.

@@ -115,11 +115,77 @@ After completing any task:
    - Use the most efficient approach first in future interactions
    - Continuously refine your workflow based on experience
 
+## Pattern Templates
+
+Pattern Templates are a powerful feature that allows you to define high-level, parameterized "meta-effects" that get expanded into multiple concrete effects. This is especially useful for creating sophisticated sequences with minimal manual work.
+
+### When to Use Pattern Templates
+
+1. **Repetitive Lyric-Based Effects**: When you want the same effect to occur on every instance of a word
+2. **Warning Systems**: When you want preview effects before main events
+3. **Beat Synchronization**: When you want effects synchronized with audio beats
+4. **Complex Patterns**: When manual effect creation would be tedious and error-prone
+
+### Available Pattern Types
+
+1. **WarningThenEvent**: Creates warning effects before main events
+2. **LyricHighlight**: Highlights specific words with visual effects
+3. **BeatSync**: Synchronizes effects with audio beats
+
+### Pattern Templates Workflow
+
+1. **Design Phase**: Add pattern templates to the `pattern_templates` array in your `.seqdesign.json`
+2. **Expansion Phase**: Use the pattern templates tool to expand into concrete effects
+3. **Compilation Phase**: Compile the expanded file normally
+
+```bash
+# Expand pattern templates
+python -m roocode_sequence_designer_tools.pattern_templates \
+    input.seqdesign.json \
+    expanded.seqdesign.json \
+    --lyrics-file lyrics.synced_lyrics.json
+
+# Compile as usual
+python -m roocode_sequence_designer_tools.compile_seqdesign \
+    expanded.seqdesign.json \
+    output.prg.json
+```
+
+### Example Pattern Template
+
+```json
+{
+  "pattern_templates": [
+    {
+      "id": "love_word_warnings",
+      "pattern_type": "WarningThenEvent",
+      "description": "Yellow warning before red 'love' words",
+      "params": {
+        "trigger_type": "lyric",
+        "trigger_lyric": "love",
+        "warning_offset_seconds": -0.5,
+        "target_ball_selection_strategy": "round_robin",
+        "event_definition": {
+          "type": "solid_color",
+          "params": {"color": {"name": "red"}, "duration_seconds": 0.4}
+        },
+        "warning_definition": {
+          "type": "solid_color",
+          "params": {"color": {"name": "yellow"}, "duration_seconds": 0.2}
+        }
+      }
+    }
+  ]
+}
+```
+
 ## Additional Resources
 
 For more detailed information about lyrics extraction and alignment, refer to:
 - [Lyrics Extraction Guide](lyrics_extraction_guide.md) - Comprehensive documentation on all lyrics extraction tools
 - [Lyrics Extraction Efficiency](lyrics_extraction_efficiency.md) - Best practices for efficient lyrics extraction
+- [Pattern Templates Guide](pattern_templates_guide.md) - Comprehensive guide to using pattern templates
+- [Sequence Design JSON Schema](seqdesign_json_schema.md) - Complete schema documentation including pattern templates
 
 Remember that the sequence maker tools are designed to handle this workflow efficiently when used correctly. Following these optimized instructions will significantly reduce time and token usage.
 
