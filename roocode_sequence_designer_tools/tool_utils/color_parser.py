@@ -9,8 +9,8 @@ It supports various color input formats and provides utilities for color manipul
 import re
 from typing import Union, Dict, Tuple, List
 
-# Import utilities from existing color_utils module
-from roo_code_sequence_maker.utils.color_utils import (
+# Import utilities from the migrated core color utils within this package
+from .color_utils_core import (
     NAMED_COLORS,
     rgb_to_hsv,
     hsv_to_rgb

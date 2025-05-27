@@ -83,8 +83,8 @@
     {
       "name": "extract_audio_features",
       "script_path": "extract_audio_features.py",
-      "description": "Extracts specified features (beats, sections, etc.) from an audio file into JSON.",
-      "usage": "python extract_audio_features.py <audio_file_path> --features <comma_separated_list> [--output <json_file>]"
+      "description": "Extracts specified features (beats, sections, etc.) from an audio file into JSON. Supports caching.",
+      "usage": "python extract_audio_features.py <audio_file_path> --features <comma_separated_list> [--output <json_file>] [--no-cache] [--clear-all-cache]"
     },
     {
       "name": "compile_designer_json",
@@ -95,8 +95,8 @@
     {
       "name": "audio_analysis_report",
       "script_path": "audio_analysis_report.py",
-      "description": "Generates a comprehensive audio analysis report with visualizations and capability testing. Supports time range filtering and feature selection.",
-      "usage": "python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only]"
+      "description": "Generates a comprehensive audio analysis report with visualizations and capability testing. Supports caching, time range filtering, and feature selection.",
+      "usage": "python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only] [--no-cache] [--clear-all-cache]"
     },
     {
       "name": "check_report_size",
@@ -107,8 +107,8 @@
     {
       "name": "extract_lyrics",
       "script_path": "extract_lyrics.py",
-      "description": "Extracts and processes lyrics from audio files with options for time range filtering and formatting.",
-      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path.synced_lyrics.json>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path.lyrics.txt>] [--format-text] [--include-timestamps]"
+      "description": "Extracts and processes lyrics from audio files with options for time range filtering and formatting. Supports caching.",
+      "usage": "python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path.synced_lyrics.json>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path.lyrics.txt>] [--format-text] [--include-timestamps] [--no-cache] [--clear-all-cache]"
     },
     {
       "name": "extract_lyrics_simple",
@@ -119,17 +119,48 @@
     {
       "name": "align_lyrics",
       "script_path": "align_lyrics.py",
-      "description": "Direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. Automatically ensures Gentle server is running and handles all alignment steps in one command.",
-      "usage": "python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"] [--no-conservative]"
+      "description": "Direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. Automatically ensures Gentle server is running and handles all alignment steps in one command. Supports caching.",
+      "usage": "python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title \"Song Title\"] [--artist-name \"Artist Name\"] [--no-conservative] [--no-cache] [--clear-all-cache]"
     },
     {
       "name": "pattern_templates",
       "script_path": "pattern_templates.py",
       "description": "Expands pattern templates (meta-effects) in .seqdesign.json files into concrete effects. Supports WarningThenEvent, LyricHighlight, and BeatSync patterns.",
       "usage": "python -m roocode_sequence_designer_tools.pattern_templates <input.seqdesign.json> <output.seqdesign.json> [--lyrics-file <synced_lyrics.json>] [--audio-analysis <analysis.json>]"
+    },
+    {
+      "name": "combine_audio_data",
+      "script_path": "combine_audio_data.py",
+      "description": "Combines multiple audio analysis JSON files into a single timeline, offsetting timestamps and prefixing section labels.",
+      "usage": "python -m roocode_sequence_designer_tools.combine_audio_data --analysis-jsons <file1.json> <file2.json> ... --audio-files <audio1.mp3> <audio2.mp3> ... --output-json <combined_output.json>"
     }
   ],
   "pattern_templates": [
+    {
+      "pattern_type": "section_theme_energy",
+      "description": "Applies themes to song sections, modulating color based on audio energy.",
+      "parameters": [
+        {
+          "name": "themes_definition",
+          "type": "array",
+          "required": true,
+          "description": "Array of theme objects: { section_label: string, base_color: ColorObject, energy_mapping: 'brightness'|'saturation'|'alpha'|'none', energy_factor?: float (default 1.0) }"
+        },
+        {
+          "name": "default_color",
+          "type": "ColorObject",
+          "required": false,
+          "description": "Default color for sections not matching any theme. If not provided, un-themed sections are ignored."
+        },
+        {
+          "name": "audio_analysis_path",
+          "type": "string",
+          "required": true,
+          "description": "Path to the JSON file containing audio analysis data (must include section and energy information)."
+        }
+      ],
+      "requires_audio_analysis": true
+    },
     {
       "pattern_type": "WarningThenEvent",
       "description": "Creates a warning effect before a main event, triggered by lyrics, beats, or custom times.",

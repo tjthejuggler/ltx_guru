@@ -48,10 +48,17 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
     *   Produces `.synced_lyrics.json` files from raw `.lyrics.txt` files or automatically fetched lyrics.
     *   Supports time range filtering and formatted text output.
     *   Requires the Gentle Docker container to be running for lyrics alignment.
+    *   Supports caching of extracted lyrics data. Usage: `... [--no-cache] [--clear-all-cache]`
+
+*   **[`combine_audio_data.py`](./combine_audio_data.py):**
+    *   A CLI tool to merge multiple audio analysis JSON files into a single, consolidated timeline.
+    *   Offsets timestamps from subsequent audio files based on the durations of preceding ones.
+    *   Prefixes section labels to avoid naming conflicts (e.g., "File1-Verse1", "File2-Verse1").
+    *   Useful for creating sequences that span multiple audio tracks.
 
 *   **[`pattern_templates.py`](./pattern_templates.py):**
     *   A powerful tool for expanding "Pattern Templates" or "Parameterized Meta-Effects" into concrete effects.
-    *   Supports WarningThenEvent, LyricHighlight, and BeatSync pattern types.
+    *   Supports `WarningThenEvent`, `LyricHighlight`, `BeatSync`, and `section_theme_energy` pattern types.
     *   Enables sophisticated sequence creation with minimal manual effect definition.
     *   Integrates with lyrics timestamps and audio analysis data for intelligent effect generation.
 
@@ -63,6 +70,7 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
 *   **[`tool_utils/`](./tool_utils/):**
     *   Contains shared utility functions used by various tools and effect implementations.
     *   **[`color_parser.py`](./tool_utils/color_parser.py):** A utility for parsing color representations (e.g., color names, hex codes) into a standardized RGB format.
+    *   **[`cache_manager.py`](./tool_utils/cache_manager.py):** A utility for persistent, cross-session caching of data like audio analysis results. It handles cache key generation, storage, and retrieval. Default cache location: `~/.roocode_sequence_designer/cache/` (can be overridden by `ROOCODE_CACHE_DIR` environment variable).
 
 *   **[`tools_lookup.json`](./tools_lookup.json):**
     *   A crucial JSON file that serves as a catalog or manifest of all available effects and CLI tools that Roocode can utilize.
@@ -194,27 +202,28 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 ### `extract_audio_features.py`
 
 *   **Purpose:** A CLI tool designed to analyze an audio file and extract various features like beats, onsets, tempo, and loudness contours. The extracted features are saved in a JSON format, which can then be used by audio-driven effects in [`compile_seqdesign.py`](./compile_seqdesign.py).
+*   **Caching:** This tool supports persistent caching of analysis results to speed up subsequent runs with the same audio file and parameters.
+    *   `--no-cache`: Forces re-analysis and prevents saving to cache.
+    *   `--clear-all-cache`: Clears all cache entries managed by the `CacheManager` (this is a global clear for the default cache directory).
 *   **Command-Line Usage:**
     ```bash
-    python roocode_sequence_designer_tools/extract_audio_features.py <audio_file_path> --features <feature1_name> [<feature2_name> ...] [--output <output_json_path>]
+    python roocode_sequence_designer_tools/extract_audio_features.py <audio_file_path> --features <feature1_name>[,<feature2_name>...] [--output <output_json_path>] [--no-cache] [--clear-all-cache]
     ```
     *   `<audio_file_path>`: Path to the audio file to be analyzed (e.g., `.wav`, `.mp3`).
-    *   `--features <feature1_name> [<feature2_name> ...]`: A list of one or more features to extract (e.g., `beats`, `onsets`, `tempo`, `loudness`).
+    *   `--features <feature1_name>[,<feature2_name>...]`: A comma-separated list of features to extract (e.g., `beats`, `onsets`, `tempo`, `loudness`).
     *   `--output <output_json_path>`: (Optional) Path to save the extracted features as a JSON file. If not provided, output might go to stdout or a default filename.
 
 ### `audio_analysis_report.py`
 
 *   **Purpose:** A comprehensive tool for generating detailed audio analysis reports with visualizations and capability testing. This tool provides a complete assessment of all audio analysis capabilities, creates visual plots of audio features, and generates a structured JSON report.
+*   **Caching:** Supports caching of the generated report.
+    *   `--no-cache`: Forces re-analysis and prevents saving to cache.
+    *   `--clear-all-cache`: Clears all cache entries.
 *   **Command-Line Usage:**
     ```bash
-    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only]
+    python -m roocode_sequence_designer_tools.audio_analysis_report <audio_file_path> [--output-dir <dir>] [--start-time <seconds>] [--end-time <seconds>] [--features <feature1,feature2,...>] [--check-size-only] [--no-cache] [--clear-all-cache]
     ```
-    *   `<audio_file_path>`: Path to the audio file to be analyzed.
-    *   `--output-dir <dir>`: (Optional) Directory to save the report (as `analysis_report.json`) and visualizations. If not provided, uses the directory containing the audio file.
-    *   `--start-time <seconds>`: (Optional) Start time in seconds for time-range analysis.
-    *   `--end-time <seconds>`: (Optional) End time in seconds for time-range analysis.
-    *   `--features <feature1,feature2,...>`: (Optional) Comma-separated list of features to include in the report (e.g., beats,sections,energy,lyrics).
-    *   `--check-size-only`: (Optional) Only check the size of an existing report without generating a new one.
+    *   Parameters are as described above, with added caching flags.
 *   **For detailed documentation, see [Audio Analysis Report Tool Documentation](./docs/audio_analysis_report_tool.md).**
 
 ### `check_report_size.py`
@@ -238,18 +247,17 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 
 *   **Command-Line Usage:**
     ```bash
-    python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title "Song Title"] [--artist-name "Artist Name"] [--no-conservative]
+    python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title "Song Title"] [--artist-name "Artist Name"] [--no-conservative] [--no-cache] [--clear-all-cache]
     ```
-    *   `<audio_file>`: Path to the audio file to extract lyrics from.
-    *   `<lyrics_file>`: Path to a text file containing the lyrics.
-    *   `<output_file>`: Path to save the output JSON file with timestamps.
-    *   `--song-title "Song Title"`: (Optional) Title of the song.
-    *   `--artist-name "Artist Name"`: (Optional) Name of the artist.
-    *   `--no-conservative`: (Optional) Disable conservative alignment mode (not recommended).
+    *   Parameters are as described above.
+    *   **Caching:** Supports caching of alignment results. New flags: `--no-cache`, `--clear-all-cache`.
 
 ### `extract_lyrics.py`
 
 *   **Purpose:** A dedicated tool for extracting and processing lyrics from audio files. It can identify songs, fetch lyrics, and align them with the audio.
+*   **Caching:** Supports caching of extracted lyrics data.
+    *   `--no-cache`: Forces re-extraction and prevents saving to cache.
+    *   `--clear-all-cache`: Clears all cache entries.
 *   **Optimized Workflow:**
     1. **Start the Gentle server first** (critical prerequisite):
        ```bash
@@ -268,26 +276,47 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 
 *   **Command-Line Usage:**
     ```bash
-    python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps]
+    python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> [--output <output_path>] [--start-time <seconds>] [--end-time <seconds>] [--conservative] [--lyrics-file <path>] [--format-text] [--include-timestamps] [--no-cache] [--clear-all-cache]
     ```
-    *   `<audio_file_path>`: Path to the audio file to extract lyrics from.
-    *   `--output <output_path>`: (Optional) Path to save the lyrics JSON file. If not provided, only prints summary.
-    *   `--start-time <seconds>`: (Optional) Start time in seconds for time-range extraction.
-    *   `--end-time <seconds>`: (Optional) End time in seconds for time-range extraction.
-    *   `--conservative`: (Optional) Use conservative alignment for lyrics processing (recommended when providing your own lyrics).
-    *   `--lyrics-file <path>`: (Optional) Path to a text file containing user-provided lyrics.
-    *   `--format-text`: (Optional) Format lyrics as readable text instead of JSON.
-    *   `--include-timestamps`: (Optional) Include timestamps in formatted text output.
+    *   Parameters are as described above, with added caching flags.
+
+### `combine_audio_data.py`
+
+*   **Purpose:** This script combines multiple audio analysis JSON files into a single, coherent timeline. It's essential for creating sequences that span multiple songs or audio segments.
+*   **Key Features:**
+    *   Accepts multiple analysis JSON files and their corresponding original audio files.
+    *   Calculates accurate durations for each audio file (using `AudioAnalyzer`).
+    *   Offsets all timestamps (beats, sections, energy points, lyric events, etc.) in subsequent files by the cumulative duration of preceding files.
+    *   Prefixes section labels with a file identifier (e.g., "File1-Verse1", "File2-Chorus") to ensure uniqueness.
+    *   Merges all time-stamped events into a single data structure.
+    *   Outputs a new JSON file containing the combined analysis.
+*   **Command-Line Usage:**
+    ```bash
+    python -m roocode_sequence_designer_tools.combine_audio_data --analysis-jsons <file1.json> <file2.json> ... --audio-files <audio1.mp3> <audio2.mp3> ... --output-json <combined_output.json>
+    ```
+    *   `--analysis-jsons`: Space-separated list of paths to the input audio analysis JSON files.
+    *   `--audio-files`: Space-separated list of paths to the original audio files, in the same order as `--analysis-jsons`. These are used to determine accurate durations for offsetting.
+    *   `--output-json`: Path to save the combined audio analysis JSON file (e.g., `project_combined.analysis.json`).
+*   **Workflow:**
+    1. Generate individual audio analysis JSON files for each audio track using tools like `extract_audio_features.py` or `audio_analysis_report.py`.
+    2. Use `combine_audio_data.py` to merge these individual analysis files.
+    3. Use the resulting combined analysis JSON with `compile_seqdesign.py` and a `.seqdesign.json` file designed for the full combined timeline.
 
 ### `pattern_templates.py`
 
 *   **Purpose:** A powerful tool for expanding "Pattern Templates" or "Parameterized Meta-Effects" into concrete effects. This enables sophisticated sequence creation with minimal manual work by defining high-level patterns that get automatically expanded based on lyrics, audio analysis, or custom timing data.
 *   **Key Features:**
-    - **WarningThenEvent**: Creates warning effects before main events triggered by lyrics, beats, or custom times
-    - **LyricHighlight**: Highlights specific words or phrases with visual effects
-    - **BeatSync**: Synchronizes effects with audio beats within specified time windows
-    - **Intelligent Ball Selection**: Supports various ball selection strategies (round-robin, specific balls, random)
-    - **Data Integration**: Seamlessly integrates with lyrics timestamps and audio analysis data
+    *   **WarningThenEvent**: Creates warning effects before main events triggered by lyrics, beats, or custom times.
+    *   **LyricHighlight**: Highlights specific words or phrases with visual effects.
+    *   **BeatSync**: Synchronizes effects with audio beats within specified time windows.
+    *   **Section Theme with Energy Mapping (`section_theme_energy`)**: Applies themes to song sections, modulating a base color (e.g., its brightness or saturation) based on the audio's energy level within that section. This allows for dynamic visual responses to the music's intensity changes across different parts of a song.
+        *   **Parameters:**
+            *   `themes_definition`: An array of theme objects, e.g., `{ "section_label": "Verse 1", "base_color": "blue", "energy_mapping": "brightness", "energy_factor": 1.0 }`.
+            *   `default_color` (optional): Color for sections not matching any defined theme.
+            *   `audio_analysis_path`: Path to the JSON file containing audio analysis data (must include section and energy information). (Note: The actual data is passed to the expander function by the `compile_seqdesign.py` or `pattern_templates.py` script runner, this path is for metadata).
+        *   **Expansion Logic:** The expander function loads audio analysis (sections, energy timeseries), matches themes to sections, and generates fine-grained `solid_color` effect segments where the color is modulated by energy at each time step.
+    *   **Intelligent Ball Selection**: Supports various ball selection strategies (round-robin, specific balls, random).
+    *   **Data Integration**: Seamlessly integrates with lyrics timestamps and audio analysis data.
 
 *   **Command-Line Usage:**
     ```bash

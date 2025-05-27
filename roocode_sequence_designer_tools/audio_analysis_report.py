@@ -27,16 +27,29 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from typing import Dict, List, Optional, Union, Any
+import hashlib # For cache key generation
 
 # Add parent directory to path so we can import our modules
-sys.path.append(str(Path(__file__).parent.parent))
+# _TOOL_DIR = Path(__file__).parent # Not needed for relative imports
+# _PROJECT_ROOT = _TOOL_DIR.parent # Not needed
+# sys.path.insert(0, str(_PROJECT_ROOT)) # Not needed
+
+from .tool_utils.cache_manager import CacheManager
+
 
 # Import the AudioAnalyzer
 try:
-    from roo_code_sequence_maker.audio_analyzer import AudioAnalyzer
+    from .tool_utils.audio_analyzer_core import AudioAnalyzer
 except ImportError as e:
-    print(f"Error importing AudioAnalyzer: {e}")
-    sys.exit(1)
+    print(f"Error importing AudioAnalyzer from .tool_utils.audio_analyzer_core: {e}", file=sys.stderr)
+    try:
+        from roocode_sequence_designer_tools.tool_utils.audio_analyzer_core import AudioAnalyzer
+        print("Fallback import of AudioAnalyzer successful.", file=sys.stderr)
+    except ImportError as e_fallback:
+        print(f"Fallback import also failed: {e_fallback}", file=sys.stderr)
+        print("Ensure the script is run as a module or PYTHONPATH is set.", file=sys.stderr)
+        sys.exit(1)
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -129,7 +142,9 @@ def analyze_audio_and_generate_report(
     output_dir: Optional[str] = None,
     start_time: Optional[float] = None,
     end_time: Optional[float] = None,
-    features: Optional[List[str]] = None
+    features: Optional[List[str]] = None,
+    cache_manager: Optional[CacheManager] = None, # Added for caching
+    no_cache: bool = False # Added for caching
 ) -> Dict[str, Any]:
     """
     Analyze audio file and generate a comprehensive report.
@@ -139,15 +154,46 @@ def analyze_audio_and_generate_report(
         output_dir (str, optional): Directory to save the report and visualizations.
             If not provided, uses the directory containing the audio file.
         start_time (float, optional): Start time in seconds for time-range analysis.
-            If provided with end_time, only analyzes the specified time range.
         end_time (float, optional): End time in seconds for time-range analysis.
-            If provided with start_time, only analyzes the specified time range.
         features (List[str], optional): List of specific features to include in the report.
-            If not provided, includes all features.
+        cache_manager (CacheManager, optional): Instance of CacheManager.
+        no_cache (bool): If True, bypasses cache read/write.
             
     Returns:
         dict: The generated report data
     """
+    if cache_manager is None: # Should be provided by main
+        cache_manager = CacheManager()
+
+    # --- Caching Logic ---
+    tool_params_for_cache = {
+        "tool_name": "audio_analysis_report" # To differentiate from extract_audio_features cache
+    }
+    if start_time is not None:
+        tool_params_for_cache["start_time"] = start_time
+    if end_time is not None:
+        tool_params_for_cache["end_time"] = end_time
+    if features:
+        tool_params_for_cache["features"] = sorted(list(set(features))) # Normalized
+
+    cache_key = cache_manager.generate_cache_key(
+        identifier="audio_analysis_report", # Specific identifier for this tool
+        params=tool_params_for_cache,
+        file_path_for_hash=audio_file_path
+    )
+
+    if not no_cache:
+        cached_report_data = cache_manager.load_from_cache(cache_key)
+        if cached_report_data:
+            logger.info(f"Loading full report from cache (key: {cache_key}).")
+            # Ensure plot paths are potentially updated if cache is from different context
+            # For simplicity, assume cached report is self-contained or plots are regenerated if missing.
+            # Here, we just return the cached data. The calling function will save/print it.
+            return cached_report_data
+    
+    logger.info("Cache not used or cache miss. Performing new analysis for report.")
+    # --- End Caching Logic ---
+
     # Determine output directory
     if output_dir is None:
         output_dir = os.path.dirname(os.path.abspath(audio_file_path))
@@ -304,9 +350,14 @@ def analyze_audio_and_generate_report(
         report["issues"].append(error_msg)
     
     # Save the report
-    report_path = os.path.join(output_dir, "analysis_report.json")
-    create_report_file(report, report_path)
-    
+    report_path = os.path.join(output_dir, f"{Path(audio_file_path).stem}.analysis_report.json")
+    create_report_file(report, report_path) # Saves the generated report to file
+
+    # Save to cache if enabled
+    if not no_cache:
+        logger.info(f"Saving new report to cache (key: {cache_key}).")
+        cache_manager.save_to_cache(cache_key, report)
+            
     return report
 
 def print_report_summary(report):
@@ -475,9 +526,27 @@ def main():
         action="store_true",
         help="Only check the size of an existing report without generating a new one"
     )
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Force re-analysis and do not use or save to cache."
+    )
+    parser.add_argument(
+        "--clear-all-cache",
+        action="store_true",
+        help="Clear all cache entries for this tool and exit."
+    )
     
     args = parser.parse_args()
-    
+
+    cache_manager_instance = CacheManager()
+
+    if args.clear_all_cache:
+        logger.info("Clearing all cache entries...")
+        cache_manager_instance.clear_all_cache()
+        # Potentially clear specific keys too if identifiable, but clear_all_cache is broad.
+        sys.exit(0)
+        
     # Check if we're only checking the size of an existing report
     if args.check_size_only:
         # Import the report size checker
@@ -526,15 +595,33 @@ def main():
     
     # Run the analysis
     report = analyze_audio_and_generate_report(
-        args.audio_file_path,
-        args.output_dir,
-        args.start_time,
-        args.end_time,
-        features
+        audio_file_path=args.audio_file_path,
+        output_dir=args.output_dir,
+        start_time=args.start_time,
+        end_time=args.end_time,
+        features=features,
+        cache_manager=cache_manager_instance,
+        no_cache=args.no_cache
     )
     
+    # Output the report file path correctly (it's now part of the return or generated inside)
+    # The analyze_audio_and_generate_report function now handles saving the report file.
+    # We just need to ensure the summary points to the correct location.
+    
+    # Determine the expected report path for the summary message.
+    # This logic should mirror how report_path is constructed in analyze_audio_and_generate_report
+    final_output_dir = args.output_dir if args.output_dir else os.path.dirname(os.path.abspath(args.audio_file_path))
+    expected_report_filename = f"{Path(args.audio_file_path).stem}.analysis_report.json"
+    full_report_path = os.path.join(final_output_dir, expected_report_filename)
+    
+    # Update the report object with the actual path for summary if it's not already there,
+    # or ensure print_report_summary can deduce it.
+    # For simplicity, let's add it to the report dict if not precise.
+    if "report_file_path" not in report: # analyze_audio_and_generate_report might not add this field.
+        report["report_file_path"] = full_report_path # For print_report_summary to use
+    
     # Print the summary
-    print_report_summary(report)
+    print_report_summary(report) # report now contains the data, print_report_summary will show paths
 
 if __name__ == "__main__":
     main()

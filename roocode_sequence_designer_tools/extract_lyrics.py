@@ -12,22 +12,44 @@ import json
 import argparse
 import logging
 from pathlib import Path
+import hashlib # For cache key
 
 # Add parent directory to path so we can import our modules
-sys.path.append(str(Path(__file__).parent.parent))
+# _TOOL_DIR = Path(__file__).parent # Not needed
+# _PROJECT_ROOT = _TOOL_DIR.parent # Not needed
+# sys.path.insert(0, str(_PROJECT_ROOT)) # Not needed
+
+from .tool_utils.cache_manager import CacheManager
 
 # Import the AudioAnalyzer
 try:
-    from roo_code_sequence_maker.audio_analyzer import AudioAnalyzer
+    # AudioAnalyzer class is now within audio_analyzer_core.py
+    from .tool_utils.audio_analyzer_core import AudioAnalyzer
 except ImportError as e:
-    print(f"Error importing AudioAnalyzer: {e}")
-    sys.exit(1)
+    print(f"Error importing AudioAnalyzer from .tool_utils.audio_analyzer_core: {e}", file=sys.stderr)
+    try:
+        from roocode_sequence_designer_tools.tool_utils.audio_analyzer_core import AudioAnalyzer
+        print("Fallback import of AudioAnalyzer successful.", file=sys.stderr)
+    except ImportError as e_fallback:
+        print(f"Fallback import also failed: {e_fallback}", file=sys.stderr)
+        print("Ensure the script is run as a module or PYTHONPATH is set.", file=sys.stderr)
+        sys.exit(1)
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("LyricsExtractor")
 
-def extract_lyrics(audio_file_path, output_path=None, time_range=None, conservative=False, user_lyrics=None):
+def extract_lyrics(
+    audio_file_path,
+    output_path=None,
+    time_range=None,
+    conservative=False,
+    user_lyrics_text=None, # Renamed for clarity from user_lyrics
+    lyrics_file_path_for_hash=None, # For cache key if lyrics come from file
+    cache_manager: CacheManager = None, # Added
+    no_cache: bool = False # Added
+    ):
     """
     Extract lyrics from an audio file.
     
@@ -36,11 +58,57 @@ def extract_lyrics(audio_file_path, output_path=None, time_range=None, conservat
         output_path (str, optional): Path to save the lyrics JSON file
         time_range (tuple, optional): Tuple of (start_time, end_time) in seconds
         conservative (bool): Whether to use conservative alignment
-        user_lyrics (str, optional): User-provided lyrics text
+        user_lyrics_text (str, optional): User-provided lyrics text
+        lyrics_file_path_for_hash (str, optional): Path to lyrics file for hashing in cache key
+        cache_manager (CacheManager): Instance of CacheManager.
+        no_cache (bool): If True, bypasses cache read/write.
         
     Returns:
         dict: Lyrics data
     """
+    if cache_manager is None:
+        cache_manager = CacheManager()
+
+    # --- Caching Logic ---
+    tool_params_for_cache = {
+        "conservative": conservative,
+    }
+    if time_range:
+        tool_params_for_cache["time_range_start"] = time_range[0]
+        tool_params_for_cache["time_range_end"] = time_range[1]
+    
+    # If user_lyrics_text is provided directly (not from a file initially given to main),
+    # its hash should be part of the cache.
+    # If lyrics_file_path_for_hash is given, it means lyrics came from a file, use its hash.
+    lyrics_content_hash_for_cache = None
+    if lyrics_file_path_for_hash:
+        try:
+            # This hash is of the lyrics file, not the audio file for this specific part
+            lyrics_content_hash_for_cache = cache_manager._get_file_hash(lyrics_file_path_for_hash)
+        except FileNotFoundError:
+            lyrics_content_hash_for_cache = "lyrics_file_not_found"
+    elif user_lyrics_text: # Lyrics provided as string directly to this function
+        lyrics_content_hash_for_cache = hashlib.md5(user_lyrics_text.encode('utf-8')).hexdigest()
+
+    if lyrics_content_hash_for_cache:
+        tool_params_for_cache["user_lyrics_hash"] = lyrics_content_hash_for_cache
+
+    cache_key = cache_manager.generate_cache_key(
+        identifier="extract_lyrics",
+        params=tool_params_for_cache,
+        file_path_for_hash=audio_file_path # Hash of the audio file itself
+    )
+
+    if not no_cache:
+        cached_data = cache_manager.load_from_cache(cache_key)
+        if cached_data:
+            logger.info(f"Loading lyrics data from cache (key: {cache_key}).")
+            # The output saving is handled by the caller (main function) if output_path is set
+            return cached_data
+    
+    logger.info("Cache not used or cache miss for lyrics. Performing new extraction.")
+    # --- End Caching Logic ---
+
     # Initialize the analyzer
     analyzer = AudioAnalyzer()
     
@@ -51,8 +119,8 @@ def extract_lyrics(audio_file_path, output_path=None, time_range=None, conservat
     }
     
     # Add user-provided lyrics if available
-    if user_lyrics:
-        analysis_params['user_provided_lyrics'] = user_lyrics
+    if user_lyrics_text:
+        analysis_params['user_provided_lyrics'] = user_lyrics_text
     
     # Analyze the audio
     logger.info(f"Analyzing audio file for lyrics: {audio_file_path}")
@@ -115,24 +183,14 @@ def extract_lyrics(audio_file_path, output_path=None, time_range=None, conservat
                 lyrics_data['word_timestamps'] = filtered_words
                 logger.info(f"Filtered lyrics to {len(filtered_words)} words in time range {start_time}-{end_time}s")
     
-    # Save to file if output path is provided
-    if output_path:
-        try:
-            # Create directory if it doesn't exist
-            os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    # Output path saving is handled by the main function after this returns.
+    # This function is now primarily responsible for extraction and returning data.
+
+    # Save to cache if enabled
+    if not no_cache:
+        logger.info(f"Saving new lyrics data to cache (key: {cache_key}).")
+        cache_manager.save_to_cache(cache_key, lyrics_data) # lyrics_data is the final processed output
             
-            # Ensure the output path has the correct extension
-            if not output_path.endswith('.synced_lyrics.json'):
-                base_path = output_path.rsplit('.', 1)[0] if '.' in output_path else output_path
-                output_path = f"{base_path}.synced_lyrics.json"
-                logger.info(f"Adjusting output path to use standardized extension: {output_path}")
-            
-            with open(output_path, 'w') as f:
-                json.dump(lyrics_data, f, indent=2)
-            logger.info(f"Lyrics data saved to {output_path}")
-        except Exception as e:
-            logger.error(f"Error saving lyrics data: {e}")
-    
     return lyrics_data
 
 def format_lyrics_text(lyrics_data, include_timestamps=False):
@@ -280,33 +338,48 @@ def main():
         action="store_true",
         help="Include timestamps in formatted text output"
     )
+    parser.add_argument(
+        "--no-cache",
+        action="store_true",
+        help="Force re-analysis and do not use or save to cache."
+    )
+    parser.add_argument(
+        "--clear-all-cache",
+        action="store_true",
+        help="Clear all cache entries for this tool and exit."
+    )
     
     args = parser.parse_args()
-    
+
+    cache_manager_instance = CacheManager()
+
+    if args.clear_all_cache:
+        logger.info("Clearing all cache entries...")
+        cache_manager_instance.clear_all_cache()
+        sys.exit(0)
+        
     # Check if the audio file exists
     if not os.path.exists(args.audio_file_path):
         logger.error(f"Audio file not found: {args.audio_file_path}")
         sys.exit(1)
     
     # Load user-provided lyrics if specified
-    user_lyrics = None
+    user_lyrics_text_content = None
+    lyrics_file_to_hash = None # For cache key if lyrics file is used
+
     if args.lyrics_file:
-        # Check if the lyrics file exists
-        lyrics_file_path = args.lyrics_file
-        if not os.path.exists(lyrics_file_path):
-            # Try adding the .lyrics.txt extension if it's missing
-            if not lyrics_file_path.endswith('.lyrics.txt'):
-                potential_path = f"{lyrics_file_path}.lyrics.txt"
+        lyrics_file_to_hash = args.lyrics_file # Original path for hashing
+        # Check if the lyrics file exists (logic from original script)
+        if not os.path.exists(lyrics_file_to_hash):
+            if not lyrics_file_to_hash.endswith('.lyrics.txt'):
+                potential_path = f"{lyrics_file_to_hash}.lyrics.txt"
                 if os.path.exists(potential_path):
-                    lyrics_file_path = potential_path
-                    logger.info(f"Using standardized lyrics file path: {lyrics_file_path}")
+                    lyrics_file_to_hash = potential_path
                 else:
-                    # Also try replacing any existing extension with .lyrics.txt
-                    base_path = lyrics_file_path.rsplit('.', 1)[0] if '.' in lyrics_file_path else lyrics_file_path
+                    base_path = lyrics_file_to_hash.rsplit('.', 1)[0] if '.' in lyrics_file_to_hash else lyrics_file_to_hash
                     potential_path = f"{base_path}.lyrics.txt"
                     if os.path.exists(potential_path):
-                        lyrics_file_path = potential_path
-                        logger.info(f"Using standardized lyrics file path: {lyrics_file_path}")
+                        lyrics_file_to_hash = potential_path
                     else:
                         logger.error(f"Lyrics file not found: {args.lyrics_file}")
                         sys.exit(1)
@@ -314,10 +387,11 @@ def main():
                 logger.error(f"Lyrics file not found: {args.lyrics_file}")
                 sys.exit(1)
         
+        logger.info(f"Using lyrics file: {lyrics_file_to_hash}")
         try:
-            with open(lyrics_file_path, 'r') as f:
-                user_lyrics = f.read()
-            logger.info(f"Loaded user-provided lyrics from {lyrics_file_path}")
+            with open(lyrics_file_to_hash, 'r') as f:
+                user_lyrics_text_content = f.read()
+            logger.info(f"Loaded user-provided lyrics from {lyrics_file_to_hash}")
         except Exception as e:
             logger.error(f"Error loading lyrics file: {e}")
             sys.exit(1)
@@ -330,12 +404,35 @@ def main():
     
     # Extract lyrics
     lyrics_data = extract_lyrics(
-        args.audio_file_path,
-        args.output,
-        time_range,
-        args.conservative,
-        user_lyrics
+        audio_file_path=args.audio_file_path,
+        output_path=None, # extract_lyrics will not save, main will handle it
+        time_range=time_range,
+        conservative=args.conservative,
+        user_lyrics_text=user_lyrics_text_content,
+        lyrics_file_path_for_hash=lyrics_file_to_hash, # Pass this for cache key generation
+        cache_manager=cache_manager_instance,
+        no_cache=args.no_cache
     )
+
+    # Save to file if output path is provided (moved from extract_lyrics to main)
+    if args.output:
+        output_file_path = args.output
+        try:
+            # Create directory if it doesn't exist
+            os.makedirs(os.path.dirname(os.path.abspath(output_file_path)), exist_ok=True)
+            
+            # Ensure the output path has the correct extension
+            if not output_file_path.endswith('.synced_lyrics.json'):
+                base_path = output_file_path.rsplit('.', 1)[0] if '.' in output_file_path else output_file_path
+                output_file_path = f"{base_path}.synced_lyrics.json"
+                logger.info(f"Adjusting output path to use standardized extension: {output_file_path}")
+            
+            with open(output_file_path, 'w') as f:
+                json.dump(lyrics_data, f, indent=2)
+            logger.info(f"Lyrics data saved to {output_file_path}")
+        except Exception as e:
+            logger.error(f"Error saving lyrics data to {output_file_path}: {e}")
+            # lyrics_data is still available for summary even if save fails
     
     # Print summary or formatted text
     if args.format_text:

@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """
-Audio Analyzer for LTX Sequence Maker
+Core Audio Analyzer and Lyrics Processor for Roocode Sequence Designer Tools
 
 This module provides comprehensive audio analysis capabilities for creating
 color sequences synchronized with music. It extracts musical features like
-beats, sections, and energy levels from audio files.
+beats, sections, and energy levels from audio files. It also handles
+lyrics identification, retrieval, and alignment.
+
+Originally from roo_code_sequence_maker/audio_analyzer.py, migrated here.
 """
 
 import os
@@ -25,8 +28,13 @@ try:
     LIBROSA_AVAILABLE = True
 except ImportError:
     LIBROSA_AVAILABLE = False
-    print("Warning: librosa not available. Install with 'pip install librosa'")
+    # This print will occur at import time. Consider logging it instead if this file becomes a library.
+    print("Warning: librosa not available. Install with 'pip install librosa'. Audio analysis functionality will be limited.")
 
+
+# Default application directory name for this toolkit
+DEFAULT_APP_DIR_NAME_ROOCODE = ".roocode_sequence_designer"
+ANALYSIS_CACHE_SUBDIR_ROOCODE = "analysis_cache_core" # Subdirectory for this specific analyzer's cache
 
 class AudioAnalyzer:
     """
@@ -40,7 +48,7 @@ class AudioAnalyzer:
     1. Cache keys are generated based on the audio file path, file content hash, and
        analysis parameters.
     2. Cache files are stored in a configurable directory (defaults to
-       ~/.ltx_sequence_maker/analysis_cache).
+       ~/.roocode_sequence_designer/analysis_cache_core).
     3. Cache invalidation is based on file modification time and content hash.
     4. Cache files use JSON format for compatibility and readability.
     """
@@ -51,17 +59,17 @@ class AudioAnalyzer:
         
         Args:
             cache_dir (str, optional): Custom directory to store analysis cache files.
-                If not provided, defaults to ~/.ltx_sequence_maker/analysis_cache.
+                If not provided, defaults to ~/.roocode_sequence_designer/analysis_cache_core.
             api_keys_path (str, optional): Path to the API keys JSON file for lyrics processing.
-                If not provided, defaults to standard locations.
+                If not provided, defaults to standard locations within the new app dir.
         """
-        self.logger = logging.getLogger("AudioAnalyzer")
+        self.logger = logging.getLogger("RoocodeAudioAnalyzerCore") # Updated logger name
         
         # Create analysis cache directory
         if cache_dir:
             self.analysis_cache_dir = Path(cache_dir)
         else:
-            self.analysis_cache_dir = Path.home() / ".ltx_sequence_maker" / "analysis_cache"
+            self.analysis_cache_dir = Path.home() / DEFAULT_APP_DIR_NAME_ROOCODE / ANALYSIS_CACHE_SUBDIR_ROOCODE
         
         self.analysis_cache_dir.mkdir(parents=True, exist_ok=True)
         
@@ -74,10 +82,10 @@ class AudioAnalyzer:
         self.analysis_params = {}
         
         # Store API keys path
-        self.api_keys_path = api_keys_path
+        self.api_keys_path = api_keys_path # LyricsProcessor will handle its default location logic
         
         # Initialize lyrics processor
-        self.lyrics_processor = LyricsProcessor(api_keys_path=self.api_keys_path)
+        self.lyrics_processor = LyricsProcessor(api_keys_path=self.api_keys_path, app_name=DEFAULT_APP_DIR_NAME_ROOCODE)
         
         # Check if librosa is available
         if not LIBROSA_AVAILABLE:
@@ -103,6 +111,7 @@ class AudioAnalyzer:
                 - request_lyrics (bool): If True, process lyrics for the audio file
                 - conservative_lyrics_alignment (bool): If True, use conservative alignment for lyrics
                 - user_provided_lyrics (str): User-provided lyrics text, if available
+                - request_duration (bool): If True, only basic duration info is prioritized. (New hint)
         
         Returns:
             dict: Analysis data containing musical features
@@ -111,6 +120,17 @@ class AudioAnalyzer:
             FileNotFoundError: If the audio file doesn't exist
             RuntimeError: If there's an error loading or analyzing the audio file
         """
+        if not LIBROSA_AVAILABLE:
+            self.logger.error("Librosa is not available, cannot perform audio analysis.")
+            # Potentially return a very minimal structure or raise error
+            # For now, let's assume if analyze_audio is called, user expects analysis.
+            # This path primarily affects _extract_features.
+            # analyze_audio can still return duration if only that is requested (handled by some tools)
+            # For full analysis, it relies on librosa.
+            if not (analysis_params and analysis_params.get('request_duration')):
+                 raise RuntimeError("Librosa is required for full audio analysis but is not installed.")
+
+
         # Check if file exists
         if not os.path.exists(audio_file_path):
             self.logger.error(f"Audio file not found: {audio_file_path}")
@@ -149,9 +169,21 @@ class AudioAnalyzer:
             except Exception as e:
                 self.logger.warning(f"Error loading existing analysis, will recreate: {e}")
         
+        # Special case: if only duration is requested and librosa is not available,
+        # try a fallback if possible, or just fail if no other way.
+        # This class is librosa-dependent for actual analysis.
+        # The get_audio_duration in combine_audio_data.py uses this.
+        # If 'request_duration' is true, we might not need full librosa processing.
+        # However, the current _extract_features always uses librosa.
+        # For simplicity, if librosa is unavailable, _extract_features will fail.
+        # The `request_duration` key is more of a hint for `get_audio_duration` which might
+        # call this method.
+
         # Load audio using librosa
         try:
             self.logger.info(f"Loading audio for analysis: {audio_file_path}")
+            if not LIBROSA_AVAILABLE: # Should have been caught earlier if not just duration
+                 raise RuntimeError("Librosa not available for loading audio.")
             audio_data, sample_rate = librosa.load(audio_file_path, sr=None)
         except Exception as e:
             self.logger.error(f"Error loading audio file: {e}")
@@ -186,12 +218,12 @@ class AudioAnalyzer:
         self.current_analysis_data = analysis_data
         
         # Process lyrics if requested
-        if analysis_params and analysis_params.get('request_lyrics', False):
+        if self.analysis_params and self.analysis_params.get('request_lyrics', False):
             self.logger.info("Processing lyrics as requested")
             
             # Extract lyrics parameters
-            conservative_alignment = analysis_params.get('conservative_lyrics_alignment', False)
-            user_provided_lyrics = analysis_params.get('user_provided_lyrics')
+            conservative_alignment = self.analysis_params.get('conservative_lyrics_alignment', False)
+            user_provided_lyrics = self.analysis_params.get('user_provided_lyrics')
             
             # Process lyrics
             lyrics_data = self.lyrics_processor.process_audio(
@@ -202,12 +234,21 @@ class AudioAnalyzer:
             
             # Add lyrics data to analysis data
             analysis_data['lyrics_info'] = lyrics_data
-            self.current_analysis_data = analysis_data
+            self.current_analysis_data = analysis_data # Update with lyrics
         
         return analysis_data
     
     def _extract_features(self, audio_data, sample_rate, audio_file_path=None):
         """Extract musical features from audio data."""
+        if not LIBROSA_AVAILABLE:
+            # This should ideally not be reached if checks are done earlier,
+            # but as a safeguard:
+            self.logger.error("Cannot extract features: Librosa is not available.")
+            # Return a minimal structure or what's possible without librosa
+            # For example, if duration was calculated by another means and passed in, return that.
+            # For now, this indicates a problem if full feature extraction is expected.
+            return {"error": "Librosa not available for feature extraction."}
+
         # Basic features
         duration = librosa.get_duration(y=audio_data, sr=sample_rate)
         tempo, beat_frames = librosa.beat.beat_track(y=audio_data, sr=sample_rate)
@@ -218,14 +259,20 @@ class AudioAnalyzer:
         
         # Segment analysis for section detection
         mfcc = librosa.feature.mfcc(y=audio_data, sr=sample_rate)
-        segment_boundaries = librosa.segment.agglomerative(mfcc, 8)  # 8 segments
+        # Adjust number of segments if duration is very short
+        num_segments = 8
+        if duration < 30: # e.g., less than 30 seconds
+            num_segments = max(2, int(duration / 5)) # at least 2 segments, or one per 5s
+        
+        segment_boundaries = librosa.segment.agglomerative(mfcc, num_segments) 
         segment_times = librosa.frames_to_time(segment_boundaries, sr=sample_rate)
         
         # Create labeled sections
         sections = []
-        section_labels = ["Intro", "Verse 1", "Chorus 1", "Verse 2", "Chorus 2", "Bridge", "Chorus 3", "Outro"]
+        section_labels = ["Intro", "Verse 1", "Chorus 1", "Verse 2", "Chorus 2", "Bridge", "Chorus 3", "Outro", 
+                          "Section 9", "Section 10", "Section 11", "Section 12"] # More labels for more segments
         for i in range(len(segment_times) - 1):
-            label = section_labels[i] if i < len(section_labels) else f"Section {i+1}"
+            label = section_labels[i] if i < len(section_labels) else f"Segment {i+1}" # Changed label generation
             sections.append({
                 "label": label,
                 "start": float(segment_times[i]),
@@ -244,15 +291,15 @@ class AudioAnalyzer:
             "song_title": os.path.basename(audio_file_path) if audio_file_path else "Unknown",
             "duration_seconds": float(duration),
             "estimated_tempo": float(tempo),
-            "time_signature_guess": "4/4",
+            "time_signature_guess": "4/4", # Librosa doesn't directly give this, common placeholder
             "beats": [float(t) for t in beat_times],
             "downbeats": [float(t) for t in downbeats],
             "sections": sections,
-            "energy_timeseries": {
+            "energy_timeseries": { # Librosa-style RMS energy
                 "times": [float(t) for t in times],
                 "values": [float(v) for v in rms]
             },
-            "onset_strength_timeseries": {
+            "onset_strength_timeseries": { # Librosa-style onset strength
                 "times": [float(t) for t in librosa.times_like(onset_env, sr=sample_rate)],
                 "values": [float(v) for v in onset_env]
             }
@@ -278,10 +325,16 @@ class AudioAnalyzer:
                     buf = f.read(block_size)
             return hasher.hexdigest()
         except Exception as e:
-            self.logger.warning(f"Error calculating file hash: {e}")
+            self.logger.warning(f"Error calculating file hash for {file_path}: {e}")
             # Fall back to using the file path and mtime
-            fallback = f"{file_path}_{os.path.getmtime(file_path)}"
-            return hashlib.md5(fallback.encode()).hexdigest()
+            try:
+                fallback = f"{file_path}_{os.path.getmtime(file_path)}"
+                return hashlib.md5(fallback.encode()).hexdigest()
+            except Exception as fallback_e:
+                self.logger.error(f"Error generating fallback hash for {file_path}: {fallback_e}")
+                # Absolute fallback if mtime also fails (e.g. file gone mid-process)
+                return hashlib.md5(f"{file_path}_hash_error".encode()).hexdigest()
+
     
     def _get_analysis_path_for_audio(self, audio_file_path, file_hash=None, analysis_params=None):
         """
@@ -296,15 +349,15 @@ class AudioAnalyzer:
             Path: Path object for the analysis JSON file
         """
         # Create a hash of the audio path to use as filename
+        params_str = json.dumps(analysis_params or {}, sort_keys=True)
         if file_hash is None:
-            # Fallback to just using the path if no hash is provided
-            path_hash = hashlib.md5(str(audio_file_path).encode()).hexdigest()
+            # Fallback to using the path and params if no hash is provided (should be rare now)
+            key_components = f"{audio_file_path}_{params_str}"
         else:
             # Include file hash and analysis parameters in the cache key
-            params_str = json.dumps(analysis_params or {}, sort_keys=True)
             key_components = f"{audio_file_path}_{file_hash}_{params_str}"
-            path_hash = hashlib.md5(key_components.encode()).hexdigest()
             
+        path_hash = hashlib.md5(key_components.encode()).hexdigest()
         return self.analysis_cache_dir / f"{path_hash}_analysis.json"
     
     def _validate_cache(self, cache_data, audio_file_path, current_file_hash):
@@ -320,41 +373,53 @@ class AudioAnalyzer:
             bool: True if the cache is valid, False otherwise
         """
         if not isinstance(cache_data, dict) or "metadata" not in cache_data:
+            self.logger.debug("Cache validation failed: 'metadata' key missing.")
             return False
         
         metadata = cache_data.get("metadata", {})
         
         # Check if the file path matches
         if metadata.get("audio_file_path") != audio_file_path:
+            self.logger.debug(f"Cache validation failed: audio_file_path mismatch. Cached: {metadata.get('audio_file_path')}, Current: {audio_file_path}")
             return False
         
         # Check if the file hash matches
         if metadata.get("file_hash") != current_file_hash:
+            self.logger.debug(f"Cache validation failed: file_hash mismatch. Cached: {metadata.get('file_hash')}, Current: {current_file_hash}")
             return False
         
-        # Check if the file modification time matches
+        # Check if the file modification time matches (as a secondary check, hash is primary)
         cached_mtime = metadata.get("file_mtime")
-        current_mtime = os.path.getmtime(audio_file_path)
-        
-        if cached_mtime is None or current_mtime > cached_mtime:
-            return False
+        try:
+            current_mtime = os.path.getmtime(audio_file_path)
+            if cached_mtime is None or current_mtime > cached_mtime: # if file is newer than cache record
+                self.logger.debug(f"Cache validation failed: mtime mismatch or file newer. Cached mtime: {cached_mtime}, Current mtime: {current_mtime}")
+                return False
+        except FileNotFoundError:
+            self.logger.debug(f"Cache validation failed: current audio file {audio_file_path} not found for mtime check.")
+            return False # File disappeared
         
         # Check if analysis parameters match
         cached_params = metadata.get("analysis_params", {})
-        current_params = self.analysis_params or {}
+        current_params = self.analysis_params or {} # self.analysis_params is set at start of analyze_audio
         
         if cached_params != current_params:
+            self.logger.debug(f"Cache validation failed: analysis_params mismatch. Cached: {cached_params}, Current: {current_params}")
             return False
         
+        self.logger.debug("Cache validation successful.")
         return True
     
-    def clear_cache(self, audio_file_path=None):
+    def clear_cache(self, audio_file_path=None, analysis_params_for_key=None): # Added params for specific key clear
         """
         Clear the analysis cache.
         
         Args:
-            audio_file_path (str, optional): If provided, only clear the cache for this file.
-                If None, clear the entire cache directory.
+            audio_file_path (str, optional): If provided, only clear the cache for this file
+                (considering current or provided analysis_params_for_key).
+                If None, clear the entire cache directory for this analyzer.
+            analysis_params_for_key (dict, optional): Specific analysis params to use for generating
+                the cache key to delete. If None, uses self.analysis_params.
                 
         Returns:
             int: Number of cache files removed
@@ -362,21 +427,21 @@ class AudioAnalyzer:
         count = 0
         try:
             if audio_file_path:
-                # Clear cache only for the specified file
+                # Clear cache only for the specified file and params
                 file_hash = self._calculate_file_hash(audio_file_path)
-                cache_path = self._get_analysis_path_for_audio(audio_file_path, file_hash, self.analysis_params)
+                params_to_use = analysis_params_for_key if analysis_params_for_key is not None else self.analysis_params
+                cache_path = self._get_analysis_path_for_audio(audio_file_path, file_hash, params_to_use)
                 
                 if os.path.exists(cache_path):
                     os.remove(cache_path)
                     count = 1
-                    self.logger.info(f"Cleared cache for {audio_file_path}")
+                    self.logger.info(f"Cleared cache for {audio_file_path} with params {params_to_use} at {cache_path}")
             else:
-                # Clear all cache files
+                # Clear all cache files in this analyzer's specific cache directory
                 for cache_file in self.analysis_cache_dir.glob("*_analysis.json"):
                     os.remove(cache_file)
                     count += 1
-                
-                self.logger.info(f"Cleared {count} cache files")
+                self.logger.info(f"Cleared {count} cache files from {self.analysis_cache_dir}")
         except Exception as e:
             self.logger.error(f"Error clearing cache: {e}")
         
@@ -400,7 +465,14 @@ class AudioAnalyzer:
             ValueError: If no analysis data is available
         """
         if not self.current_analysis_data:
-            raise ValueError("No analysis data available. Call analyze_audio() first.")
+            if self.current_audio_path: # Attempt to load/analyze if path is known
+                self.logger.info(f"No current_analysis_data for get_beats_in_range, attempting to analyze {self.current_audio_path}")
+                self.analyze_audio(self.current_audio_path, analysis_params=self.analysis_params) # Uses existing params
+                if not self.current_analysis_data: # Still none
+                    raise ValueError("No analysis data available even after re-attempt. Call analyze_audio() successfully first.")
+            else:
+                raise ValueError("No analysis data available and no audio path known. Call analyze_audio() first.")
+
         
         if beat_type == "downbeat":
             beats = self.current_analysis_data.get("downbeats", [])
@@ -423,7 +495,13 @@ class AudioAnalyzer:
             ValueError: If no analysis data is available
         """
         if not self.current_analysis_data:
-            raise ValueError("No analysis data available. Call analyze_audio() first.")
+            if self.current_audio_path:
+                self.logger.info(f"No current_analysis_data for get_section_by_label, attempting to analyze {self.current_audio_path}")
+                self.analyze_audio(self.current_audio_path, analysis_params=self.analysis_params)
+                if not self.current_analysis_data:
+                    raise ValueError("No analysis data available even after re-attempt. Call analyze_audio() successfully first.")
+            else:
+                raise ValueError("No analysis data available and no audio path known. Call analyze_audio() first.")
         
         for section in self.current_analysis_data.get("sections", []):
             if section["label"] == section_label:
@@ -446,7 +524,13 @@ class AudioAnalyzer:
             ValueError: If no analysis data is available or the feature is unknown
         """
         if not self.current_analysis_data:
-            raise ValueError("No analysis data available. Call analyze_audio() first.")
+            if self.current_audio_path:
+                self.logger.info(f"No current_analysis_data for get_feature_timeseries, attempting to analyze {self.current_audio_path}")
+                self.analyze_audio(self.current_audio_path, analysis_params=self.analysis_params)
+                if not self.current_analysis_data:
+                    raise ValueError("No analysis data available even after re-attempt. Call analyze_audio() successfully first.")
+            else:
+                raise ValueError("No analysis data available and no audio path known. Call analyze_audio() first.")
         
         # Map feature name to data structure
         feature_map = {
@@ -456,17 +540,19 @@ class AudioAnalyzer:
         
         feature_key = feature_map.get(feature_name)
         if not feature_key or feature_key not in self.current_analysis_data:
-            raise ValueError(f"Unknown feature: {feature_name}")
+            raise ValueError(f"Unknown or unavailable feature: {feature_name} in current analysis data.")
         
         return self.current_analysis_data[feature_key]
     
-    def get_cache_info(self, audio_file_path=None):
+    def get_cache_info(self, audio_file_path=None, analysis_params_for_key=None): # Added params
         """
         Get information about the cache.
         
         Args:
             audio_file_path (str, optional): If provided, get info only for this file.
-                If None, get info for all cached files.
+                If None, get info for all cached files in this analyzer's directory.
+            analysis_params_for_key (dict, optional): Specific analysis params to use for generating
+                the cache key if audio_file_path is specified. If None, uses self.analysis_params.
                 
         Returns:
             dict: Dictionary with cache information
@@ -480,7 +566,8 @@ class AudioAnalyzer:
             if audio_file_path:
                 # Get info for specific file
                 file_hash = self._calculate_file_hash(audio_file_path)
-                cache_path = self._get_analysis_path_for_audio(audio_file_path, file_hash, self.analysis_params)
+                params_to_use = analysis_params_for_key if analysis_params_for_key is not None else self.analysis_params
+                cache_path = self._get_analysis_path_for_audio(audio_file_path, file_hash, params_to_use)
                 
                 if os.path.exists(cache_path):
                     try:
@@ -491,14 +578,15 @@ class AudioAnalyzer:
                         cache_info["cache_files"].append({
                             "path": str(cache_path),
                             "size": os.path.getsize(cache_path),
-                            "created": os.path.getctime(cache_path),
+                            "created_timestamp": os.path.getctime(cache_path), # Use clearer key
                             "audio_file": metadata.get("audio_file_path", "Unknown"),
-                            "analysis_timestamp": metadata.get("analysis_timestamp", 0)
+                            "analysis_timestamp": metadata.get("analysis_timestamp", 0),
+                            "cached_params": metadata.get("analysis_params", {})
                         })
                     except Exception as e:
                         self.logger.warning(f"Error reading cache file {cache_path}: {e}")
             else:
-                # Get info for all cache files
+                # Get info for all cache files in this analyzer's specific cache directory
                 for cache_file in self.analysis_cache_dir.glob("*_analysis.json"):
                     try:
                         with open(cache_file, 'r') as f:
@@ -508,9 +596,10 @@ class AudioAnalyzer:
                         cache_info["cache_files"].append({
                             "path": str(cache_file),
                             "size": os.path.getsize(cache_file),
-                            "created": os.path.getctime(cache_file),
+                            "created_timestamp": os.path.getctime(cache_file),
                             "audio_file": metadata.get("audio_file_path", "Unknown"),
-                            "analysis_timestamp": metadata.get("analysis_timestamp", 0)
+                            "analysis_timestamp": metadata.get("analysis_timestamp", 0),
+                            "cached_params": metadata.get("analysis_params", {})
                         })
                     except Exception as e:
                         self.logger.warning(f"Error reading cache file {cache_file}: {e}")
@@ -529,16 +618,18 @@ class LyricsProcessor:
     Genius for lyrics retrieval, and can perform word-level alignment.
     """
     
-    def __init__(self, api_keys_path=None):
+    def __init__(self, api_keys_path=None, app_name=DEFAULT_APP_DIR_NAME_ROOCODE): # Added app_name
         """
         Initialize the lyrics processor.
         
         Args:
             api_keys_path (str, optional): Path to the API keys JSON file.
-                If not provided, defaults to standard locations.
+                If not provided, defaults to standard locations within app_name.
+            app_name (str): The application directory name (e.g., .roocode_sequence_designer).
         """
-        self.logger = logging.getLogger("LyricsProcessor")
+        self.logger = logging.getLogger("RoocodeLyricsProcessorCore") # Updated logger name
         self.current_lyrics_data = None
+        self.app_name = app_name # Store app_name for default API key paths
         self._load_api_keys(api_keys_path)
     
     def _load_api_keys(self, api_keys_path=None):
@@ -551,21 +642,26 @@ class LyricsProcessor:
         """
         # Define the path to the API keys file
         if api_keys_path:
-            api_keys_path = api_keys_path
+            # api_keys_path is already set
+            pass
         else:
-            # Try standard locations
+            # Try standard locations using self.app_name
             standard_paths = [
-                os.path.expanduser("~/.ltx_sequence_maker/api_keys.json"),
-                os.path.expanduser("~/.config/ltx_sequence_maker/api_keys.json")
+                os.path.expanduser(f"~/{self.app_name}/api_keys.json"),
+                os.path.expanduser(f"~/.config/{self.app_name}/api_keys.json")
             ]
             
-            for path in standard_paths:
-                if os.path.exists(path):
-                    api_keys_path = path
+            resolved_path = None
+            for path_candidate in standard_paths:
+                if os.path.exists(path_candidate):
+                    resolved_path = path_candidate
                     break
+            
+            if resolved_path:
+                 api_keys_path = resolved_path
             else:
-                # Default to first path if none exist
-                api_keys_path = standard_paths[0]
+                # Default to first path if none exist, for logging purposes, though it won't be found
+                api_keys_path = standard_paths[0] 
         
         # Initialize default empty keys
         self.acr_access_key = ""
@@ -574,7 +670,7 @@ class LyricsProcessor:
         self.genius_api_key = ""
         
         # Try to load keys from file
-        if os.path.exists(api_keys_path):
+        if api_keys_path and os.path.exists(api_keys_path): # Check if path resolved and exists
             try:
                 with open(api_keys_path, 'r') as f:
                     keys = json.load(f)
@@ -584,12 +680,12 @@ class LyricsProcessor:
                 self.acr_host = keys.get("acr_host", "")
                 self.genius_api_key = keys.get("genius_api_key", "")
                 
-                self.logger.info("Loaded API keys from config file")
+                self.logger.info(f"Loaded API keys from config file: {api_keys_path}")
             except Exception as e:
-                self.logger.error(f"Error loading API keys: {e}")
+                self.logger.error(f"Error loading API keys from {api_keys_path}: {e}")
                 self.logger.warning("Lyrics functionality will be limited without API keys")
         else:
-            self.logger.warning(f"API keys file not found at {api_keys_path}")
+            self.logger.warning(f"API keys file not found at expected locations (e.g., {api_keys_path})")
             self.logger.warning("Lyrics functionality will be limited without API keys")
     
     def _identify_song(self, audio_path: str) -> Optional[Dict]:
@@ -610,8 +706,8 @@ class LyricsProcessor:
         try:
             import base64
             import hmac
-            import time
-            from pathlib import Path
+            # import time (already imported globally)
+            # from pathlib import Path (already imported globally)
             
             # Log the audio path for debugging
             self.logger.info(f"Attempting to identify song from file: {audio_path}")
@@ -635,10 +731,10 @@ class LyricsProcessor:
             http_uri = "/v1/identify"
             data_type = "audio"
             signature_version = "1"
-            timestamp = str(int(time.time()))
+            current_timestamp = str(int(time.time())) # Renamed from timestamp to avoid conflict
             
             # Generate signature
-            string_to_sign = http_method + "\n" + http_uri + "\n" + self.acr_access_key + "\n" + data_type + "\n" + signature_version + "\n" + timestamp
+            string_to_sign = http_method + "\n" + http_uri + "\n" + self.acr_access_key + "\n" + data_type + "\n" + signature_version + "\n" + current_timestamp
             sign = base64.b64encode(hmac.new(self.acr_secret_key.encode('utf-8'), string_to_sign.encode('utf-8'), digestmod=hashlib.sha1).digest()).decode('utf-8')
             
             # Prepare request data
@@ -651,35 +747,35 @@ class LyricsProcessor:
                 'data_type': data_type,
                 'signature': sign,
                 'signature_version': signature_version,
-                'timestamp': timestamp,
+                'timestamp': current_timestamp,
                 'sample_bytes': len(sample_bytes)
             }
             
             # Send request
             url = f"https://{self.acr_host}{http_uri}"
             self.logger.info(f"Sending request to ACRCloud: {url}")
-            response = requests.post(url, files=files, data=data)
+            response = requests.post(url, files=files, data=data, timeout=30) # Added timeout
             
             # Check if request was successful
             if response.status_code != 200:
-                self.logger.error(f"ACRCloud API error: {response.status_code}")
+                self.logger.error(f"ACRCloud API error: {response.status_code} - {response.text}")
                 return None
                 
             # Parse result
             result_dict = response.json()
-            self.logger.info(f"ACRCloud response status: {result_dict.get('status', {}).get('code')}")
+            self.logger.info(f"ACRCloud response status: {result_dict.get('status', {}).get('code')}, msg: {result_dict.get('status', {}).get('msg')}")
             
             # Check if we got a match
             if result_dict.get('status', {}).get('code') == 0:
                 # Get the first music result
-                music = result_dict.get('metadata', {}).get('music', [])
+                music_results = result_dict.get('metadata', {}).get('music', []) # Renamed
                 
-                if music:
-                    song = music[0]
-                    song_title = song.get('title', '')
+                if music_results:
+                    song_data = music_results[0] # Renamed
+                    song_title = song_data.get('title', '')
                     
                     # Get artist name
-                    artists = song.get('artists', [])
+                    artists = song_data.get('artists', [])
                     artist_name = artists[0].get('name', '') if artists else ''
                     
                     self.logger.info(f"Song identified: {song_title} by {artist_name}")
@@ -717,22 +813,25 @@ class LyricsProcessor:
                 verbose=False,  # Don't print status messages to stdout
                 remove_section_headers=True,  # Remove section headers (e.g. [Chorus]) from lyrics
                 skip_non_songs=True,  # Skip non-songs (e.g. track lists)
-                excluded_terms=["(Remix)", "(Live)"]  # Exclude remixes and live versions
+                excluded_terms=["(Remix)", "(Live)"],  # Exclude remixes and live versions
+                timeout=30 # Added timeout
             )
             
             # Search for the song
             self.logger.info(f"Searching for lyrics: '{song_name}' by '{artist_name}'")
-            song = genius.search_song(song_name, artist_name)
+            song_object = genius.search_song(song_name, artist_name) # Renamed
             
             # Check if song was found and has lyrics
-            if song and song.lyrics:
+            if song_object and song_object.lyrics:
                 self.logger.info(f"Lyrics found for '{song_name}' by '{artist_name}'")
-                return song.lyrics
+                # Basic cleaning: remove leading/trailing whitespace from lyrics and lines
+                cleaned_lyrics = "\n".join([line.strip() for line in song_object.lyrics.strip().split("\n")])
+                return cleaned_lyrics
             else:
                 self.logger.warning(f"Lyrics not found for '{song_name}' by '{artist_name}' on Genius")
                 return None
                 
-        except Exception as e:
+        except Exception as e: # Catch more general exceptions from lyricsgenius
             self.logger.error(f"Error fetching lyrics: {e}")
             return None
     
@@ -759,69 +858,72 @@ class LyricsProcessor:
             
         self.logger.info(f"Aligning lyrics with audio using Gentle: {audio_path}")
         
+        # Ensure audio_path is absolute for Gentle if it expects that (often helps)
+        abs_audio_path = os.path.abspath(audio_path)
+
         try:
             # Prepare the multipart form data with audio file and transcript
-            files = {
-                'audio': (os.path.basename(audio_path), open(audio_path, 'rb')),
-                'transcript': ('lyrics.txt', lyrics_text.encode('utf-8'))
-            }
+            with open(abs_audio_path, 'rb') as audio_file_obj:
+                files_for_gentle = { # Renamed
+                    'audio': (os.path.basename(abs_audio_path), audio_file_obj),
+                    'transcript': ('lyrics.txt', lyrics_text.encode('utf-8'))
+                }
             
-            # Make the request to Gentle server
-            self.logger.info(f"Sending request to Gentle server: {gentle_url}")
-            response = requests.post(gentle_url, files=files, timeout=120)  # Longer timeout as alignment can take time
+                # Make the request to Gentle server
+                self.logger.info(f"Sending request to Gentle server: {gentle_url}")
+                response = requests.post(gentle_url, files=files_for_gentle, timeout=120)  # Longer timeout as alignment can take time
             
             # Check if request was successful
             if response.status_code != 200:
-                self.logger.error(f"Gentle server error: {response.status_code}")
+                self.logger.error(f"Gentle server error: {response.status_code} - {response.text}")
                 return []
             
             # Parse the response
             try:
-                result = response.json()
+                result_data = response.json() # Renamed
             except json.JSONDecodeError:
-                self.logger.error("Failed to parse Gentle response as JSON")
+                self.logger.error(f"Failed to parse Gentle response as JSON: {response.text[:200]}") # Log part of response
                 return []
             
             # Extract word timestamps
-            word_timestamps = []
-            words = result.get('words', [])
+            aligned_word_timestamps = [] # Renamed
+            words_from_gentle = result_data.get('words', []) # Renamed
             
-            if not words:
+            if not words_from_gentle:
                 self.logger.warning("No words found in Gentle response")
                 return []
             
             # Process each word in the alignment result
-            for word_data in words:
+            for word_entry in words_from_gentle: # Renamed
                 # Only include words that were successfully aligned
-                if word_data.get('case') == 'success':
-                    word = word_data.get('alignedWord')
-                    start = word_data.get('start')
-                    end = word_data.get('end')
+                if word_entry.get('case') == 'success':
+                    word_text = word_entry.get('alignedWord') # Renamed
+                    start_time = word_entry.get('start') # Renamed
+                    end_time = word_entry.get('end') # Renamed
                     
-                    if word and start is not None and end is not None:
-                        word_timestamps.append({
-                            "word": word,
-                            "start": start,
-                            "end": end
+                    if word_text and start_time is not None and end_time is not None:
+                        aligned_word_timestamps.append({
+                            "word": word_text,
+                            "start": float(start_time), # Ensure float
+                            "end": float(end_time)    # Ensure float
                         })
             
-            self.logger.info(f"Successfully aligned {len(word_timestamps)} words")
-            return word_timestamps
+            self.logger.info(f"Successfully aligned {len(aligned_word_timestamps)} words")
+            return aligned_word_timestamps
             
         except requests.exceptions.RequestException as e:
             self.logger.error(f"Network error connecting to Gentle server: {e}")
+            return []
+        except FileNotFoundError: # If audio_path doesn't exist when trying to open
+            self.logger.error(f"Audio file not found for Gentle alignment: {abs_audio_path}")
             return []
         except Exception as e:
             self.logger.error(f"Error during lyrics alignment: {e}")
             import traceback
             traceback.print_exc()
             return []
-        finally:
-            # Ensure files are closed
-            if 'files' in locals():
-                for f in files.values():
-                    if hasattr(f[1], 'close') and not f[1].closed:
-                        f[1].close()
+        # Removed finally block as `with open` handles file closing for audio_file_obj
+
     
     def process_audio(self, audio_path: str, conservative_alignment: bool = False, user_provided_lyrics: Optional[str] = None) -> Dict:
         """
@@ -844,7 +946,7 @@ class LyricsProcessor:
         self.logger.info(f"Processing audio for lyrics: {audio_path}")
         
         # Initialize result structure
-        result = {
+        lyrics_result = { # Renamed
             "song_title": None,
             "artist_name": None,
             "raw_lyrics": None,
@@ -852,38 +954,38 @@ class LyricsProcessor:
         }
         
         # Store as current lyrics data
-        self.current_lyrics_data = result
+        self.current_lyrics_data = lyrics_result
         
         # If user provided lyrics, use them directly for alignment
         if user_provided_lyrics:
             self.logger.info("Using user-provided lyrics")
-            result["raw_lyrics"] = user_provided_lyrics
+            lyrics_result["raw_lyrics"] = user_provided_lyrics
             
             # Align the lyrics
-            word_timestamps = self._align_lyrics(audio_path, user_provided_lyrics, conservative_alignment)
-            result["word_timestamps"] = word_timestamps
+            aligned_timestamps = self._align_lyrics(audio_path, user_provided_lyrics, conservative_alignment) # Renamed
+            lyrics_result["word_timestamps"] = aligned_timestamps
             
-            return result
+            return lyrics_result
         
         # Otherwise, try to identify the song
-        song_info = self._identify_song(audio_path)
+        song_identification_info = self._identify_song(audio_path) # Renamed
         
-        if song_info:
+        if song_identification_info:
             # Extract song and artist name
-            result["song_title"] = song_info.get("title")
-            result["artist_name"] = song_info.get("artist")
+            lyrics_result["song_title"] = song_identification_info.get("title")
+            lyrics_result["artist_name"] = song_identification_info.get("artist")
             
             # Fetch lyrics
-            if result["song_title"] and result["artist_name"]:
-                lyrics_text = self._get_lyrics(result["song_title"], result["artist_name"])
-                result["raw_lyrics"] = lyrics_text
+            if lyrics_result["song_title"] and lyrics_result["artist_name"]:
+                fetched_lyrics_text = self._get_lyrics(lyrics_result["song_title"], lyrics_result["artist_name"]) # Renamed
+                lyrics_result["raw_lyrics"] = fetched_lyrics_text
                 
                 # Align lyrics if available
-                if lyrics_text:
-                    word_timestamps = self._align_lyrics(audio_path, lyrics_text, conservative_alignment)
-                    result["word_timestamps"] = word_timestamps
+                if fetched_lyrics_text:
+                    aligned_timestamps = self._align_lyrics(audio_path, fetched_lyrics_text, conservative_alignment) # Renamed
+                    lyrics_result["word_timestamps"] = aligned_timestamps
         
-        return result
+        return lyrics_result
     
     def get_words_in_range(self, start_time, end_time):
         """
@@ -900,20 +1002,73 @@ class LyricsProcessor:
             ValueError: If no lyrics data is available.
         """
         if not self.current_lyrics_data:
-            raise ValueError("No lyrics data available. Call process_audio() first.")
+             # Attempt to process if audio path is known (e.g. from a prior AudioAnalyzer call)
+            if hasattr(self, 'parent_analyzer_audio_path') and self.parent_analyzer_audio_path:
+                self.logger.info(f"No current_lyrics_data for get_words_in_range, attempting to process {self.parent_analyzer_audio_path}")
+                self.process_audio(self.parent_analyzer_audio_path) # Uses default params for processing
+                if not self.current_lyrics_data: # Still none
+                     raise ValueError("No lyrics data available even after re-attempt. Call process_audio() successfully first.")
+            else:
+                raise ValueError("No lyrics data available and no audio path known. Call process_audio() first.")
+
         
-        word_timestamps = self.current_lyrics_data.get("word_timestamps", [])
+        word_timestamps_list = self.current_lyrics_data.get("word_timestamps", []) # Renamed
         
-        return [word for word in word_timestamps if start_time <= word["start"] < end_time]
+        return [word for word in word_timestamps_list if start_time <= word.get("start", float('-inf')) < end_time]
 
 
 if __name__ == "__main__":
-    # Example usage
-    logging.basicConfig(level=logging.INFO)
-    analyzer = AudioAnalyzer()
+    # Example usage (logging to console)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     
-    # Analyze an audio file
-    # analysis_data = analyzer.analyze_audio("/path/to/your/audio.mp3")
-    
-    # Get beats in a specific range
-    # beats = analyzer.get_beats_in_range(0, 30)  # Get beats in the first 30 seconds
+    # Create a dummy audio file for testing if needed
+    dummy_audio_file = "dummy_test_audio.mp3"
+    if not os.path.exists(dummy_audio_file):
+        try:
+            # Attempt to create a tiny, silent mp3 if ffmpeg is available.
+            # This is a placeholder; real testing needs actual audio.
+            subprocess.run(["ffmpeg", "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100", "-t", "1", "-q:a", "5", dummy_audio_file], check=False, capture_output=True)
+            if not os.path.exists(dummy_audio_file):
+                 print(f"Could not create dummy audio file {dummy_audio_file}. Please provide a real audio file for testing.")
+        except Exception:
+            print(f"ffmpeg not found or failed. Please provide a real audio file for testing AudioAnalyzer.")
+
+    if os.path.exists(dummy_audio_file):
+        print(f"\n--- Testing AudioAnalyzer with {dummy_audio_file} ---")
+        analyzer = AudioAnalyzer()
+        try:
+            # Analyze an audio file
+            analysis_data_main = analyzer.analyze_audio(dummy_audio_file, analysis_params={'request_lyrics': False})
+            print(f"Analysis complete for {dummy_audio_file}. Duration: {analysis_data_main.get('duration_seconds')}s")
+            
+            # Get beats in a specific range
+            if analysis_data_main:
+                 beats_in_range = analyzer.get_beats_in_range(0, 0.5) 
+                 print(f"Beats in first 0.5s: {beats_in_range}")
+            
+            # Test cache info
+            # print("\nCache Info:")
+            # print(json.dumps(analyzer.get_cache_info(dummy_audio_file), indent=2))
+            # analyzer.clear_cache(dummy_audio_file)
+            # print("Cleared cache for dummy file.")
+
+        except Exception as e:
+            print(f"Error during AudioAnalyzer test: {e}")
+        finally:
+            if os.path.exists(dummy_audio_file) and "dummy_test_audio.mp3" in dummy_audio_file: # cleanup
+                # os.remove(dummy_audio_file) # Keep it for manual reruns if created
+                pass
+    else:
+        print(f"Skipping AudioAnalyzer example as {dummy_audio_file} does not exist.")
+
+    # Lyrics Processor Example (requires API keys and Gentle server for full functionality)
+    # print("\n--- Testing LyricsProcessor ---")
+    # lyrics_proc = LyricsProcessor()
+    # # Replace with a real audio file path for lyrics testing
+    # # real_audio_for_lyrics_test = "/path/to/your/song.mp3" 
+    # # if os.path.exists(real_audio_for_lyrics_test):
+    # #    lyrics_output = lyrics_proc.process_audio(real_audio_for_lyrics_test)
+    # #    print("\nLyrics processing result:")
+    # #    print(json.dumps(lyrics_output, indent=2, ensure_ascii=False))
+    # # else:
+    # #    print(f"Skipping LyricsProcessor example as {real_audio_for_lyrics_test} does not exist.")
