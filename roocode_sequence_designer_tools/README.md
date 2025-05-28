@@ -62,6 +62,11 @@ Below is an overview of the key subdirectories and files within `roocode_sequenc
     *   Enables sophisticated sequence creation with minimal manual effect definition.
     *   Integrates with lyrics timestamps and audio analysis data for intelligent effect generation.
 
+*   **[`converters/convert_prg_to_ball.py`](./converters/convert_prg_to_ball.py):**
+    *   A CLI tool to convert compiled `.prg.json` files into `.ball.json` format.
+    *   This is particularly useful for creating single-ball sequences that can be directly imported into the `sequence_maker` application.
+    *   Usage: `python roocode_sequence_designer_tools/converters/convert_prg_to_ball.py <input.prg.json> <output.ball.json> [--audio-file <path_to_audio.mp3>]`
+
 *   **[`effect_implementations/`](./effect_implementations/):**
     *   This directory houses Python modules that contain the actual logic for various lighting effects.
     *   **[`common_effects.py`](./effect_implementations/common_effects.py):** Implements common, often non-audio-driven, lighting effects (e.g., static color, fade, snap_on_flash_off).

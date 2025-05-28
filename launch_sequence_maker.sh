@@ -11,6 +11,14 @@ export ICON_PATH=/home/twain/Projects/ltx_guru/sequence_maker/resources/icons/sm
 # Change to the project directory
 cd /home/twain/Projects/ltx_guru
 
+# Activate virtual environment
+if [ -f "ltx_guru/bin/activate" ]; then
+    source ltx_guru/bin/activate
+else
+    echo "Error: Virtual environment not found at ltx_guru/bin/activate"
+    exit 1
+fi
+
 # Make sure the icon installation script is executable
 chmod +x install_icon.sh
 
@@ -22,4 +30,4 @@ rm -rf ~/.cache/icon-cache.kcache
 gtk-update-icon-cache -f -t ~/.local/share/icons/hicolor
 
 # Run the application
-python run.py
+python sequence_maker/main.py

@@ -163,6 +163,34 @@ Roocode will report back on the compilation process:
 *   "Okay, I've compiled 'Opening_Act_v1.seqdesign.json' to 'Opening_Act_v1.prg.json' successfully."
 *   "There was an error during compilation: [Error message from compiler]. You might need to check the parameters for the 'main_strobe' effect."
 
+## 10. Creating Single-Ball Sequences for Sequence Maker
+
+If your goal is to create a sequence for a single LTX ball that can be directly imported into the `sequence_maker` application (using "File -> Import -> Import Ball Sequence"), there's a specific final output format required: a **`.ball.json`** file.
+
+Roocode can guide you through this process:
+
+1.  **Design Your Sequence**: Use Roocode as usual to define your effects on the timeline. This will result in a `.seqdesign.json` file.
+    *   Example: "Roocode, for 'MySong', make the ball yellow every time the word 'you' is sung."
+
+2.  **Compile to `.prg.json`**: Roocode will first compile your `.seqdesign.json` into the standard `.prg.json` format.
+    *   Roocode internal step: Uses `compile_seqdesign.py`.
+
+3.  **Convert `.prg.json` to `.ball.json`**: This is the crucial step for `sequence_maker` compatibility.
+    *   **Roocode Command**: "Roocode, now convert the compiled program for 'MySong' into a `.ball.json` file suitable for single ball import."
+    *   Roocode will use the `roocode_sequence_designer_tools/converters/convert_prg_to_ball.py` script to perform this conversion.
+    *   This script takes the `.prg.json` file as input and produces a `.ball.json` file. It will attempt to carry over relevant metadata, including the audio file path (often inferred from the original `.seqdesign.json`).
+
+4.  **Result**: You will get a `[sequence_name].ball.json` file in your project directory (e.g., `sequence_projects/MySong/MySong.ball.json`). This is the file you should import into `sequence_maker`.
+
+**Key File Formats in this Workflow:**
+
+*   Input to Roocode: Your verbal descriptions.
+*   Intermediate Design: `.seqdesign.json`
+*   Intermediate Compiled: `.prg.json`
+*   **Final Output for `sequence_maker` single ball import: `.ball.json`**
+
+Make sure to specify to Roocode if your intended final output is a `.ball.json` for `sequence_maker` import.
+
 ## 11. File Types in the LTX Guru Ecosystem
 
 Throughout your work with Roocode Sequence Designer, you'll encounter various file types with standardized extensions:
