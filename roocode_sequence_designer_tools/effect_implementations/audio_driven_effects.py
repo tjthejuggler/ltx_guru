@@ -13,7 +13,7 @@ import re
 
 # Import color utilities
 from roocode_sequence_designer_tools.tool_utils.color_parser import parse_color
-from roo_code_sequence_maker.utils.color_utils import rgb_to_hsv, hsv_to_rgb
+from roocode_sequence_designer_tools.tool_utils.color_utils_core import rgb_to_hsv, hsv_to_rgb
 
 
 def apply_pulse_on_beat_effect(

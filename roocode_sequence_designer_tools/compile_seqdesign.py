@@ -21,84 +21,14 @@ if _project_root not in sys.path:
     sys.path.insert(0, _project_root)
 
 # Import AudioAnalyzer for audio-dependent effects
-from roo_code_sequence_maker.audio_analyzer import AudioAnalyzer
+from roocode_sequence_designer_tools.tool_utils.audio_analyzer_core import AudioAnalyzer
 
 # Import effect implementations
-from .effect_implementations import common_effects
-from .effect_implementations import audio_driven_effects
+from roocode_sequence_designer_tools.effect_implementations import common_effects
+from roocode_sequence_designer_tools.effect_implementations import audio_driven_effects
 
 # Import color parsing utilities
-# Define a simplified color parser function directly in this script
-# to avoid dependency issues when running as a standalone script
-
-def parse_color(color_input):
-    """
-    Simplified version of parse_color that handles basic color inputs.
-    
-    Args:
-        color_input: Can be:
-            - A color name string (e.g., "red", "blue")
-            - A color object dictionary with "name" key
-    
-    Returns:
-        Tuple[int, int, int]: An (R, G, B) tuple
-    """
-    # Define basic named colors
-    NAMED_COLORS = {
-        "black": (0, 0, 0),
-        "white": (255, 255, 255),
-        "red": (255, 0, 0),
-        "green": (0, 255, 0),
-        "blue": (0, 0, 255),
-        "yellow": (255, 255, 0),
-        "cyan": (0, 255, 255),
-        "magenta": (255, 0, 255),
-        "purple": (128, 0, 128),
-        "orange": (255, 165, 0),
-    }
-    
-    # Handle string inputs (color names)
-    if isinstance(color_input, str):
-        color_name = color_input.lower()
-        if color_name in NAMED_COLORS:
-            return NAMED_COLORS[color_name]
-        else:
-            print(f"Warning: Unknown color name: {color_name}. Using black.")
-            return (0, 0, 0)
-    
-    # Handle dictionary inputs
-    elif isinstance(color_input, dict):
-        # Check for name key
-        if "name" in color_input:
-            color_name = color_input["name"].lower()
-            if color_name in NAMED_COLORS:
-                return NAMED_COLORS[color_name]
-            else:
-                print(f"Warning: Unknown color name: {color_name}. Using black.")
-                return (0, 0, 0)
-        
-        # Check for rgb key
-        elif "rgb" in color_input:
-            rgb_values = color_input["rgb"]
-            if not isinstance(rgb_values, (list, tuple)) or len(rgb_values) != 3:
-                print(f"Warning: Invalid RGB values: {rgb_values}. Using black.")
-                return (0, 0, 0)
-            
-            # Validate and clamp RGB values
-            r = max(0, min(255, int(rgb_values[0])))
-            g = max(0, min(255, int(rgb_values[1])))
-            b = max(0, min(255, int(rgb_values[2])))
-            return (r, g, b)
-        
-        # If we get here, the dictionary format is invalid
-        else:
-            print(f"Warning: Invalid color dictionary: {color_input}. Using black.")
-            return (0, 0, 0)
-    
-    # Handle invalid input types
-    else:
-        print(f"Warning: Invalid color input type: {type(color_input)}. Using black.")
-        return (0, 0, 0)
+from roocode_sequence_designer_tools.tool_utils.color_parser import parse_color
 
 
 def load_seqdesign_json(file_path: str) -> Dict[str, Any]:
@@ -450,41 +380,43 @@ def main() -> None:
         newly_generated_segments_for_this_effect = []
         
         try:
-            if effect_type == "solid_color":
+            effect_type_lower = effect_type.lower() # Convert to lowercase for case-insensitive matching
+
+            if effect_type_lower == "solid_color" or effect_type_lower == "solidcolor":
                 newly_generated_segments_for_this_effect = common_effects.apply_solid_color_effect(
                     effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
                 )
-            elif effect_type == "fade":
+            elif effect_type_lower == "fade":
                 newly_generated_segments_for_this_effect = common_effects.apply_fade_effect(
                     effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
                 )
-            elif effect_type == "pulse_on_beat":
+            elif effect_type_lower == "pulse_on_beat":
                 newly_generated_segments_for_this_effect = audio_driven_effects.apply_pulse_on_beat_effect(
                     effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
                 )
-            elif effect_type == "strobe":
+            elif effect_type_lower == "strobe":
                 if common_effects:  # Check if module was imported
                     newly_generated_segments_for_this_effect = common_effects.apply_strobe_effect(
                         effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
                     )
                 else:  # Should not happen if imports are correct
-                    print(f"Warning: common_effects module not available for effect type '{effect_type}'. Skipping.")
-            elif effect_type == "apply_section_theme_from_audio":
+                    print(f"Warning: common_effects module not available for effect type '{effect_type_lower}'. Skipping.")
+            elif effect_type_lower == "apply_section_theme_from_audio":
                 if audio_driven_effects:  # Check if module was imported
                     newly_generated_segments_for_this_effect = audio_driven_effects.apply_section_theme_from_audio_effect(
                         effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
                     )
                 else:  # Should not happen if imports are correct
-                    print(f"Warning: audio_driven_effects module not available for effect type '{effect_type}'. Skipping.")
-            elif effect_type == "snap_on_flash_off":
+                    print(f"Warning: audio_driven_effects module not available for effect type '{effect_type_lower}'. Skipping.")
+            elif effect_type_lower == "snap_on_flash_off":
                 if common_effects:  # Check if module was imported
                     newly_generated_segments_for_this_effect = common_effects.apply_snap_on_flash_off_effect(
                         effect_start_sec, effect_end_sec, effect_params, processed_metadata, audio_analysis_data
                     )
                 else:  # Should not happen if imports are correct
-                    print(f"Warning: common_effects module not available for effect type '{effect_type}'. Skipping.")
+                    print(f"Warning: common_effects module not available for effect type '{effect_type_lower}'. Skipping.")
             else:
-                print(f"Warning: Unknown effect type '{effect_type}' for effect '{effect_id}'. Skipping.")
+                print(f"Warning: Unknown effect type '{effect_type}' for effect '{effect_id}'. Skipping.") # Original case in warning is fine
                 continue
         except Exception as e:
             print(f"Error applying effect '{effect_id}' of type '{effect_type}': {str(e)}")

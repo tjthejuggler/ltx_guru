@@ -59,7 +59,7 @@ Each **Effect Object** in the array has the following structure:
 | Key             | Type         | Required | Description                                                                                                                                                                                          |
 | :-------------- | :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`            | String       | Yes      | A unique identifier string for this specific effect instance within the timeline (e.g., "intro_fade_1", "chorus_pulse_main"). Chosen by Roocode or the user.                                        |
-| `type`          | String       | Yes      | The type of effect to apply (e.g., "fade", "solid_color", "pulse_on_beat"). This name must correspond to an effect definition in the `tools_lookup.json` file.                                       |
+| `type`          | String       | Yes      | The type of effect to apply (e.g., "fade", "solid_color", "pulse_on_beat"). While the compiler is case-insensitive (e.g., handling "SolidColor" or "solidcolor"), the recommended convention is lowercase with underscores. This name must correspond to an effect definition in `tools_lookup.json`. |
 | `description`   | String       | No       | An optional human-readable description of what this effect instance is intended to do.                                                                                                               |
 | `timing`        | Timing Object| Yes      | An object defining the start and duration/end time of this effect. See [Timing Object Specification](#7-timing-object-specification).                                                                 |
 | `params`        | Object       | Yes      | An object containing parameters specific to the `type` of effect. The structure of `params` varies based on the effect `type` (defined in `tools_lookup.json`). See examples below.                  |
@@ -102,14 +102,16 @@ Effects in the `effects_timeline` are processed in order. If an effect's time ra
 
 ## 6. Color Object Specification
 
-Colors within effect `params` (and `metadata.default_base_color`) are specified using a "Color Object." This object must have exactly one of the following keys:
+Colors within effect `params` (and `metadata.default_base_color`) can be specified in several ways:
+- As a direct RGB array: `[R, G, B]` (e.g., `[255, 255, 0]`)
+- As a "Color Object" dictionary, which must have exactly one of the following keys:
 
-| Key      | Type                             | Example                      | Description                                                    |
-| :------- | :------------------------------- | :--------------------------- | :------------------------------------------------------------- |
-| `name`   | String                           | `{"name": "red"}`            | A common CSS color name (e.g., "red", "blue", "lightgreen"). |
-| `hex`    | String (Hexadecimal color code)  | `{"hex": "#FF0000"}`         | A 3 or 6-digit hex color code, with leading `#`.             |
-| `rgb`    | Array[Integer, Integer, Integer] | `{"rgb": [255, 0, 0]}`       | An array of [Red, Green, Blue] values, each from 0 to 255.     |
-| `hsv`    | Array[Integer, Integer, Integer] | `{"hsv": [120, 100, 100]}`   | An array of [Hue, Saturation, Value]. Hue: 0-359, Saturation: 0-100, Value: 0-100. |
+| Format / Key | Type                             | Example                      | Description                                                    |
+| :----------- | :------------------------------- | :--------------------------- | :------------------------------------------------------------- |
+| `name`       | String                           | `{"name": "red"}`            | A common CSS color name (e.g., "red", "blue", "lightgreen"). |
+| `hex`        | String (Hexadecimal color code)  | `{"hex": "#FF0000"}`         | A 3 or 6-digit hex color code, with or without leading `#`.  |
+| `rgb` (dict) | Array[Integer, Integer, Integer] | `{"rgb": [255, 0, 0]}`       | An array of [Red, Green, Blue] values, each from 0 to 255, within a dictionary. |
+| `hsv` (dict) | Array[Integer, Integer, Integer] | `{"hsv": [120, 100, 100]}`   | An array of [Hue, Saturation, Value]. Hue: 0-359, Saturation: 0-100, Value: 0-100, within a dictionary. |
 
 **Example Usage in `params`:**
 ```json

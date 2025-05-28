@@ -57,6 +57,20 @@ def parse_color(color_input: Union[str, Dict]) -> Tuple[int, int, int]:
         # If we get here, the string format is invalid
         raise ValueError(f"Invalid color string: {color_input}. Expected a color name or hex value.")
     
+    # Handle list or tuple inputs (RGB array)
+    elif isinstance(color_input, (list, tuple)):
+        if len(color_input) == 3:
+            try:
+                # Validate and clamp RGB values
+                r = max(0, min(255, int(color_input[0])))
+                g = max(0, min(255, int(color_input[1])))
+                b = max(0, min(255, int(color_input[2])))
+                return (r, g, b)
+            except (ValueError, TypeError):
+                raise ValueError(f"Invalid RGB array values: {color_input}. Expected 3 integers.")
+        else:
+            raise ValueError(f"RGB array must have 3 elements: {color_input}.")
+            
     # Handle dictionary inputs
     elif isinstance(color_input, dict):
         # Check for name key

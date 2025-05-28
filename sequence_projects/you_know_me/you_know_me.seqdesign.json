@@ -1,0 +1,237 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "title": "You Know Me - 'You' Highlights",
+    "artist": "Lubalin",
+    "description": "A single ball sequence highlighting every instance of the word 'you' in yellow for the song 'You Know Me' by Lubalin.",
+    "target_prg_refresh_rate": 50,
+    "default_pixels": 3,
+    "audio_file": "sequence_projects/you_know_me/lubalin_you_know_me.mp3"
+  },
+  "effects_timeline": [
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 10.7,
+        "end_seconds": 11.03
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 12.799999,
+        "end_seconds": 12.879999
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 21.7,
+        "end_seconds": 21.86
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 28.21,
+        "end_seconds": 28.310000000000002
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 33.3,
+        "end_seconds": 33.48
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 44.550000000000004,
+        "end_seconds": 44.75
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 55.899999,
+        "end_seconds": 56.189999
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 57.229999,
+        "end_seconds": 57.259999
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 61.499999,
+        "end_seconds": 61.679998999999995
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 67.17,
+        "end_seconds": 67.31
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 101.059999,
+        "end_seconds": 101.369999
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 115.21,
+        "end_seconds": 115.5
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 121.85000000000001,
+        "end_seconds": 121.93
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 123.25,
+        "end_seconds": 123.27000000000001
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 123.60000000000001,
+        "end_seconds": 123.95
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 129.19,
+        "end_seconds": 129.43
+      },
+      "params": {
+        "color": [
+          255,
+          255,
+          0
+        ]
+      }
+    }
+  ]
+}
