@@ -332,6 +332,10 @@ class FileHandlers:
                     # Import into existing timeline
                     self.app.logger.info(f"Importing ball sequence into existing timeline: {selected_timeline.name}")
                     
+                    # Clear existing segments from the timeline before importing
+                    selected_timeline.clear()
+                    self.app.logger.info(f"Cleared existing segments from timeline: {selected_timeline.name}")
+                    
                     # Add segments to timeline
                     for segment in ball_data.get("segments", []):
                         timeline_segment = TimelineSegment(
