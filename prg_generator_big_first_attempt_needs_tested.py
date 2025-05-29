@@ -11,6 +11,8 @@ Usage:
     python3 prg_generator.py input.prg.json output.prg
 """
 
+#THIS NEEDS TESTED WHEN I KNOW THAT THE TIMELINE ISNT STARTING TOO FAST, LIKE WITH BLACK AT THE BEGINNING NAD BETWEEN EVERYTHING
+
 import json
 import struct
 import sys
@@ -328,25 +330,10 @@ def generate_prg_file(input_json, output_prg):
                     if idx < segment_count - 1:
                         dur_k_plus_1_units = segments_for_blocks[idx + 1][0]
                         index1_value = calculate_legacy_intro_pair(idx + 1, segment_count)
-                        
-                        # Field +0x09: Segment Index & Duration (NEW LOGIC ATTEMPT 2)
-                        field_plus_09_part1 = 0
-                        field_plus_09_part2 = 0
-                        
-                        current_segment_0_indexed = idx # dur_k_units, pix_k are already for current segment
 
-                        if current_segment_0_indexed == 0:
-                            field_plus_09_part1 = 0x0000
-                            if dur_k_units < 256:
-                                field_plus_09_part2 = dur_k_units
-                            else:
-                                field_plus_09_part2 = 100 # 0x64
-                        else: # idx > 0
-                            field_plus_09_part1 = current_segment_0_indexed + 1 # 1-based segment number
-                            field_plus_09_part2 = dur_k_units
-                        
-                        field_plus_09_bytes = struct.pack('<H', field_plus_09_part1) + \
-                                            struct.pack('<H', field_plus_09_part2)
+                        # Field +0x09: Segment Index & Duration
+                        seg_num_1_based = idx + 1
+                        field_plus_09_bytes = struct.pack('<H', seg_num_1_based) + struct.pack('<H', dur_k_units)
 
                         # Field +0x11: Next Segment Info (Conditional)
                         field_plus_11_val = 0
