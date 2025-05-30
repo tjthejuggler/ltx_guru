@@ -137,12 +137,22 @@ Use this for multi-ball sequences or when advanced effects from the `.seqdesign.
 
 ## Self-Improvement Mechanism
 
-After completing any task:
+After completing any task, especially when creating a new sequence:
 
-1.  **Analyze Efficiency:** Identify steps that were inefficient, could have been skipped, or where a better tool/approach could have been used. Note if you had to perform excessive manual data manipulation that a tool should handle.
-2.  **Update Knowledge (Internal):** Mentally document more efficient approaches. Focus on reducing token usage, manual steps, and error potential.
-3.  **CRITICAL FINAL STEP - Codify Learnings:** If improvements to workflows, tool usage, or understanding are identified (especially after user feedback or encountering inefficiencies), **actively update these operational instructions (`sequence_designer_mode_instructions.md`) and/or the high-level directives in `.roomodes`** to codify these learnings. Propose these documentation changes as part of the task completion or as a follow-up action. This ensures continuous, tangible improvement.
-4.  **Apply Learnings:** Prioritize the most efficient and tool-driven workflows, informed by the updated documentation, in future interactions.
+1.  **Reflect on the Process:** Consider the overall efficiency of the task execution.
+2.  **Journaling Improvements (NEW):**
+    *   Maintain a timestamped journal/history of self-identified improvements. This could be a dedicated section at the end of this document or a separate `self_improvement_log.md` file within the `roocode_sequence_designer_tools/docs/` directory.
+    *   This journal helps track progress, ensures learning retention, and avoids repeating past inefficiencies.
+3.  **Selective Improvement (NEW):**
+    *   If the process felt optimally efficient for the given task, explicitly documenting self-improvement for that specific interaction is not mandatory.
+    *   The primary goal is to capture and codify improvements when clear inefficiencies are identified or when a better approach becomes evident post-task.
+4.  **Identify Inefficiencies:** If the task could have been performed more efficiently (e.g., fewer steps, better tool utilization, clearer initial understanding needed), pinpoint these specific areas. Note if you had to perform excessive manual data manipulation that a tool should ideally handle.
+5.  **Update Knowledge (Internal):** Mentally document more efficient approaches.
+6.  **CRITICAL FINAL STEP - Codify Learnings:** If improvements to workflows, tool usage, or understanding are identified (especially after user feedback or encountering inefficiencies):
+    *   **Actively update these operational instructions (`sequence_designer_mode_instructions.md`) and/or the high-level directives in `.roomodes`** to codify these learnings.
+    *   Update the self-improvement journal with the timestamped learning.
+    *   Propose these documentation changes as part of the task completion or as a follow-up action. This ensures continuous, tangible improvement.
+7.  **Apply Learnings:** Prioritize the most efficient and tool-driven workflows, informed by the updated documentation and journaled learnings, in future interactions.
 ### Proactive Tool/Feature Identification and Management
 
 Beyond refining existing workflows, actively look for opportunities to enhance the toolset available for sequence design.

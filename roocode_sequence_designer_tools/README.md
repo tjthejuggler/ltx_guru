@@ -21,6 +21,16 @@ The Sequence Designer mode has been enhanced with a proactive mechanism for tool
     *   **Specific/Uncertain:** If the enhancement is too niche or its general utility is unclear, it's logged with details in [`roocode_sequence_designer_tools/potential_tools_and_features.md`](roocode_sequence_designer_tools/potential_tools_and_features.md) for future review and potential development. The mode will create this file if it doesn't already exist.
 
 This continuous improvement loop aims to organically grow the capabilities of the Sequence Designer toolset, making it more powerful and efficient over time.
+## Sequence Designer Mode - Enhanced Self-Improvement Mechanism
+
+*Timestamp: 5/30/2025, 9:23 AM (Asia/Bangkok, UTC+7:00)*
+
+The Sequence Designer mode's self-improvement capabilities have been further refined. Building upon its ability to codify learnings into documentation, the mode now incorporates:
+
+1.  **Self-Improvement Journaling:** The mode is instructed to keep a timestamped journal or history of its own self-identified improvements. This can be part of its main operational instructions ([`docs/sequence_designer_mode_instructions.md`](roocode_sequence_designer_tools/docs/sequence_designer_mode_instructions.md:1)) or a separate log. This practice aims to ensure that lessons learned are tracked and built upon, preventing regression or repetition of inefficient workflows.
+2.  **Selective Improvement:** The mode understands that not every task interaction will yield a significant new learning. It will focus on documenting improvements when it clearly identifies inefficiencies in its process or discovers a demonstrably better approach *after* completing a task, particularly for sequence creation. If a task is handled with optimal efficiency, extensive self-critique and documentation for that instance are not mandatory.
+
+These enhancements aim to make the self-improvement process more targeted and sustainable, ensuring that the Sequence Designer mode becomes progressively more effective and efficient in its core tasks.
 ## File Naming Conventions
 
 The LTX Guru project uses standardized file extensions for different types of data:
