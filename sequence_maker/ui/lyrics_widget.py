@@ -626,6 +626,10 @@ class LyricsWidget(QWidget):
         # Connect project manager signals to update lyrics when a project is loaded
         self.app.project_manager.project_loaded.connect(self._on_project_loaded)
         
+        # Connect lyrics manager signal for when lyrics are processed (or cleared)
+        if hasattr(self.app, 'lyrics_manager'):
+            self.app.lyrics_manager.lyrics_processed.connect(self.update_lyrics)
+        
         # Connect lyrics display signals
         self.lyrics_display.timestamp_clicked.connect(self._on_timestamp_clicked)
     

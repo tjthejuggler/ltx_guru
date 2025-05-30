@@ -101,6 +101,12 @@ class ProjectManager(QObject):
         
         # New projects are considered "clean" (no unsaved changes)
         self.has_unsaved_changes = False
+
+        # Clear audio and lyrics
+        if hasattr(self.app, 'audio_manager'):
+            self.app.audio_manager.unload_audio()
+        if hasattr(self.app, 'lyrics_manager'):
+            self.app.lyrics_manager.clear_lyrics()
         
         # Emit signal
         self.project_changed.emit()

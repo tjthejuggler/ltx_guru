@@ -150,6 +150,28 @@ class LyricsManager(QObject):
         else:
             print(f"[LyricsManager] API keys file does not exist")
     
+    def clear_lyrics(self):
+        """
+        Clear all current lyrics data.
+        """
+        self.logger.info("Clearing lyrics data")
+        print("[LyricsManager] Clearing lyrics data")
+
+        # Create an empty Lyrics object or set to None
+        cleared_lyrics = Lyrics()  # Or None, depending on how UI handles it
+
+        # Update the project's lyrics attribute
+        if self.app.project_manager.current_project:
+            self.app.project_manager.current_project.lyrics = cleared_lyrics
+            # Mark project as changed if necessary, though this might be part of a larger "new project" action
+            # self.app.project_manager.project_changed.emit()
+
+        # Emit signal to update the lyrics widget
+        self.lyrics_processed.emit(cleared_lyrics)
+        self.update_status("Lyrics cleared", None)
+        self.logger.info("Lyrics data cleared.")
+        return True
+
     def prompt_user_for_lyrics(self):
         """
         Show a dialog to prompt the user for manual lyrics input.

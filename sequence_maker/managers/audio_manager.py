@@ -229,6 +229,47 @@ class AudioManager(QObject):
             self.logger.error(f"Error loading audio from project: {e}")
             return False
     
+    def unload_audio(self):
+        """
+        Unload the current audio file and reset all audio-related data.
+        """
+        self.logger.info("Unloading audio")
+        self.stop()
+
+        self.audio_file = None
+        self.audio_data = None
+        self.sample_rate = None
+        self.duration = 0.0
+
+        # Reset basic analysis data
+        self.waveform = None
+        self.beats = None
+        self.beat_times = None
+        self.tempo = None
+        self.spectrum = None
+
+        # Reset enhanced analysis data
+        self.onset_strength = None
+        self.spectral_contrast = None
+        self.spectral_centroid = None
+        self.spectral_rolloff = None
+        self.chroma = None
+        self.rms_energy = None
+        self.zero_crossing_rate = None
+
+        # Reset position
+        self.position = 0.0
+
+        # Emit signals to update UI
+        self.audio_loaded.emit(None, 0.0)  # Signal that no audio is loaded
+        self.position_changed.emit(0.0)
+        # Optionally, emit analysis_completed with empty data or a new signal
+        self.analysis_completed.emit({})  # Emit empty dict for analysis
+        self.audio_analyzed.emit()  # Signal that (no) analysis is "complete"
+
+        self.logger.info("Audio unloaded and all related data reset.")
+        return True
+
     def _analyze_audio(self):
         """Analyze the loaded audio file."""
         if not AUDIO_AVAILABLE or self.audio_data is None:
