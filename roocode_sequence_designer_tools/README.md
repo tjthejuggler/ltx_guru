@@ -8,6 +8,19 @@ The tools within this directory facilitate the translation of abstract effect de
 
 For details on the structure of `.seqdesign.json` files, please refer to the [Sequence Design JSON Schema](./docs/seqdesign_json_schema.md).
 
+## Sequence Designer Mode - Proactive Tool Evolution
+
+*Timestamp: 5/30/2025, 9:06 AM (Asia/Bangkok, UTC+7:00)*
+
+The Sequence Designer mode has been enhanced with a proactive mechanism for tool and feature evolution. As detailed in its operational instructions ([`docs/sequence_designer_mode_instructions.md`](roocode_sequence_designer_tools/docs/sequence_designer_mode_instructions.md:1)), the mode is now guided to:
+
+1.  **Identify Potential Enhancements:** When performing tasks, if a new tool, or a feature for an existing tool, could significantly improve efficiency or capability, this potential is recognized.
+2.  **Assess Usefulness:** The mode evaluates if the identified enhancement is broadly applicable for future sequence design tasks or if it's too specific to the current context.
+3.  **Act Accordingly:**
+    *   **Generally Useful:** If deemed broadly beneficial, the mode is instructed to attempt to create and document the new tool/feature *on the spot*. This includes adding new Python scripts to [`roocode_sequence_designer_tools/`](roocode_sequence_designer_tools/), updating documentation in [`docs/`](roocode_sequence_designer_tools/docs/), and potentially updating [`tools_lookup.json`](roocode_sequence_designer_tools/tools_lookup.json).
+    *   **Specific/Uncertain:** If the enhancement is too niche or its general utility is unclear, it's logged with details in [`roocode_sequence_designer_tools/potential_tools_and_features.md`](roocode_sequence_designer_tools/potential_tools_and_features.md) for future review and potential development. The mode will create this file if it doesn't already exist.
+
+This continuous improvement loop aims to organically grow the capabilities of the Sequence Designer toolset, making it more powerful and efficient over time.
 ## File Naming Conventions
 
 The LTX Guru project uses standardized file extensions for different types of data:
