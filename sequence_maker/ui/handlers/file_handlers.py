@@ -346,6 +346,18 @@ class FileHandlers:
                         )
                         selected_timeline.add_segment(timeline_segment)
                     
+                    # Update project total_duration to accommodate the imported sequence
+                    timeline_duration = selected_timeline.get_duration()
+                    old_project_duration = self.app.project_manager.current_project.total_duration
+                    if timeline_duration > old_project_duration:
+                        self.app.project_manager.current_project.total_duration = timeline_duration
+                        self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after ball sequence import into existing timeline")
+                        
+                        # Trigger timeline container size update
+                        if hasattr(self.main_window, 'timeline_widget'):
+                            self.main_window.timeline_widget.timeline_container.update_size()
+                            self.app.logger.info("Triggered timeline container size update after ball sequence import into existing timeline")
+                    
                     # Emit signal to update UI
                     self.app.logger.debug(f"Emitting timeline_modified signal for timeline: {selected_timeline.name}")
                     self.app.timeline_manager.timeline_modified.emit(selected_timeline)
@@ -375,6 +387,18 @@ class FileHandlers:
                     
                     # Add timeline to project
                     self.app.project_manager.current_project.add_timeline(timeline)
+                    
+                    # Update project total_duration to accommodate the imported sequence
+                    timeline_duration = timeline.get_duration()
+                    old_project_duration = self.app.project_manager.current_project.total_duration
+                    if timeline_duration > old_project_duration:
+                        self.app.project_manager.current_project.total_duration = timeline_duration
+                        self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after ball sequence import")
+                        
+                        # Trigger timeline container size update
+                        if hasattr(self.main_window, 'timeline_widget'):
+                            self.main_window.timeline_widget.timeline_container.update_size()
+                            self.app.logger.info("Triggered timeline container size update after ball sequence import")
                     
                     # Update UI
                     self.app.logger.info("Updating UI after ball sequence import")
@@ -548,6 +572,18 @@ class FileHandlers:
                 
                 # Add timeline to project
                 self.app.project_manager.current_project.add_timeline(timeline)
+                
+                # Update project total_duration to accommodate the imported lyrics timeline
+                timeline_duration = timeline.get_duration()
+                old_project_duration = self.app.project_manager.current_project.total_duration
+                if timeline_duration > old_project_duration:
+                    self.app.project_manager.current_project.total_duration = timeline_duration
+                    self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after lyrics import")
+                    
+                    # Trigger timeline container size update
+                    if hasattr(self.main_window, 'timeline_widget'):
+                        self.main_window.timeline_widget.timeline_container.update_size()
+                        self.app.logger.info("Triggered timeline container size update after lyrics import")
                 
                 # Update UI
                 self.main_window._update_ui()

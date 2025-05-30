@@ -150,6 +150,17 @@ class AudioManager(QObject):
             self.position_changed.emit(self.position)
             self._update_timeline_position(self.position)
             
+            # Update project total_duration to match audio duration
+            if hasattr(self.app, 'project_manager') and self.app.project_manager.current_project:
+                old_duration = self.app.project_manager.current_project.total_duration
+                self.app.project_manager.current_project.total_duration = self.duration
+                self.logger.info(f"Updated project total_duration from {old_duration}s to {self.duration}s")
+                
+                # Trigger timeline container size update
+                if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'timeline_widget'):
+                    self.app.main_window.timeline_widget.timeline_container.update_size()
+                    self.logger.info("Triggered timeline container size update after audio load")
+            
             # Emit signal with absolute path
             self.audio_loaded.emit(abs_file_path, self.duration)
             
@@ -216,6 +227,17 @@ class AudioManager(QObject):
             # Ensure position change is properly propagated
             self.position_changed.emit(self.position)
             self._update_timeline_position(self.position)
+            
+            # Update project total_duration to match audio duration
+            if hasattr(self.app, 'project_manager') and self.app.project_manager.current_project:
+                old_duration = self.app.project_manager.current_project.total_duration
+                self.app.project_manager.current_project.total_duration = self.duration
+                self.logger.info(f"Updated project total_duration from {old_duration}s to {self.duration}s (from project audio)")
+                
+                # Trigger timeline container size update
+                if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'timeline_widget'):
+                    self.app.main_window.timeline_widget.timeline_container.update_size()
+                    self.logger.info("Triggered timeline container size update after project audio load")
             
             # Emit signal with absolute path
             audio_path_to_emit = self.audio_file or "Embedded Audio"

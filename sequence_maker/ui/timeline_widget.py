@@ -647,11 +647,20 @@ class TimelineContainer(QWidget):
             if timeline_duration > duration:
                 duration = timeline_duration
         
+        # Get project total_duration for comparison
+        project_total_duration = self.app.project_manager.current_project.total_duration
+        
+        # Use the maximum of timeline durations and project total_duration
+        max_duration = max(duration, project_total_duration)
+        
+        # Log the duration values for debugging
+        self.logger.debug(f"Timeline container update_size: timeline_duration={duration:.2f}s, project_total_duration={project_total_duration:.2f}s, using max_duration={max_duration:.2f}s")
+        
         # Add some padding
-        duration += 10.0
+        max_duration += 10.0
         
         # Calculate width
-        width = int(duration * self.parent_widget.time_scale * self.parent_widget.zoom_level)
+        width = int(max_duration * self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
         # Calculate height based on number of timelines
         timeline_count = len(self.app.project_manager.current_project.timelines)
