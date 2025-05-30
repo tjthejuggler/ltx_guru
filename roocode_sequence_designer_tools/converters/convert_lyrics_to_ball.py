@@ -8,14 +8,14 @@ import os
 import sys
 import argparse
 
-def convert_lyrics_to_ball(input_path, output_path, color=[0, 0, 255], background_color=[0, 0, 0], pixels=4):
+def convert_lyrics_to_ball(input_path, output_path, default_color=[0, 0, 255], background_color=[0, 0, 0], pixels=4): # Renamed 'color' to 'default_color'
     """
     Convert lyrics timestamps to ball sequence
     
     Args:
         input_path (str): Path to input .lyrics.json file
         output_path (str): Path to output .ball.json file
-        color (list): RGB color for words [r, g, b]
+        default_color (list): RGB color for words [r, g, b] # Updated docstring
         background_color (list): RGB color for gaps [r, g, b]
         pixels (int): Number of pixels (1-4)
     """
@@ -60,7 +60,7 @@ def convert_lyrics_to_ball(input_path, output_path, color=[0, 0, 255], backgroun
         ball_sequence["segments"].append({
             "start_time": word["start"],
             "end_time": word["end"],
-            "color": color,
+            "color": default_color, # Use default_color variable
             "pixels": pixels
         })
         
@@ -98,19 +98,20 @@ def main():
     parser = argparse.ArgumentParser(description="Convert lyrics timestamps to ball sequence")
     parser.add_argument("input_file", help="Path to input .lyrics.json file")
     parser.add_argument("output_file", help="Path to output .ball.json file")
-    parser.add_argument("--color", default="0,0,255", help="RGB color for words (comma-separated, e.g., '0,0,255')")
+    parser.add_argument("--default-color", default="0,0,255", help="RGB color for words (comma-separated, e.g., '0,0,255')") # Changed to --default-color
     parser.add_argument("--background", default="0,0,0", help="RGB color for gaps (comma-separated, e.g., '0,0,0')")
     parser.add_argument("--pixels", type=int, default=4, help="Number of pixels (1-4)")
     
     args = parser.parse_args()
     
     try:
-        color = [int(x) for x in args.color.split(",")]
-        if len(color) != 3:
-            raise ValueError("Color must have 3 components")
+        # Use args.default_color instead of args.color
+        default_color_val = [int(x) for x in args.default_color.split(",")]
+        if len(default_color_val) != 3:
+            raise ValueError("Default color must have 3 components")
     except:
-        print(f"Warning: Invalid color format: {args.color}. Using default blue [0,0,255].")
-        color = [0, 0, 255]
+        print(f"Warning: Invalid default_color format: {args.default_color}. Using default blue [0,0,255].")
+        default_color_val = [0, 0, 255]
     
     try:
         background_color = [int(x) for x in args.background.split(",")]
@@ -120,7 +121,7 @@ def main():
         print(f"Warning: Invalid background color format: {args.background}. Using default black [0,0,0].")
         background_color = [0, 0, 0]
     
-    convert_lyrics_to_ball(args.input_file, args.output_file, color, background_color, args.pixels)
+    convert_lyrics_to_ball(args.input_file, args.output_file, default_color_val, background_color, args.pixels) # Pass default_color_val
 
 if __name__ == "__main__":
     main()

@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Direct Gentle API alignment script for "You Know Me" by Lubalin.
+Direct Gentle API alignment script.
 This script bypasses the sequence_maker tools and directly uses the Gentle API.
+It now accepts command-line arguments for generic use.
 """
 
 import os
 import sys
 import json
 import requests
+import argparse # Added argparse
 from pathlib import Path
 
-def align_with_gentle(audio_path, lyrics_path, output_path, conservative=True):
+def align_with_gentle(audio_path, lyrics_path, output_path, song_title="Unknown Song", artist_name="Unknown Artist", conservative=True):
     """
     Directly align lyrics with audio using the Gentle API.
     
@@ -100,8 +102,8 @@ def align_with_gentle(audio_path, lyrics_path, output_path, conservative=True):
         
         # Create the output data
         lyrics_data = {
-            "song_title": "You Know Me",
-            "artist_name": "Lubalin",
+            "song_title": song_title,
+            "artist_name": artist_name,
             "raw_lyrics": lyrics_text,
             "word_timestamps": word_timestamps,
             "processing_status": {
@@ -137,19 +139,32 @@ def align_with_gentle(audio_path, lyrics_path, output_path, conservative=True):
         files['audio'][1].close()
 
 if __name__ == "__main__":
-    audio_path = "sequence_projects/you_know_me/lubalin_you_know_me.mp3"
-    lyrics_path = "you_know_me_lyrics.txt"
-    output_path = "you_know_me_lyrics_timestamps.json"
+    parser = argparse.ArgumentParser(description="Directly align lyrics with audio using the Gentle API.")
+    parser.add_argument("audio_file", help="Path to the audio file (e.g., song.mp3)")
+    parser.add_argument("lyrics_file", help="Path to the lyrics text file (e.g., lyrics.txt)")
+    parser.add_argument("output_file", help="Path to save the output JSON file (e.g., timestamps.json)")
+    parser.add_argument("--song-title", default="Unknown Song", help="Song title for metadata")
+    parser.add_argument("--artist-name", default="Unknown Artist", help="Artist name for metadata")
+    parser.add_argument("--no-conservative", action="store_false", dest="conservative", help="Disable conservative alignment in Gentle")
     
-    if not os.path.exists(audio_path):
-        print(f"Error: Audio file not found: {audio_path}")
+    args = parser.parse_args()
+
+    if not os.path.exists(args.audio_file):
+        print(f"Error: Audio file not found: {args.audio_file}")
         sys.exit(1)
     
-    if not os.path.exists(lyrics_path):
-        print(f"Error: Lyrics file not found: {lyrics_path}")
+    if not os.path.exists(args.lyrics_file):
+        print(f"Error: Lyrics file not found: {args.lyrics_file}")
         sys.exit(1)
     
-    success = align_with_gentle(audio_path, lyrics_path, output_path, conservative=True)
+    success = align_with_gentle(
+        args.audio_file,
+        args.lyrics_file,
+        args.output_file,
+        song_title=args.song_title,
+        artist_name=args.artist_name,
+        conservative=args.conservative
+    )
     
     if success:
         print("\nLyrics alignment completed successfully!")
