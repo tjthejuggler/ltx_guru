@@ -88,16 +88,22 @@ This is the **preferred workflow for single-ball requests based on lyrics**.
     *   The current `convert_lyrics_to_ball.py` only accepts a single `--color`.
     *   **If color cycling (e.g., Red, Green, Blue per word) is requested:**
         1.  **Ideal Long-Term:** Note that the tool could be enhanced to accept a list/sequence of colors.
-        2.  **Current Best Practice (Programmatic Modification):**
-            a.  Run `convert_lyrics_to_ball.py` with a placeholder color (e.g., white) and the desired background (e.g., black for "off between words").
-                ```bash
-                python roocode_sequence_designer_tools/converters/convert_lyrics_to_ball.py input.lyrics.json output.ball.json --color "255,255,255" --background "0,0,0" --pixels 1
-                ```
-            b.  **Create a temporary Python script** (or use a general-purpose JSON editing tool if available and suitable) to read the generated `output.ball.json`.
-            c.  Iterate through the `segments` in the `output.ball.json`. Identify segments corresponding to words (i.e., those not using the background color).
-            d.  Apply the color cycling logic (e.g., Red, Green, Blue) to these word segments.
-            e.  Overwrite the `output.ball.json` with the modified content.
-            f.  **This programmatic modification is strongly preferred over the LLM manually constructing the entire cycling JSON.**
+        2.  **Current Best Practice (Programmatic Modification when a tool is close but misses a feature):**
+            If a tool is close but misses a feature (e.g., color cycling for `convert_lyrics_to_ball.py`), you have several options:
+            a.  **Programmatically modify the tool's output (Preferred Method):**
+                i.  Run the existing tool (e.g., `convert_lyrics_to_ball.py`) with placeholder values to get a base file.
+                    ```bash
+                    python roocode_sequence_designer_tools/converters/convert_lyrics_to_ball.py input.lyrics.json temp_output.ball.json --color "255,255,255" --background "0,0,0" --pixels 1
+                    ```
+                ii. **Create a temporary Python script** (e.g., in the `sequence_projects/song_name/` directory or a more general `roocode_sequence_designer_tools/modifiers/` if reusable) to:
+                    - Read the `temp_output.ball.json`.
+                    - Iterate through its `segments`.
+                    - Apply the desired logic (e.g., color cycling, complex data mapping).
+                    - Write the final, modified content to the target `output.ball.json`.
+                iii. Execute this script.
+                iv. **This approach of creating and executing a script for modification is strongly preferred over embedding complex logic solely within the LLM's internal reasoning before a single `write_to_file` of the final state.** It promotes clarity, reusability, and auditable steps.
+            b.  **Delegate Tool Enhancement:** If the missing feature seems generally useful for future tasks, you can ask the user if you should use the `new_task` tool to delegate the creation or enhancement of this feature in the original tool (e.g., adding a `--color-cycle` flag to `convert_lyrics_to_ball.py`) to Code mode. This is a good option for building a more robust permanent toolset.
+            c.  **Manual Modification (Least Preferred for Complex Changes):** For very minor, trivial changes, direct `apply_diff` might be acceptable, but avoid this for anything involving loops, conditional logic, or significant structural changes to JSON.
 *   **Execute Conversion:** Run the tool with correct paths and parameters.
     Example (for single color blue, off between words, 1 pixel):
     ```bash
@@ -125,9 +131,12 @@ Use this for multi-ball sequences or when advanced effects from the `.seqdesign.
 ## Tool Usage Guidelines (Reinforced)
 
 1.  **ALWAYS first search for existing tools** in the `roocode_sequence_designer_tools` directory (especially in `converters/` and `effect_implementations/`) that can accomplish your task or part of it. This is especially critical for standard file conversions (e.g., lyrics to `.ball.json`, `.seqdesign.json` to `.prg.json`). **Prioritize using these tools over manual JSON construction via `write_to_file` or `apply_diff` for generating entire structured files.**
-2.  If a tool exists but lacks a specific feature (e.g., color cycling), consider if programmatically post-processing the tool's output is feasible and more efficient than full manual creation. Note such limitations for potential future tool enhancements.
-3.  If a new, reusable utility or complex transformation is needed, propose creating a well-documented Python script within `roocode_sequence_designer_tools/`.
+2.  **Augmenting Existing Tools / Handling Complex Manipulations:** If an existing tool provides a base output that needs further programmatic transformation (like color cycling, complex data mapping, or significant JSON restructuring), **the preferred method is to create a small, focused Python script** (either a temporary one in the project's directory or a reusable one in `roocode_sequence_designer_tools/modifiers/`) to perform these modifications. Execute this script after the base tool runs. This is more robust and maintainable than complex internal LLM logic. Note such limitations or patterns for potential future enhancements to the base tool itself or for the creation of new, dedicated tools.
+3.  **Creating New Reusable Tools:** If a new, generally useful utility or a complex transformation not covered by existing tools is needed, propose and create a well-documented Python script within `roocode_sequence_designer_tools/`. Ensure it's added to `tools_lookup.json` if appropriate.
 4.  When using CLI tools, always verify their expected arguments (e.g., via `--help` or by reading their source/documentation).
+5.  **Temporary vs. Reusable Scripts:**
+    *   **Temporary Scripts:** For modifications highly specific to one project or sequence, a script can be created within that project's subfolder (e.g., `sequence_projects/song_name/apply_custom_logic.py`).
+    *   **Reusable Tools:** If the logic is likely to be useful for other sequences, create it as a new tool in `roocode_sequence_designer_tools/` (e.g., `roocode_sequence_designer_tools/modifiers/apply_color_cycle.py`) with proper documentation.
 
 ## Token Efficiency Guidelines
 
@@ -140,10 +149,11 @@ Use this for multi-ball sequences or when advanced effects from the `.seqdesign.
 After completing any task, especially when creating a new sequence:
 
 1.  **Reflect on the Process:** Consider the overall efficiency of the task execution.
-2.  **Journaling Improvements (NEW):**
+2.  **Journaling Improvements:**
     *   Maintain a timestamped journal/history of self-identified improvements. This could be a dedicated section at the end of this document or a separate `self_improvement_log.md` file within the `roocode_sequence_designer_tools/docs/` directory.
     *   This journal helps track progress, ensures learning retention, and avoids repeating past inefficiencies.
-3.  **Selective Improvement (NEW):**
+    *   **Entry for 5/30/2025:** Learned to favor external script creation (temporary or reusable) for programmatic modifications of tool outputs or complex JSON manipulations, rather than internal-only logic followed by a direct `write_to_file` of the final state. This applies even for seemingly simple, one-off modifications, as it aligns better with the tool-building persona and improves process clarity. Temporary scripts in project folders are acceptable for highly task-specific logic.
+3.  **Selective Improvement:**
     *   If the process felt optimally efficient for the given task, explicitly documenting self-improvement for that specific interaction is not mandatory.
     *   The primary goal is to capture and codify improvements when clear inefficiencies are identified or when a better approach becomes evident post-task.
 4.  **Identify Inefficiencies:** If the task could have been performed more efficiently (e.g., fewer steps, better tool utilization, clearer initial understanding needed), pinpoint these specific areas. Note if you had to perform excessive manual data manipulation that a tool should ideally handle.
@@ -185,6 +195,15 @@ Pattern Templates are for advanced `.seqdesign.json` creation, allowing high-lev
     python -m roocode_sequence_designer_tools.compile_seqdesign expanded.seqdesign.json output.prg.json
     ```
 *   Refer to [`roocode_sequence_designer_tools/docs/pattern_templates_guide.md`](roocode_sequence_designer_tools/docs/pattern_templates_guide.md) and the schema.
+
+## Clarification on Global Instruction #3 ("Simplicity is key!")
+
+Global Instruction #3 states: *"Simplicity is key! Never over-engineer the solutions. Instead go for the simplest possible solution while maintaining functionality."*
+
+In the context of Roocode's operations, especially when dealing with programmatic modifications of sequence files or complex JSON structures:
+*   **Creating a small, well-defined Python script is often the *simplest and clearest* path.** It encapsulates logic, makes the process auditable, and can be easier to debug and maintain than complex, multi-step manipulations performed via direct `apply_diff` or internal LLM reasoning that culminates in a single large `write_to_file`.
+*   **It is generally *not* considered over-engineering** to create such a script if it improves the robustness, clarity, or reusability of the sequence design process, or if it contributes to Roocode's toolset (either as a temporary helper or a new permanent tool).
+*   The "simplest possible solution" should be evaluated in terms of overall workflow clarity and maintainability, not just the raw number of tool calls in a single interaction.
 
 ## Additional Resources
 - [`roocode_sequence_designer_tools/docs/lyrics_extraction_guide.md`](roocode_sequence_designer_tools/docs/lyrics_extraction_guide.md)
