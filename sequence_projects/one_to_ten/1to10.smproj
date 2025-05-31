@@ -1,0 +1,321 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "created": "2025-05-31T17:18:14.817776",
+    "modified": "2025-05-31T17:24:52.297320",
+    "name": false,
+    "description": ""
+  },
+  "settings": {
+    "defaultPixels": 4,
+    "refreshRate": 1,
+    "totalDuration": 60,
+    "zoomLevel": 1.0
+  },
+  "keyMappings": {},
+  "effects": {},
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "defaultPixels": 4,
+      "created": "2025-05-31T17:18:14.817805",
+      "modified": "2025-05-31T17:24:52.297301",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 1.24,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 1.24,
+          "endTime": 1.71,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 1.71,
+          "endTime": 3.64,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 3.64,
+          "endTime": 4.1000000000000005,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 4.1000000000000005,
+          "endTime": 6.08,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 6.08,
+          "endTime": 6.58,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 6.58,
+          "endTime": 8.54,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 8.54,
+          "endTime": 9.059999999999999,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 9.059999999999999,
+          "endTime": 10.91,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 10.91,
+          "endTime": 11.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 11.5,
+          "endTime": 13.38,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 13.38,
+          "endTime": 13.9,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 13.9,
+          "endTime": 15.73,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 15.73,
+          "endTime": 16.22,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 16.22,
+          "endTime": 18.369999999999997,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 18.369999999999997,
+          "endTime": 18.64,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 18.64,
+          "endTime": 20.599999999999998,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 20.599999999999998,
+          "endTime": 21.2,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 21.2,
+          "endTime": 22.86,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 22.86,
+          "endTime": 23.29,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 23.29,
+          "endTime": 28.29,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "name": "Ball 2",
+      "defaultPixels": 4,
+      "created": "2025-05-31T17:18:14.817811",
+      "modified": "2025-05-31T17:24:52.297315",
+      "segments": []
+    },
+    {
+      "name": "Ball 3",
+      "defaultPixels": 4,
+      "created": "2025-05-31T17:18:14.817815",
+      "modified": "2025-05-31T17:24:52.297317",
+      "segments": []
+    }
+  ],
+  "audio": {
+    "embedded": false,
+    "filename": null,
+    "filepath": null,
+    "duration": 0,
+    "data": null
+  },
+  "visualizations": {
+    "selected": [
+      "waveform",
+      "beats"
+    ],
+    "settings": {
+      "waveform": {
+        "color": [
+          0,
+          0,
+          255
+        ],
+        "height": 100
+      },
+      "beats": {
+        "color": [
+          255,
+          0,
+          0
+        ],
+        "threshold": 0.5
+      }
+    }
+  },
+  "lyrics": {
+    "song_name": "",
+    "artist_name": "",
+    "lyrics_text": "",
+    "word_timestamps": []
+  },
+  "chat_history": [],
+  "llm_metadata": {
+    "token_usage": 0,
+    "estimated_cost": 0.0,
+    "interactions": []
+  },
+  "llm_customization": {
+    "custom_instructions": "",
+    "presets": [],
+    "task_templates": [],
+    "active_preset": "Default"
+  }
+}

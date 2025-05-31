@@ -30,7 +30,7 @@ def apply_rgb_cycling_and_off_states(input_file_path, output_file_path):
     # This script will iterate through these segments and only change the color of
     # the spoken word segments according to the R-G-B cycle.
 
-    colors = [[255, 0, 0], [0, 255, 0], [0, 0, 255]]  # Red, Green, Blue
+    colors = [[255, 0, 0], [0, 0, 255]]  # Red, Blue
     word_color_index = 0  # This index tracks the color for actual word segments
 
     # Ensure segments are processed in order. The input from convert_lyrics_to_ball.py

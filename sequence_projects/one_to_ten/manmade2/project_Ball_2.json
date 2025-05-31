@@ -1,0 +1,48 @@
+{
+  "default_pixels": 4,
+  "color_format": "rgb",
+  "refresh_rate": 100,
+  "end_time": 360000,
+  "sequence": {
+    "0": {
+      "color": [
+        255,
+        0,
+        0
+      ],
+      "pixels": 4
+    },
+    "127": {
+      "color": [
+        255,
+        165,
+        0
+      ],
+      "pixels": 4
+    },
+    "374": {
+      "color": [
+        255,
+        255,
+        0
+      ],
+      "pixels": 4
+    },
+    "618": {
+      "color": [
+        0,
+        255,
+        0
+      ],
+      "pixels": 4
+    },
+    "360000": {
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 4
+    }
+  }
+}
