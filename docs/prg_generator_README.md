@@ -1,4 +1,6 @@
-Okay, here is the complete, updated `README.md` file incorporating our findings.
+# LTX Guru Tools - PRG Generator Documentation
+
+**Last Updated:** 2025-05-31 18:50 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -147,9 +149,9 @@ The generator accepts a JSON file defining the color sequence and timing.
     *   `1`: 1 time unit = 1 second.
     *   `100`: 1 time unit = 0.01 seconds (10ms).
     *   Formula: `Time Unit Duration (seconds) = 1 / refresh_rate`
-*   `end_time` (Integer, **time units**): The total duration of the *entire sequence* in **time units**. This value dictates the end time (and thus duration) of the very last segment in the `sequence`. Required if you want the sequence to end; otherwise, the last segment might have zero or default duration depending on implementation.
+*   `end_time` (Integer or Float, **time units**): The total duration of the *entire sequence* in **time units**. This value dictates the end time (and thus duration) of the very last segment in the `sequence`. Required if you want the sequence to end; otherwise, the last segment might have zero or default duration depending on implementation. **Note:** Fractional values will be rounded to the nearest integer to match refresh rate precision.
 *   `sequence` (Object): A dictionary defining the color changes over time.
-    *   **Keys:** Strings representing the **start time** of a color segment, measured in **time units**. Must be non-negative integers, sorted chronologically in the file (though the script sorts them).
+    *   **Keys:** Strings representing the **start time** of a color segment, measured in **time units**. Can be integers or floating-point numbers, but will be rounded to the nearest integer to match refresh rate precision.
         *   `Time Units = Time in Seconds * refresh_rate`
     *   **Values:** An object defining the segment starting at that time key:
         *   `color` (Array): The color for the segment, in the format specified by `color_format`.
@@ -308,6 +310,7 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 
 ### Implementation Notes
 
+*   **Timing Precision Rounding:** The generator automatically rounds all timing values (sequence keys and `end_time`) to the nearest integer to ensure compatibility with the refresh rate precision. For example, with a 100Hz refresh rate, fractional timing values like `101.5` will be rounded to `102`. This prevents timing precision issues that could cause problems in the PRG generation process. Any rounding adjustments are logged during generation.
 *   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 time units. If a segment's calculated duration in the JSON exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.

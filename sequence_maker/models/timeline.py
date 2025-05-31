@@ -333,6 +333,10 @@ class Timeline:
         """
         Convert the timeline to a JSON sequence for prg_generator.
         
+        This method rounds all timing values to 3 decimal places before conversion
+        to prevent ultra-precise floating-point values from causing timing issues
+        in the generated PRG files.
+        
         Args:
             refresh_rate (int, optional): Refresh rate in Hz. If None, uses 100 Hz.
                 This determines the timing resolution:
@@ -341,10 +345,15 @@ class Timeline:
                 - refresh_rate=100: Each time unit is 0.01 seconds (1/100th of a second)
         
         Returns:
-            dict: JSON sequence data.
+            dict: JSON sequence data with properly rounded timing values.
         """
         if refresh_rate is None:
             refresh_rate = 100  # Default to 100 Hz for 1/100th second precision
+        
+        # Round timing values to 2 decimal places (1/100th second precision) to prevent
+        # ultra-precise floating-point values from causing timing issues
+        def round_timing(time_value):
+            return round(time_value, 2)
         
         # Sort segments by start time
         sorted_segments = sorted(self.segments, key=lambda segment: segment.start_time)
@@ -352,10 +361,38 @@ class Timeline:
         # Create sequence dictionary
         sequence = {}
         
+        # Apply timing gap fix to ensure segments don't have exact overlaps
+        adjusted_segments = []
+        gap_size = 0.01  # 0.01 second gap between segments
+        
         for i, segment in enumerate(sorted_segments):
+            # Round timing values to prevent ultra-precise floating-point issues
+            rounded_start_time = round_timing(segment.start_time)
+            rounded_end_time = round_timing(segment.end_time)
+            
+            # Apply timing gap fix: ensure this segment starts after the previous one ends
+            if i > 0:
+                prev_segment = adjusted_segments[i - 1]
+                prev_end_time = prev_segment['end_time']
+                
+                # If this segment starts at or before the previous segment ends, adjust it
+                if rounded_start_time <= prev_end_time:
+                    rounded_start_time = prev_end_time + gap_size
+                    # Maintain the original duration by adjusting the end time too
+                    original_duration = rounded_end_time - round_timing(segment.start_time)
+                    rounded_end_time = rounded_start_time + original_duration
+            
+            # Store adjusted segment info for next iteration
+            adjusted_segments.append({
+                'start_time': rounded_start_time,
+                'end_time': rounded_end_time,
+                'color': segment.color,
+                'pixels': segment.pixels
+            })
+            
             # Convert time to time units based on refresh rate
             # We use round to avoid floating point precision issues
-            time_units = round(segment.start_time * refresh_rate)
+            time_units = round(rounded_start_time * refresh_rate)
             time_key = str(time_units)
             
             # Add segment to sequence
@@ -366,13 +403,14 @@ class Timeline:
             
             # Check if there's a gap between this segment and the next one
             # If so, add a black color block at the end of this segment
-            next_segment = sorted_segments[i + 1] if i + 1 < len(sorted_segments) else None
+            next_adjusted_segment = adjusted_segments[i + 1] if i + 1 < len(adjusted_segments) else None
             
-            if next_segment:
+            if next_adjusted_segment:
+                next_start_time = next_adjusted_segment['start_time']
                 # If there's a gap between the end of this segment and the start of the next
-                if segment.end_time < next_segment.start_time:
+                if rounded_end_time < next_start_time:
                     # Add a black color block at the end of this segment
-                    end_time_units = round(segment.end_time * refresh_rate)
+                    end_time_units = round(rounded_end_time * refresh_rate)
                     end_time_key = str(end_time_units)
                     
                     # Add black color block with the same number of pixels
@@ -382,7 +420,7 @@ class Timeline:
                     }
             else:
                 # If this is the last segment, add a black color block at its end
-                end_time_units = round(segment.end_time * refresh_rate)
+                end_time_units = round(rounded_end_time * refresh_rate)
                 end_time_key = str(end_time_units)
                 
                 # Add black color block with the same number of pixels
@@ -391,8 +429,13 @@ class Timeline:
                     "pixels": segment.pixels
                 }
         
-        # Calculate end time in time units
-        end_time_units = round(self.get_duration() * refresh_rate)
+        # Calculate end time in time units using the maximum end time from adjusted segments
+        if adjusted_segments:
+            max_end_time = max(seg['end_time'] for seg in adjusted_segments)
+            rounded_duration = round_timing(max_end_time)
+        else:
+            rounded_duration = round_timing(self.get_duration())
+        end_time_units = round(rounded_duration * refresh_rate)
         
         return {
             "default_pixels": self.default_pixels,

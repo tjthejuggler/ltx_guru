@@ -1,0 +1,72 @@
+{
+  "default_pixels": 1,
+  "color_format": "rgb",
+  "refresh_rate": 100,
+  "end_time": 603,
+  "sequence": {
+    "0": {
+      "color": [
+        255,
+        0,
+        0
+      ],
+      "pixels": 1
+    },
+    "100": {
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 1
+    },
+    "101": {
+      "color": [
+        0,
+        255,
+        0
+      ],
+      "pixels": 1
+    },
+    "201": {
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 1
+    },
+    "202": {
+      "color": [
+        0,
+        0,
+        255
+      ],
+      "pixels": 1
+    },
+    "402": {
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 1
+    },
+    "403": {
+      "color": [
+        255,
+        255,
+        0
+      ],
+      "pixels": 1
+    },
+    "603": {
+      "color": [
+        0,
+        0,
+        0
+      ],
+      "pixels": 1
+    }
+  }
+}

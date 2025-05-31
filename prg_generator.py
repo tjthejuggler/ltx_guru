@@ -17,6 +17,29 @@ import sys
 import pprint
 import os
 
+def round_timing_to_refresh_rate(time_value, refresh_rate=100):
+    """
+    Round timing values to match the refresh rate precision.
+    For refresh_rate=100, this ensures all timings are multiples of 1 time unit
+    (since 1 time unit = 1/100th of a second at 100Hz).
+    
+    Args:
+        time_value: Time value in time units
+        refresh_rate: Refresh rate in Hz (default 100)
+    
+    Returns:
+        Rounded time value as integer
+    """
+    if refresh_rate <= 0:
+        return time_value
+    
+    # For 100Hz refresh rate, we want to round to the nearest whole time unit
+    # Since the system expects integer time units already, we just ensure
+    # the value is a proper integer
+    rounded_time_units = int(round(float(time_value)))
+    
+    return rounded_time_units
+
 # --- Constants based on observed format ---
 FILE_SIGNATURE = b'PR\x03IN\x05\x00\x00'  # 8 bytes
 HEADER_CONST_0A = b'\x00\x08'
@@ -156,6 +179,13 @@ def generate_prg_file(input_json, output_prg):
         print(f"[ERROR] Invalid 'end_time': {end_time_units}. Must be an int (time units).")
         sys.exit(1)
 
+    # Round end_time to refresh rate precision if provided
+    if end_time_units is not None:
+        original_end_time = end_time_units
+        end_time_units = round_timing_to_refresh_rate(end_time_units, refresh_rate)
+        if original_end_time != end_time_units:
+            print(f"[TIMING] Rounded end_time: {original_end_time} -> {end_time_units} units")
+
     print(f"[INIT] Config: DefaultPixels={default_pixels}, RefreshRate={refresh_rate}Hz, EndTime={end_time_units} units")
 
     if 'sequence' not in data or not isinstance(data['sequence'], dict) or not data['sequence']:
@@ -163,9 +193,31 @@ def generate_prg_file(input_json, output_prg):
         sys.exit(1)
 
     try:
-        sequence_items = sorted([(int(t), v) for t, v in data['sequence'].items()], key=lambda x: x[0])
+        # Parse sequence items and round timing values to refresh rate precision
+        raw_sequence_items = []
+        timing_adjustments = []
+        
+        for t, v in data['sequence'].items():
+            # Convert string to float first, then round to nearest integer
+            original_time = float(t)
+            rounded_time = round_timing_to_refresh_rate(original_time, refresh_rate)
+            raw_sequence_items.append((rounded_time, v))
+            
+            # Track adjustments for logging
+            if abs(original_time - rounded_time) > 0.001:  # Only log significant changes
+                timing_adjustments.append((original_time, rounded_time))
+        
+        # Sort by rounded time values
+        sequence_items = sorted(raw_sequence_items, key=lambda x: x[0])
+        
+        # Log any timing adjustments
+        if timing_adjustments:
+            print(f"[TIMING] Applied timing rounding for {refresh_rate}Hz refresh rate:")
+            for orig, rounded in timing_adjustments:
+                print(f"[TIMING]   {orig} -> {rounded} units")
+        
     except ValueError:
-        print("[ERROR] Sequence keys must be valid integers representing time units.")
+        print("[ERROR] Sequence keys must be valid numbers representing time units.")
         sys.exit(1)
 
     print(f"[INIT] Sorted sequence timestamps (units): {[t for t, _ in sequence_items]}")

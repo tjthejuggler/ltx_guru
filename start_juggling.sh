@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # --- Configuration ---
-MP3_FILE="/home/twain/Projects/ltx_guru/lubalin_you_know_me.mp3"
+MP3_FILE="/home/twain/Projects/ltx_guru/sequence_projects/one_to_ten/one_to_ten.mp3"
 WINDOW_NAME="MainWindow" # Still useful for focusing, if xdotool can
 MP3_PID="" # Initialize MP3_PID
 

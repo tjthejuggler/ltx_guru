@@ -27,12 +27,46 @@ class TimelineSegment:
         """
         self.logger = logging.getLogger("SequenceMaker.TimelineSegment")
         
-        self.start_time = start_time
-        self.end_time = end_time
+        # Use properties to enforce timing precision
+        self._start_time = self._round_timing(start_time)
+        self._end_time = self._round_timing(end_time)
         self.color = color
         self.pixels = pixels
         self.effects = []
         self.selected = False
+    
+    @staticmethod
+    def _round_timing(time_value):
+        """
+        Round timing values to 2 decimal places (1/100th second precision).
+        
+        Args:
+            time_value (float): Time value in seconds
+            
+        Returns:
+            float: Rounded time value
+        """
+        return round(float(time_value), 2)
+    
+    @property
+    def start_time(self):
+        """Get the start time."""
+        return self._start_time
+    
+    @start_time.setter
+    def start_time(self, value):
+        """Set the start time with automatic precision rounding."""
+        self._start_time = self._round_timing(value)
+    
+    @property
+    def end_time(self):
+        """Get the end time."""
+        return self._end_time
+    
+    @end_time.setter
+    def end_time(self, value):
+        """Set the end time with automatic precision rounding."""
+        self._end_time = self._round_timing(value)
     
     def to_dict(self):
         """
@@ -63,9 +97,10 @@ class TimelineSegment:
         Returns:
             TimelineSegment: A new TimelineSegment instance.
         """
+        # Round timing values when loading from dict to fix existing ultra-precise values
         segment = cls(
-            start_time=data["startTime"],
-            end_time=data["endTime"],
+            start_time=cls._round_timing(data["startTime"]),
+            end_time=cls._round_timing(data["endTime"]),
             color=tuple(data["color"]),
             pixels=data["pixels"]
         )
@@ -161,12 +196,18 @@ class TimelineSegment:
         Returns:
             bool: True if the resize was successful, False otherwise.
         """
+        # Round timing values before validation
+        if start_time is not None:
+            start_time = self._round_timing(start_time)
+        if end_time is not None:
+            end_time = self._round_timing(end_time)
+            
         # Validate new times
         if start_time is not None and end_time is not None and start_time >= end_time:
             self.logger.warning("Cannot resize segment: start time must be less than end time")
             return False
         
-        # Update times
+        # Update times (properties will handle rounding)
         if start_time is not None:
             self.start_time = start_time
         
@@ -185,12 +226,15 @@ class TimelineSegment:
         Returns:
             bool: True if the move was successful, False otherwise.
         """
+        # Round the offset
+        offset = self._round_timing(offset)
+        
         # Validate new times
         if self.start_time + offset < 0:
             self.logger.warning("Cannot move segment: start time would be negative")
             return False
         
-        # Update times
+        # Update times (properties will handle rounding)
         self.start_time += offset
         self.end_time += offset
         
@@ -206,6 +250,9 @@ class TimelineSegment:
         Returns:
             tuple: (left_segment, right_segment) if the split was successful, None otherwise.
         """
+        # Round the split time
+        time = self._round_timing(time)
+        
         if not self.contains_time(time) or time == self.start_time or time == self.end_time:
             self.logger.warning("Cannot split segment: time is outside segment or at boundary")
             return None

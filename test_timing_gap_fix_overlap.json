@@ -1,0 +1,23 @@
+{
+  "default_pixels": 1,
+  "refresh_rate": 100,
+  "end_time": 300,
+  "sequence": {
+    "0": {
+      "color": [255, 0, 0],
+      "pixels": 1
+    },
+    "100": {
+      "color": [0, 255, 0],
+      "pixels": 1
+    },
+    "100.0": {
+      "color": [0, 0, 255],
+      "pixels": 1
+    },
+    "200": {
+      "color": [255, 255, 0],
+      "pixels": 1
+    }
+  }
+}
