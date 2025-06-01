@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-05-31 18:50 UTC+7
+**Last Updated:** 2025-06-01 11:00 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -107,11 +107,13 @@ Commands:
 
 ---
 
-## LTX Ball PRG Generator (Sequence Files)
+## LTX Ball PRG Generators (Sequence Files)
 
-A Python script (`prg_generator.py`) that converts JSON files describing color sequences into the binary `.prg` format used by LTX programmable juggling balls.
+### Standard PRG Generator (`prg_generator.py`)
 
-### Usage
+A Python script (`prg_generator.py`) that converts JSON files describing color sequences into the binary `.prg` format used by LTX programmable juggling balls, where the PRG file's `refresh_rate` is taken directly from the JSON.
+
+#### Usage (`prg_generator.py`)
 
 ```bash
 python3 prg_generator.py input.json output.prg
@@ -181,7 +183,65 @@ To achieve 0.01s precision:
 ```
 *Resulting Durations (in time units):*
 *   Segment 0 (Red): Starts at 0, ends at 63 (start of next). Duration = 63 - 0 = 63 units.
-*   Segment 1 (Blue): Starts at 63, ends at 207 (`end_time`). Duration = 207 - 63 = 144 units.
+---
+
+### High-Precision PRG Generator (`prg_generator_new.py`)
+
+The `prg_generator_new.py` script has been repurposed to be a **high-precision PRG generator that hardcodes the output PRG file's refresh rate to 1000Hz.** This allows for timing granularity down to 1 millisecond.
+
+It incorporates the latest understanding of PRG header fields (see "Hypothesis 8" in the `.prg` File Format Specification section below) based on analysis of official app-generated files at both 1Hz and 1000Hz.
+
+**Important Note on Previous 1Hz Experiment:** An earlier version of `prg_generator_new.py` experimented with a 1Hz PRG refresh rate, attempting to use the 100 internal color slots of a PRG segment for high-frequency changes. This experiment **failed**, as the LTX firmware appears to only use the *first* color slot in such a 1Hz configuration. For high-granularity timing, a high PRG file refresh rate (like 1000Hz) is necessary.
+
+#### Usage (`prg_generator_new.py` - 1000Hz High-Precision Version)
+
+The *intended* timing granularity (e.g., 0.01 seconds) was to be achieved by utilizing the 100 available RGB color slots within each 1-second PRG segment.
+
+#### Core Idea (Failed)
+*   **PRG File:** Operates at 1 frame per second.
+*   **JSON Input:** Defines color changes at a higher frequency.
+*   **Mapping (Intended):** Map high-frequency JSON color changes into the 100 discrete color "sub-slots" in each 1-second PRG frame.
+*   **Actual Result:** Only the first sub-slot's color is displayed for the entire 1-second PRG frame.
+
+This approach was an experiment to explore alternative ways of encoding high-resolution timing.
+
+#### Usage (`prg_generator_new.py` - 1Hz Experimental Version)
+
+```bash
+python3 prg_generator_new.py input.json output_1000hz.prg
+```
+
+*   `input.json`: Path to the JSON file. The `refresh_rate` and `end_time` in this JSON are used to define the sequence timing, which the script then converts to 1000Hz PRG time units.
+*   `output_1000hz.prg`: Path for the generated 1000Hz `.prg` file.
+
+#### JSON Input Format (for `prg_generator_new.py`)
+
+The JSON input structure is the same as for `prg_generator.py`.
+*   `refresh_rate` (in JSON): Interpreted as the input timing base (e.g., if 100, then a JSON time unit is 0.01s).
+*   `end_time` (in JSON): Defines total duration in JSON time units.
+*   The script calculates PRG segment durations by converting these JSON timings to the 1000Hz PRG scale.
+
+#### Example: Red 0.05s, then Blue 0.1s (using `prg_generator_new.py`)
+
+Input JSON (`input_example.json`):
+```json
+{
+  "default_pixels": 4,
+  "color_format": "rgb",
+  "refresh_rate": 100, // JSON times are in 0.01s units
+  "end_time": 15,       // Total 0.15s (5 units Red + 10 units Blue)
+  "sequence": {
+    "0": {"color": [255, 0, 0], "pixels": 4},  // Red starts at 0s
+    "5": {"color": [0, 0, 255], "pixels": 4}   // Blue starts at 0.05s (5 * 0.01s)
+  }
+}
+```
+Command: `python3 prg_generator_new.py input_example.json example_output.prg`
+
+Resulting `example_output.prg` will be a 1000Hz PRG file with:
+*   Segment 1 (Red): Duration 50ms (50 units @ 1000Hz).
+*   Segment 2 (Blue): Duration 100ms (100 units @ 1000Hz).
+*   Header fields `0x16` and `0x1E` calculated according to "Hypothesis 8" using `Dur0Units_actual = 50`.
 
 ### `.prg` File Format Specification
 
@@ -216,20 +276,48 @@ The binary `.prg` files have the following structure. Multi-byte values are **Li
 *RGB Start Offset Calculation:* `HEADER_SIZE + N * DURATION_BLOCK_SIZE = 32 + N * 19`.
 *RGB Data Repetition Count:* Always 100. Defines how many times each 3-byte RGB color is repeated for its segment's color data.
 
-**Field `0x16` (Header First Segment Info) Logic:**
-Let `Dur0Units` be the duration of the first segment (Segment 0) in time units.
-Let `Dur0Nominal` be the nominal duration of the first segment as specified in the filename or UI (e.g., 10 for "10s", 50 for "50s"). This value is typically `Dur0Units / RefreshRate` if `RefreshRate` is 1, or simply `Dur0Units` if `RefreshRate` is considered the base for nominal (e.g. 100 units for 1 second at 100Hz, nominal might be 1).
-1.  If `Dur0Units == 100`: field is `01 00`.
-2.  Else if `N == 1` (and `Dur0Units != 100`): field is `Dur0Nominal` (as `H`, Little Endian).
-    *Example: `2px_red_10s_100r.prg` (N=1, Dur0Units=1000, Refresh=100, Dur0Nominal from "10s" = 10). Field is `0A 00`.*
-3.  Else (if `N > 1` and `Dur0Units != 100`): field is `00 00`.
-    *Example: `2px_red_1s_green_99s_1r.prg` (N=2, Dur0Units=1, Refresh=1). Field is `00 00`.*
+**Field `0x16` (Header First Segment Info) Logic (Revised 2025-06-01, "Hypothesis 8"):**
+Let `Dur0Units_actual` be the duration of the first PRG segment (Segment 0) in PRG time units (e.g., if PRG Refresh Rate is 1000Hz, then 1s duration means `Dur0Units_actual = 1000`).
+Let `NominalBase = 100`. This value appears to be consistently used for these calculations.
+Let `val_0x16_dec` be the decimal value calculated for this field.
 
-**Field `0x1E` (Header First Segment Duration (Conditional)) Logic:**
-Let `Dur0Units` be the duration of the first segment (Segment 0) in time units.
-1.  If `Dur0Units == 100`: field is `00 00`.
-2.  Else: field is `Dur0Units` (as `H`, Little Endian).
-    *Example: `2px_red_1s_green_99s_1r.prg` (N=2, Dur0Units=1). Field is `01 00`.*
+  `val_0x16_dec = floor(Dur0Units_actual / NominalBase)`
+
+*This logic applies universally, regardless of the number of PRG segments (`N_prg`) or the PRG file's refresh rate.*
+*Examples:*
+  * 1s duration @ 1Hz PRG Rate (N=1, Dur0Units_actual=1): `floor(1/100) = 0`. Field: `00 00`.
+  * 100s duration @ 1Hz PRG Rate (N=1, Dur0Units_actual=100): `floor(100/100) = 1`. Field: `01 00`.
+  * 0.01s duration @ 1000Hz PRG Rate (N=1, Dur0Units_actual=10): `floor(10/100) = 0`. Field: `00 00`.
+  * 0.1s duration @ 1000Hz PRG Rate (N=1, Dur0Units_actual=100): `floor(100/100) = 1`. Field: `01 00`.
+  * 1s duration @ 1000Hz PRG Rate (N=1, Dur0Units_actual=1000): `floor(1000/100) = 10`. Field: `0A 00`.
+  * First segment 1s @ 1000Hz PRG Rate (N=2, Dur0Units_actual=1000): `floor(1000/100) = 10`. Field: `0A 00`.
+The byte value written to the file is `struct.pack('<H', val_0x16_dec)`.
+
+**Field `0x1E` (Header First Segment Duration (Conditional)) Logic (Revised 2025-06-01, "Hypothesis 8"):**
+Let `Dur0Units_actual` and `NominalBase (=100)` be defined as above.
+Let `val_0x16_dec` be the decimal value for field `0x16` calculated as `floor(Dur0Units_actual / NominalBase)`.
+Let `val_0x1E_dec` be the decimal value calculated for this field.
+
+  `calculated_remainder = Dur0Units_actual - (val_0x16_dec * NominalBase)`
+  If `calculated_remainder == 0`:
+    If `Dur0Units_actual == NominalBase` (i.e., `Dur0Units_actual` is exactly 100):
+      `val_0x1E_dec = 0`
+    Else (`Dur0Units_actual` is a multiple of 100, but not 100 itself e.g., 200, 500, 1000):
+      `val_0x1E_dec = Dur0Units_actual`
+  Else (`calculated_remainder != 0`):
+    `val_0x1E_dec = calculated_remainder`
+
+*This logic applies universally, regardless of `N_prg` or PRG file refresh rate.*
+*Examples:*
+  * 1s @ 1Hz (Dur0=1, val_0x16=0): `calc_rem=1`. `!=0`. val_0x1E=1. Field: `01 00`.
+  * 100s @ 1Hz (Dur0=100, val_0x16=1): `calc_rem=0`. `Dur0 == 100`. val_0x1E=0. Field: `00 00`.
+  * 0.01s @ 1000Hz (Dur0=10, val_0x16=0): `calc_rem=10`. `!=0`. val_0x1E=10. Field: `0A 00`.
+  * 0.1s @ 1000Hz (Dur0=100, val_0x16=1): `calc_rem=0`. `Dur0 == 100`. val_0x1E=0. Field: `00 00`.
+  * 0.5s @ 1000Hz (Dur0=500, val_0x16=5): `calc_rem=0`. `Dur0 != 100`. val_0x1E=500. Field: `F4 01`.
+  * 1s @ 1000Hz (Dur0=1000, val_0x16=10): `calc_rem=0`. `Dur0 != 100`. val_0x1E=1000. Field: `E8 03`.
+  * First seg 0.1s @ 1000Hz (N=2, Dur0=100, val_0x16=1): `calc_rem=0`. `Dur0 == 100`. val_0x1E=0. Field: `00 00`.
+  * First seg 1s @ 1000Hz (N=2, Dur0=1000, val_0x16=10): `calc_rem=0`. `Dur0 != 100`. val_0x1E=1000. Field: `E8 03`.
+The byte value written to the file is `struct.pack('<H', val_0x1E_dec & 0xFFFF)`.
 
 #### 2. Duration Blocks (19 Bytes per Segment)
 
@@ -248,25 +336,33 @@ One block exists for each segment, immediately following the header. Let N be th
 | +0x0F                            | 2      | Block Constant 0x0F          | `bytes`   | N/A    | `00 00`                                                    |
 | +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Complex, see logic below. Ex: `63 00` (99 units for next seg) |
 
-**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks:**
-This 4-byte field consists of two 2-byte (Little Endian) values:
-1.  `SegmentNumber_1_based`: The 1-based index of the current segment (e.g., `01 00` for Segment 0, `02 00` for Segment 1, etc.).
-2.  `CurrentSegmentDurationUnits`: The duration in time units for *this* current segment.
+**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-01):**
+This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` and `field_09_part2`.
+1.  `field_09_part2`: This is always `CurrentSegmentDurationUnits` (the duration of the current block's segment).
+2.  `field_09_part1`:
+    *   If `current_block_index == 0` (first duration block): `field_09_part1 = 1` (`01 00`).
+    *   If `current_block_index > 0` AND `CurrentSegmentDurationUnits == PreviousSegmentDurationUnits`: `field_09_part1 = CurrentSegmentDurationUnits`.
+    *   Else (`current_block_index > 0` AND `CurrentSegmentDurationUnits != PreviousSegmentDurationUnits`): `field_09_part1 = current_block_index + 1`.
 
-**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`):**
+**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-01, "Hypothesis F"):**
 Let `Dur_k` = Duration units of current segment `k`.
 Let `Dur_k+1` = Duration units of next segment `k+1`.
-Let `Pix_k` = Pixel count of current segment `k`.
-1.  If `Dur_k+1 < 100`: field is `Dur_k+1` (as `H`, Little Endian).
-    *Example: `2px_r1_g99_1r` (Dur0=1, Dur1=99). For Seg0 block, `+0x11` is `63 00` (99).*
-2.  Else (if `Dur_k+1 >= 100`):
-    a.  If `Dur_k == 100`: field is `Pix_k` (as `H`, Little Endian).
-        *Example: `4px_N35_100r` (Dur0=100, Dur1=100, Pix0=4). For Seg0 block, `+0x11` is `04 00` (Pix0).*
-    b.  Else (if `Dur_k != 100`):
-        i.  If `Dur_k+1 == 100`: field is `00 00`.
-            *Example: `2px_r1_g100_1r` (Dur0=1, Dur1=100). For Seg0 block, `+0x11` is `00 00`.*
-        ii. Else (if `Dur_k+1 > 100` AND `Dur_k != 100`): field is `Dur_k` (as `H`, Little Endian).
-            *Example: `2px_r1_g101_1r` (Dur0=1, Dur1=101). For Seg0 block, `+0x11` is `01 00` (Dur0).*
+Let `Pix_k` = Pixel count of current segment `k` (Note: `Pix_k` is not used in this revised logic for this field).
+
+1.  If `Dur_k+1 < 100`:
+    *   `field_11_val = Dur_k+1`.
+    *   *Example: `2px_r1_g99_1r` (Dur0=1, Dur1=99). Field is `63 00` (99).*
+2.  Else if `Dur_k+1 == 100`:
+    *   `field_11_val = 0`.
+    *   *Example: Official `R0.1_B0.1_G10_1000hz.prg` (Block 0: Dur0=100, Dur1=100). Field is `00 00`.*
+    *   *Example: `2px_r1_g100_1r` (Dur0=1, Dur1=100). Field is `00 00`.*
+3.  Else (`Dur_k+1 > 100`):
+    *   If `Dur_k == 100`:
+        *   `field_11_val = 0`.
+        *   *Example: Official `R0.1_B0.1_G10_1000hz.prg` (Block 1: Dur1=100, Dur2=10000). Field is `00 00`.*
+    *   Else (`Dur_k != 100`):
+        *   `field_11_val = Dur_k+1`.
+        *   *Example: `2px_r1_g101_1r` (Dur0=1, Dur1=101). Field should be `65 00` (101).*
 
 **Structure for Segment N-1 (LAST Block):**
 
