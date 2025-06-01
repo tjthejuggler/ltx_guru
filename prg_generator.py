@@ -6,15 +6,15 @@ This version hardcodes the PRG file refresh rate to 1000 Hz for high precision.
 It uses the latest understanding of header fields 0x16 and 0x1E.
 
 Usage:
-    python3 prg_generator_new.py input.prg.json output.prg
+    python3 prg_generator.py <input.json> <output.prg> [--no-black-gaps]
 """
 
 import json
 import struct
 import sys
-import pprint
 import os
 import math
+import argparse
 
 def round_timing_to_refresh_rate(time_value, json_refresh_rate_hz=100):
     """
@@ -84,8 +84,9 @@ def split_long_segments(segments_in, max_duration=65535):
             new_segments.append((rem_dur, color, pixels))
     return new_segments
 
-def generate_prg_file(input_json_path, output_prg_path):
+def generate_prg_file(input_json_path, output_prg_path, insert_gaps_enabled=True):
     print(f"\n[INIT] Starting PRG High-Precision (1000Hz) generation from {input_json_path} to {output_prg_path}")
+    print(f"[INIT] Automatic 1ms black gap insertion: {'ENABLED' if insert_gaps_enabled else 'DISABLED'}")
 
     try:
         with open(input_json_path, 'r') as f:
@@ -175,7 +176,7 @@ def generate_prg_file(input_json_path, output_prg_path):
              if parsed_prg_sequence_items[idx+1][0] < prg_total_duration_units:
                  is_last_color_block_before_end = False
         
-        if not is_last_color_block_before_end and intended_duration_for_current_color > prg_gap_duration:
+        if insert_gaps_enabled and not is_last_color_block_before_end and intended_duration_for_current_color > prg_gap_duration:
             # Add the main color segment, shortened by the gap
             main_color_duration = intended_duration_for_current_color - prg_gap_duration
             actual_prg_segments.append((main_color_duration, current_color, current_pixels))
@@ -185,9 +186,17 @@ def generate_prg_file(input_json_path, output_prg_path):
             actual_prg_segments.append((prg_gap_duration, (0,0,0), current_pixels))
             print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: (black_gap after {current_color}), Dur={prg_gap_duration}, Pix={current_pixels}")
         else:
-            # This is the last color block, or it's too short to insert a gap before it. Add it as is.
+            # No gap insertion: either disabled, or it's the last color block, or it's too short. Add it as is.
             actual_prg_segments.append((intended_duration_for_current_color, current_color, current_pixels))
-            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: OrigStart={prg_start_time_units}, Dur={intended_duration_for_current_color}, Color={current_color}, Pix={current_pixels} (last or too short for gap)")
+            reason = "(last or too short for gap)"
+            if not insert_gaps_enabled:
+                reason = "(gap insertion disabled)"
+            elif is_last_color_block_before_end:
+                 reason = "(last color block)"
+            elif intended_duration_for_current_color <= prg_gap_duration:
+                reason = "(too short for gap)"
+
+            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: OrigStart={prg_start_time_units}, Dur={intended_duration_for_current_color}, Color={current_color}, Pix={current_pixels} {reason}")
 
     if not actual_prg_segments: print("[ERROR] No valid PRG segments calculated after gap insertion logic."); sys.exit(1)
 
@@ -249,33 +258,40 @@ def generate_prg_file(input_json_path, output_prg_path):
                     dur_k_plus_1_prg = final_prg_segments_for_blocks[idx+1][0]
                     index1_val = calculate_legacy_intro_pair(idx + 1, prg_segment_count_n)
                     
-                    # Field +0x09 logic for intermediate blocks (Revised 2025-06-01 based on R0.1_B0.1_G10_1000hz.prg)
-                    field_09_part2 = dur_k_prg # CurrentSegmentDurationUnits
-                    if idx == 0:
-                        field_09_part1 = idx + 1 # SegmentNumber_1_based is 1 for the first block
-                    else: # idx > 0
-                        dur_k_minus_1_prg = final_prg_segments_for_blocks[idx-1][0]
+                    # Field +0x09 logic for intermediate blocks (Hypothesis I - Revised 2025-06-01)
+                    # field_09_part1: First 2 bytes of Field[+0x09]
+                    # field_09_part2: Second 2 bytes of Field[+0x09]
+                    field_09_part2 = dur_k_prg # This is CurrentSegmentDurationUnits, always correct.
+
+                    if idx == 0: # First duration block (for PRG segment 0)
+                        field_09_part1 = 1
+                    else: # Subsequent intermediate duration blocks (idx > 0)
+                        dur_k_minus_1_prg = final_prg_segments_for_blocks[idx-1][0] # Previous segment's duration
                         if dur_k_prg == dur_k_minus_1_prg:
-                            field_09_part1 = dur_k_prg
+                            # If current segment duration is same as previous, part1 is 1
+                            # (Observed in N258/N259 official for sequences of identical 100ms segments)
+                            field_09_part1 = 1
                         else:
+                            # If durations differ, part1 is 1-based index of current block
                             field_09_part1 = idx + 1
                     field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2)
 
-                    # Field +0x11 logic (Hypothesis F - Revised 2025-06-01)
-                    field_11_val = 0
+                    # Field +0x11 logic (Hypothesis F re-confirmed - Revised 2025-06-01 based on N258/N259 official data)
+                    # Let Dur_k = dur_k_prg (current segment's duration in PRG units)
+                    # Let Dur_k+1 = dur_k_plus_1_prg (next segment's duration in PRG units)
+                    field_11_val = 0 # Default or placeholder
                     if dur_k_plus_1_prg < 100:
                         field_11_val = dur_k_plus_1_prg
                     elif dur_k_plus_1_prg == 100:
-                        # This covers:
-                        # - Dur0=100, Dur1=100 (e.g., Block 0 of R0.1_B0.1_G10_1000hz) -> field_11_val = 0
-                        # - Dur0!=100, Dur1=100 (e.g., 2px_r1_g100_1r) -> field_11_val = 0
+                        # If NextSegDur is 100, field_11_val is 0.
+                        # (Confirmed with N258 and N259 official dumps where Dur_k=100, Dur_k+1=100 -> field +0x11 was 00 00)
                         field_11_val = 0
                     else: # dur_k_plus_1_prg > 100
                         if dur_k_prg == 100:
-                             # This covers Dur0=100, Dur1>100 (e.g., Block 1 of R0.1_B0.1_G10_1000hz, where Dur0=100, Dur1=10000) -> field_11_val = 0
+                            # If CurrentSegDur is 100 AND NextSegDur > 100, field_11_val is 0.
+                            # (Based on R0.1_B0.1_G10_1000hz.prg, Block 1: Dur1=100, Dur2=10000 -> field +0x11 was 0)
                             field_11_val = 0
-                        else: # dur_k != 100 AND dur_k_plus_1_prg > 100
-                             # This covers Dur0!=100, Dur1>100 (e.g., red_1s_blue_2s_1r, if Dur0=1, Dur1=2. Here it would be Dur_k_plus_1_prg)
+                        else: # CurrentSegDur != 100 AND NextSegDur > 100
                             field_11_val = dur_k_plus_1_prg
                     
                     f.write(struct.pack('<H', pix_k))
@@ -320,7 +336,22 @@ def generate_prg_file(input_json_path, output_prg_path):
     print(f"\n[SUCCESS] Successfully generated {output_prg_path}")
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} input.json output.prg")
-        sys.exit(1)
-    generate_prg_file(sys.argv[1], sys.argv[2])
+    parser = argparse.ArgumentParser(
+        description="LTX Ball PRG Generator - High Precision (1000Hz)",
+        formatter_class=argparse.RawTextHelpFormatter, # To allow newlines in help
+        epilog="""Example:
+  python3 prg_generator.py input.json output.prg
+  python3 prg_generator.py input.json output_no_gaps.prg --no-black-gaps
+"""
+    )
+    parser.add_argument("input_json", help="Path to the input JSON file.")
+    parser.add_argument("output_prg", help="Path for the output .prg file.")
+    parser.add_argument(
+        "--no-black-gaps",
+        action="store_true",
+        help="Disable automatic insertion of 1ms black gaps between color changes."
+    )
+    args = parser.parse_args()
+
+    insert_gaps = not args.no_black_gaps
+    generate_prg_file(args.input_json, args.output_prg, insert_gaps_enabled=insert_gaps)

@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-01 12:11 UTC+7
+**Last Updated:** 2025-06-01 13:49 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -252,7 +252,7 @@ The binary `.prg` files have the following structure. Multi-byte values are **Li
 | 0x0C         | 2      | Refresh Rate (Hz)                         | `H`       | Little | Ex: `64 00` (100 Hz)                          |
 | 0x0E         | 2      | Constant Marker "PI"                      | `bytes`   | N/A    | `50 49` ('PI')                                |
 | 0x10         | 4      | Pointer1                                  | `I`       | Little | Ex: `28 00 00 00` (40 for N=2). Formula: `21 + 19*(N-1)` |
-| 0x14         | 2      | Segment Count (N)                         | `H`       | Little | Ex: `02 00` (2 segments)                      |
+| 0x14         | 2      | Segment Count (N)                         | `H`       | Little | Ex: `02 00` (2 segments). Directly stores N; confirmed for N > 255 (e.g., `01 01` for 257 segments). |
 | 0x16         | 2      | Header First Segment Info                 | `H`       | Little | Conditional, see logic below. Ex: `00 00` (if N=2, Dur0Units=1); `01 00` (if Dur0Units=100) |
 | 0x18         | 2      | RGB Data Repetition Count                 | `H`       | Little | `64 00` (100 LE)                              |
 | 0x1A         | 2      | RGB Data Start Offset                     | `H`       | Little | Ex: `46 00` (70 for N=2). Formula: `32 + N * 19` |
@@ -324,30 +324,38 @@ One block exists for each segment, immediately following the header. Let N be th
 | +0x0F                            | 2      | Block Constant 0x0F          | `bytes`   | N/A    | `00 00`                                                    |
 | +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Complex, see logic below. Ex: `63 00` (99 units for next seg) |
 
-**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-01):**
+**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-01, "Hypothesis I"):**
 This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` and `field_09_part2`.
 1.  `field_09_part2`: This is always `CurrentSegmentDurationUnits` (the duration of the current block's segment).
-2.  `field_09_part1`:
+2.  `field_09_part1` (1-based segment index for this block, with a special case):
     *   If `current_block_index == 0` (first duration block): `field_09_part1 = 1` (`01 00`).
-    *   If `current_block_index > 0` AND `CurrentSegmentDurationUnits == PreviousSegmentDurationUnits`: `field_09_part1 = CurrentSegmentDurationUnits`.
-    *   Else (`current_block_index > 0` AND `CurrentSegmentDurationUnits != PreviousSegmentDurationUnits`): `field_09_part1 = current_block_index + 1`.
+    *   If `current_block_index > 0`:
+        *   If `CurrentSegmentDurationUnits == PreviousSegmentDurationUnits`: `field_09_part1 = 1` (`01 00`). (Observed in official `N258_.1s_1000r.prg` and `N259_.1s_1000r.prg` where all segments were 100ms; `field_09_part1` remained `1` for subsequent blocks).
+        *   Else (`CurrentSegmentDurationUnits != PreviousSegmentDurationUnits`): `field_09_part1 = current_block_index + 1` (1-based index of the current block).
+    *   *Example based on official N258/N259 files (all segments 100ms):*
+        *   Block 0 (idx=0): `field_09_part1 = 1`.
+        *   Block 1 (idx=1, Dur=100, PrevDur=100): `field_09_part1 = 1`.
+        *   Block 2 (idx=2, Dur=100, PrevDur=100): `field_09_part1 = 1`.
+    *   *Example with varying durations (e.g., Dur0=50, Dur1=50, Dur2=70):*
+        *   Block 0 (idx=0, Dur0=50): `field_09_part1 = 1`.
+        *   Block 1 (idx=1, Dur1=50, PrevDur0=50): `field_09_part1 = 1`.
+        *   Block 2 (idx=2, Dur2=70, PrevDur1=50): `field_09_part1 = idx+1 = 3`.
 
-**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-01, "Hypothesis F"):**
+**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Re-confirmed 2025-06-01, "Hypothesis F"):**
 Let `Dur_k` = Duration units of current segment `k`.
 Let `Dur_k+1` = Duration units of next segment `k+1`.
-Let `Pix_k` = Pixel count of current segment `k` (Note: `Pix_k` is not used in this revised logic for this field).
 
 1.  If `Dur_k+1 < 100`:
     *   `field_11_val = Dur_k+1`.
     *   *Example: `2px_r1_g99_1r` (Dur0=1, Dur1=99). Field is `63 00` (99).*
 2.  Else if `Dur_k+1 == 100`:
     *   `field_11_val = 0`.
-    *   *Example: Official `R0.1_B0.1_G10_1000hz.prg` (Block 0: Dur0=100, Dur1=100). Field is `00 00`.*
-    *   *Example: `2px_r1_g100_1r` (Dur0=1, Dur1=100). Field is `00 00`.*
+    *   *Example: Official `N258_.1s_1000r.prg` (Block 0: Dur0=100, Dur1=100). Field is `00 00` (0).*
+    *   *Example: Official `N259_.1s_1000r.prg` (Block 0: Dur0=100, Dur1=100). Field is `00 00` (0).*
 3.  Else (`Dur_k+1 > 100`):
     *   If `Dur_k == 100`:
         *   `field_11_val = 0`.
-        *   *Example: Official `R0.1_B0.1_G10_1000hz.prg` (Block 1: Dur1=100, Dur2=10000). Field is `00 00`.*
+        *   *Example: Official `R0.1_B0.1_G10_1000hz.prg` (Block 1: Dur1=100, Dur2=10000). Field is `00 00`. This specific sub-case where current is 100 and next is >100 seems to yield 0.*
     *   Else (`Dur_k != 100`):
         *   `field_11_val = Dur_k+1`.
         *   *Example: `2px_r1_g101_1r` (Dur0=1, Dur1=101). Field should be `65 00` (101).*

@@ -1,0 +1,211 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "created": "2025-06-01T13:47:31.286073",
+    "modified": "2025-06-01T13:48:35.485205",
+    "name": false,
+    "description": ""
+  },
+  "settings": {
+    "defaultPixels": 4,
+    "refreshRate": 1,
+    "totalDuration": 60,
+    "zoomLevel": 1.0
+  },
+  "keyMappings": {},
+  "effects": {},
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "defaultPixels": 4,
+      "created": "2025-06-01T13:47:31.286105",
+      "modified": "2025-06-01T13:48:35.485180",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 1.24,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 1.24,
+          "endTime": 1.71,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 1.71,
+          "endTime": 3.64,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 3.64,
+          "endTime": 4.1,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 4.1,
+          "endTime": 6.08,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 6.08,
+          "endTime": 6.58,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 6.58,
+          "endTime": 8.54,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 8.54,
+          "endTime": 9.06,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 9.06,
+          "endTime": 10.91,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 10.91,
+          "endTime": 11.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        },
+        {
+          "startTime": 11.5,
+          "endTime": 13.38,
+          "color": [
+            0,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": []
+        }
+      ]
+    },
+    {
+      "name": "Ball 2",
+      "defaultPixels": 4,
+      "created": "2025-06-01T13:47:31.286112",
+      "modified": "2025-06-01T13:48:35.485195",
+      "segments": []
+    },
+    {
+      "name": "Ball 3",
+      "defaultPixels": 4,
+      "created": "2025-06-01T13:47:31.286117",
+      "modified": "2025-06-01T13:48:35.485201",
+      "segments": []
+    }
+  ],
+  "audio": {
+    "embedded": false,
+    "filename": null,
+    "filepath": null,
+    "duration": 0,
+    "data": null
+  },
+  "visualizations": {
+    "selected": [
+      "waveform",
+      "beats"
+    ],
+    "settings": {
+      "waveform": {
+        "color": [
+          0,
+          0,
+          255
+        ],
+        "height": 100
+      },
+      "beats": {
+        "color": [
+          255,
+          0,
+          0
+        ],
+        "threshold": 0.5
+      }
+    }
+  },
+  "lyrics": {
+    "song_name": "",
+    "artist_name": "",
+    "lyrics_text": "",
+    "word_timestamps": []
+  },
+  "chat_history": [],
+  "llm_metadata": {
+    "token_usage": 0,
+    "estimated_cost": 0.0,
+    "interactions": []
+  },
+  "llm_customization": {
+    "custom_instructions": "",
+    "presets": [],
+    "task_templates": [],
+    "active_preset": "Default"
+  }
+}
