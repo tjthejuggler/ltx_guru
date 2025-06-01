@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-01 13:49 UTC+7
+**Last Updated:** 2025-06-01 14:12 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -340,6 +340,10 @@ This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` 
         *   Block 0 (idx=0, Dur0=50): `field_09_part1 = 1`.
         *   Block 1 (idx=1, Dur1=50, PrevDur0=50): `field_09_part1 = 1`.
         *   Block 2 (idx=2, Dur2=70, PrevDur1=50): `field_09_part1 = idx+1 = 3`.
+    *   **Known Exceptions for N=258 (Official `N258_.1s_1000r.prg`):**
+        *   Block `idx=58`: `field_09_part1 = 0` (`00 00`), where Hypothesis I would predict `1`.
+        *   Block `idx=62`: `field_09_part1 = 0` (`00 00`), where Hypothesis I would predict `1` (assuming surrounding segments are 100ms).
+        *   The reasons for these specific deviations are under investigation.
 
 **Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Re-confirmed 2025-06-01, "Hypothesis F"):**
 Let `Dur_k` = Duration units of current segment `k`.
@@ -359,6 +363,10 @@ Let `Dur_k+1` = Duration units of next segment `k+1`.
     *   Else (`Dur_k != 100`):
         *   `field_11_val = Dur_k+1`.
         *   *Example: `2px_r1_g101_1r` (Dur0=1, Dur1=101). Field should be `65 00` (101).*
+    *   **Known Exceptions for N=258 (Official `N258_.1s_1000r.prg`):**
+        *   Block `idx=58`: `Field +0x11 = 95` (`5F 00`). (Note: Official app also changes duration of segment 59 to 95ms. If `Dur_k+1` becomes 95, Hyp. F correctly gives 95).
+        *   Block `idx=62`: `Field +0x11 = 85` (`55 00`). (Here, `Dur_k=100` for block 62, and segment 63 is intended as 100ms. Hyp. F would predict `0`).
+        *   The reasons for these specific values and the segment 59 duration change are under investigation.
 
 **Structure for Segment N-1 (LAST Block):**
 
@@ -406,7 +414,8 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 time units. If a segment's calculated duration in the JSON exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
-*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script automatically inserts a 1ms black segment before each change to a new, different color if the segment is long enough. This ensures cleaner transitions.
+*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script automatically inserts a 1ms black segment before each change to a new, different color if the segment is long enough (this behavior can be disabled with `--no-black-gaps`).
+*   **Official App Segment Duration Alterations:** For certain sequence lengths (e.g., N=258), the official LTX app may alter the duration of specific segments (e.g., segment at index 59 becomes 95ms instead of an input 100ms). This behavior is not yet fully understood or generalized in the generator.
 
 ---
 
