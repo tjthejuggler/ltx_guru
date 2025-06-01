@@ -329,26 +329,21 @@ class Timeline:
             if segment.end_time > start_time and segment.start_time < end_time
         ]
     
-    def to_json_sequence(self, refresh_rate=None):
+    def to_json_sequence(self): # refresh_rate parameter removed
         """
-        Convert the timeline to a JSON sequence for prg_generator.
+        Convert the timeline to a JSON sequence for prg_generator.py.
+        The output JSON will always have a refresh_rate of 1000 Hz.
+        Segment times from .smproj (in seconds) are converted to 1000Hz time units.
         
         This method rounds all timing values to 3 decimal places before conversion
         to prevent ultra-precise floating-point values from causing timing issues
         in the generated PRG files.
-        
-        Args:
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses 100 Hz.
-                This determines the timing resolution:
-                - refresh_rate=1: Each time unit is 1 second
-                - refresh_rate=2: Each time unit is 0.5 seconds
-                - refresh_rate=100: Each time unit is 0.01 seconds (1/100th of a second)
-        
+                
         Returns:
-            dict: JSON sequence data with properly rounded timing values.
+            dict: JSON sequence data with timings scaled to 1000Hz.
         """
-        if refresh_rate is None:
-            refresh_rate = 100  # Default to 100 Hz for 1/100th second precision
+        # Target refresh rate for the output JSON is always 1000Hz
+        output_json_refresh_rate = 1000
         
         # Round timing values to 2 decimal places (1/100th second precision) to prevent
         # ultra-precise floating-point values from causing timing issues
@@ -390,9 +385,9 @@ class Timeline:
                 'pixels': segment.pixels
             })
             
-            # Convert time to time units based on refresh rate
+            # Convert time to time units based on the target 1000Hz refresh rate
             # We use round to avoid floating point precision issues
-            time_units = round(rounded_start_time * refresh_rate)
+            time_units = round(rounded_start_time * output_json_refresh_rate)
             time_key = str(time_units)
             
             # Add segment to sequence
@@ -410,7 +405,7 @@ class Timeline:
                 # If there's a gap between the end of this segment and the start of the next
                 if rounded_end_time < next_start_time:
                     # Add a black color block at the end of this segment
-                    end_time_units = round(rounded_end_time * refresh_rate)
+                    end_time_units = round(rounded_end_time * output_json_refresh_rate)
                     end_time_key = str(end_time_units)
                     
                     # Add black color block with the same number of pixels
@@ -420,7 +415,7 @@ class Timeline:
                     }
             else:
                 # If this is the last segment, add a black color block at its end
-                end_time_units = round(rounded_end_time * refresh_rate)
+                end_time_units = round(rounded_end_time * output_json_refresh_rate)
                 end_time_key = str(end_time_units)
                 
                 # Add black color block with the same number of pixels
@@ -435,12 +430,12 @@ class Timeline:
             rounded_duration = round_timing(max_end_time)
         else:
             rounded_duration = round_timing(self.get_duration())
-        end_time_units = round(rounded_duration * refresh_rate)
+        end_time_units = round(rounded_duration * output_json_refresh_rate)
         
         return {
             "default_pixels": self.default_pixels,
             "color_format": "rgb",
-            "refresh_rate": refresh_rate,
+            "refresh_rate": output_json_refresh_rate, # Hardcoded to 1000
             "end_time": end_time_units,
             "sequence": sequence
         }

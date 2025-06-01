@@ -24,14 +24,14 @@ class PRGExporter:
         self.logger = logging.getLogger("SequenceMaker.PRGExporter")
         self.app = app
     
-    def export_timeline(self, timeline, file_path, refresh_rate=None):
+    def export_timeline(self, timeline, file_path): # refresh_rate parameter removed
         """
         Export a timeline to a PRG file.
+        The internal JSON generated for prg_generator.py will always be 1000Hz based.
         
         Args:
             timeline: Timeline to export.
             file_path (str): Path to save the PRG file.
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
         
         Returns:
             bool: True if successful, False otherwise.
@@ -42,8 +42,8 @@ class PRGExporter:
                 temp_json_path = temp_file.name
             
             # Get JSON data
-            self.logger.debug(f"Generating internal JSON for PRG export using refresh_rate: {refresh_rate}")
-            json_data = timeline.to_json_sequence(refresh_rate)
+            self.logger.debug(f"Generating internal JSON (1000Hz scale) for PRG export.")
+            json_data = timeline.to_json_sequence() # refresh_rate argument removed
             
             # Write JSON to temporary file
             with open(temp_json_path, 'w') as f:
@@ -93,13 +93,13 @@ class PRGExporter:
             self.logger.error(f"Error exporting timeline to PRG: {e}")
             return False
     
-    def export_project(self, directory, refresh_rate=None):
+    def export_project(self, directory): # refresh_rate parameter removed
         """
         Export all timelines in the current project to PRG files.
+        The PRG files will be generated based on a 1000Hz intermediate JSON.
         
         Args:
             directory (str): Directory to save the PRG files.
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
         
         Returns:
             tuple: (success_count, total_count)
@@ -112,9 +112,8 @@ class PRGExporter:
         # Get project
         project = self.app.project_manager.current_project
         
-        # Use project refresh rate if not specified
-        if refresh_rate is None:
-            refresh_rate = project.refresh_rate
+        # refresh_rate is no longer used here as to_json_sequence handles scaling
+        # to a fixed 1000Hz for the intermediate JSON.
         
         # Create directory if it doesn't exist
         os.makedirs(directory, exist_ok=True)
@@ -129,20 +128,20 @@ class PRGExporter:
             file_path = os.path.join(directory, file_name)
             
             # Export timeline
-            if self.export_timeline(timeline, file_path, refresh_rate):
+            if self.export_timeline(timeline, file_path):
                 success_count += 1
         
         self.logger.info(f"Exported {success_count}/{total_count} timelines to {directory}")
         return success_count, total_count
-    def export(self, file_path, refresh_rate=None):
+    def export(self, file_path): # refresh_rate parameter removed
         """
         Export the current timeline to a PRG file.
+        The PRG will be generated based on a 1000Hz intermediate JSON.
         
         This is a convenience method that exports the first timeline in the current project.
         
         Args:
             file_path (str): Path to save the PRG file.
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
         
         Returns:
             bool: True if successful, False otherwise.
@@ -164,16 +163,17 @@ class PRGExporter:
         timeline = project.timelines[0]
         
         # Export timeline
-        return self.export_timeline(timeline, file_path, refresh_rate)
+        return self.export_timeline(timeline, file_path)
     
     
-    def export_project_with_json(self, directory, refresh_rate=None):
+    def export_project_with_json(self, directory): # refresh_rate parameter removed
         """
         Export all timelines in the current project to both JSON and PRG files.
+        PRG files are generated based on a 1000Hz intermediate JSON.
+        Separate JSON exports (e.g. for .prg.json) use 100Hz.
         
         Args:
             directory (str): Directory to save the files.
-            refresh_rate (int, optional): Refresh rate in Hz. If None, uses the project refresh rate.
         
         Returns:
             tuple: (json_success_count, prg_success_count, total_count)
@@ -186,9 +186,10 @@ class PRGExporter:
         # Get project
         project = self.app.project_manager.current_project
         
-        # Use project refresh rate if not specified
-        if refresh_rate is None:
-            refresh_rate = project.refresh_rate
+        # The original project's refresh_rate is no longer directly passed
+        # to self.export_timeline for PRG generation, as the intermediate
+        # JSON is now always 1000Hz based.
+        # However, json_exporter might still use its own logic for refresh_rate.
         
         # Create directory if it doesn't exist
         os.makedirs(directory, exist_ok=True)
@@ -220,7 +221,7 @@ class PRGExporter:
             
             
             # Export to PRG
-            if self.export_timeline(timeline, prg_path, refresh_rate):
+            if self.export_timeline(timeline, prg_path):
                 prg_success_count += 1
         
         self.logger.info(

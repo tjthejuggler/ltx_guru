@@ -248,11 +248,11 @@ def on_export_prg(main_window):
             prg_path = os.path.join(export_dir, f"{base_name}.prg")
             
             # Export JSON
-            if json_exporter.export_timeline(timeline, json_path, refresh_rate=100):
+            if json_exporter.export_timeline(timeline, json_path): # refresh_rate arg removed
                 json_success_count += 1
             
-            # Export PRG (Use refresh_rate=100 for consistency with exported JSON)
-            if prg_exporter.export_timeline(timeline, prg_path, refresh_rate=100):
+            # Export PRG
+            if prg_exporter.export_timeline(timeline, prg_path): # refresh_rate arg removed
                 prg_success_count += 1
         
         # Show success message
