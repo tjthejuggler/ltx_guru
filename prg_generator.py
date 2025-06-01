@@ -6,7 +6,7 @@ This version hardcodes the PRG file refresh rate to 1000 Hz for high precision.
 It uses the latest understanding of header fields 0x16 and 0x1E.
 
 Usage:
-    python3 prg_generator.py <input.json> <output.prg> [--no-black-gaps]
+    python3 prg_generator.py <input.json> <output.prg> [--use-gaps]
 """
 
 import json
@@ -84,9 +84,9 @@ def split_long_segments(segments_in, max_duration=65535):
             new_segments.append((rem_dur, color, pixels))
     return new_segments
 
-def generate_prg_file(input_json_path, output_prg_path, insert_gaps_enabled=True):
+def generate_prg_file(input_json_path, output_prg_path, insert_gaps_enabled=False): # Default changed
     print(f"\n[INIT] Starting PRG High-Precision (1000Hz) generation from {input_json_path} to {output_prg_path}")
-    print(f"[INIT] Automatic 1ms black gap insertion: {'ENABLED' if insert_gaps_enabled else 'DISABLED'}")
+    print(f"[INIT] Automatic 1ms black gap insertion: {'ENABLED (via --use-gaps)' if insert_gaps_enabled else 'DISABLED (default)'}")
 
     try:
         with open(input_json_path, 'r') as f:
@@ -385,18 +385,19 @@ if __name__ == '__main__':
         description="LTX Ball PRG Generator - High Precision (1000Hz)",
         formatter_class=argparse.RawTextHelpFormatter, # To allow newlines in help
         epilog="""Example:
-  python3 prg_generator.py input.json output.prg
-  python3 prg_generator.py input.json output_no_gaps.prg --no-black-gaps
+  python3 prg_generator.py input.json output.prg # No gaps by default
+  python3 prg_generator.py input.json output_with_gaps.prg --use-gaps
 """
     )
     parser.add_argument("input_json", help="Path to the input JSON file.")
     parser.add_argument("output_prg", help="Path for the output .prg file.")
     parser.add_argument(
-        "--no-black-gaps",
-        action="store_true",
-        help="Disable automatic insertion of 1ms black gaps between color changes."
+        "--use-gaps",
+        action="store_true", # Defaults to False if not present
+        help="Enable automatic insertion of 1ms black gaps between color changes. Default is no gaps."
     )
     args = parser.parse_args()
 
-    insert_gaps = not args.no_black_gaps
+    # If --use-gaps is specified, args.use_gaps will be True. Otherwise, False.
+    insert_gaps = args.use_gaps
     generate_prg_file(args.input_json, args.output_prg, insert_gaps_enabled=insert_gaps)

@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-01 14:12 UTC+7
+**Last Updated:** 2025-06-01 19:38 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -196,7 +196,8 @@ It incorporates the latest understanding of PRG header fields (see "Hypothesis 8
 #### Usage (`prg_generator.py` - 1000Hz High-Precision Version)
 
 ```bash
-python3 prg_generator.py input.json output_1000hz.prg
+python3 prg_generator.py input.json output_1000hz_no_gaps.prg # Default: no gaps
+python3 prg_generator.py input.json output_1000hz_with_gaps.prg --use-gaps
 ```
 
 *   `input.json`: Path to the JSON file. The `refresh_rate` and `end_time` in this JSON are used to define the sequence timing, which the script then converts to 1000Hz PRG time units.
@@ -414,7 +415,7 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 time units. If a segment's calculated duration in the JSON exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
-*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script automatically inserts a 1ms black segment before each change to a new, different color if the segment is long enough (this behavior can be disabled with `--no-black-gaps`).
+*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag.
 *   **Official App Segment Duration Alterations:** For certain sequence lengths (e.g., N=258), the official LTX app may alter the duration of specific segments (e.g., segment at index 59 becomes 95ms instead of an input 100ms). This behavior is not yet fully understood or generalized in the generator.
 
 ---
