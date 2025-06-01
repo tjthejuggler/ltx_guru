@@ -143,21 +143,53 @@ def generate_prg_file(input_json_path, output_prg_path):
     print(f"[INIT] Total PRG duration: {prg_total_duration_units} units @ {PRG_FILE_REFRESH_RATE}Hz")
 
     # Calculate actual PRG segments data: (duration_prg_units, color_tuple, pixels)
+    # With auto-inserted 1ms black gaps between different-colored segments.
     actual_prg_segments = []
     if not parsed_prg_sequence_items: print("[ERROR] No segments in sequence."); sys.exit(1)
 
-    for idx, (time_units, entry) in enumerate(parsed_prg_sequence_items):
-        next_time_units = prg_total_duration_units
+    prg_gap_duration = 1 # 1ms black gap at 1000Hz
+
+    for idx, (prg_start_time_units, entry) in enumerate(parsed_prg_sequence_items):
+        current_color = entry['color']
+        current_pixels = entry['pixels']
+
+        # Determine the start time of the *next defined event* in the JSON sequence
+        # This defines the end of the current color block from the input JSON
+        next_defined_event_prg_start_time = prg_total_duration_units
         if idx + 1 < len(parsed_prg_sequence_items):
-            next_time_units = parsed_prg_sequence_items[idx+1][0]
+            next_defined_event_prg_start_time = parsed_prg_sequence_items[idx+1][0]
+
+        intended_duration_for_current_color = next_defined_event_prg_start_time - prg_start_time_units
+
+        if intended_duration_for_current_color <= 0:
+            # This typically happens for the last entry in the JSON sequence if it matches end_time,
+            # or if there are redundant/out-of-order timestamps.
+            print(f"[SEG_CALC_INFO] Skipping zero/negative duration event at PRG time {prg_start_time_units}")
+            continue
+
+        # Check if this is effectively the last segment that will display color before total_duration
+        # (i.e., there isn't another different color change scheduled after this one within total_duration)
+        is_last_color_block_before_end = True
+        if idx + 1 < len(parsed_prg_sequence_items):
+            # If there's a next item and it's not just an end marker with zero effective duration
+             if parsed_prg_sequence_items[idx+1][0] < prg_total_duration_units:
+                 is_last_color_block_before_end = False
         
-        duration_prg_units = next_time_units - time_units
-        if duration_prg_units <= 0: continue # Skip zero/negative duration segments
+        if not is_last_color_block_before_end and intended_duration_for_current_color > prg_gap_duration:
+            # Add the main color segment, shortened by the gap
+            main_color_duration = intended_duration_for_current_color - prg_gap_duration
+            actual_prg_segments.append((main_color_duration, current_color, current_pixels))
+            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: OrigStart={prg_start_time_units}, Dur={main_color_duration}, Color={current_color}, Pix={current_pixels}")
+            
+            # Add the black gap
+            actual_prg_segments.append((prg_gap_duration, (0,0,0), current_pixels))
+            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: (black_gap after {current_color}), Dur={prg_gap_duration}, Pix={current_pixels}")
+        else:
+            # This is the last color block, or it's too short to insert a gap before it. Add it as is.
+            actual_prg_segments.append((intended_duration_for_current_color, current_color, current_pixels))
+            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: OrigStart={prg_start_time_units}, Dur={intended_duration_for_current_color}, Color={current_color}, Pix={current_pixels} (last or too short for gap)")
 
-        actual_prg_segments.append((duration_prg_units, entry['color'], entry['pixels']))
-        print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: Start={time_units}, Dur={duration_prg_units}, Color={entry['color']}, Pix={entry['pixels']}")
-
-    if not actual_prg_segments: print("[ERROR] No valid PRG segments calculated."); sys.exit(1)
+    if not actual_prg_segments: print("[ERROR] No valid PRG segments calculated after gap insertion logic."); sys.exit(1)
 
     # Split long segments
     final_prg_segments_for_blocks = split_long_segments(actual_prg_segments)

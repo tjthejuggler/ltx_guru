@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-01 11:00 UTC+7
+**Last Updated:** 2025-06-01 12:11 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -185,43 +185,31 @@ To achieve 0.01s precision:
 *   Segment 0 (Red): Starts at 0, ends at 63 (start of next). Duration = 63 - 0 = 63 units.
 ---
 
-### High-Precision PRG Generator (`prg_generator_new.py`)
+### High-Precision PRG Generator (`prg_generator.py`)
 
-The `prg_generator_new.py` script has been repurposed to be a **high-precision PRG generator that hardcodes the output PRG file's refresh rate to 1000Hz.** This allows for timing granularity down to 1 millisecond.
+The `prg_generator.py` script is a **high-precision PRG generator that hardcodes the output PRG file's refresh rate to 1000Hz.** This allows for timing granularity down to 1 millisecond.
 
 It incorporates the latest understanding of PRG header fields (see "Hypothesis 8" in the `.prg` File Format Specification section below) based on analysis of official app-generated files at both 1Hz and 1000Hz.
 
 **Important Note on Previous 1Hz Experiment:** An earlier version of `prg_generator_new.py` experimented with a 1Hz PRG refresh rate, attempting to use the 100 internal color slots of a PRG segment for high-frequency changes. This experiment **failed**, as the LTX firmware appears to only use the *first* color slot in such a 1Hz configuration. For high-granularity timing, a high PRG file refresh rate (like 1000Hz) is necessary.
 
-#### Usage (`prg_generator_new.py` - 1000Hz High-Precision Version)
-
-The *intended* timing granularity (e.g., 0.01 seconds) was to be achieved by utilizing the 100 available RGB color slots within each 1-second PRG segment.
-
-#### Core Idea (Failed)
-*   **PRG File:** Operates at 1 frame per second.
-*   **JSON Input:** Defines color changes at a higher frequency.
-*   **Mapping (Intended):** Map high-frequency JSON color changes into the 100 discrete color "sub-slots" in each 1-second PRG frame.
-*   **Actual Result:** Only the first sub-slot's color is displayed for the entire 1-second PRG frame.
-
-This approach was an experiment to explore alternative ways of encoding high-resolution timing.
-
-#### Usage (`prg_generator_new.py` - 1Hz Experimental Version)
+#### Usage (`prg_generator.py` - 1000Hz High-Precision Version)
 
 ```bash
-python3 prg_generator_new.py input.json output_1000hz.prg
+python3 prg_generator.py input.json output_1000hz.prg
 ```
 
 *   `input.json`: Path to the JSON file. The `refresh_rate` and `end_time` in this JSON are used to define the sequence timing, which the script then converts to 1000Hz PRG time units.
 *   `output_1000hz.prg`: Path for the generated 1000Hz `.prg` file.
 
-#### JSON Input Format (for `prg_generator_new.py`)
+#### JSON Input Format (for `prg_generator.py`)
 
 The JSON input structure is the same as for `prg_generator.py`.
 *   `refresh_rate` (in JSON): Interpreted as the input timing base (e.g., if 100, then a JSON time unit is 0.01s).
 *   `end_time` (in JSON): Defines total duration in JSON time units.
 *   The script calculates PRG segment durations by converting these JSON timings to the 1000Hz PRG scale.
 
-#### Example: Red 0.05s, then Blue 0.1s (using `prg_generator_new.py`)
+#### Example: Red 0.05s, then Blue 0.1s (using `prg_generator.py`)
 
 Input JSON (`input_example.json`):
 ```json
@@ -236,7 +224,7 @@ Input JSON (`input_example.json`):
   }
 }
 ```
-Command: `python3 prg_generator_new.py input_example.json example_output.prg`
+Command: `python3 prg_generator.py input_example.json example_output.prg`
 
 Resulting `example_output.prg` will be a 1000Hz PRG file with:
 *   Segment 1 (Red): Duration 50ms (50 units @ 1000Hz).
@@ -410,6 +398,7 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 time units. If a segment's calculated duration in the JSON exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
+*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script automatically inserts a 1ms black segment before each change to a new, different color if the segment is long enough. This ensures cleaner transitions.
 
 ---
 
