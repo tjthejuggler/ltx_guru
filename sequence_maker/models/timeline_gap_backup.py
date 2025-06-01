@@ -365,6 +365,17 @@ class Timeline:
             rounded_start_time = round_timing(segment.start_time)
             rounded_end_time = round_timing(segment.end_time)
             
+            # Apply timing gap fix: ensure this segment starts after the previous one ends
+            if i > 0:
+                prev_segment = adjusted_segments[i - 1]
+                prev_end_time = prev_segment['end_time']
+                
+                # If this segment starts at or before the previous segment ends, adjust it
+                if rounded_start_time <= prev_end_time:
+                    rounded_start_time = prev_end_time + gap_size
+                    # Maintain the original duration by adjusting the end time too
+                    original_duration = rounded_end_time - round_timing(segment.start_time)
+                    rounded_end_time = rounded_start_time + original_duration
             
             # Store adjusted segment info for next iteration
             adjusted_segments.append({

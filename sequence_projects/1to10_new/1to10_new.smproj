@@ -1,9 +1,9 @@
 {
   "metadata": {
     "version": "0.1.0",
-    "created": "2025-06-01T11:17:15.487551",
-    "modified": "2025-06-01T11:18:00.184097",
-    "name": false,
+    "created": "2025-06-01T11:53:05.806009",
+    "modified": "2025-06-01T11:53:43.974660",
+    "name": "Untitled Project",
     "description": ""
   },
   "settings": {
@@ -18,8 +18,8 @@
     {
       "name": "Ball 1",
       "defaultPixels": 4,
-      "created": "2025-06-01T11:17:15.487565",
-      "modified": "2025-06-01T11:18:00.184083",
+      "created": "2025-06-01T11:53:05.806040",
+      "modified": "2025-06-01T11:53:43.974636",
       "segments": [
         {
           "startTime": 0.0,
@@ -29,7 +29,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -40,7 +40,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -51,7 +51,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -62,7 +62,7 @@
             0,
             255
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -73,7 +73,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -84,7 +84,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -95,7 +95,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -106,7 +106,7 @@
             0,
             255
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -117,7 +117,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -128,7 +128,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -139,7 +139,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -150,7 +150,7 @@
             0,
             255
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -161,7 +161,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -172,7 +172,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -183,7 +183,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -194,7 +194,7 @@
             0,
             255
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -205,7 +205,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -216,7 +216,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -227,7 +227,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -238,7 +238,7 @@
             0,
             255
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         },
         {
@@ -249,7 +249,7 @@
             0,
             0
           ],
-          "pixels": 3,
+          "pixels": 4,
           "effects": []
         }
       ]
@@ -257,15 +257,15 @@
     {
       "name": "Ball 2",
       "defaultPixels": 4,
-      "created": "2025-06-01T11:17:15.487568",
-      "modified": "2025-06-01T11:18:00.184093",
+      "created": "2025-06-01T11:53:05.806047",
+      "modified": "2025-06-01T11:53:43.974653",
       "segments": []
     },
     {
       "name": "Ball 3",
       "defaultPixels": 4,
-      "created": "2025-06-01T11:17:15.487569",
-      "modified": "2025-06-01T11:18:00.184095",
+      "created": "2025-06-01T11:53:05.806050",
+      "modified": "2025-06-01T11:53:43.974657",
       "segments": []
     }
   ],

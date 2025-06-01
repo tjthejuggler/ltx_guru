@@ -167,3 +167,7 @@ Created test files to verify the gap insertion functionality:
 **Initial Fix:** 2025-05-31 19:07 UTC+7
 **Timing Gap Fix (PRG Generator):** 2025-05-31 19:55 UTC+7
 **Timing Gap Fix (Timeline - Final):** 2025-05-31 20:01 UTC+7
+## Revisions
+
+**2025-06-01:**
+- Reverted the "Timeline JSON Export Timing Gap Fix" in `sequence_maker/models/timeline.py`. The automatic 0.01-second gap insertion between segments with exact timing overlaps in the `to_json_sequence()` method was removed. This decision was made because a change in the application's refresh rate (from 100Hz to 1000Hz) might have resolved the original flickering issue, and the gap insertion was a workaround for that specific problem.
