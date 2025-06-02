@@ -11,7 +11,6 @@ Usage:
     python3 prg_generator.py input.json output.prg
 """
 
-#THIS NEEDS TESTED WHEN I KNOW THAT THE TIMELINE ISNT STARTING TOO FAST, LIKE WITH BLACK AT THE BEGINNING NAD BETWEEN EVERYTHING
 import json
 import struct
 import sys

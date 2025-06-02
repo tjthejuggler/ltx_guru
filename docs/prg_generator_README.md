@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-02 15:03 UTC+7
+**Last Updated:** 2025-06-02 16:37 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -275,32 +275,28 @@ Let `val_0x16_dec` be the decimal value calculated for this field.
 *This logic holds universally across all tests (A-L, N=1 and N>1, various refresh rates).*
 The byte value written to the file is `struct.pack('<H', val_0x16_dec)`.
 
-**Field `0x1E` (Header First Segment Duration (Conditional)) Logic (Revised 2025-06-02, after K & L series):**
+**Field `0x1E` (Header First Segment Duration (Conditional)) Logic (Revised 2025-06-02, after S-V and additional tests):**
 Let `Dur0Units_actual` and `NominalBase (=100)` be defined as above.
 Let `N_prg` be the total number of PRG segments in the file.
 Let `val_0x1E_dec` be the decimal value calculated for this field.
 
-The logic for this field depends on `N_prg` and potentially `RefreshRate`.
+1.  **If `N_prg == 1` (Single Segment):**
+    *   If `Dur0Units_actual == NominalBase` (i.e., 100): `val_0x1E_dec = 0`.
+    *   Else if `Dur0Units_actual % NominalBase == 0` (i.e., `Dur0Units_actual` is a multiple of 100 but not 100 itself):
+        *   If `Dur0Units_actual <= 400`: `val_0x1E_dec = 0`. (Updated from 300 based on S2 test where 400ms gave 0).
+        *   Else (`Dur0Units_actual >= 500`): `val_0x1E_dec = Dur0Units_actual`. (Threshold is between 400 and 500).
+    *   Else (`Dur0Units_actual % NominalBase != 0`):
+        `val_0x1E_dec = Dur0Units_actual % NominalBase`.
 
-Refined Hypothesis for Header Field 0x1E:
-Let NominalBase = 100.
-Let `RefreshRate` be the value from Header Field `0x0C`.
+2.  **If `N_prg > 1` (Multiple Segments):**
+    *   If `Dur0Units_actual == 1000` (specific value, as seen in `red_1s_blue_.5s_1000r.prg`):
+        `val_0x1E_dec = 1000`.
+    *   Else if `Dur0Units_actual % NominalBase == 0` (i.e., `Dur0Units_actual` is a multiple of 100, e.g., 100, 200):
+        `val_0x1E_dec = 0`. (Covers `red_100s_blue_50s_1r.prg` and Test Q3).
+    *   Else (`Dur0Units_actual % NominalBase != 0`):
+        `val_0x1E_dec = Dur0Units_actual % NominalBase`. (Confirmed by Q4, where Dur0=170 -> 0x1E=70)
 
-    If N_prg == 1:
-        If Dur0Units_actual % NominalBase == 0: (Dur0 is a multiple of 100)
-            If RefreshRate == 1 OR Dur0Units_actual == NominalBase: val_0x1E_dec = 0.
-            Else (RefreshRate != 1 AND Dur0Units_actual != NominalBase): val_0x1E_dec = Dur0Units_actual.
-        Else (Dur0Units_actual % NominalBase != 0):
-            val_0x1E_dec = Dur0Units_actual % NominalBase.
-
-    If N_prg > 1:
-        If Dur0Units_actual == NominalBase (i.e., 100): val_0x1E_dec = 0.
-        Else: val_0x1E_dec = Dur0Units_actual.
-
-    Justification for N=1 refinement: This handles the 1Hz, Dur0=200 case (0x1E=0) and the 1000Hz, Dur0=500/1000 cases (0x1E=Dur0).
-    Justification for N>1 refinement: This handles red_1s_blue_.5s_1000r.prg (Dur0=1000, 0x1E=1000) and other N>1 cases correctly. The key is that for N>1, if Dur0 is not 100, 0x1E seems to just be Dur0Units_actual.
-
-*This refined hypothesis for Header Field 0x1E, along with the existing universal rule for Field 0x16, aims to be consistent with all known official app tests.*
+*This refined logic for Header Field 0x1E is based on analysis of all tests up to and including the S-V series and additional header `0x1E` specific tests.*
 The byte value written to the file for Field `0x1E` is `struct.pack('<H', val_0x1E_dec & 0xFFFF)`.
 
 #### 2. Duration Blocks (19 Bytes per Segment)
@@ -320,32 +316,46 @@ One block exists for each segment, immediately following the header. Let N be th
 | +0x0F                            | 2      | Block Constant 0x0F          | `bytes`   | N/A    | `00 00`                                                    |
 | +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Duration of next segment, with conditions. See logic below. Ex: `63 00` (99 units for next seg) |
 
-**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-02, based on extensive A-L test series analysis):**
+**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-02, status confirmed after S-V series tests):**
 This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` and `field_09_part2`.
 
 *   **`field_09_part2`:**
-    *   **Observation (Official App Tests A-L, 1000Hz):** For all intermediate duration blocks (segments 0 to N-2), `field_09_part2` is consistently `64 00` (decimal 100).
-    *   **Assessment:** This is correct and consistently observed. The `prg_generator.py` should ensure this value is written for `field_09_part2` in intermediate blocks.
+    *   **Observation (Official App Tests A-V, 1000Hz):** For all intermediate duration blocks (segments 0 to N-2), `field_09_part2` is consistently `64 00` (decimal 100).
+    *   **Status:** Confirmed. The `prg_generator.py` should ensure this value is written for `field_09_part2` in intermediate blocks.
 
 *   **`field_09_part1`:**
-    *   **Hypothesis (Official App Tests A-L, 1000Hz):** For an intermediate duration block `k` (describing segment `k`), if the *next* segment (segment `k+1`) has a duration `Dur_k+1` (in PRG time units):
+    *   **Hypothesis (Official App Tests A-V, 1000Hz):** For an intermediate duration block `k` (describing segment `k`), if the *next* segment (segment `k+1`) has a duration `Dur_k+1` (in PRG time units):
         **`field_09_part1 (for block k) = floor(Dur_k+1 / 100)`**
-    *   **Assessment:** This hypothesis is robust and correctly predicts `field_09_part1` for all intermediate blocks in all official app tests A-L (1000Hz). It is strongly recommended for implementation in `prg_generator.py`.
+    *   **Status:** Confirmed robustly across all tests A-V. It is strongly recommended for implementation in `prg_generator.py`.
 
-**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-02, based on extensive A-L test series analysis):**
+**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-02, after additional tests):**
 Let `Dur_k+1` be the duration of the next segment (segment `k+1`) in PRG time units.
+Let `Dur_k` be the duration of the current segment (segment `k`).
 
-1.  **Special Override Case ("1930 Anomaly"):**
+1.  **Special Overrides (Highest Priority):**
     *   If `Dur_k+1 == 1930`: `Field[+0x11]` for Block `k` is `1E 00` (decimal 30).
-    *   This is confirmed by Tests L1-L7.
+    *   Else if `Dur_k+1 == 103`: `Field[+0x11]` for Block `k` is `03 00` (decimal 3).
 
-2.  **General Rules (if not overridden by the "1930 Anomaly"):**
-    a.  If `Dur_k+1 < 100`: `Field[+0x11] = Dur_k+1`.
-    b.  Else if `Dur_k+1 == 100`: `Field[+0x11] = 0`.
-    c.  Else (`Dur_k+1 > 100` and `Dur_k+1 != 1930`): `Field[+0x11] = Dur_k+1`.
+2.  **`Dur_k+1` is an Exact Multiple of 100 (and not an override from rule 1):**
+    *   Else if `Dur_k+1 > 0` AND `Dur_k+1 % 100 == 0`:
+        *   If (`Dur_k+1 >= 600`) AND (`Dur_k >= 1000`):
+            `Field[+0x11] = Dur_k+1` (Pattern B: Direct passthrough for large multiples when `Dur_k` is also large).
+        *   Else:
+            `Field[+0x11] = 0`. (Covers 100, 200, 300, 400, 500. Also 600, 1000 if `Dur_k < 1000`).
 
-*   **Assessment:** This refined logic for `Field[+0x11]` correctly predicts its value for all intermediate blocks in Tests A-L.
-*   The `prg_generator.py` should be updated to reflect these refined general hypotheses for both `Field[+0x09]` and `Field[+0x11]`.
+3.  **`Dur_k+1` is NOT an Exact Multiple of 100 (and not an override from rule 1):**
+    *   Else if `Dur_k+1 == 150`:
+        *   If `Dur_k == 100`: `Field[+0x11] = 150` (Pattern B: Special case).
+        *   Else: `Field[+0x11] = 50` (Pattern A: `150 % 100`).
+    *   Else if `Dur_k+1 < 100`:
+        `Field[+0x11] = Dur_k+1`.
+    *   Else (`Dur_k+1 > 100`, not 150, not a multiple of 100, not an override):
+        *   *(Tentative for Pattern B for other mid-range values):* If `Dur_k` is "large" (e.g., `Dur_k >= 1000`) AND `Dur_k+1` is a "mid-range non-multiple" (e.g., 470), then `Field[+0x11] = Dur_k+1`. (This sub-condition needs more precise definition from further tests).
+        *   Else (Most common case for non-multiples > 100):
+            `Field[+0x11] = Dur_k+1 % 100` (Pattern A). This applies to values "just over" multiples of 100, or when `Dur_k` doesn't trigger a Pattern B condition. Examples: 101, 102, 104, 105, 120, 140, 148, 149, 151, 199, 201, 299, etc.
+
+*   **Note:** The precise conditions distinguishing Pattern A from Pattern B when `Dur_k+1` is not immediately adjacent to a multiple of 100 (e.g., for values like 160, 170, 250, etc.) and `Dur_k` varies are still being refined. The `prg_generator.py` may need a series of `if/elif` conditions for known Pattern B triggers, falling back to Pattern A.
+*   The `prg_generator.py` should be updated to implement this highly conditional logic for `Field[+0x11]`.
 *   *Note on N=258 variations:* Official LTX app output for N=258 shows further specific deviations not covered by these general hypotheses (see `official_prg_app_tests.md`). The generator does not attempt to replicate these highly specific N=258 exceptions.
 
 **Structure for Segment N-1 (LAST Block):**
@@ -398,7 +408,7 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **Official App Segment Duration Alterations:** For certain sequence lengths (e.g., N=258), the official LTX app may alter the duration of specific segments (e.g., segment at index 59 becomes 95ms instead of an input 100ms). This behavior is not yet fully understood or generalized in the generator.
 *   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-02):**
     *   **Previous Issues:** An older, more complex hypothesis for `field_09_part1` ("Hypothesis I") caused strobing issues in `prg_generator.py` and was reverted.
-    *   **Current Recommendation:** The new, simpler hypothesis for `field_09_part1` ( `floor(Dur_k+1 / 100)` ) is well-supported by all 1000Hz official app tests (A-L) and is recommended for implementation. It is anticipated that this robust model will not reintroduce the strobing issues and will more accurately reflect official PRG generation. `field_09_part2` should be `64 00` (100) for intermediate blocks.
+    *   **Current Recommendation (Post S-V tests):** The hypothesis for `field_09_part1` ( `floor(Dur_k+1 / 100)` ) and `field_09_part2` ( `64 00` i.e. 100) are robustly confirmed by all 1000Hz official app tests (A-V) and are strongly recommended for implementation. It is anticipated that this accurate model will not reintroduce strobing issues and will more accurately reflect official PRG generation.
 
 ---
 
