@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-02 14:38 UTC+7
+**Last Updated:** 2025-06-02 15:03 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -320,33 +320,32 @@ One block exists for each segment, immediately following the header. Let N be th
 | +0x0F                            | 2      | Block Constant 0x0F          | `bytes`   | N/A    | `00 00`                                                    |
 | +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Duration of next segment, with conditions. See logic below. Ex: `63 00` (99 units for next seg) |
 
-**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-02, after K & L series):**
+**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-02, based on extensive A-L test series analysis):**
 This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` and `field_09_part2`.
 
-*   **`field_09_part2` (Consistent Observation from Tests A-L):**
-    *   In official app-generated PRGs (Tests A-L, 1000Hz), for intermediate duration blocks, `field_09_part2` is consistently `64 00` (decimal 100).
-    *   The `prg_generator.py` script writes `64 00` as `field_09_part2` for intermediate blocks, aligning with this.
+*   **`field_09_part2`:**
+    *   **Observation (Official App Tests A-L, 1000Hz):** For all intermediate duration blocks (segments 0 to N-2), `field_09_part2` is consistently `64 00` (decimal 100).
+    *   **Assessment:** This is correct and consistently observed. The `prg_generator.py` should ensure this value is written for `field_09_part2` in intermediate blocks.
 
-*   **`field_09_part1` (New Working Hypothesis from Tests A-L):**
-    *   For an intermediate duration block `k` (describing segment `k`), if the *next* segment (segment `k+1`) has duration `Dur_k+1`:
+*   **`field_09_part1`:**
+    *   **Hypothesis (Official App Tests A-L, 1000Hz):** For an intermediate duration block `k` (describing segment `k`), if the *next* segment (segment `k+1`) has a duration `Dur_k+1` (in PRG time units):
         **`field_09_part1 (for block k) = floor(Dur_k+1 / 100)`**
-    *   This hypothesis correctly predicts `field_09_part1` for all intermediate blocks in official app tests A-L.
-    *   The `prg_generator.py` currently uses a static `00 00` for this part. Implementing this new dynamic hypothesis is recommended to align more closely with official app behavior (though caution is advised until this is thoroughly tested in the generator for any unforeseen side effects).
+    *   **Assessment:** This hypothesis is robust and correctly predicts `field_09_part1` for all intermediate blocks in all official app tests A-L (1000Hz). It is strongly recommended for implementation in `prg_generator.py`.
 
-**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-02, after K & L series):**
-Let `Dur_k` be current segment's duration, `Dur_k+1` be next segment's duration (in PRG time units).
+**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-02, based on extensive A-L test series analysis):**
+Let `Dur_k+1` be the duration of the next segment (segment `k+1`) in PRG time units.
 
 1.  **Special Override Case ("1930 Anomaly"):**
-    *   If `Dur_k+1 == 1930`: `Field[+0x11]` for Block `k` (which describes segment `k`) is `1E 00` (decimal 30).
-    *   The L-series tests (L1-L7) show this override triggers if `Dur_k+1` is 1930, *regardless of the value of `Dur_k`* (tested for `Dur_k` from 70 to 1929).
+    *   If `Dur_k+1 == 1930`: `Field[+0x11]` for Block `k` is `1E 00` (decimal 30).
+    *   This is confirmed by Tests L1-L7.
 
-2.  **General Rules (if not overridden by the 1930 anomaly):**
+2.  **General Rules (if not overridden by the "1930 Anomaly"):**
     a.  If `Dur_k+1 < 100`: `Field[+0x11] = Dur_k+1`.
     b.  Else if `Dur_k+1 == 100`: `Field[+0x11] = 0`.
-    c.  Else (`Dur_k+1 > 100`): `Field[+0x11] = Dur_k+1`.
-        *   Test H3 (Dur_k=100, Dur_k+1=150, Field[+0x11]=150) supports this simpler rule for `Dur_k+1 > 100`.
+    c.  Else (`Dur_k+1 > 100` and `Dur_k+1 != 1930`): `Field[+0x11] = Dur_k+1`.
 
-*   The `prg_generator.py` should be updated to reflect this refined general logic for `Field[+0x11]`. The "1930 Anomaly" appears to be a specific override if `Dur_k+1 == 1930`.
+*   **Assessment:** This refined logic for `Field[+0x11]` correctly predicts its value for all intermediate blocks in Tests A-L.
+*   The `prg_generator.py` should be updated to reflect these refined general hypotheses for both `Field[+0x09]` and `Field[+0x11]`.
 *   *Note on N=258 variations:* Official LTX app output for N=258 shows further specific deviations not covered by these general hypotheses (see `official_prg_app_tests.md`). The generator does not attempt to replicate these highly specific N=258 exceptions.
 
 **Structure for Segment N-1 (LAST Block):**
@@ -397,11 +396,9 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
 *   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag. Note that this is not an acceptable fix, this information is only here to help understand the nature of the issue.
 *   **Official App Segment Duration Alterations:** For certain sequence lengths (e.g., N=258), the official LTX app may alter the duration of specific segments (e.g., segment at index 59 becomes 95ms instead of an input 100ms). This behavior is not yet fully understood or generalized in the generator.
-*   **Important Note on Duration Block Field `+0x09` (as of 2025-06-02):**
-    *   **Official App Behavior:** The official LTX app uses a dynamic system for Field `+0x09` in intermediate duration blocks, where its value changes based on sequence characteristics. This is evident from analyzing official PRG files.
-    *   **Strobing Issue with "Hypothesis I":** An attempt on 2025-06-02 to implement a dynamic model ("Hypothesis I") for Field `+0x09` in `prg_generator.py` caused an unintentional strobing effect with certain test sequences.
-    *   **Resolution & Current State:** To resolve the strobing, the logic for Field `+0x09` in intermediate duration blocks within `prg_generator.py` was reverted to its previous, simpler behavior of writing a static value (`00 00 64 00`). This successfully eliminated the strobing.
-    *   **Conclusion:** While the official app uses a dynamic Field `+0x09`, our current understanding ("Hypothesis I") of that dynamic behavior is either incomplete or incorrect, leading to instability. The static value is a stable workaround. The "Hypothesis F" logic for Field `+0x11` (Next Segment Info) remains implemented. Further research is needed to fully understand the official app's dynamic logic for Field `+0x09` and replicate it safely.
+*   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-02):**
+    *   **Previous Issues:** An older, more complex hypothesis for `field_09_part1` ("Hypothesis I") caused strobing issues in `prg_generator.py` and was reverted.
+    *   **Current Recommendation:** The new, simpler hypothesis for `field_09_part1` ( `floor(Dur_k+1 / 100)` ) is well-supported by all 1000Hz official app tests (A-L) and is recommended for implementation. It is anticipated that this robust model will not reintroduce the strobing issues and will more accurately reflect official PRG generation. `field_09_part2` should be `64 00` (100) for intermediate blocks.
 
 ---
 

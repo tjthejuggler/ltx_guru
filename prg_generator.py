@@ -355,38 +355,36 @@ def generate_prg_file(input_json, output_prg):
                         next_duration_units = segments[idx + 1][0] # Dur_k+1_prg
                         index1_value = calculate_legacy_intro_pair(idx + 1, segment_count)
 
-                        # Field +0x09 logic (Hypothesis I)
-                        field_09_part2 = duration_units # CurrentSegmentDurationUnits
-                        if idx == 0:
-                            field_09_part1 = 1
-                        else:
-                            prev_duration_units = segments[idx-1][0]
-                            if duration_units == prev_duration_units:
-                                field_09_part1 = 1
-                            else:
-                                field_09_part1 = idx + 1
+                        # Field +0x09 Logic (Revised 2025-06-02 based on official app tests A-L)
+                        # field_09_part1 = floor(Dur_k+1 / 100)
+                        # field_09_part2 = 100 (NOMINAL_BASE_FOR_HEADER_FIELDS)
+                        
+                        field_09_part1 = math.floor(next_duration_units / NOMINAL_BASE_FOR_HEADER_FIELDS)
+                        field_09_part2 = NOMINAL_BASE_FOR_HEADER_FIELDS
+                        
                         field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2)
 
-                        # Field +0x11 logic (Hypothesis F)
-                        field_11_val = 0 # Default
-                        if next_duration_units < 100:
+                        # Field +0x11 Logic (Revised 2025-06-02 based on official app tests A-L)
+                        # Let Dur_k+1 be next_duration_units
+                        field_11_val = 0 # Initialize
+
+                        if next_duration_units == 1930: # "1930 Anomaly"
+                            field_11_val = 30
+                        elif next_duration_units < 100:
                             field_11_val = next_duration_units
                         elif next_duration_units == 100:
                             field_11_val = 0
-                        else: # next_duration_units > 100
-                            if duration_units == 100:
-                                field_11_val = 0
-                            else:
-                                field_11_val = next_duration_units
+                        else: # next_duration_units > 100 AND next_duration_units != 1930
+                            field_11_val = next_duration_units
                         
                         f.write(struct.pack('<H', pixels))
                         f.write(BLOCK_CONST_02)
                         f.write(struct.pack('<H', duration_units))
                         f.write(BLOCK_CONST_07)
-                        f.write(BLOCK_CONST_09) # Reverted: Was field_09_bytes (Hypothesis I)
+                        f.write(field_09_bytes) # Write calculated Field +0x09
                         f.write(struct.pack('<H', index1_value))
                         f.write(BLOCK_CONST_15)
-                        f.write(struct.pack('<H', field_11_val)) # Hypothesis F
+                        f.write(struct.pack('<H', field_11_val)) # Write calculated Field +0x11
                         current_offset += DURATION_BLOCK_SIZE
 
                     # Structure for the LAST segment (n-1)
