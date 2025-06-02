@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-01 19:38 UTC+7
+**Last Updated:** 2025-06-02 10:35 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -320,54 +320,35 @@ One block exists for each segment, immediately following the header. Let N be th
 | +0x02                            | 3      | Block Constant 0x02          | `bytes`   | N/A    | `01 00 00`                                                 |
 | +0x05                            | 2      | Current Segment Duration Units| `H`      | Little | Duration (units) of *this* segment. Ex: `01 00` (1 unit)   |
 | +0x07                            | 2      | Block Constant 0x07          | `bytes`   | N/A    | `00 00`                                                    |
-| +0x09                            | 4      | Segment Index & Duration     | `bytes`   | N/A    | `[SegNum_1based (H,LE)] [CurrentSegDurUnits (H,LE)]`. Ex: `01 00 01 00` (Seg 1, 1 unit) |
+| +0x09                            | 4      | Segment Index & Duration     | `bytes`   | N/A    | Two 2-byte LE values. Part1: Conditional index. Part2: CurrentSegDurUnits. See logic below. |
 | +0x0D                            | 2      | Index1 Value                 | `H`       | Little | Calculated by `calculate_legacy_intro_pair` (see code)     |
 | +0x0F                            | 2      | Block Constant 0x0F          | `bytes`   | N/A    | `00 00`                                                    |
-| +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Complex, see logic below. Ex: `63 00` (99 units for next seg) |
+| +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Duration of next segment, with conditions. See logic below. Ex: `63 00` (99 units for next seg) |
 
-**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-01, "Hypothesis I"):**
-This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` and `field_09_part2`.
-1.  `field_09_part2`: This is always `CurrentSegmentDurationUnits` (the duration of the current block's segment).
-2.  `field_09_part1` (1-based segment index for this block, with a special case):
-    *   If `current_block_index == 0` (first duration block): `field_09_part1 = 1` (`01 00`).
-    *   If `current_block_index > 0`:
-        *   If `CurrentSegmentDurationUnits == PreviousSegmentDurationUnits`: `field_09_part1 = 1` (`01 00`). (Observed in official `N258_.1s_1000r.prg` and `N259_.1s_1000r.prg` where all segments were 100ms; `field_09_part1` remained `1` for subsequent blocks).
-        *   Else (`CurrentSegmentDurationUnits != PreviousSegmentDurationUnits`): `field_09_part1 = current_block_index + 1` (1-based index of the current block).
-    *   *Example based on official N258/N259 files (all segments 100ms):*
-        *   Block 0 (idx=0): `field_09_part1 = 1`.
-        *   Block 1 (idx=1, Dur=100, PrevDur=100): `field_09_part1 = 1`.
-        *   Block 2 (idx=2, Dur=100, PrevDur=100): `field_09_part1 = 1`.
-    *   *Example with varying durations (e.g., Dur0=50, Dur1=50, Dur2=70):*
-        *   Block 0 (idx=0, Dur0=50): `field_09_part1 = 1`.
-        *   Block 1 (idx=1, Dur1=50, PrevDur0=50): `field_09_part1 = 1`.
-        *   Block 2 (idx=2, Dur2=70, PrevDur1=50): `field_09_part1 = idx+1 = 3`.
-    *   **Known Exceptions for N=258 (Official `N258_.1s_1000r.prg`):**
-        *   Block `idx=58`: `field_09_part1 = 0` (`00 00`), where Hypothesis I would predict `1`.
-        *   Block `idx=62`: `field_09_part1 = 0` (`00 00`), where Hypothesis I would predict `1` (assuming surrounding segments are 100ms).
-        *   The reasons for these specific deviations are under investigation.
+**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Current Generator Implementation as of 2025-06-02):**
+Currently, for intermediate duration blocks (not the last one), the `prg_generator.py` script writes a static value of `00 00 64 00` for this 4-byte field.
+    *   This decision was made after observing that implementing a more dynamic "Hypothesis I" for this field reintroduced unintentional strobing (see "Important Note on Duration Block Field `+0x09`" under "Implementation Notes" below).
+    *   The static value `00 00 64 00` (effectively Part1 = `0`, Part2 = `100`) was the behavior of the generator prior to attempting Hypothesis I and was found to not cause strobing with the test sequences that exhibited issues.
+    *   The exact reason why "Hypothesis I" caused strobing, and the full correct dynamic logic for this field (especially as seen in official app PRGs with complex sequences), requires further investigation.
 
-**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Re-confirmed 2025-06-01, "Hypothesis F"):**
-Let `Dur_k` = Duration units of current segment `k`.
-Let `Dur_k+1` = Duration units of next segment `k+1`.
+**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Updated 2025-06-02 based on Hypothesis F):**
+This 2-byte Little Endian field depends on the duration of the current segment (`Dur_k`, in PRG time units) and the next segment (`Dur_k+1`, in PRG time units).
 
 1.  If `Dur_k+1 < 100`:
     *   `field_11_val = Dur_k+1`.
-    *   *Example: `2px_r1_g99_1r` (Dur0=1, Dur1=99). Field is `63 00` (99).*
+    *   *Example: CurrentSegDur=10, NextSegDur=99. `field_11_val = 99` (Hex: `63 00`).*
 2.  Else if `Dur_k+1 == 100`:
     *   `field_11_val = 0`.
-    *   *Example: Official `N258_.1s_1000r.prg` (Block 0: Dur0=100, Dur1=100). Field is `00 00` (0).*
-    *   *Example: Official `N259_.1s_1000r.prg` (Block 0: Dur0=100, Dur1=100). Field is `00 00` (0).*
+    *   *Example: CurrentSegDur=50, NextSegDur=100. `field_11_val = 0` (Hex: `00 00`).*
+    *   *Example: CurrentSegDur=100, NextSegDur=100. `field_11_val = 0` (Hex: `00 00`).*
 3.  Else (`Dur_k+1 > 100`):
-    *   If `Dur_k == 100`:
+    *   If `Dur_k == 100` (Current segment's duration is exactly 100 units):
         *   `field_11_val = 0`.
-        *   *Example: Official `R0.1_B0.1_G10_1000hz.prg` (Block 1: Dur1=100, Dur2=10000). Field is `00 00`. This specific sub-case where current is 100 and next is >100 seems to yield 0.*
+        *   *Example: CurrentSegDur=100, NextSegDur=101. `field_11_val = 0` (Hex: `00 00`).*
     *   Else (`Dur_k != 100`):
         *   `field_11_val = Dur_k+1`.
-        *   *Example: `2px_r1_g101_1r` (Dur0=1, Dur1=101). Field should be `65 00` (101).*
-    *   **Known Exceptions for N=258 (Official `N258_.1s_1000r.prg`):**
-        *   Block `idx=58`: `Field +0x11 = 95` (`5F 00`). (Note: Official app also changes duration of segment 59 to 95ms. If `Dur_k+1` becomes 95, Hyp. F correctly gives 95).
-        *   Block `idx=62`: `Field +0x11 = 85` (`55 00`). (Here, `Dur_k=100` for block 62, and segment 63 is intended as 100ms. Hyp. F would predict `0`).
-        *   The reasons for these specific values and the segment 59 duration change are under investigation.
+        *   *Example: CurrentSegDur=50, NextSegDur=101. `field_11_val = 101` (Hex: `65 00`).*
+    *   *Note:* The official LTX app output for specific high segment counts (like N=258) shows deviations from this general hypothesis for certain blocks (e.g., idx=58 where `Field+0x11` is 95 due to Seg 59 duration being 95; idx=62 where `Field+0x11` is 85 even if Seg 63 is 100). These specific exceptions are not covered by the generator's current general logic.
 
 **Structure for Segment N-1 (LAST Block):**
 
@@ -415,8 +396,13 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 time units. If a segment's calculated duration in the JSON exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
-*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag.
+*   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag. Note that this is not an acceptable fix, this information is only here to help understand the nature of the issue.
 *   **Official App Segment Duration Alterations:** For certain sequence lengths (e.g., N=258), the official LTX app may alter the duration of specific segments (e.g., segment at index 59 becomes 95ms instead of an input 100ms). This behavior is not yet fully understood or generalized in the generator.
+*   **Important Note on Duration Block Field `+0x09` (as of 2025-06-02):**
+    *   **Official App Behavior:** The official LTX app uses a dynamic system for Field `+0x09` in intermediate duration blocks, where its value changes based on sequence characteristics. This is evident from analyzing official PRG files.
+    *   **Strobing Issue with "Hypothesis I":** An attempt on 2025-06-02 to implement a dynamic model ("Hypothesis I") for Field `+0x09` in `prg_generator.py` caused an unintentional strobing effect with certain test sequences.
+    *   **Resolution & Current State:** To resolve the strobing, the logic for Field `+0x09` in intermediate duration blocks within `prg_generator.py` was reverted to its previous, simpler behavior of writing a static value (`00 00 64 00`). This successfully eliminated the strobing.
+    *   **Conclusion:** While the official app uses a dynamic Field `+0x09`, our current understanding ("Hypothesis I") of that dynamic behavior is either incomplete or incorrect, leading to instability. The static value is a stable workaround. The "Hypothesis F" logic for Field `+0x11` (Next Segment Info) remains implemented. Further research is needed to fully understand the official app's dynamic logic for Field `+0x09` and replicate it safely.
 
 ---
 

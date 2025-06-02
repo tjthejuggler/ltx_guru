@@ -278,10 +278,10 @@ def generate_prg_file(input_json, output_prg):
     print(f"\n[SUMMARY] Total segments to write: {segment_count}")
 
     # --- Calculate Header Values ---
-    pointer1 = 21 + 19 * (segment_count - 1)
+    pointer1 = 21 + 19 * (segment_count - 1) if segment_count > 0 else 0
     rgb_start_pointer = HEADER_SIZE + segment_count * DURATION_BLOCK_SIZE
     # Duration for header field 0x1E is first segment's duration in units
-    first_segment_duration_units = segments[0][0] # This is Dur0Units_actual_prg
+    first_segment_duration_units = segments[0][0] if segment_count > 0 else 0 # This is Dur0Units_actual_prg
 
     # Calculate Header Field 0x16 (Hypothesis 8)
     val_0x16_dec = math.floor(first_segment_duration_units / NOMINAL_BASE_FOR_HEADER_FIELDS)
@@ -343,23 +343,47 @@ def generate_prg_file(input_json, output_prg):
                 # print(f"[WRITE] - Writing Block {idx} @0x{block_start_offset:04X}: Dur={duration_units} units, Pix={pixels}")
 
                 try:
-                    # Structure for segments 0 to n-2
+                    # Structure for segments 0 to n-2 (Intermediate Blocks)
                     if idx < segment_count - 1:
-                        next_duration_units = segments[idx + 1][0]
+                        next_duration_units = segments[idx + 1][0] # Dur_k+1_prg
                         index1_value = calculate_legacy_intro_pair(idx + 1, segment_count)
 
-                        f.write(struct.pack('<H', pixels))               # +0 Pixels
-                        f.write(BLOCK_CONST_02)                           # +2 Const
-                        f.write(struct.pack('<H', duration_units))       # +5 Current Duration UNITS
-                        f.write(BLOCK_CONST_07)                           # +7 Const
-                        f.write(BLOCK_CONST_09)                           # +9 Const
-                        f.write(struct.pack('<H', index1_value))         # +13 Index1
-                        f.write(BLOCK_CONST_15)                           # +15 Const
-                        f.write(struct.pack('<H', next_duration_units)) # +17 Next Duration UNITS
+                        # Field +0x09 logic (Hypothesis I)
+                        field_09_part2 = duration_units # CurrentSegmentDurationUnits
+                        if idx == 0:
+                            field_09_part1 = 1
+                        else:
+                            prev_duration_units = segments[idx-1][0]
+                            if duration_units == prev_duration_units:
+                                field_09_part1 = 1
+                            else:
+                                field_09_part1 = idx + 1
+                        field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2)
+
+                        # Field +0x11 logic (Hypothesis F)
+                        field_11_val = 0 # Default
+                        if next_duration_units < 100:
+                            field_11_val = next_duration_units
+                        elif next_duration_units == 100:
+                            field_11_val = 0
+                        else: # next_duration_units > 100
+                            if duration_units == 100:
+                                field_11_val = 0
+                            else:
+                                field_11_val = next_duration_units
+                        
+                        f.write(struct.pack('<H', pixels))
+                        f.write(BLOCK_CONST_02)
+                        f.write(struct.pack('<H', duration_units))
+                        f.write(BLOCK_CONST_07)
+                        f.write(BLOCK_CONST_09) # Reverted: Was field_09_bytes (Hypothesis I)
+                        f.write(struct.pack('<H', index1_value))
+                        f.write(BLOCK_CONST_15)
+                        f.write(struct.pack('<H', field_11_val)) # Hypothesis F
                         current_offset += DURATION_BLOCK_SIZE
 
                     # Structure for the LAST segment (n-1)
-                    else:
+                    else: # This is the last block
                         index2_part1, index2_part2 = calculate_legacy_color_intro_parts(segment_count)
 
                         f.write(struct.pack('<H', pixels))               # +0 Pixels
