@@ -287,18 +287,25 @@ def generate_prg_file(input_json, output_prg):
     val_0x16_dec = math.floor(first_segment_duration_units / NOMINAL_BASE_FOR_HEADER_FIELDS)
     header_field_16_calculated_val = val_0x16_dec
 
-    # Calculate Header Field 0x1E (Hypothesis 8)
-    # val_0x16_dec for this calculation is the same as header_field_16_calculated_val
-    calculated_remainder_for_0x1E = first_segment_duration_units - (val_0x16_dec * NOMINAL_BASE_FOR_HEADER_FIELDS)
-    
+    # Calculate Header Field 0x1E (Refined Hypothesis - 2025-06-02)
     val_0x1E_dec = 0 # Initialize
-    if calculated_remainder_for_0x1E == 0:
-        if first_segment_duration_units == NOMINAL_BASE_FOR_HEADER_FIELDS: # Exactly 100
+
+    if segment_count == 1: # N_prg == 1
+        if first_segment_duration_units % NOMINAL_BASE_FOR_HEADER_FIELDS == 0: # Dur0 is a multiple of 100
+            if refresh_rate == 1 or first_segment_duration_units == NOMINAL_BASE_FOR_HEADER_FIELDS:
+                val_0x1E_dec = 0
+            else: # refresh_rate != 1 AND Dur0Units_actual != NominalBase
+                val_0x1E_dec = first_segment_duration_units
+        else: # Dur0Units_actual % NominalBase != 0 (Dur0 is not a multiple of 100)
+            val_0x1E_dec = first_segment_duration_units % NOMINAL_BASE_FOR_HEADER_FIELDS
+    
+    elif segment_count > 1: # N_prg > 1
+        if first_segment_duration_units == NOMINAL_BASE_FOR_HEADER_FIELDS: # Dur0Units_actual == 100
             val_0x1E_dec = 0
-        else: # Multiple of 100, but not 100 itself (e.g., 200, 1000)
-             val_0x1E_dec = first_segment_duration_units
-    else: # Remainder is not 0
-        val_0x1E_dec = calculated_remainder_for_0x1E
+        else: # Dur0Units_actual != 100
+            val_0x1E_dec = first_segment_duration_units
+    # Note: segment_count is expected to be >= 1 at this stage due to earlier script logic.
+    
     header_field_1E_calculated_val = val_0x1E_dec & 0xFFFF
 
 
