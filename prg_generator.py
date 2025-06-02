@@ -1,403 +1,450 @@
 #!/usr/bin/env python3
 """
-LTX Ball PRG Generator - High Precision (1000Hz) - v2
-Generates PRG files for LTX balls from a JSON color sequence.
-This version hardcodes the PRG file refresh rate to 1000 Hz for high precision.
-It uses the latest understanding of header fields 0x16 and 0x1E.
+LTX Ball PRG Generator - v5 - CORRECTED Header 0x1C-0x1F
+
+Generates PRG files for LTX balls from a JSON color sequence, matching the
+format observed in known-good examples by:
+- Writing durations *in time units* within the duration blocks.
+- Correctly handling header fields 0x1C-0x1F as 0x0000 + FirstDurationUnits(<H).
 
 Usage:
-    python3 prg_generator.py <input.json> <output.prg> [--use-gaps]
+    python3 prg_generator.py input.json output.prg
 """
 
+#THIS NEEDS TESTED WHEN I KNOW THAT THE TIMELINE ISNT STARTING TOO FAST, LIKE WITH BLACK AT THE BEGINNING NAD BETWEEN EVERYTHING
 import json
 import struct
 import sys
+import pprint
+import binascii
 import os
-import math
-import argparse
 
-def round_timing_to_refresh_rate(time_value, json_refresh_rate_hz=100):
-    """
-    Round timing values from JSON to match the JSON's refresh rate precision.
-    Returns integer time units based on JSON's refresh rate.
-    """
-    if json_refresh_rate_hz <= 0:
-        return int(time_value) # Or raise error
-    return int(round(float(time_value)))
-
-# --- Constants based on observed format ---
-FILE_SIGNATURE = b'PR\x03IN\x05\x00\x00'
+# --- Constants based on observed format (Simple Examples) ---
+FILE_SIGNATURE = b'PR\x03IN\x05\x00\x00' # 8 bytes
 HEADER_CONST_0A = b'\x00\x08'
 HEADER_CONST_PI = b'PI'
-HEADER_RGB_REPETITION_COUNT_BYTES = b'\x64\x00' # Value 100 LE (for 0x18)
-HEADER_CONST_1C = b'\x00\x00'
+HEADER_CONST_16 = b'\x00\x00'
+HEADER_CONST_18 = b'\x64\x00' # Value 100 LE
+HEADER_CONST_1C = b'\x00\x00' # Constant part of the 0x1C field
 
+# Duration Block Constants (Simple Format)
 BLOCK_CONST_02 = b'\x01\x00\x00'
 BLOCK_CONST_07 = b'\x00\x00'
-BLOCK_CONST_0F_INTERMEDIATE = b'\x00\x00'
+BLOCK_CONST_09 = b'\x00\x00\x64\x00'
+BLOCK_CONST_15 = b'\x00\x00'
 
-LAST_BLOCK_CONST_09 = b'\x43\x44'  # "CD"
-LAST_BLOCK_CONST_0D = b'\x00\x00'
-LAST_BLOCK_CONST_11_LAST = b'\x00\x00'
+# Last Duration Block Constants
+LAST_BLOCK_CONST_09 = b'\x43\x44' # "CD"
+LAST_BLOCK_CONST_13 = b'\x00\x00'
+LAST_BLOCK_CONST_17 = b'\x00\x00'
 
 FOOTER = b'BT\x00\x00\x00\x00'
-RGB_TRIPLE_COUNT_PER_SEGMENT_COLOR_BLOCK = 100 # How many times a color is repeated in its block
+RGB_TRIPLE_COUNT = 100
 DURATION_BLOCK_SIZE = 19
 HEADER_SIZE = 32
-PRG_FILE_REFRESH_RATE = 1000 # Fixed for this generator
-NOMINAL_BASE_FOR_HEADER_FIELDS = 100 # Used in 0x16/0x1E calculations
+NOMINAL_BASE_FOR_HEADER_FIELDS = 100 # Added for Hypothesis 8
 # --- End Constants ---
 
 def bytes_to_hex(data):
+    """Convert bytes or int to a formatted hex string"""
     if isinstance(data, int):
-        return f"0x{data:04X}" if data <= 0xFFFF else f"0x{data:X}"
+        if data >= 0:
+            # Ensure minimum width for better alignment if needed, e.g., 04X for 2 bytes
+            if data <= 0xFFFF:
+                 return f"0x{data:04X}"
+            else:
+                 return f"0x{data:X}" # Longer values
+        else:
+            return f"-0x{abs(data):X}"
     elif isinstance(data, bytes):
         return ' '.join([f"{b:02X}" for b in data])
     return str(data)
 
+
 def calculate_legacy_intro_pair(target_index, total_segments):
-    if not (1 <= target_index < total_segments): return 0
-    base_value_n2_t1 = 370
-    vertical_step = 19
-    horizontal_step = 300
+    """
+    Calculates the 16-bit value pair for intermediate duration blocks (offset +13)
+    based on arithmetic progressions observed in known-good files (N=2 to N=9).
+
+    Args:
+        target_index (int): The 1-based index for this value pair,
+                             corresponding to (block_index + 1). Ranges from 1 to N-1.
+        total_segments (int): The total number of segments (N) in the sequence.
+
+    Returns:
+        int: The calculated 16-bit value pair (packed Little Endian later).
+             Returns 0 or raises error if target_index is out of bounds.
+    """
+    # Validate target_index relative to total_segments
+    if not (1 <= target_index < total_segments):
+         print(f"[WARN] calculate_legacy_intro_pair called with invalid target_index {target_index} for {total_segments} segments.")
+         # Optional: raise ValueError(f"Invalid target_index {target_index} for {total_segments} segments.")
+         return 0 # Maintain original behavior
+
+    # Constants derived from pattern analysis
+    base_value_n2_t1 = 370  # Value(N=2, T=1)
+    vertical_step = 19      # Difference when N increases by 1 (for fixed T)
+    horizontal_step = 300   # Difference when T increases by 1 (for fixed N)
+
+    # Calculate Value(N, 1)
     value_n_t1 = base_value_n2_t1 + (total_segments - 2) * vertical_step
+
+    # Calculate Value(N, T) based on Value(N, 1)
     value_pair = value_n_t1 + (target_index - 1) * horizontal_step
-    return value_pair & 0xFFFF
+
+    # Ensure the value fits within 16 bits if necessary (though calculations seem okay)
+    # value_pair &= 0xFFFF
+
+    # Optional debug print
+    # print(f"[DEBUG][IntroPair] TargetIdx={target_index}, TotalSegs={total_segments} -> ValuePair=0x{value_pair:04X} ({value_pair})")
+
+    return value_pair
 
 def calculate_legacy_color_intro_parts(total_segments):
+    """
+    Calculates the Index Value 2 Parts 1 & 2 (16-bit each) for the *last*
+    duration block based on the logic derived from the old 'get_color_data_intro'.
+
+    Args:
+        total_segments (int): The total number of segments.
+
+    Returns:
+        tuple(int, int): (part1, part2) as 16-bit values.
+    """
     part1_full = 304 + (total_segments - 1) * 300
     part2_full = 100 * total_segments
-    return part1_full & 0xFFFF, part2_full & 0xFFFF
 
-def split_long_segments(segments_in, max_duration=65535):
+    part1_16bit = part1_full & 0xFFFF
+    part2_16bit = part2_full & 0xFFFF
+    # print(f"[DEBUG][ColorIntroParts] Segs={total_segments}: Part1_16b=0x{part1_16bit:04X}, Part2_16b=0x{part2_16bit:04X}")
+    return part1_16bit, part2_16bit
+
+import math # Added for math.floor
+
+def split_long_segments(segments, max_duration=65535):
+    """
+    Split segments with durations *in time units* exceeding max_duration (65535 for <H).
+    """
+    print("[SPLIT] Checking for segments exceeding maximum duration (65535 time units)...")
     new_segments = []
-    for duration_units, color, pixels in segments_in:
+    split_occurred = False
+    original_segment_count = len(segments) # Store original count for logging
+
+    if original_segment_count == 0:
+        return [] # Handle empty input
+
+    for idx, (duration_units, color, pixels) in enumerate(segments):
         if duration_units <= max_duration:
             new_segments.append((duration_units, color, pixels))
             continue
-        print(f"[SPLIT] Segment (Color {color}) duration {duration_units} exceeds {max_duration}. Splitting.")
-        num_full = duration_units // max_duration
-        rem_dur = duration_units % max_duration
-        for _ in range(num_full):
+
+        split_occurred = True
+        print(f"[SPLIT] WARNING: Segment {idx} (Color {color}) has duration {duration_units} units which exceeds {max_duration}. Splitting.")
+
+        num_full_segments = duration_units // max_duration
+        remainder_duration = duration_units % max_duration
+
+        for i in range(num_full_segments):
             new_segments.append((max_duration, color, pixels))
-        if rem_dur > 0:
-            new_segments.append((rem_dur, color, pixels))
+            print(f"[SPLIT]  - Added sub-segment {i+1}/{num_full_segments + (1 if remainder_duration > 0 else 0)} with duration {max_duration} units")
+
+        if remainder_duration > 0:
+            new_segments.append((remainder_duration, color, pixels))
+            print(f"[SPLIT]  - Added sub-segment {num_full_segments+1}/{num_full_segments+1} with duration {remainder_duration} units")
+
+    if split_occurred:
+        print(f"[SPLIT] Segment splitting complete. Original: {original_segment_count} segments, New: {len(new_segments)} segments.")
+    else:
+        print("[SPLIT] No segments exceeded maximum duration.")
     return new_segments
 
-def generate_prg_file(input_json_path, output_prg_path, insert_gaps_enabled=False): # Default changed
-    print(f"\n[INIT] Starting PRG High-Precision (1000Hz) generation from {input_json_path} to {output_prg_path}")
-    print(f"[INIT] Automatic 1ms black gap insertion: {'ENABLED (via --use-gaps)' if insert_gaps_enabled else 'DISABLED (default)'}")
+def generate_prg_file(input_json, output_prg):
+    """Generates the .prg file from the input JSON"""
+    print(f"\n[INIT] Starting PRG generation from {input_json} to {output_prg}")
 
     try:
-        with open(input_json_path, 'r') as f:
+        with open(input_json, 'r') as f:
             data = json.load(f)
-    except Exception as e:
-        print(f"[ERROR] Loading JSON failed: {e}"); sys.exit(1)
+    except FileNotFoundError:
+        print(f"[ERROR] Input JSON file not found: {input_json}")
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"[ERROR] Invalid JSON file: {input_json} - {e}")
+        sys.exit(1)
+
+
+    print("[INIT] Loaded JSON data:")
+    pprint.pprint(data, depth=2)
 
     default_pixels = data.get('default_pixels', 1)
-    json_refresh_rate = data.get('refresh_rate', 100) # For interpreting input JSON timings
-    json_end_time_units = data.get('end_time')
+    refresh_rate = data.get('refresh_rate', 1)
+    end_time = data.get('end_time') # end_time is in TIME UNITS
 
-    if not (isinstance(default_pixels, int) and 1 <= default_pixels <= 4):
-        print(f"[ERROR] Invalid 'default_pixels': {default_pixels}."); sys.exit(1)
-    if not (isinstance(json_refresh_rate, int) and json_refresh_rate > 0):
-        print(f"[ERROR] Invalid JSON 'refresh_rate': {json_refresh_rate}."); sys.exit(1)
-    if json_end_time_units is None:
-        print(f"[ERROR] 'end_time' (in JSON units) is required."); sys.exit(1)
-    
-    original_json_end_time = json_end_time_units
-    json_end_time_units = round_timing_to_refresh_rate(json_end_time_units, json_refresh_rate)
-    if abs(original_json_end_time - json_end_time_units) > 0.001:
-        print(f"[TIMING] Rounded JSON end_time: {original_json_end_time} -> {json_end_time_units} units (at JSON {json_refresh_rate}Hz)")
+    # Validate types
+    if not isinstance(default_pixels, int) or not (1 <= default_pixels <= 4):
+        print(f"[ERROR] Invalid 'default_pixels': {default_pixels}. Must be int 1-4.")
+        sys.exit(1)
+    if not isinstance(refresh_rate, int) or refresh_rate <= 0:
+        print(f"[ERROR] Invalid 'refresh_rate': {refresh_rate}. Must be positive int.")
+        sys.exit(1)
+    if end_time is not None and not isinstance(end_time, int):
+        print(f"[ERROR] Invalid 'end_time': {end_time}. Must be an int (time units).")
+        sys.exit(1)
 
-    print(f"[INIT] JSON Config: DefaultPixels={default_pixels}, JSON RefreshRate={json_refresh_rate}Hz, JSON EndTime={json_end_time_units} units")
-    print(f"[INIT] PRG File Config: Output RefreshRate={PRG_FILE_REFRESH_RATE}Hz")
+
+    print(f"[INIT] Config: Pixels={default_pixels}, RefreshRate={refresh_rate}Hz, EndTime={end_time} units")
 
     if 'sequence' not in data or not isinstance(data['sequence'], dict) or not data['sequence']:
-        print("[ERROR] JSON 'sequence' is missing, not a dictionary, or empty."); sys.exit(1)
+        print("[ERROR] JSON 'sequence' is missing, not a dictionary, or empty.")
+        sys.exit(1)
 
-    # Parse sequence items from JSON, convert timings to PRG_FILE_REFRESH_RATE units
-    parsed_prg_sequence_items = []
-    for t_str, entry_dict in data['sequence'].items():
-        json_time_units = round_timing_to_refresh_rate(float(t_str), json_refresh_rate)
-        # Convert JSON time units to PRG time units (1000Hz)
-        prg_time_units = int(round((json_time_units / json_refresh_rate) * PRG_FILE_REFRESH_RATE))
+    try:
+        # Keys are time in TIME UNITS
+        sequence_items = sorted([(int(t), v) for t, v in data['sequence'].items()], key=lambda x: x[0])
+    except ValueError:
+        print("[ERROR] Sequence keys must be valid integers representing time units.")
+        sys.exit(1)
 
-        color_list = entry_dict.get('color')
+    print(f"[INIT] Sorted sequence timestamps (units): {[t for t, _ in sequence_items]}")
+
+    # --- Calculate Segments ---
+    print("\n[SEGMENT_CALC] Processing sequence segments...")
+    segments = [] # Store as (duration_in_units, color_tuple, pixels)
+    if not sequence_items:
+         print("[ERROR] No segments found in sequence after sorting.")
+         sys.exit(1)
+
+    for idx, (time_units, entry) in enumerate(sequence_items):
+        if not isinstance(entry, dict):
+            print(f"[ERROR] Entry for time {time_units} units is not a dictionary.")
+            sys.exit(1)
+
+        color = entry.get('color')
+        if color is None:
+             print(f"[ERROR] Segment at time {time_units} units is missing 'color'.")
+             sys.exit(1)
+        if not isinstance(color, list) or len(color) != 3:
+            print(f"[ERROR] Segment at time {time_units} units has invalid color format: {color}. Expected [R, G, B].")
+            sys.exit(1)
         try:
-            r, g, b = [int(c) for c in color_list]
-            if not all(0 <= val <= 255 for val in (r,g,b)): raise ValueError("Color out of range")
-            color_tuple = (r,g,b)
-        except Exception: print(f"[ERROR] Invalid color for time {t_str}."); sys.exit(1)
-        
-        pixels_val = entry_dict.get('pixels', default_pixels)
-        if not (isinstance(pixels_val, int) and 1 <= pixels_val <= 4): pixels_val = default_pixels
-            
-        parsed_prg_sequence_items.append((prg_time_units, {'color': color_tuple, 'pixels': pixels_val}))
-    
-    parsed_prg_sequence_items.sort(key=lambda x: x[0])
-    
-    # Convert json_end_time_units to PRG_FILE_REFRESH_RATE units
-    prg_total_duration_units = int(round((json_end_time_units / json_refresh_rate) * PRG_FILE_REFRESH_RATE))
+            # Ensure color values are valid bytes
+            r,g,b = [int(c) for c in color]
+            if not (0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255):
+                raise ValueError("Color values out of range 0-255")
+        except (ValueError, TypeError) as e:
+            print(f"[ERROR] Invalid RGB color value in segment at time {time_units}: {color}. {e}")
+            sys.exit(1)
 
-    print(f"[INIT] Sorted PRG sequence timestamps (units @ {PRG_FILE_REFRESH_RATE}Hz): {[t for t, _ in parsed_prg_sequence_items]}")
-    print(f"[INIT] Total PRG duration: {prg_total_duration_units} units @ {PRG_FILE_REFRESH_RATE}Hz")
 
-    # Calculate actual PRG segments data: (duration_prg_units, color_tuple, pixels)
-    # With auto-inserted 1ms black gaps between different-colored segments.
-    actual_prg_segments = []
-    if not parsed_prg_sequence_items: print("[ERROR] No segments in sequence."); sys.exit(1)
+        pixels = entry.get('pixels', default_pixels)
+        if not isinstance(pixels, int) or not (1 <= pixels <= 4):
+             print(f"[WARNING] Segment at time {time_units} units has invalid pixels value ({pixels}). Using default: {default_pixels}.")
+             pixels = default_pixels
 
-    prg_gap_duration = 1 # 1ms black gap at 1000Hz
-
-    for idx, (prg_start_time_units, entry) in enumerate(parsed_prg_sequence_items):
-        current_color = entry['color']
-        current_pixels = entry['pixels']
-
-        # Determine the start time of the *next defined event* in the JSON sequence
-        # This defines the end of the current color block from the input JSON
-        next_defined_event_prg_start_time = prg_total_duration_units
-        if idx + 1 < len(parsed_prg_sequence_items):
-            next_defined_event_prg_start_time = parsed_prg_sequence_items[idx+1][0]
-
-        intended_duration_for_current_color = next_defined_event_prg_start_time - prg_start_time_units
-
-        if intended_duration_for_current_color <= 0:
-            # This typically happens for the last entry in the JSON sequence if it matches end_time,
-            # or if there are redundant/out-of-order timestamps.
-            print(f"[SEG_CALC_INFO] Skipping zero/negative duration event at PRG time {prg_start_time_units}")
-            continue
-
-        # Check if this is effectively the last segment that will display color before total_duration
-        # (i.e., there isn't another different color change scheduled after this one within total_duration)
-        is_last_color_block_before_end = True
-        if idx + 1 < len(parsed_prg_sequence_items):
-            # If there's a next item and it's not just an end marker with zero effective duration
-             if parsed_prg_sequence_items[idx+1][0] < prg_total_duration_units:
-                 is_last_color_block_before_end = False
-        
-        if insert_gaps_enabled and not is_last_color_block_before_end and intended_duration_for_current_color > prg_gap_duration:
-            # Add the main color segment, shortened by the gap
-            main_color_duration = intended_duration_for_current_color - prg_gap_duration
-            actual_prg_segments.append((main_color_duration, current_color, current_pixels))
-            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: OrigStart={prg_start_time_units}, Dur={main_color_duration}, Color={current_color}, Pix={current_pixels}")
-            
-            # Add the black gap
-            actual_prg_segments.append((prg_gap_duration, (0,0,0), current_pixels))
-            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: (black_gap after {current_color}), Dur={prg_gap_duration}, Pix={current_pixels}")
+        # Calculate duration IN TIME UNITS
+        if idx + 1 < len(sequence_items):
+            next_time_units = sequence_items[idx + 1][0]
+        elif end_time is not None:
+            if end_time < time_units:
+                 print(f"[ERROR] 'end_time' ({end_time}) is earlier than the start time of the last segment ({time_units}).")
+                 sys.exit(1)
+            next_time_units = end_time # end_time is already in units
         else:
-            # No gap insertion: either disabled, or it's the last color block, or it's too short. Add it as is.
-            actual_prg_segments.append((intended_duration_for_current_color, current_color, current_pixels))
-            reason = "(last or too short for gap)"
-            if not insert_gaps_enabled:
-                reason = "(gap insertion disabled)"
-            elif is_last_color_block_before_end:
-                 reason = "(last color block)"
-            elif intended_duration_for_current_color <= prg_gap_duration:
-                reason = "(too short for gap)"
+            print(f"[WARNING] 'end_time' not specified in JSON. Assigning default duration ({refresh_rate} units) to the last segment.")
+            next_time_units = time_units + refresh_rate
 
-            print(f"[SEG_CALC] PRG Segment {len(actual_prg_segments)-1}: OrigStart={prg_start_time_units}, Dur={intended_duration_for_current_color}, Color={current_color}, Pix={current_pixels} {reason}")
+        duration_units = next_time_units - time_units
+        if duration_units <= 0:
+             print(f"[WARNING] Segment {idx} at time {time_units} units has non-positive duration ({duration_units} units). Skipping.")
+             continue
 
-    if not actual_prg_segments: print("[ERROR] No valid PRG segments calculated after gap insertion logic."); sys.exit(1)
+        rgb_tuple = (r,g,b)
 
-    # Split long segments
-    final_prg_segments_for_blocks = split_long_segments(actual_prg_segments)
-    
-    # Apply specific duration override for N=258, segment idx=59
-    # This must happen BEFORE prg_segment_count_n is finalized if it could change N,
-    # but here it only changes a duration within the existing list.
-    # It's assumed N=258 refers to the count *after* gap logic (i.e., if no_gaps, N_json=258).
-    # N=258 specific modifications
-    # This check should be based on the number of segments intended by the JSON if no gaps are inserted.
-    # Assuming prg_segment_count_n (calculated after split_long_segments from actual_prg_segments)
-    # correctly reflects the 258 segments if the JSON was for N258 and --no-black-gaps was used.
-    if len(final_prg_segments_for_blocks) == 258 and not insert_gaps_enabled:
-        # 1. Modify duration of segment 59 (idx=59)
-        if len(final_prg_segments_for_blocks) > 59: # Ensure segment 59 exists
-            original_dur_seg59, color_seg59, pixels_seg59 = final_prg_segments_for_blocks[59]
-            if original_dur_seg59 == 100: # Apply only if it was the expected 100ms
-                final_prg_segments_for_blocks[59] = (95, color_seg59, pixels_seg59)
-                print(f"[DEBUG] N=258 PATCH: Segment idx=59 duration changed from {original_dur_seg59} to 95.")
-            # Note: This modification of final_prg_segments_for_blocks directly affects
-            # dur_k_prg and dur_k_plus_1_prg in the subsequent loop.
+        print(f"[SEGMENT_CALC] - Segment {idx}: Time={time_units} units, NextTime={next_time_units} units, Duration={duration_units} units, Color={rgb_tuple}, Pixels={pixels}")
+        segments.append((duration_units, rgb_tuple, pixels))
 
-    prg_segment_count_n = len(final_prg_segments_for_blocks) # Re-confirm N after potential modifications
-    if prg_segment_count_n == 0: print("[ERROR] No segments after splitting."); sys.exit(1)
-    print(f"\n[SUMMARY] Total PRG segments to write (after splitting): {prg_segment_count_n}")
+    if not segments:
+        print("[ERROR] No valid segments could be calculated (check durations and times).")
+        sys.exit(1)
+
+    # Split segments if duration_units > 65535
+    segments = split_long_segments(segments)
+    segment_count = len(segments)
+
+    if segment_count == 0:
+         print("[ERROR] No segments remaining after processing/splitting.")
+         sys.exit(1)
+
+    print(f"\n[SUMMARY] Total segments to write: {segment_count}")
 
     # --- Calculate Header Values ---
-    pointer1 = 21 + 19 * (prg_segment_count_n - 1) if prg_segment_count_n > 0 else 0
-    rgb_start_pointer = HEADER_SIZE + prg_segment_count_n * DURATION_BLOCK_SIZE
+    pointer1 = 21 + 19 * (segment_count - 1)
+    rgb_start_pointer = HEADER_SIZE + segment_count * DURATION_BLOCK_SIZE
+    # Duration for header field 0x1E is first segment's duration in units
+    first_segment_duration_units = segments[0][0] # This is Dur0Units_actual_prg
 
-    dur0_units_actual_prg = final_prg_segments_for_blocks[0][0]
+    # Calculate Header Field 0x16 (Hypothesis 8)
+    val_0x16_dec = math.floor(first_segment_duration_units / NOMINAL_BASE_FOR_HEADER_FIELDS)
+    header_field_16_calculated_val = val_0x16_dec
 
-    # Field 0x16 ("Hypothesis 8")
-    val_0x16_dec = math.floor(dur0_units_actual_prg / NOMINAL_BASE_FOR_HEADER_FIELDS)
-    header_field_16_val = val_0x16_dec
-
-    # Field 0x1E (Logic refined to "Hypothesis 4 Simplified" / "Final Refined Logic" from docs)
-    # val_0x16_dec is already calculated as floor(dur0_units_actual_prg / NOMINAL_BASE_FOR_HEADER_FIELDS)
-    calculated_remainder = dur0_units_actual_prg - (val_0x16_dec * NOMINAL_BASE_FOR_HEADER_FIELDS)
-
-    if calculated_remainder == 0 and dur0_units_actual_prg >= 1000: # Threshold condition
-        val_0x1E_dec = dur0_units_actual_prg
-    else:
-        val_0x1E_dec = calculated_remainder
-    header_field_1E_val = val_0x1E_dec & 0xFFFF
+    # Calculate Header Field 0x1E (Hypothesis 8)
+    # val_0x16_dec for this calculation is the same as header_field_16_calculated_val
+    calculated_remainder_for_0x1E = first_segment_duration_units - (val_0x16_dec * NOMINAL_BASE_FOR_HEADER_FIELDS)
     
+    val_0x1E_dec = 0 # Initialize
+    if calculated_remainder_for_0x1E == 0:
+        if first_segment_duration_units == NOMINAL_BASE_FOR_HEADER_FIELDS: # Exactly 100
+            val_0x1E_dec = 0
+        else: # Multiple of 100, but not 100 itself (e.g., 200, 1000)
+             val_0x1E_dec = first_segment_duration_units
+    else: # Remainder is not 0
+        val_0x1E_dec = calculated_remainder_for_0x1E
+    header_field_1E_calculated_val = val_0x1E_dec & 0xFFFF
+
+
     print("\n[HEADER_CALC] Calculated Header Values:")
-    print(f"  Default Pixels (0x08, >H): {default_pixels} ({bytes_to_hex(default_pixels)})")
-    print(f"  PRG Refresh Rate (0x0C, <H): {PRG_FILE_REFRESH_RATE} ({bytes_to_hex(PRG_FILE_REFRESH_RATE)})")
-    print(f"  Pointer1 (0x10, <I): {pointer1} ({bytes_to_hex(pointer1)})")
-    print(f"  PRG SegmentCount (0x14, <H): {prg_segment_count_n} ({bytes_to_hex(prg_segment_count_n)})")
-    print(f"  Field 0x16 (<H): {header_field_16_val} ({bytes_to_hex(header_field_16_val)}) (Dur0_PRG={dur0_units_actual_prg})")
-    print(f"  Field 0x18 (<H): RGB Repetition Count {RGB_TRIPLE_COUNT_PER_SEGMENT_COLOR_BLOCK} ({bytes_to_hex(HEADER_RGB_REPETITION_COUNT_BYTES)})")
-    print(f"  RGB Start Pointer (0x1A, <H): {rgb_start_pointer} ({bytes_to_hex(rgb_start_pointer)})")
-    print(f"  Field 0x1E (<H): {header_field_1E_val} ({bytes_to_hex(header_field_1E_val)}) (Dur0_PRG={dur0_units_actual_prg})")
+    print(f"[HEADER_CALC] - Pointer1 (0x10, <I): {pointer1} ({bytes_to_hex(pointer1)})")
+    print(f"[HEADER_CALC] - SegmentCount (0x14, <H): {segment_count} ({bytes_to_hex(segment_count)})")
+    print(f"[HEADER_CALC] - Field 0x16 (<H) Calculated: {header_field_16_calculated_val} ({bytes_to_hex(header_field_16_calculated_val)}) (Dur0_PRG={first_segment_duration_units})")
+    print(f"[HEADER_CALC] - RGB Start Pointer (0x1A, <H): {rgb_start_pointer} ({bytes_to_hex(rgb_start_pointer)})")
+    # HEADER_CONST_1C remains 00 00
+    print(f"[HEADER_CALC] - Field 0x1E (<H) Calculated: {header_field_1E_calculated_val} ({bytes_to_hex(header_field_1E_calculated_val)}) (Dur0_PRG={first_segment_duration_units})")
 
     # --- Write PRG File ---
+    print(f"\n[WRITE] Writing PRG file: {output_prg}")
     try:
-        with open(output_prg_path, 'wb') as f:
-            f.write(FILE_SIGNATURE)
-            f.write(struct.pack('>H', default_pixels))
-            f.write(HEADER_CONST_0A)
-            f.write(struct.pack('<H', PRG_FILE_REFRESH_RATE)) # Hardcoded 1000Hz
-            f.write(HEADER_CONST_PI)
-            f.write(struct.pack('<I', pointer1))
-            f.write(struct.pack('<H', prg_segment_count_n))
-            f.write(struct.pack('<H', header_field_16_val))
-            f.write(HEADER_RGB_REPETITION_COUNT_BYTES)
-            f.write(struct.pack('<H', rgb_start_pointer))
-            f.write(HEADER_CONST_1C)
-            f.write(struct.pack('<H', header_field_1E_val))
-            print(f"[WRITE] Header complete.")
+        with open(output_prg, 'wb') as f:
+            current_offset = 0
 
-            for idx, (dur_k_prg, color_k, pix_k) in enumerate(final_prg_segments_for_blocks):
-                if idx < prg_segment_count_n - 1: # Intermediate block
-                    dur_k_plus_1_prg = final_prg_segments_for_blocks[idx+1][0]
-                    index1_val = calculate_legacy_intro_pair(idx + 1, prg_segment_count_n)
-                    
-                    # Field +0x09 logic for intermediate blocks (Hypothesis I - Revised 2025-06-01)
-                    # field_09_part1: First 2 bytes of Field[+0x09]
-                    # field_09_part2: Second 2 bytes of Field[+0x09]
-                    field_09_part2 = dur_k_prg # This is CurrentSegmentDurationUnits, always correct.
+            # --- Write Header (32 Bytes) ---
+            print("[WRITE] Writing Header...")
+            f.write(FILE_SIGNATURE); current_offset += len(FILE_SIGNATURE)
+            f.write(struct.pack('>H', default_pixels)); current_offset += 2 # Pixels BE
+            f.write(HEADER_CONST_0A); current_offset += len(HEADER_CONST_0A)
+            f.write(struct.pack('<H', refresh_rate)); current_offset += 2 # Refresh LE
+            f.write(HEADER_CONST_PI); current_offset += len(HEADER_CONST_PI)
+            f.write(struct.pack('<I', pointer1)); current_offset += 4 # Pointer1 LE
+            f.write(struct.pack('<H', segment_count)); current_offset += 2 # Seg Count LE
+            f.write(struct.pack('<H', header_field_16_calculated_val)); current_offset += 2 # Field 0x16 LE
+            f.write(HEADER_CONST_18); current_offset += len(HEADER_CONST_18) # Const 64 00 @ 0x18
+            f.write(struct.pack('<H', rgb_start_pointer)); current_offset += 2 # RGB Start LE @ 0x1A
+            f.write(HEADER_CONST_1C); current_offset += len(HEADER_CONST_1C) # Const 00 00 @ 0x1C
+            f.write(struct.pack('<H', header_field_1E_calculated_val)); current_offset += 2 # Field 0x1E LE
 
-                    if idx == 0: # First duration block (for PRG segment 0)
-                        field_09_part1 = 1
-                    else: # Subsequent intermediate duration blocks (idx > 0)
-                        dur_k_minus_1_prg = final_prg_segments_for_blocks[idx-1][0] # Previous segment's duration
-                        if dur_k_prg == dur_k_minus_1_prg:
-                            # If current segment duration is same as previous, part1 is 1
-                            # (Observed in N258/N259 official for sequences of identical 100ms segments)
-                            field_09_part1 = 1
-                        else:
-                            # If durations differ, part1 is 1-based index of current block
-                            field_09_part1 = idx + 1
-                    field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2)
-                    
-                    # Specific overrides for N=258 (must be after general logic for field_09_part1)
-                    if prg_segment_count_n == 258 and not insert_gaps_enabled:
-                        if idx == 58:
-                            print(f"[DEBUG] N=258 PATCH: Applying override for idx=58 for field_09_part1. Was: {field_09_part1}, Now: 0")
-                            field_09_part1 = 0
-                            field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2) # Re-pack
-                        elif idx == 62:
-                            print(f"[DEBUG] N=258 PATCH: Applying override for idx=62 for field_09_part1. Was: {field_09_part1}, Now: 0")
-                            field_09_part1 = 0
-                            field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2) # Re-pack
+            if current_offset != HEADER_SIZE:
+                print(f"[ERROR] Header size mismatch! Expected {HEADER_SIZE}, wrote {current_offset}. Aborting.")
+                sys.exit(1)
+            print(f"[WRITE] Header complete ({current_offset} bytes).")
 
-                    # Field +0x11 logic (Hypothesis F re-confirmed - Revised 2025-06-01 based on N258/N259 official data)
-                    # Let Dur_k = dur_k_prg (current segment's duration in PRG units)
-                    # Let Dur_k+1 = dur_k_plus_1_prg (next segment's duration in PRG units)
-                    field_11_val = 0 # Default or placeholder
-                    if dur_k_plus_1_prg < 100:
-                        field_11_val = dur_k_plus_1_prg
-                    elif dur_k_plus_1_prg == 100:
-                        # If NextSegDur is 100, field_11_val is 0.
-                        # (Confirmed with N258 and N259 official dumps where Dur_k=100, Dur_k+1=100 -> field +0x11 was 00 00)
-                        field_11_val = 0
-                    else: # dur_k_plus_1_prg > 100
-                        if dur_k_prg == 100:
-                            # If CurrentSegDur is 100 AND NextSegDur > 100, field_11_val is 0.
-                            # (Based on R0.1_B0.1_G10_1000hz.prg, Block 1: Dur1=100, Dur2=10000 -> field +0x11 was 0)
-                            field_11_val = 0
-                        else: # CurrentSegDur != 100 AND NextSegDur > 100
-                            field_11_val = dur_k_plus_1_prg
+            # --- Write Duration Blocks (19 Bytes Each) ---
+            print(f"\n[WRITE] Writing {segment_count} Duration Blocks...")
+            for idx, (duration_units, _, pixels) in enumerate(segments):
+                block_start_offset = current_offset
+                # print(f"[WRITE] - Writing Block {idx} @0x{block_start_offset:04X}: Dur={duration_units} units, Pix={pixels}")
 
-                    # Specific overrides for N=258 (must be after general logic for field_11_val)
-                    if prg_segment_count_n == 258 and not insert_gaps_enabled:
-                        if idx == 58: # For Block 58, NextSegInfo (Seg 59)
-                            # Seg 59's duration was changed to 95. Hypothesis F: dur_k+1 (95) < 100 -> field_11_val = 95.
-                            # So the general logic should now correctly yield 95 if seg 59 dur is 95.
-                            # However, official value is 95, so we ensure it if general logic failed.
-                            if field_11_val != 95: # Check if general logic already set it.
-                                print(f"[DEBUG] N=258 PATCH: Applying override for idx=58 for field_11_val. Was: {field_11_val}, Now: 95")
-                                field_11_val = 95
-                        elif idx == 62: # For Block 62, NextSegInfo (Seg 63)
-                            # Seg 63's duration is 100. Hypothesis F: dur_k+1 (100) == 100 -> field_11_val = 0.
-                            # Official value is 85.
-                            print(f"[DEBUG] N=258 PATCH: Applying override for idx=62 for field_11_val. Was: {field_11_val}, Now: 85")
-                            field_11_val = 85
-                    
-                    f.write(struct.pack('<H', pix_k))
-                    f.write(BLOCK_CONST_02)
-                    f.write(struct.pack('<H', dur_k_prg))
-                    f.write(BLOCK_CONST_07)
-                    f.write(field_09_bytes)
-                    f.write(struct.pack('<H', index1_val))
-                    f.write(BLOCK_CONST_0F_INTERMEDIATE)
-                    f.write(struct.pack('<H', field_11_val))
-                else: # Last block
-                    idx2_p1, idx2_p2 = calculate_legacy_color_intro_parts(prg_segment_count_n)
-                    f.write(struct.pack('<H', pix_k))
-                    f.write(BLOCK_CONST_02)
-                    f.write(struct.pack('<H', dur_k_prg))
-                    f.write(BLOCK_CONST_07)
-                    f.write(LAST_BLOCK_CONST_09)
-                    f.write(struct.pack('<H', idx2_p1))
-                    f.write(LAST_BLOCK_CONST_0D)
-                    f.write(struct.pack('<H', idx2_p2))
-                    f.write(LAST_BLOCK_CONST_11_LAST)
-            print(f"[WRITE] Duration blocks complete.")
+                try:
+                    # Structure for segments 0 to n-2
+                    if idx < segment_count - 1:
+                        next_duration_units = segments[idx + 1][0]
+                        index1_value = calculate_legacy_intro_pair(idx + 1, segment_count)
 
-            for _, color_tuple, _, in final_prg_segments_for_blocks:
-                r, g, b = color_tuple
+                        f.write(struct.pack('<H', pixels))               # +0 Pixels
+                        f.write(BLOCK_CONST_02)                           # +2 Const
+                        f.write(struct.pack('<H', duration_units))       # +5 Current Duration UNITS
+                        f.write(BLOCK_CONST_07)                           # +7 Const
+                        f.write(BLOCK_CONST_09)                           # +9 Const
+                        f.write(struct.pack('<H', index1_value))         # +13 Index1
+                        f.write(BLOCK_CONST_15)                           # +15 Const
+                        f.write(struct.pack('<H', next_duration_units)) # +17 Next Duration UNITS
+                        current_offset += DURATION_BLOCK_SIZE
+
+                    # Structure for the LAST segment (n-1)
+                    else:
+                        index2_part1, index2_part2 = calculate_legacy_color_intro_parts(segment_count)
+
+                        f.write(struct.pack('<H', pixels))               # +0 Pixels
+                        f.write(BLOCK_CONST_02)                           # +2 Const
+                        f.write(struct.pack('<H', duration_units))       # +5 Current Duration UNITS
+                        f.write(BLOCK_CONST_07)                           # +7 Const
+                        f.write(LAST_BLOCK_CONST_09)                      # +9 "CD"
+                        f.write(struct.pack('<H', index2_part1))         # +11 Index2 Part1
+                        f.write(LAST_BLOCK_CONST_13)                      # +13 Const
+                        f.write(struct.pack('<H', index2_part2))         # +15 Index2 Part2
+                        f.write(LAST_BLOCK_CONST_17)                      # +17 Const
+                        current_offset += DURATION_BLOCK_SIZE
+
+                except struct.error as e:
+                     # This usually means duration_units or next_duration_units > 65535
+                     print(f"[ERROR] Failed to pack data for duration block {idx}: {e}. Duration value likely exceeds 65535.")
+                     print(f"        Duration={duration_units}, NextDuration={next_duration_units if idx < segment_count - 1 else 'N/A'}")
+                     sys.exit(1)
+
+
+                # Verify block size (redundant if struct.pack works, but good sanity check)
+                if current_offset - block_start_offset != DURATION_BLOCK_SIZE:
+                     print(f"[ERROR] Duration block {idx} size mismatch! Expected {DURATION_BLOCK_SIZE}, wrote {current_offset - block_start_offset}. Aborting.")
+                     sys.exit(1)
+
+            print(f"[WRITE] Duration blocks complete. Current offset: 0x{current_offset:04X} (Expected RGB start: 0x{rgb_start_pointer:04X})")
+            if current_offset != rgb_start_pointer:
+                 print(f"[ERROR] Offset mismatch before RGB data! Expected 0x{rgb_start_pointer:04X}, got 0x{current_offset:04X}. Aborting.")
+                 sys.exit(1)
+
+            # --- Write RGB Data ---
+            print(f"\n[WRITE] Writing RGB Data (Starting @0x{current_offset:04X})...")
+            total_rgb_bytes_written = 0
+            for idx, (_, color, pixels) in enumerate(segments):
+                r, g, b = color
+                # Packing already validated during segment calculation
                 rgb_bytes = struct.pack('BBB', r, g, b)
-                f.write(rgb_bytes * RGB_TRIPLE_COUNT_PER_SEGMENT_COLOR_BLOCK)
-            print(f"[WRITE] RGB data complete.")
+
+                segment_rgb_bytes = rgb_bytes * RGB_TRIPLE_COUNT
+                f.write(segment_rgb_bytes)
+                bytes_written_this_segment = len(segment_rgb_bytes)
+                current_offset += bytes_written_this_segment
+                total_rgb_bytes_written += bytes_written_this_segment
+                # Reduce debug spew
+                # if idx < 2 or idx == segment_count - 1:
+                #     print(f"[WRITE]  - Segment {idx}: Wrote {bytes_written_this_segment} bytes for Color {color}")
+                # elif idx == 2:
+                #     print("[WRITE]  - (Skipping RGB details...)")
+
+            print(f"[WRITE] RGB data complete. Total RGB bytes: {total_rgb_bytes_written}. Current offset: 0x{current_offset:04X}")
+
+            # --- Write Footer ---
+            print("\n[WRITE] Writing Footer...")
             f.write(FOOTER)
-            print(f"[WRITE] Footer complete.")
-    except Exception as e:
-        print(f"[ERROR] Writing PRG file failed: {e}"); import traceback; traceback.print_exc(); sys.exit(1)
-        
-    # Verification
-    final_size = os.path.getsize(output_prg_path)
-    expected_size = HEADER_SIZE + (prg_segment_count_n * DURATION_BLOCK_SIZE) + \
-                    (prg_segment_count_n * 3 * RGB_TRIPLE_COUNT_PER_SEGMENT_COLOR_BLOCK) + len(FOOTER)
+            current_offset += len(FOOTER)
+            print(f"[WRITE] Footer complete. Final offset: 0x{current_offset:04X}")
+
+    except IOError as e:
+        print(f"[ERROR] Failed to write file {output_prg}: {e}")
+        sys.exit(1)
+    # Removed general struct.error catch here, handled it specifically in duration block writing
+
+    # --- Final Verification ---
+    final_size = os.path.getsize(output_prg)
+    expected_size = HEADER_SIZE + (segment_count * DURATION_BLOCK_SIZE) + (segment_count * 3 * RGB_TRIPLE_COUNT) + len(FOOTER)
+    print(f"\n[VERIFY] Final file size: {final_size} bytes.")
+    print(f"[VERIFY] Expected size calculation: {expected_size} bytes.")
     if final_size != expected_size:
-        print(f"[WARNING] File size mismatch. Expected: {expected_size}, Actual: {final_size}")
+        print(f"[WARNING] Final file size ({final_size}) does not match expected calculation ({expected_size}).")
     else:
         print("[VERIFY] File size matches expected calculation.")
-    print(f"\n[SUCCESS] Successfully generated {output_prg_path}")
+
+    print(f"\n[SUCCESS] Successfully generated {output_prg}")
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description="LTX Ball PRG Generator - High Precision (1000Hz)",
-        formatter_class=argparse.RawTextHelpFormatter, # To allow newlines in help
-        epilog="""Example:
-  python3 prg_generator.py input.json output.prg # No gaps by default
-  python3 prg_generator.py input.json output_with_gaps.prg --use-gaps
-"""
-    )
-    parser.add_argument("input_json", help="Path to the input JSON file.")
-    parser.add_argument("output_prg", help="Path for the output .prg file.")
-    parser.add_argument(
-        "--use-gaps",
-        action="store_true", # Defaults to False if not present
-        help="Enable automatic insertion of 1ms black gaps between color changes. Default is no gaps."
-    )
-    args = parser.parse_args()
+    if len(sys.argv) != 3:
+        print(f"Usage: {sys.argv[0]} input.json output.prg")
+        sys.exit(1)
 
-    # If --use-gaps is specified, args.use_gaps will be True. Otherwise, False.
-    insert_gaps = args.use_gaps
-    generate_prg_file(args.input_json, args.output_prg, insert_gaps_enabled=insert_gaps)
+    input_json_path = sys.argv[1]
+    output_prg_path = sys.argv[2]
+
+    # Moved file existence check earlier
+    # if not os.path.exists(input_json_path):
+    #     print(f"[ERROR] Input JSON file not found: {input_json_path}")
+    #     sys.exit(1)
+
+    generate_prg_file(input_json_path, output_prg_path)
