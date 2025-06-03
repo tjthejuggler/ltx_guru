@@ -201,6 +201,18 @@ class ProjectManager(QObject):
         
         self.logger.info(f"Saving project to: {file_path}")
         
+        # Set the audio file path in the project
+        if hasattr(self.app, 'audio_manager') and self.app.audio_manager.audio_file:
+            self.current_project.audio_file = self.app.audio_manager.audio_file
+            # If we are saving an external audio file, ensure embedded audio_data is None
+            self.current_project.audio_data = None
+            self.logger.info(f"Set project audio file to: {self.current_project.audio_file}")
+        else:
+            # No audio loaded or audio was embedded and unloaded
+            self.current_project.audio_file = None
+            self.current_project.audio_data = None # Ensure this is also None
+            self.logger.info("No audio file to set in project, or audio was embedded.")
+
         # Save the project
         success = self.current_project.save(file_path)
         

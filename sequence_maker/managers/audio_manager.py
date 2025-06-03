@@ -186,41 +186,58 @@ class AudioManager(QObject):
             self.logger.warning("Cannot load audio: Audio libraries not available")
             return False
         
-        if not project.audio_data:
-            self.logger.info("No audio data in project")
+        self.logger.info(f"Loading audio from project: {project.name}")
+
+        if project.audio_data:
+            self.logger.info("Found embedded audio data in project.")
+            self.logger.debug(f"Audio file path (from project): {project.audio_file}")
+            self.logger.debug(f"Audio data size: {len(project.audio_data)} bytes")
+            
+            try:
+                # Stop any current playback
+                self.stop()
+                
+                # Create a temporary file to write the audio data to
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
+                    temp_path = temp_file.name
+                    temp_file.write(project.audio_data)
+                
+                # Load the audio data from the temporary file
+                self.audio_data, self.sample_rate = librosa.load(temp_path, sr=None)
+                
+                # Ensure we store the absolute path of the audio file if provided
+                if project.audio_file:
+                    self.audio_file = os.path.abspath(project.audio_file)
+                    self.logger.info(f"Using absolute audio file path from project: {self.audio_file}")
+                else:
+                    self.audio_file = None # Embedded audio might not have an original file path
+                    self.logger.info("Using embedded audio data, no external file path.")
+                    
+                self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
+                
+                # Remove the temporary file
+                try:
+                    os.unlink(temp_path)
+                except Exception as e:
+                    self.logger.warning(f"Could not remove temporary file {temp_path}: {e}")
+            except Exception as e:
+                self.logger.error(f"Error loading embedded audio from project: {e}")
+                return False
+
+        elif project.audio_file and os.path.exists(project.audio_file):
+            self.logger.info(f"Found audio file path in project: {project.audio_file}. Loading external file.")
+            # No embedded data, but there's a file path. Try to load it.
+            # The load_audio method already handles stopping playback, setting self.audio_file, etc.
+            return self.load_audio(project.audio_file)
+        
+        else:
+            self.logger.info("No embedded audio data and no valid audio file path in project.")
+            if project.audio_file:
+                self.logger.warning(f"Project audio_file path does not exist: {project.audio_file}")
             return False
         
-        self.logger.info(f"Loading audio from project: {project.name}")
-        self.logger.debug(f"Audio file path: {project.audio_file}")
-        self.logger.debug(f"Audio data size: {len(project.audio_data) if project.audio_data else 0} bytes")
-        
+        # Common logic after successfully loading (either embedded or preparing to load external)
         try:
-            # Stop any current playback
-            self.stop()
-            
-            # Create a temporary file to write the audio data to
-            with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
-                temp_path = temp_file.name
-                temp_file.write(project.audio_data)
-            
-            # Load the audio data from the temporary file
-            self.audio_data, self.sample_rate = librosa.load(temp_path, sr=None)
-            
-            # Ensure we store the absolute path of the audio file
-            if project.audio_file:
-                self.audio_file = os.path.abspath(project.audio_file)
-                self.logger.info(f"Using absolute audio file path: {self.audio_file}")
-            else:
-                self.audio_file = project.audio_file  # Could be None for embedded audio
-                
-            self.duration = librosa.get_duration(y=self.audio_data, sr=self.sample_rate)
-            
-            # Remove the temporary file
-            try:
-                os.unlink(temp_path)
-            except Exception as e:
-                self.logger.warning(f"Could not remove temporary file {temp_path}: {e}")
-            
             # Reset position
             self.position = 0.0
             

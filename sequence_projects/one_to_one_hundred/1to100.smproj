@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2025-05-31T20:46:53.728759",
-    "modified": "2025-06-03T14:32:43.896049",
+    "modified": "2025-06-03T14:39:28.448476",
     "name": false,
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2025-05-31T20:46:53.728774",
-      "modified": "2025-06-03T14:32:43.896024",
+      "modified": "2025-06-03T14:39:28.448448",
       "segments": [
         {
           "startTime": 0.0,
@@ -3393,21 +3393,21 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2025-05-31T20:46:53.728776",
-      "modified": "2025-06-03T14:32:43.896042",
+      "modified": "2025-06-03T14:39:28.448469",
       "segments": []
     },
     {
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2025-05-31T20:46:53.728778",
-      "modified": "2025-06-03T14:32:43.896046",
+      "modified": "2025-06-03T14:39:28.448472",
       "segments": []
     }
   ],
   "audio": {
     "embedded": false,
-    "filename": null,
-    "filepath": null,
+    "filename": "/home/twain/Projects/ltx_guru/sequence_projects/one_to_one_hundred/one_to_one_hundred.mp3",
+    "filepath": "/home/twain/Projects/ltx_guru/sequence_projects/one_to_one_hundred/one_to_one_hundred.mp3",
     "duration": 0,
     "data": null
   },

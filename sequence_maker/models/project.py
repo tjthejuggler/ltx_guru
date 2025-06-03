@@ -176,11 +176,20 @@ class Project:
         
         # Set audio data
         audio = data.get("audio", {})
+        # Always attempt to load audio file path and duration
+        project.audio_file = audio.get("filepath") or audio.get("filename")
+        project.audio_duration = audio.get("duration", 0)
+
         if audio.get("embedded") and audio.get("data"):
-            project.audio_data = base64.b64decode(audio["data"])
-            # Use filepath if available (for backward compatibility), otherwise use filename
-            project.audio_file = audio.get("filepath") or audio.get("filename")
-            project.audio_duration = audio.get("duration", 0)
+            try:
+                project.audio_data = base64.b64decode(audio["data"])
+                # project.audio_file and project.audio_duration are already set
+            except Exception as e:
+                project.logger.error(f"Error decoding embedded audio data: {e}")
+                project.audio_data = None # Ensure audio_data is None if decoding fails
+        else:
+            # Not embedded, or no data even if embedded flag is true
+            project.audio_data = None
         
         # Set visualizations
         project.visualizations = data.get("visualizations", {
