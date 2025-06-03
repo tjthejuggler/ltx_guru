@@ -356,6 +356,12 @@ class AudioWidget(QWidget):
         seconds = int(seconds % 60)
         return f"{minutes}:{seconds:02d}"
 
+    def set_horizontal_scroll_offset(self, offset: int):
+        """Set the horizontal scroll offset for the visualization."""
+        if hasattr(self, 'visualization'):
+            self.visualization.horizontal_scroll_offset = offset
+            self.visualization.update()
+
 
 class AudioVisualization(QWidget):
     """Widget for displaying audio visualizations."""
@@ -386,6 +392,9 @@ class AudioVisualization(QWidget):
         
         # Dragging state
         self.dragging_position = False
+        
+        # Horizontal scroll offset
+        self.horizontal_scroll_offset = 0
     
     def set_analysis_data(self, analysis_data):
         """
@@ -465,14 +474,17 @@ class AudioVisualization(QWidget):
                 
                 # Draw waveform based on time scale
                 for i in range(width):
-                    # Convert pixel position to time
-                    time_pos = i / pixels_per_second
+                    # Convert pixel position to time, considering scroll offset
+                    time_pos = (i + self.horizontal_scroll_offset) / pixels_per_second
                     if time_pos >= duration:
-                        break
+                        # No need to draw beyond the duration
+                        pass # Continue to allow drawing the rest of the visible area if scrolled past the end
                     
                     # Get waveform value at time position
-                    sample_index = int(time_pos * len(waveform) / duration)
-                    if sample_index < len(waveform):
+                    # Clamp sample_index to avoid going out of bounds
+                    sample_index = min(max(0, int(time_pos * len(waveform) / duration)), len(waveform) -1)
+
+                    if sample_index < len(waveform): # Check should be redundant due to clamping but good for safety
                         value = waveform[sample_index]
                         
                         # Draw vertical line for waveform value
@@ -563,7 +575,7 @@ class AudioVisualization(QWidget):
             
             # Draw beat lines
             for beat_time in beat_times:
-                x = int(beat_time * pixels_per_second)
+                x = int(beat_time * pixels_per_second) - self.horizontal_scroll_offset
                 if 0 <= x < width:
                     painter.drawLine(x, 0, x, height)
     
@@ -634,8 +646,8 @@ class AudioVisualization(QWidget):
         zoom_level = timeline_widget.zoom_level
         time_scale = timeline_widget.time_scale
         
-        # Calculate position in pixels using timeline's scale
-        pos_x = int(position * time_scale * zoom_level)
+        # Calculate position in pixels using timeline's scale and adjust for scroll
+        pos_x = int(position * time_scale * zoom_level) - self.horizontal_scroll_offset
         
         # Create a semi-transparent red color for the line to match timeline marker
         line_color = QColor(255, 0, 0, 200)  # Added alpha channel (200/255 opacity)

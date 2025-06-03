@@ -2,14 +2,14 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2025-05-31T20:46:53.728759",
-    "modified": "2025-05-31T20:47:26.443868",
+    "modified": "2025-06-03T14:32:43.896049",
     "name": false,
     "description": ""
   },
   "settings": {
     "defaultPixels": 4,
     "refreshRate": 1,
-    "totalDuration": 252.47,
+    "totalDuration": 247.68566893424037,
     "zoomLevel": 1.0
   },
   "keyMappings": {},
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2025-05-31T20:46:53.728774",
-      "modified": "2025-05-31T20:47:26.443848",
+      "modified": "2025-06-03T14:32:43.896024",
       "segments": [
         {
           "startTime": 0.0,
@@ -3393,14 +3393,14 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2025-05-31T20:46:53.728776",
-      "modified": "2025-05-31T20:47:26.443862",
+      "modified": "2025-06-03T14:32:43.896042",
       "segments": []
     },
     {
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2025-05-31T20:46:53.728778",
-      "modified": "2025-05-31T20:47:26.443865",
+      "modified": "2025-06-03T14:32:43.896046",
       "segments": []
     }
   ],

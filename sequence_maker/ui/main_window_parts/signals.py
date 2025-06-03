@@ -18,6 +18,7 @@ def connect_timeline_signals(main_window):
     """Connect timeline-related signals."""
     # Connect timeline signals
     main_window.timeline_widget.position_changed.connect(main_window._update_cursor_position)
+    main_window.timeline_widget.horizontal_scroll_changed.connect(main_window.audio_widget.set_horizontal_scroll_offset)
     
     # Note: The TimelineWidget doesn't have cursor_hover_position_changed or cursor_hover_exited signals
     # We'll need to implement these in the TimelineWidget class if needed

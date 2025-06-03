@@ -40,6 +40,7 @@ class TimelineWidget(QWidget):
     segment_clicked = pyqtSignal(object, object, QPoint)  # timeline, segment, position
     segment_double_clicked = pyqtSignal(object, object)  # timeline, segment
     segment_context_menu = pyqtSignal(object, object, QPoint)  # timeline, segment, position
+    horizontal_scroll_changed = pyqtSignal(int) # New signal for horizontal scroll
     
     def __init__(self, app, parent=None):
         """
@@ -144,7 +145,14 @@ class TimelineWidget(QWidget):
         
         # Connect audio manager signals
         self.app.audio_manager.position_changed.connect(self._on_position_changed)
+        
+        # Connect scroll bar signal
+        self.scroll_area.horizontalScrollBar().valueChanged.connect(self._on_horizontal_scroll_changed)
     
+    def _on_horizontal_scroll_changed(self, value):
+        """Emit signal when horizontal scrollbar changes."""
+        self.horizontal_scroll_changed.emit(value)
+
     def zoom_in(self):
         """Zoom in on the timeline."""
         self.set_zoom(self.zoom_level * self.zoom_step)
