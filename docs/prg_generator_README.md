@@ -356,7 +356,6 @@ Let `Dur_k` be the duration of the current segment (segment `k`).
 
 *   **Note:** The precise conditions distinguishing Pattern A from Pattern B when `Dur_k+1` is not immediately adjacent to a multiple of 100 (e.g., for values like 160, 170, 250, etc.) and `Dur_k` varies are still being refined. The `prg_generator.py` may need a series of `if/elif` conditions for known Pattern B triggers, falling back to Pattern A.
 *   The `prg_generator.py` should be updated to implement this highly conditional logic for `Field[+0x11]`.
-*   *Note on N=258 variations:* Official LTX app output for N=258 shows further specific deviations not covered by these general hypotheses (see `official_prg_app_tests.md`). The generator does not attempt to replicate these highly specific N=258 exceptions.
 
 **Structure for Segment N-1 (LAST Block):**
 
@@ -405,7 +404,6 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
 *   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag. Note that this is not an acceptable fix, this information is only here to help understand the nature of the issue.
-*   **Official App Segment Duration Alterations:** For certain sequence lengths (e.g., N=258), the official LTX app may alter the duration of specific segments (e.g., segment at index 59 becomes 95ms instead of an input 100ms). This behavior is not yet fully understood or generalized in the generator.
 *   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-02):**
     *   **Previous Issues:** An older, more complex hypothesis for `field_09_part1` ("Hypothesis I") caused strobing issues in `prg_generator.py` and was reverted.
     *   **Current Recommendation (Post S-V tests):** The hypothesis for `field_09_part1` ( `floor(Dur_k+1 / 100)` ) and `field_09_part2` ( `64 00` i.e. 100) are robustly confirmed by all 1000Hz official app tests (A-V) and are strongly recommended for implementation. It is anticipated that this accurate model will not reintroduce strobing issues and will more accurately reflect official PRG generation.

@@ -94,7 +94,7 @@ def calculate_legacy_intro_pair(target_index, total_segments):
     value_pair = value_n_t1 + (target_index - 1) * horizontal_step
 
     # Ensure the value fits within 16 bits if necessary (though calculations seem okay)
-    # value_pair &= 0xFFFF
+    value_pair &= 0xFFFF
 
     # Optional debug print
     # print(f"[DEBUG][IntroPair] TargetIdx={target_index}, TotalSegs={total_segments} -> ValuePair=0x{value_pair:04X} ({value_pair})")
