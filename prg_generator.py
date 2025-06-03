@@ -28,12 +28,8 @@ HEADER_CONST_1C = b'\x00\x00' # Constant part of the 0x1C field
 # Duration Block Constants (Simple Format)
 BLOCK_CONST_02 = b'\x01\x00\x00'
 BLOCK_CONST_07 = b'\x00\x00'
-BLOCK_CONST_0F = b'\x00\x00'  # Renamed for clarity - offset +0x0F in intermediate blocks
-
 # Last Duration Block Constants
 LAST_BLOCK_CONST_09 = b'\x43\x44' # "CD"
-LAST_BLOCK_CONST_0D = b'\x00\x00'  # Renamed for clarity - offset +0x0D in last block
-LAST_BLOCK_CONST_11 = b'\x00\x00'  # Renamed for clarity - offset +0x11 in last block
 
 FOOTER = b'BT\x00\x00\x00\x00'
 RGB_TRIPLE_COUNT = 100
@@ -58,14 +54,11 @@ def bytes_to_hex(data):
     return str(data)
 
 
-def calculate_legacy_intro_pair(target_index, total_segments):
+def _calculate_intermediate_block_index1_base(target_index, total_segments):
     """
-    Calculates the 16-bit value pair for intermediate duration blocks (offset +13)
-    based on arithmetic progressions observed in known-good files (N=2 to N=9).
-    
-    CRITICAL NOTE: This function needs re-verification against the full 1000Hz dataset
-    (Tests A-V and DB_11 series). The current logic may be too simplistic for complex
-    sequences. If discrepancies are found, this function must be revised.
+    Calculates the base value for the Index1 field in intermediate duration blocks.
+    This value can exceed 16 bits. The lower 16 bits go to field +0x0D,
+    and the higher 16 bits (carry) go to field +0x0F.
 
     Args:
         target_index (int): The 1-based index for this value pair,
@@ -73,56 +66,40 @@ def calculate_legacy_intro_pair(target_index, total_segments):
         total_segments (int): The total number of segments (N) in the sequence.
 
     Returns:
-        int: The calculated 16-bit value pair (packed Little Endian later).
-             Returns 0 or raises error if target_index is out of bounds.
+        int: The calculated base value (potentially >16 bits).
     """
-    # Validate target_index relative to total_segments
     if not (1 <= target_index < total_segments):
-         print(f"[WARN] calculate_legacy_intro_pair called with invalid target_index {target_index} for {total_segments} segments.")
-         # Optional: raise ValueError(f"Invalid target_index {target_index} for {total_segments} segments.")
-         return 0 # Maintain original behavior
+         print(f"[WARN] _calculate_intermediate_block_index1_base called with invalid target_index {target_index} for {total_segments} segments.")
+         return 0
 
-    # Constants derived from pattern analysis
-    base_value_n2_t1 = 370  # Value(N=2, T=1)
-    vertical_step = 19      # Difference when N increases by 1 (for fixed T)
-    horizontal_step = 300   # Difference when T increases by 1 (for fixed N)
+    base_value_n2_t1 = 370
+    vertical_step = 19
+    horizontal_step = 300
 
-    # Calculate Value(N, 1)
     value_n_t1 = base_value_n2_t1 + (total_segments - 2) * vertical_step
+    value_pair_full = value_n_t1 + (target_index - 1) * horizontal_step
 
-    # Calculate Value(N, T) based on Value(N, 1)
-    value_pair = value_n_t1 + (target_index - 1) * horizontal_step
+    # print(f"[DEBUG][IntermediateIndexBase] TargetIdx={target_index}, TotalSegs={total_segments} -> FullValue=0x{value_pair_full:X} ({value_pair_full})")
+    return value_pair_full
 
-    # Ensure the value fits within 16 bits if necessary (though calculations seem okay)
-    value_pair &= 0xFFFF
-
-    # Optional debug print
-    # print(f"[DEBUG][IntroPair] TargetIdx={target_index}, TotalSegs={total_segments} -> ValuePair=0x{value_pair:04X} ({value_pair})")
-
-    return value_pair
-
-def calculate_legacy_color_intro_parts(total_segments):
+def _calculate_last_block_index2_bases(total_segments):
     """
-    Calculates the Index Value 2 Parts 1 & 2 (16-bit each) for the *last*
-    duration block based on the logic derived from the old 'get_color_data_intro'.
-    
-    CRITICAL NOTE: This function needs re-verification against the full 1000Hz dataset
-    (Tests A-V and DB_11 series). The current logic may be too simplistic for complex
-    sequences. If discrepancies are found, this function must be revised.
+    Calculates the base values for Index2 Part1 and Part2 fields in the *last*
+    duration block. These values can exceed 16 bits.
+    Part1: Lower 16 bits to +0x0B, Higher 16 bits to +0x0D.
+    Part2: Lower 16 bits to +0x0F, Higher 16 bits to +0x11.
 
     Args:
         total_segments (int): The total number of segments.
 
     Returns:
-        tuple(int, int): (part1, part2) as 16-bit values.
+        tuple(int, int): (part1_full_value, part2_full_value).
     """
     part1_full = 304 + (total_segments - 1) * 300
     part2_full = 100 * total_segments
 
-    part1_16bit = part1_full & 0xFFFF
-    part2_16bit = part2_full & 0xFFFF
-    # print(f"[DEBUG][ColorIntroParts] Segs={total_segments}: Part1_16b=0x{part1_16bit:04X}, Part2_16b=0x{part2_16bit:04X}")
-    return part1_16bit, part2_16bit
+    # print(f"[DEBUG][LastBlockIndexBases] Segs={total_segments}: Part1_Full=0x{part1_full:X}, Part2_Full=0x{part2_full:X}")
+    return part1_full, part2_full
 
 import math # Added for math.floor
 
@@ -364,77 +341,92 @@ def generate_prg_file(input_json, output_prg):
                     # Structure for segments 0 to n-2 (Intermediate Blocks)
                     if idx < segment_count - 1:
                         next_duration_units = segments[idx + 1][0] # Dur_k+1_prg
-                        index1_value = calculate_legacy_intro_pair(idx + 1, segment_count)
+                        
+                        # Calculate full base value for Index1
+                        index1_full_base_value = _calculate_intermediate_block_index1_base(idx + 1, segment_count)
+                        index1_value_at_0D = index1_full_base_value & 0xFFFF
+                        index1_carry_at_0F = (index1_full_base_value >> 16) & 0xFFFF
 
                         # Field +0x09 Logic (Revised 2025-06-02 based on official app tests A-L)
-                        # field_09_part1 = floor(Dur_k+1 / 100)
-                        # field_09_part2 = 100 (NOMINAL_BASE_FOR_HEADER_FIELDS)
-                        
                         field_09_part1 = math.floor(next_duration_units / NOMINAL_BASE_FOR_HEADER_FIELDS)
                         field_09_part2 = NOMINAL_BASE_FOR_HEADER_FIELDS
-                        
                         field_09_bytes = struct.pack('<H', field_09_part1) + struct.pack('<H', field_09_part2)
 
-                        # Field +0x11 Logic (Revised based on all tests up to V-series and new DB_11 series)
-                        # Let Dur_k+1 be next_duration_units
-                        # Let Dur_k be duration_units (current segment's duration)
+                        # Field +0x11 Logic (Revised 2025-06-02, to correct Dur_k+1=100 handling and refine multiples)
                         field_11_val = 0  # Initialize
-                        dur_k = duration_units # Current segment's duration
+                        dur_k = duration_units          # Current segment's duration
                         dur_k_plus_1 = next_duration_units # Next segment's duration
 
-                        # Rule A: Special Overrides (Highest Priority)
+                        # Priority 1: Special Overrides
                         if dur_k_plus_1 == 1930:
                             field_11_val = 30
                         elif dur_k_plus_1 == 103:
                             field_11_val = 3
-                        # Rule B: Dur_k+1 is an Exact Multiple of 100 (and not an override from Rule A)
-                        elif dur_k_plus_1 > 0 and dur_k_plus_1 % 100 == 0:
-                            if (dur_k_plus_1 >= 600) and (dur_k >= 1000): # Check if Dur_k is also large
-                                field_11_val = dur_k_plus_1  # Pattern B for large multiples
+                        
+                        # Priority 2: Next segment duration is exactly 100
+                        elif dur_k_plus_1 == 100:
+                            field_11_val = 0
+                        
+                        # Priority 3: Next segment duration is a multiple of 100 (but > 100)
+                        elif dur_k_plus_1 > 100 and dur_k_plus_1 % 100 == 0:
+                            # Refined logic for multiples > 100:
+                            # If Dur_k == Dur_k+1 (e.g. 600/600 -> 600) -> value is Dur_k+1
+                            # If Dur_k is large (e.g. >=1000) and Dur_k+1 is a substantial multiple (e.g. >=600) -> value is Dur_k+1 (Test L5: D0=1k, D1=600, D2=1930; +0x11 for D0 is 600)
+                            # Otherwise (e.g. D0=50, D1=200 OR D0=200, D1=600) -> value is 0
+                            if dur_k == dur_k_plus_1:
+                                field_11_val = dur_k_plus_1
+                            elif dur_k >= 1000 and dur_k_plus_1 >= 600: # Test L5 style
+                                field_11_val = dur_k_plus_1
                             else:
-                                field_11_val = 0 # Standard case for multiples of 100
-                        # Rule C: Dur_k+1 is NOT an Exact Multiple of 100 (and not an override from Rule A)
+                                field_11_val = 0
+                                
+                        # Priority 4: Next segment duration is 150
                         elif dur_k_plus_1 == 150:
-                            if dur_k == 100:
-                                field_11_val = 150 # Pattern B (special case for Dur_k+1=150 when Dur_k=100)
-                            else:
-                                field_11_val = 50  # Pattern A (150 % 100)
+                            if dur_k >= 100: # Test H3 (100,150,X) -> 150. DB_11_A3/4/5 (>=101,150,X) -> 150
+                                field_11_val = 150
+                            else: # Dur_k < 100. Test T5 (50,150,X) -> 50. DB_11_A1/2 (<100,150,X) -> 50
+                                field_11_val = 50
+                        
+                        # Priority 5: Next segment duration is < 100 (and not 103)
                         elif dur_k_plus_1 < 100:
                             field_11_val = dur_k_plus_1
-                        else: # dur_k_plus_1 > 100, not 150, not a multiple of 100, not an override
-                            # Tentative for Pattern B for other mid-range values:
-                            # Example: Test A (Dur_k=1240, Dur_k+1=470 -> Field[+0x11]=470)
-                            # This needs a more robust condition for "large" Dur_k and "mid-range non-multiple" Dur_k+1
-                            # For now, we'll default to Pattern A unless a specific Pattern B condition is met.
-                            # A more complex if/elif chain might be needed here if more Pattern B triggers are found.
-                            if dur_k >= 1000 and (400 < dur_k_plus_1 < 600 and dur_k_plus_1 % 100 != 0): # Example: trying to catch something like 470
-                                field_11_val = dur_k_plus_1 # Highly speculative, needs more data
-                            else:
-                                field_11_val = dur_k_plus_1 % 100 # Pattern A (default for non-multiples > 100)
+                        
+                        # Priority 6: Fallback for Dur_k+1 > 100, not 150, not multiple of 100, not special override
+                        # e.g., 101, 102, 104, 120, 140, 149, 151, 199, 201, 470 etc.
+                        else:
+                            if dur_k >= 100: # General trend: if Dur_k is substantial (>=100), pass through Dur_k+1
+                                field_11_val = dur_k_plus_1
+                            else: # Dur_k < 100
+                                field_11_val = dur_k_plus_1 % 100
                         
                         f.write(struct.pack('<H', pixels))
                         f.write(BLOCK_CONST_02)
                         f.write(struct.pack('<H', duration_units))
                         f.write(BLOCK_CONST_07)
-                        f.write(field_09_bytes) # Write calculated Field +0x09
-                        f.write(struct.pack('<H', index1_value))
-                        f.write(BLOCK_CONST_0F)
-                        f.write(struct.pack('<H', field_11_val)) # Write calculated Field +0x11
+                        f.write(field_09_bytes)
+                        f.write(struct.pack('<H', index1_value_at_0D)) # Lower 16 bits of Index1
+                        f.write(struct.pack('<H', index1_carry_at_0F)) # Higher 16 bits (carry) of Index1
+                        f.write(struct.pack('<H', field_11_val))
                         current_offset += DURATION_BLOCK_SIZE
 
                     # Structure for the LAST segment (n-1)
                     else: # This is the last block
-                        index2_part1, index2_part2 = calculate_legacy_color_intro_parts(segment_count)
+                        index2_part1_full, index2_part2_full = _calculate_last_block_index2_bases(segment_count)
+                        
+                        index2_part1_at_0B = index2_part1_full & 0xFFFF
+                        index2_part1_carry_at_0D = (index2_part1_full >> 16) & 0xFFFF
+                        index2_part2_at_0F = index2_part2_full & 0xFFFF
+                        index2_part2_carry_at_11 = (index2_part2_full >> 16) & 0xFFFF
 
-                        f.write(struct.pack('<H', pixels))               # +0 Pixels
-                        f.write(BLOCK_CONST_02)                           # +2 Const
-                        f.write(struct.pack('<H', duration_units))       # +5 Current Duration UNITS
-                        f.write(BLOCK_CONST_07)                           # +7 Const
-                        f.write(LAST_BLOCK_CONST_09)                      # +9 "CD"
-                        f.write(struct.pack('<H', index2_part1))         # +11 Index2 Part1
-                        f.write(LAST_BLOCK_CONST_0D)                      # +13 Const
-                        f.write(struct.pack('<H', index2_part2))         # +15 Index2 Part2
-                        f.write(LAST_BLOCK_CONST_11)                      # +17 Const
+                        f.write(struct.pack('<H', pixels))
+                        f.write(BLOCK_CONST_02)
+                        f.write(struct.pack('<H', duration_units))
+                        f.write(BLOCK_CONST_07)
+                        f.write(LAST_BLOCK_CONST_09)
+                        f.write(struct.pack('<H', index2_part1_at_0B))     # Lower 16 bits of Index2 Part1
+                        f.write(struct.pack('<H', index2_part1_carry_at_0D))# Higher 16 bits (carry) of Index2 Part1
+                        f.write(struct.pack('<H', index2_part2_at_0F))     # Lower 16 bits of Index2 Part2
+                        f.write(struct.pack('<H', index2_part2_carry_at_11))# Higher 16 bits (carry) of Index2 Part2
                         current_offset += DURATION_BLOCK_SIZE
 
                 except struct.error as e:

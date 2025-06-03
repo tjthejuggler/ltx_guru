@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-02 16:37 UTC+7
+**Last Updated:** 2025-06-03 11:06 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -305,76 +305,80 @@ One block exists for each segment, immediately following the header. Let N be th
 
 **Structure for Segments 0 to N-2 (Intermediate Blocks):**
 
-| Offset (Relative to block start) | Length | Field Name                   | Data Type | Endian | Details (Example for Seg0 of N=2 file: `2px_r1_g99_1r`) |
-| :------------------------------- | :----- | :--------------------------- | :-------- | :----- | :--------------------------------------------------------- |
-| +0x00                            | 2      | Pixel Count                  | `H`       | Little | Pixels for *this* segment (1-4). Ex: `02 00` (2 pixels)   |
-| +0x02                            | 3      | Block Constant 0x02          | `bytes`   | N/A    | `01 00 00`                                                 |
-| +0x05                            | 2      | Current Segment Duration Units| `H`      | Little | Duration (units) of *this* segment. Ex: `01 00` (1 unit)   |
-| +0x07                            | 2      | Block Constant 0x07          | `bytes`   | N/A    | `00 00`                                                    |
-| +0x09                            | 4      | Segment Index & Duration     | `bytes`   | N/A    | Two 2-byte LE values. Part1: Conditional index. Part2: CurrentSegDurUnits. See logic below. |
-| +0x0D                            | 2      | Index1 Value                 | `H`       | Little | Calculated by `calculate_legacy_intro_pair` (see code)     |
-| +0x0F                            | 2      | Block Constant 0x0F          | `bytes`   | N/A    | `00 00`                                                    |
-| +0x11                            | 2      | Next Segment Info (Conditional)| `H`     | Little | Duration of next segment, with conditions. See logic below. Ex: `63 00` (99 units for next seg) |
+| Offset (Relative to block start) | Length | Field Name                            | Data Type | Endian | Details (Example values may vary based on context)        |
+| :------------------------------- | :----- | :------------------------------------ | :-------- | :----- | :--------------------------------------------------------- |
+| +0x00                            | 2      | Pixel Count                           | `H`       | Little | Pixels for *this* segment (1-4). Ex: `02 00` (2 pixels)   |
+| +0x02                            | 3      | Block Constant 0x02                   | `bytes`   | N/A    | `01 00 00`                                                 |
+| +0x05                            | 2      | Current Segment Duration Units        | `H`       | Little | Duration (units) of *this* segment. Ex: `64 00` (100 units) |
+| +0x07                            | 2      | Block Constant 0x07                   | `bytes`   | N/A    | `00 00`                                                    |
+| +0x09                            | 4      | Field[+0x09] (NextSegDur/100 & Const) | `bytes`   | N/A    | Two 2-byte LE values. See logic below. Ex: `01 00 64 00` |
+| +0x0D                            | 2      | Index1 Value (Lower 16 bits)          | `H`       | Little | Lower 16 bits of a calculated index value. Example: `4C 14` for value `0x144C`. |
+| +0x0F                            | 2      | Index1 Value (Higher 16 bits / Carry) | `H`       | Little | Higher 16 bits (carry) of the Index1 value. Example: `01 00` for value `0x1144C`. Formerly thought to be `00 00`. |
+| +0x11                            | 2      | Next Segment Info (Conditional)       | `H`       | Little | Duration of next segment, with conditions. See logic below. Ex: `00 00` if next segment is 100 units. |
 
-**Field `+0x09` (Segment Index & Duration) Logic for Intermediate Blocks (Revised 2025-06-02, status confirmed after S-V series tests):**
-This 4-byte field consists of two 2-byte Little Endian values: `field_09_part1` and `field_09_part2`.
-
-*   **`field_09_part2`:**
-    *   **Observation (Official App Tests A-V, 1000Hz):** For all intermediate duration blocks (segments 0 to N-2), `field_09_part2` is consistently `64 00` (decimal 100).
-    *   **Status:** Confirmed. The `prg_generator.py` should ensure this value is written for `field_09_part2` in intermediate blocks.
+**Field `+0x09` (Next Segment Duration Info & Constant) Logic for Intermediate Blocks (Revised 2025-06-03):**
+This 4-byte field (at offset `+0x09` from the start of an intermediate duration block) consists of two 2-byte Little Endian values: `field_09_part1` followed by `field_09_part2`.
 
 *   **`field_09_part1`:**
     *   **Hypothesis (Official App Tests A-V, 1000Hz):** For an intermediate duration block `k` (describing segment `k`), if the *next* segment (segment `k+1`) has a duration `Dur_k+1` (in PRG time units):
         **`field_09_part1 (for block k) = floor(Dur_k+1 / 100)`**
-    *   **Status:** Confirmed robustly across all tests A-V. It is strongly recommended for implementation in `prg_generator.py`.
+    *   **Status:** Confirmed robustly across all 1000Hz tests (A-V, M-R, S-V, DB_11).
 
-**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-02, after additional tests):**
+*   **`field_09_part2`:**
+    *   **Observation (Official App Tests A-V, 1000Hz):** For all intermediate duration blocks (segments 0 to N-2), `field_09_part2` is consistently `64 00` (decimal 100).
+    *   **Status:** Confirmed.
+
+**Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-03):**
 Let `Dur_k+1` be the duration of the next segment (segment `k+1`) in PRG time units.
 Let `Dur_k` be the duration of the current segment (segment `k`).
+The value for `Field[+0x11]` in Block `k` is determined by the first matching rule in the following priority:
 
-1.  **Special Overrides (Highest Priority):**
-    *   If `Dur_k+1 == 1930`: `Field[+0x11]` for Block `k` is `1E 00` (decimal 30).
-    *   Else if `Dur_k+1 == 103`: `Field[+0x11]` for Block `k` is `03 00` (decimal 3).
+1.  **Special Overrides:**
+    *   If `Dur_k+1 == 1930`: `Field[+0x11]` is `1E 00` (decimal 30). (Confirmed by Test L series, R2).
+    *   Else if `Dur_k+1 == 103`: `Field[+0x11]` is `03 00` (decimal 3). (Confirmed by Test M series).
 
-2.  **`Dur_k+1` is an Exact Multiple of 100 (and not an override from rule 1):**
-    *   Else if `Dur_k+1 > 0` AND `Dur_k+1 % 100 == 0`:
-        *   If (`Dur_k+1 >= 600`) AND (`Dur_k >= 1000`):
-            `Field[+0x11] = Dur_k+1` (Pattern B: Direct passthrough for large multiples when `Dur_k` is also large).
-        *   Else:
-            `Field[+0x11] = 0`. (Covers 100, 200, 300, 400, 500. Also 600, 1000 if `Dur_k < 1000`).
+2.  **`Dur_k+1` is Exactly 100:**
+    *   Else if `Dur_k+1 == 100`: `Field[+0x11]` is `00 00` (decimal 0). (Confirmed by Test E, N25x_all_100ms series, DB_11_B1, DB_11_C1).
 
-3.  **`Dur_k+1` is NOT an Exact Multiple of 100 (and not an override from rule 1):**
+3.  **`Dur_k+1` is a Multiple of 100 (and `Dur_k+1 > 100`):**
+    *   Else if `Dur_k+1 > 100` AND `Dur_k+1 % 100 == 0`:
+        *   If `Dur_k == Dur_k+1` (e.g., current segment is 600ms, next is 600ms): `Field[+0x11] = Dur_k+1`. (e.g., Test DB_11_B4: 600/600 -> 600; L6: 1000/1000 -> 1000).
+        *   Else if `Dur_k >= 1000` AND `Dur_k+1 >= 600` (e.g., current segment is 1000ms, next is 600ms): `Field[+0x11] = Dur_k+1`. (e.g., Test L5: Block 0 for (1000ms, 600ms) sequence has +0x11 = 600).
+        *   Else (e.g., current 50ms, next 200ms; or current 200ms, next 600ms where `Dur_k` < 1000): `Field[+0x11] = 0`. (e.g., Tests Q3, U1-U3, DB_11_B1/B2/B3, DB_11_C1/C2/C3).
+
+4.  **`Dur_k+1` is Exactly 150:**
     *   Else if `Dur_k+1 == 150`:
-        *   If `Dur_k == 100`: `Field[+0x11] = 150` (Pattern B: Special case).
-        *   Else: `Field[+0x11] = 50` (Pattern A: `150 % 100`).
-    *   Else if `Dur_k+1 < 100`:
-        `Field[+0x11] = Dur_k+1`.
-    *   Else (`Dur_k+1 > 100`, not 150, not a multiple of 100, not an override):
-        *   *(Tentative for Pattern B for other mid-range values):* If `Dur_k` is "large" (e.g., `Dur_k >= 1000`) AND `Dur_k+1` is a "mid-range non-multiple" (e.g., 470), then `Field[+0x11] = Dur_k+1`. (This sub-condition needs more precise definition from further tests).
-        *   Else (Most common case for non-multiples > 100):
-            `Field[+0x11] = Dur_k+1 % 100` (Pattern A). This applies to values "just over" multiples of 100, or when `Dur_k` doesn't trigger a Pattern B condition. Examples: 101, 102, 104, 105, 120, 140, 148, 149, 151, 199, 201, 299, etc.
+        *   If `Dur_k >= 100`: `Field[+0x11] = 150`. (Pattern B behavior, e.g., Test H3, DB_11_A3/A4/A5).
+        *   Else (`Dur_k < 100`): `Field[+0x11] = 50` (Pattern A: `150 % 100`, e.g., Test T5, DB_11_A1/A2).
 
-*   **Note:** The precise conditions distinguishing Pattern A from Pattern B when `Dur_k+1` is not immediately adjacent to a multiple of 100 (e.g., for values like 160, 170, 250, etc.) and `Dur_k` varies are still being refined. The `prg_generator.py` may need a series of `if/elif` conditions for known Pattern B triggers, falling back to Pattern A.
-*   The `prg_generator.py` should be updated to implement this highly conditional logic for `Field[+0x11]`.
+5.  **`Dur_k+1` is Less Than 100 (and not 103 from Rule 1):**
+    *   Else if `Dur_k+1 < 100`: `Field[+0x11] = Dur_k+1`. (e.g., Test H1, K1, K3).
+
+6.  **Fallback for `Dur_k+1 > 100` (and not covered by Rules 1, 3, or 4):**
+    *   Else (covers cases like `Dur_k+1` = 101, 102, 104, 120, 140, 149, 151, 199, 201, 470, etc.):
+        *   If `Dur_k >= 100`: `Field[+0x11] = Dur_k+1` (Pattern B: direct passthrough, e.g., Test A Block 0, K4-K8, DB_11_A3).
+        *   Else (`Dur_k < 100`): `Field[+0x11] = Dur_k+1 % 100` (Pattern A: modulo, e.g., Test P2, T1-T4, T6, V-series).
+
+*   **Note on Patterns:** "Pattern A" generally refers to `Dur_k+1 % 100` when `Dur_k+1 > 100`. "Pattern B" refers to direct passthrough (`Dur_k+1`). The interaction with `Dur_k` determines which pattern applies for some `Dur_k+1` values. The rules above are ordered by priority.
 
 **Structure for Segment N-1 (LAST Block):**
 
 This is the final duration block in the sequence.
 
-| Offset (Relative to block start) | Length | Field Name            | Data Type | Endian | Details (Example for Seg1 of N=2 file: `2px_r1_g99_1r`) |
-| :------------------------------- | :----- | :-------------------- | :-------- | :----- | :---------------------------------------------------- |
-| +0x00                            | 2      | Pixel Count           | `H`       | Little | Pixels for *this* segment (1-4). Ex: `02 00` (2 pixels) |
-| +0x02                            | 3      | Block Constant 0x02   | `bytes`   | N/A    | `01 00 00`                                            |
-| +0x05                            | 2      | Current Duration Units| `H`       | Little | Duration (units) of *this* segment. Ex: `63 00` (99 units) |
-| +0x07                            | 2      | Block Constant 0x07   | `bytes`   | N/A    | `00 00`                                               |
-| +0x09                            | 2      | Last Block Const 0x09 | `bytes`   | N/A    | `43 44` ('CD')                                        |
-| +0x0B                            | 2      | Index2 Part 1         | `H`       | Little | Calculated by `calculate_legacy_color_intro_parts`      |
-| +0x0D                            | 2      | Last Block Const 0x0D | `bytes`   | N/A    | `00 00`                                               |
-| +0x0F                            | 2      | Index2 Part 2         | `H`       | Little | Calculated by `calculate_legacy_color_intro_parts`      |
-| +0x11                            | 2      | Last Block Const 0x11 | `bytes`   | N/A    | `00 00`                                               |
+| Offset (Relative to block start) | Length | Field Name                                 | Data Type | Endian | Details (Example values may vary)                      |
+| :------------------------------- | :----- | :----------------------------------------- | :-------- | :----- | :---------------------------------------------------- |
+| +0x00                            | 2      | Pixel Count                                | `H`       | Little | Pixels for *this* segment (1-4). Ex: `02 00` (2 pixels) |
+| +0x02                            | 3      | Block Constant 0x02                        | `bytes`   | N/A    | `01 00 00`                                            |
+| +0x05                            | 2      | Current Segment Duration Units             | `H`       | Little | Duration (units) of *this* segment. Ex: `63 00` (99 units) |
+| +0x07                            | 2      | Block Constant 0x07                        | `bytes`   | N/A    | `00 00`                                               |
+| +0x09                            | 2      | Last Block Constant 0x09                   | `bytes`   | N/A    | `43 44` ('CD')                                        |
+| +0x0B                            | 2      | Index2 Part 1 (Lower 16 bits)              | `H`       | Little | Lower 16 bits of a calculated index value. Example: `30 2D` for value `0x12D30`. |
+| +0x0D                            | 2      | Index2 Part 1 (Higher 16 bits / Carry)     | `H`       | Little | Higher 16 bits (carry) of Index2 Part 1. Example: `01 00` for value `0x12D30`. Formerly `00 00`. |
+| +0x0F                            | 2      | Index2 Part 2 (Lower 16 bits)              | `H`       | Little | Lower 16 bits of a second calculated index value. Example: `64 64` for value `0x6464`. |
+| +0x11                            | 2      | Index2 Part 2 (Higher 16 bits / Carry)     | `H`       | Little | Higher 16 bits (carry) of Index2 Part 2. Example: `00 00` for value `0x6464`. Formerly `00 00`. |
 
 **Index Value Calculation (Known Complexities):**
-The `Index1 Value` (in intermediate blocks), `Index2 Part 1`, and `Index2 Part 2` (in the last block) fields are crucial for the firmware to correctly step through the sequence. Their calculation is non-trivial and depends on the total number of segments (N) and the current segment's index. The generator uses the functions `calculate_legacy_intro_pair` and `calculate_legacy_color_intro_parts` which contain formulas derived from reverse-engineering known-good files. Refer to the code comments within these functions for the specific logic discovered.
+The `Index1 Value` (split across `+0x0D` and `+0x0F` in intermediate blocks), and `Index2 Part 1` / `Part 2` (split across `+0x0B`/`+0x0D` and `+0x0F`/`+0x11` respectively in the last block) are crucial for the firmware to correctly step through the sequence. Their calculation is based on arithmetic progressions (see `_calculate_intermediate_block_index1_base` and `_calculate_last_block_index2_bases` in the code). These progressions can result in values exceeding 16 bits. The lower 16 bits are stored in the primary field (`+0x0D` or `+0x0B`/`+0x0F`), and the higher 16 bits (effectively a carry or page counter) are stored in the adjacent field that was previously believed to be a constant zero (`+0x0F` for intermediate blocks, or `+0x0D`/`+0x11` for the last block). This behavior becomes apparent in sequences with a large number of segments. Refer to the code comments within these functions for the specific arithmetic logic discovered.
 
 #### 3. RGB Color Data (300 Bytes per Segment)
 
@@ -404,9 +408,8 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
 *   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag. Note that this is not an acceptable fix, this information is only here to help understand the nature of the issue.
-*   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-02):**
-    *   **Previous Issues:** An older, more complex hypothesis for `field_09_part1` ("Hypothesis I") caused strobing issues in `prg_generator.py` and was reverted.
-    *   **Current Recommendation (Post S-V tests):** The hypothesis for `field_09_part1` ( `floor(Dur_k+1 / 100)` ) and `field_09_part2` ( `64 00` i.e. 100) are robustly confirmed by all 1000Hz official app tests (A-V) and are strongly recommended for implementation. It is anticipated that this accurate model will not reintroduce strobing issues and will more accurately reflect official PRG generation.
+*   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-03):**
+    The logic for `Field[+0x09]` (composed of `field_09_part1` and `field_09_part2`) has been refined. `field_09_part1` is now understood to be `floor(Dur_k+1 / 100)` (where `Dur_k+1` is the duration of the next segment), and `field_09_part2` is consistently `100` (`64 00`) for intermediate blocks. This logic is robustly confirmed by all 1000Hz official app tests and ensures correct PRG generation.
 
 ---
 
