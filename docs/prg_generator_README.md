@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-03 11:06 UTC+7
+**Last Updated:** 2025-06-05 19:30 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -113,7 +113,12 @@ Commands:
 
 A Python script (`prg_generator.py`) that converts JSON files describing color sequences into the binary `.prg` format used by LTX programmable juggling balls. **This generator always produces `.prg` files with a 100Hz refresh rate.** The `refresh_rate` specified in the input JSON is used to interpret the time units for `sequence` keys and `end_time`; these JSON-based timings are then automatically scaled by the script to match the 100Hz timing of the output `.prg` file.
 
-This script incorporates the latest understanding of PRG header fields (see "Hypothesis 8" in the `.prg` File Format Specification section below) based on analysis of official app-generated files.
+This script incorporates the latest understanding of PRG header fields and **now supports both solid color segments and fade effects**, including:
+- **N=1 Full Program Fades**: Single fade sequences that use the entire program duration for smooth color transitions
+- **Embedded Fades**: Fade segments within mixed sequences that are compressed to 100 PRG units (1 second at 100Hz)
+- **Mixed Sequences**: Combinations of solid colors and embedded fades
+
+The generator automatically detects the sequence type and applies the appropriate PRG format rules based on analysis of official app-generated files.
 
 **Important Note on Previous 1Hz Experiment (relevant to older `prg_generator_new.py`):** An earlier script, potentially named `prg_generator_new.py`, experimented with a 1Hz PRG refresh rate, attempting to use the 100 internal color slots of a PRG segment for high-frequency changes. This experiment **failed**, as the LTX firmware appears to only use the *first* color slot in such a 1Hz configuration. For high-granularity timing, a PRG file refresh rate like 100Hz (as used by this generator) or potentially higher is necessary.
 
@@ -161,8 +166,13 @@ The generator accepts a JSON file defining the color sequence and timing.
     *   **Keys:** Strings representing the **start time** of a color segment, measured in **JSON time units** (relative to the JSON `refresh_rate`). Can be integers or floating-point numbers, but will be rounded to the nearest integer JSON time unit before scaling.
         *   `JSON Time Units = Time in Seconds * json_refresh_rate`
     *   **Values:** An object defining the segment starting at that time key:
-        *   `color` (Array): The color for the segment, in the format specified by `color_format`.
-        *   `pixels` (Integer, optional, 1-4): Number of pixels for this specific segment. Overrides `default_pixels`. Populates the `Pixel Count` field (`+0x00`) in the segment's Duration Block.
+        *   **For Solid Color Segments:**
+            *   `color` (Array): The color for the segment, in the format specified by `color_format`.
+            *   `pixels` (Integer, optional, 1-4): Number of pixels for this specific segment. Overrides `default_pixels`.
+        *   **For Fade Segments:**
+            *   `start_color` (Array): The starting color for the fade, in the format specified by `color_format`.
+            *   `end_color` (Array): The ending color for the fade, in the format specified by `color_format`.
+            *   `pixels` (Integer, optional, 1-4): Number of pixels for this specific segment. Overrides `default_pixels`.
 
 #### Example 1: Precise Timing (Red 0.63s, Blue 1.44s) with matching JSON and PRG rates
 
@@ -214,6 +224,59 @@ Resulting `example_output_100hz.prg` will be a **100Hz** PRG file with:
     *   JSON duration: `150 - 50` = 100 units (at 1000Hz) = 100ms.
     *   PRG duration: `round(100 * 0.1)` = 10 units (at 100Hz) = 100ms.
 *   The PRG header will specify 100Hz. Header fields `0x16` and `0x1E` will be calculated based on the first segment's PRG duration (5 units).
+
+#### Example 3: N=1 Full Program Fade (Red to Blue over 3 seconds)
+
+Input JSON (`fade_red_blue_3s.json`):
+```json
+{
+  "default_pixels": 4,
+  "color_format": "rgb",
+  "refresh_rate": 100,
+  "end_time": 300,
+  "sequence": {
+    "0": {
+      "start_color": [255, 0, 0],
+      "end_color": [0, 0, 255]
+    }
+  }
+}
+```
+Command: `python3 prg_generator.py fade_red_blue_3s.json fade_output.prg`
+
+*Resulting `fade_output.prg` (100Hz PRG file):*
+*   **N=1 True Fade Mode**: Single fade segment with 300 PRG units duration
+*   **Header fields**: `0x16` = 300, `0x18` = 300 (actual duration, not 100)
+*   **RGB Data**: 300 interpolated RGB steps from red to blue (900 bytes total)
+*   **Duration Block**: Special Index2 calculation: Part1 = (3×300)+4 = 904, Part2 = 300
+
+#### Example 4: Mixed Sequence with Embedded Fade
+
+Input JSON (`mixed_solid_fade.json`):
+```json
+{
+  "default_pixels": 4,
+  "color_format": "rgb",
+  "refresh_rate": 100,
+  "end_time": 500,
+  "sequence": {
+    "0": {"color": [255, 0, 0]},
+    "100": {
+      "start_color": [255, 0, 0],
+      "end_color": [0, 0, 255]
+    },
+    "300": {"color": [0, 255, 0]}
+  }
+}
+```
+Command: `python3 prg_generator.py mixed_solid_fade.json mixed_output.prg`
+
+*Resulting `mixed_output.prg` (100Hz PRG file):*
+*   **Standard Mode**: 3 segments (solid red, embedded fade, solid green)
+*   **Segment 1**: 100 PRG units solid red (300 bytes RGB data)
+*   **Segment 2**: 100 PRG units embedded fade (300 bytes interpolated RGB data, compressed from 200 JSON units)
+*   **Segment 3**: 200 PRG units solid green (300 bytes RGB data)
+*   **Header fields**: `0x16` = 1, `0x18` = 100 (standard values)
 
 ### `.prg` File Format Specification
 
@@ -363,13 +426,39 @@ This is the final duration block in the sequence.
 **Index Value Calculation (Known Complexities):**
 The `Index1 Value` (split across `+0x0D` and `+0x0F` in intermediate blocks), and `Index2 Part 1` / `Part 2` (split across `+0x0B`/`+0x0D` and `+0x0F`/`+0x11` respectively in the last block) are crucial for the firmware to correctly step through the sequence. Their calculation is based on arithmetic progressions (see `_calculate_intermediate_block_index1_base` and `_calculate_last_block_index2_bases` in the code). These progressions can result in values exceeding 16 bits. The lower 16 bits are stored in the primary field (`+0x0D` or `+0x0B`/`+0x0F`), and the higher 16 bits (effectively a carry or page counter) are stored in the adjacent field that was previously believed to be a constant zero (`+0x0F` for intermediate blocks, or `+0x0D`/`+0x11` for the last block). This behavior becomes apparent in sequences with a large number of segments. Refer to the code comments within these functions for the specific arithmetic logic discovered.
 
-#### 3. RGB Color Data (300 Bytes per Segment)
+#### 3. RGB Color Data (Variable Size per Segment)
 
-Starts immediately after the last Duration Block (at the offset specified in Header `0x1A`).
-*   For *each* segment, the corresponding 3-byte RGB value (R, G, B; 0-255) is written **100 times** consecutively.
+Starts immediately after the last Duration Block (at the offset specified in Header `0x1A`). The size and content depend on the segment type:
+
+**Solid Color Segments (300 bytes each):**
+*   For *each* solid segment, the corresponding 3-byte RGB value (R, G, B; 0-255) is written **100 times** consecutively.
 *   Total size per segment = 3 bytes/color * 100 repeats = 300 bytes.
 *   Example: Segment 0 (Red `FF 00 00`), Segment 1 (Green `00 FF 00`)
     *   Data: `FF 00 00 FF 00 00 ... (100 times) ... 00 FF 00 00 FF 00 ... (100 times)`
+
+**N=1 Full Program Fade Segments (duration × 3 bytes):**
+*   For a single fade segment spanning the entire program, RGB values are interpolated across the fade duration.
+*   Each PRG time unit gets one interpolated RGB triple.
+*   Total size = fade_duration_prg_units × 3 bytes.
+*   Example: 300 PRG unit fade from Red to Blue
+    *   Data: `FF 00 00 FE 00 01 FD 00 02 ... (300 interpolated steps) ... 00 00 FF`
+
+**Embedded Fade Segments (300 bytes each):**
+*   For fade segments within mixed sequences, RGB values are interpolated across exactly 100 steps.
+*   Total size = 100 steps × 3 bytes = 300 bytes (same as solid segments).
+*   The fade speed is determined by the JSON duration, but the PRG block always uses 100 interpolated steps.
+*   Example: Red to Blue embedded fade
+    *   Data: `FF 00 00 FC 00 03 F9 00 06 ... (100 interpolated steps) ... 00 00 FF`
+
+**Interpolation Formula:**
+For fade segments, each RGB component is calculated as:
+```
+r = start_r + step * (end_r - start_r) / (total_steps - 1)
+g = start_g + step * (end_g - start_g) / (total_steps - 1)
+b = start_b + step * (end_b - start_b) / (total_steps - 1)
+```
+Where `step` ranges from 0 to `total_steps - 1`, and values are rounded and clamped to 0-255.
+
 *   **Note on Color Order:** Observations of filenames vs. hex data (e.g., "blue" in filename corresponding to `00 FF 00` which is Green in standard RGB) suggest the possibility that the device or generating software might use a different color component order (e.g., GBR or BGR) internally than standard RGB for some colors, or filenames might not perfectly reflect the stored RGB. For generating specific colors, verify the component order expected by the device.
 
 #### 4. Footer (6 Bytes)
@@ -378,11 +467,42 @@ The file ends with a fixed 6-byte footer: `42 54 00 00 00 00` ('BT\x00\x00\x00\x
 
 ### File Size Calculation
 
-The total size of a `.prg` file can be calculated structurally based on the number of segments (N):
+The total size of a `.prg` file depends on the segment types and must be calculated dynamically:
 
-`File Size (bytes) = HEADER_SIZE + (N * DURATION_BLOCK_SIZE) + (N * RGB_DATA_SIZE) + FOOTER_SIZE`
-`File Size (bytes) = 32 + (N * 19) + (N * 300) + 6`
-`File Size (bytes) = 38 + N * 319`
+**Base Formula:**
+`File Size (bytes) = HEADER_SIZE + (N × DURATION_BLOCK_SIZE) + (Total RGB Data Size) + FOOTER_SIZE`
+`File Size (bytes) = 32 + (N × 19) + (Total RGB Data Size) + 6`
+
+**RGB Data Size by Segment Type:**
+*   **Solid Color Segments**: 300 bytes each (`100 × 3`)
+*   **N=1 Full-Program Fade**: `duration × 3` bytes (where duration is PRG time units)
+*   **Embedded Fade Segments**: 300 bytes each (`100 × 3`)
+
+**Calculation Examples:**
+
+1. **Traditional Solid Color Sequence (N segments):**
+   `File Size = 38 + N × 319`
+
+2. **N=1 Full-Program Fade (300 PRG units):**
+   `File Size = 32 + (1 × 19) + (300 × 3) + 6 = 957 bytes`
+
+3. **Mixed Sequence (2 solid + 1 embedded fade):**
+   `File Size = 32 + (3 × 19) + (2 × 300) + (1 × 300) + 6 = 995 bytes`
+
+4. **N=1 Full-Program Fade (Maximum 65535 PRG units):**
+   `File Size = 32 + (1 × 19) + (65535 × 3) + 6 = 196,662 bytes`
+
+**Dynamic Calculation Logic:**
+```
+Total RGB Data Size = 0
+For each segment:
+    If segment_type == 'fade' and N == 1:
+        Total RGB Data Size += fade_duration × 3
+    Else:  // solid or embedded fade
+        Total RGB Data Size += 300
+```
+
+This dynamic approach ensures accurate file size prediction regardless of the mix of segment types in the sequence.
 
 ### Implementation Notes
 
