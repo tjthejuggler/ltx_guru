@@ -109,128 +109,111 @@ Commands:
 
 ## LTX Ball PRG Generators (Sequence Files)
 
-### Standard PRG Generator (`prg_generator.py`)
+### LTX Ball PRG Generator (`prg_generator.py`)
 
-A Python script (`prg_generator.py`) that converts JSON files describing color sequences into the binary `.prg` format used by LTX programmable juggling balls, where the PRG file's `refresh_rate` is taken directly from the JSON.
+A Python script (`prg_generator.py`) that converts JSON files describing color sequences into the binary `.prg` format used by LTX programmable juggling balls. **This generator always produces `.prg` files with a 100Hz refresh rate.** The `refresh_rate` specified in the input JSON is used to interpret the time units for `sequence` keys and `end_time`; these JSON-based timings are then automatically scaled by the script to match the 100Hz timing of the output `.prg` file.
+
+This script incorporates the latest understanding of PRG header fields (see "Hypothesis 8" in the `.prg` File Format Specification section below) based on analysis of official app-generated files.
+
+**Important Note on Previous 1Hz Experiment (relevant to older `prg_generator_new.py`):** An earlier script, potentially named `prg_generator_new.py`, experimented with a 1Hz PRG refresh rate, attempting to use the 100 internal color slots of a PRG segment for high-frequency changes. This experiment **failed**, as the LTX firmware appears to only use the *first* color slot in such a 1Hz configuration. For high-granularity timing, a PRG file refresh rate like 100Hz (as used by this generator) or potentially higher is necessary.
 
 #### Usage (`prg_generator.py`)
 
 ```bash
-python3 prg_generator.py input.json output.prg
+python3 prg_generator.py input.json output_100hz.prg
+# The --use-gaps option for inserting black gaps (if needed) is still available:
+python3 prg_generator.py input.json output_100hz_with_gaps.prg --use-gaps
 ```
 
-*   `input.json`: Path to the JSON file describing the color sequence.
-*   `output.prg`: Path where the generated binary `.prg` file will be saved.
+*   `input.json`: Path to the JSON file. The `refresh_rate` and `end_time` in this JSON are used to define the sequence timing, which the script then converts to the 100Hz PRG scale.
+*   `output_100hz.prg`: Path for the generated 100Hz `.prg` file.
 
-### JSON Input Format
+#### JSON Input Format
 
 The generator accepts a JSON file defining the color sequence and timing.
 
-#### Basic Structure
+##### Basic Structure
 
 ```json
 {
   "default_pixels": 4,
   "color_format": "rgb",
-  "refresh_rate": 100,
-  "end_time": 207,
+  "refresh_rate": 100, // Defines timing base for this JSON's sequence and end_time
+  "end_time": 207,     // In JSON time units
   "sequence": {
-    "0": {"color": [255, 0, 0], "pixels": 4},
-    "63": {"color": [0, 0, 255], "pixels": 4}
+    "0": {"color": [255, 0, 0], "pixels": 4}, // Start time in JSON time units
+    "63": {"color": [0, 0, 255], "pixels": 4}  // Start time in JSON time units
   }
 }
 ```
 
-#### Fields Explained
+##### Fields Explained
 
 *   `default_pixels` (Integer, 1-4): The number of LEDs (1 to 4) to light up for a segment if the `pixels` key is not specified within that segment's definition. Defaults to 1 if this field is omitted entirely. This value populates Header field `0x08`.
 *   `color_format` (String, `"rgb"` or `"hsv"`): Specifies the format used for the `color` values in the `sequence`. If `"hsv"`, the generator converts colors to RGB before writing to the `.prg` file. Defaults to `"rgb"`.
     *   RGB: `[R, G, B]` where R, G, B are 0-255.
     *   HSV: `[H, S, V]` where H (Hue) is 0-360, S (Saturation) is 0-100, V (Value/Brightness) is 0-100.
-*   `refresh_rate` (Integer, Hz): **Crucial for timing.** Defines the timing resolution, determining how many "time units" occur per second. Populates Header field `0x0C`.
-    *   `1`: 1 time unit = 1 second.
-    *   `100`: 1 time unit = 0.01 seconds (10ms).
-    *   Formula: `Time Unit Duration (seconds) = 1 / refresh_rate`
-*   `end_time` (Integer or Float, **time units**): The total duration of the *entire sequence* in **time units**. This value dictates the end time (and thus duration) of the very last segment in the `sequence`. Required if you want the sequence to end; otherwise, the last segment might have zero or default duration depending on implementation. **Note:** Fractional values will be rounded to the nearest integer to match refresh rate precision.
+*   `refresh_rate` (Integer, Hz, in JSON): **Crucial for interpreting JSON timings.** Defines the timing resolution for the `sequence` keys and `end_time` *within this JSON file*. The script uses this value to correctly scale these timings to the **fixed 100Hz output PRG refresh rate.**
+    *   Example: If JSON `refresh_rate` is 100, a JSON time unit is 0.01s. If JSON `refresh_rate` is 1000, a JSON time unit is 0.001s.
+    *   The PRG file itself will always be 100Hz (meaning a PRG time unit is 0.01s).
+*   `end_time` (Integer or Float, **JSON time units**): The total duration of the *entire sequence* in **JSON time units**, relative to the JSON `refresh_rate`. This value dictates the end time (and thus duration) of the very last segment in the `sequence`. Required if you want the sequence to end. **Note:** Fractional values in the JSON for `end_time` will be rounded to the nearest integer JSON time unit before scaling.
 *   `sequence` (Object): A dictionary defining the color changes over time.
-    *   **Keys:** Strings representing the **start time** of a color segment, measured in **time units**. Can be integers or floating-point numbers, but will be rounded to the nearest integer to match refresh rate precision.
-        *   `Time Units = Time in Seconds * refresh_rate`
+    *   **Keys:** Strings representing the **start time** of a color segment, measured in **JSON time units** (relative to the JSON `refresh_rate`). Can be integers or floating-point numbers, but will be rounded to the nearest integer JSON time unit before scaling.
+        *   `JSON Time Units = Time in Seconds * json_refresh_rate`
     *   **Values:** An object defining the segment starting at that time key:
         *   `color` (Array): The color for the segment, in the format specified by `color_format`.
         *   `pixels` (Integer, optional, 1-4): Number of pixels for this specific segment. Overrides `default_pixels`. Populates the `Pixel Count` field (`+0x00`) in the segment's Duration Block.
 
-#### Example: Precise Timing (Red 0.63s, Blue 1.44s)
+#### Example 1: Precise Timing (Red 0.63s, Blue 1.44s) with matching JSON and PRG rates
 
-To achieve 0.01s precision:
-1.  Set `refresh_rate` to `100` (1 / 0.01).
-2.  Convert times to time units:
-    *   Start Red: 0s * 100 = 0 time units.
-    *   Start Blue: 0.63s * 100 = 63 time units.
-    *   End Sequence: (0.63s + 1.44s) * 100 = 2.07s * 100 = 207 time units.
-3.  Create the JSON:
-
+Input JSON (`input_100rr.json`):
 ```json
 {
   "default_pixels": 4,
   "color_format": "rgb",
-  "refresh_rate": 100,
-  "end_time": 207,
+  "refresh_rate": 100, // Input sequence timing base is 100Hz
+  "end_time": 207,     // 207 units @ 100Hz JSON rate = 2.07s
   "sequence": {
     "0": {"color": [255, 0, 0]},
     "63": {"color": [0, 0, 255]}
   }
 }
 ```
-*Resulting Durations (in time units):*
-*   Segment 0 (Red): Starts at 0, ends at 63 (start of next). Duration = 63 - 0 = 63 units.
----
+Command: `python3 prg_generator.py input_100rr.json example_output_100hz.prg`
 
-### High-Precision PRG Generator (`prg_generator.py`)
+*Resulting `example_output_100hz.prg` (100Hz PRG file):*
+*   JSON `refresh_rate` (100Hz) matches the target PRG `refresh_rate` (100Hz), so the scaling factor is `100/100 = 1`.
+*   Segment 1 (Red): JSON duration 63 units. PRG duration `round(63 * 1)` = 63 units (0.63s @ 100Hz).
+*   Segment 2 (Blue): JSON duration `207 - 63` = 144 units. PRG duration `round(144 * 1)` = 144 units (1.44s @ 100Hz).
+*   The PRG header will specify 100Hz.
 
-The `prg_generator.py` script is a **high-precision PRG generator that hardcodes the output PRG file's refresh rate to 1000Hz.** This allows for timing granularity down to 1 millisecond.
+#### Example 2: Red 0.05s, then Blue 0.1s (Scaling from 1000Hz JSON to 100Hz PRG)
 
-It incorporates the latest understanding of PRG header fields (see "Hypothesis 8" in the `.prg` File Format Specification section below) based on analysis of official app-generated files at both 1Hz and 1000Hz.
-
-**Important Note on Previous 1Hz Experiment:** An earlier version of `prg_generator_new.py` experimented with a 1Hz PRG refresh rate, attempting to use the 100 internal color slots of a PRG segment for high-frequency changes. This experiment **failed**, as the LTX firmware appears to only use the *first* color slot in such a 1Hz configuration. For high-granularity timing, a high PRG file refresh rate (like 1000Hz) is necessary.
-
-#### Usage (`prg_generator.py` - 1000Hz High-Precision Version)
-
-```bash
-python3 prg_generator.py input.json output_1000hz_no_gaps.prg # Default: no gaps
-python3 prg_generator.py input.json output_1000hz_with_gaps.prg --use-gaps
-```
-
-*   `input.json`: Path to the JSON file. The `refresh_rate` and `end_time` in this JSON are used to define the sequence timing, which the script then converts to 1000Hz PRG time units.
-*   `output_1000hz.prg`: Path for the generated 1000Hz `.prg` file.
-
-#### JSON Input Format (for `prg_generator.py`)
-
-The JSON input structure is the same as for `prg_generator.py`.
-*   `refresh_rate` (in JSON): Interpreted as the input timing base (e.g., if 100, then a JSON time unit is 0.01s).
-*   `end_time` (in JSON): Defines total duration in JSON time units.
-*   The script calculates PRG segment durations by converting these JSON timings to the 1000Hz PRG scale.
-
-#### Example: Red 0.05s, then Blue 0.1s (using `prg_generator.py`)
-
-Input JSON (`input_example.json`):
+Input JSON (`input_1000rr.json`):
 ```json
 {
   "default_pixels": 4,
   "color_format": "rgb",
-  "refresh_rate": 100, // JSON times are in 0.01s units
-  "end_time": 15,       // Total 0.15s (5 units Red + 10 units Blue)
+  "refresh_rate": 1000, // JSON times are in 0.001s units (1ms)
+  "end_time": 150,       // Total 0.15s (50 units Red + 100 units Blue @ 1000Hz JSON rate)
   "sequence": {
     "0": {"color": [255, 0, 0], "pixels": 4},  // Red starts at 0s
-    "5": {"color": [0, 0, 255], "pixels": 4}   // Blue starts at 0.05s (5 * 0.01s)
+    "50": {"color": [0, 0, 255], "pixels": 4}   // Blue starts at 0.05s (50 * 0.001s)
   }
 }
 ```
-Command: `python3 prg_generator.py input_example.json example_output.prg`
+Command: `python3 prg_generator.py input_1000rr.json example_output_100hz.prg`
 
-Resulting `example_output.prg` will be a 1000Hz PRG file with:
-*   Segment 1 (Red): Duration 50ms (50 units @ 1000Hz).
-*   Segment 2 (Blue): Duration 100ms (100 units @ 1000Hz).
-*   Header fields `0x16` and `0x1E` calculated according to "Hypothesis 8" using `Dur0Units_actual = 50`.
+Resulting `example_output_100hz.prg` will be a **100Hz** PRG file with:
+*   JSON `refresh_rate` = 1000Hz. Target PRG `refresh_rate` = 100Hz.
+*   Scaling factor = `TARGET_PRG_RATE / JSON_RATE` = `100 / 1000 = 0.1`.
+*   Segment 1 (Red):
+    *   JSON duration: 50 units (at 1000Hz) = 50ms.
+    *   PRG duration: `round(50 * 0.1)` = 5 units (at 100Hz) = 50ms.
+*   Segment 2 (Blue):
+    *   JSON duration: `150 - 50` = 100 units (at 1000Hz) = 100ms.
+    *   PRG duration: `round(100 * 0.1)` = 10 units (at 100Hz) = 100ms.
+*   The PRG header will specify 100Hz. Header fields `0x16` and `0x1E` will be calculated based on the first segment's PRG duration (5 units).
 
 ### `.prg` File Format Specification
 
@@ -250,7 +233,7 @@ The binary `.prg` files have the following structure. Multi-byte values are **Li
 | 0x00         | 8      | File Signature                            | `bytes`   | N/A    | `50 52 03 49 4E 05 00 00` ('PR\x03IN\x05\x00\x00') |
 | 0x08         | 2      | Default Pixel Count                       | `H`       | Big    | Ex: `00 04` (4 pixels)                        |
 | 0x0A         | 2      | Constant 0x0A                             | `bytes`   | N/A    | `00 08`                                       |
-| 0x0C         | 2      | Refresh Rate (Hz)                         | `H`       | Little | Ex: `64 00` (100 Hz)                          |
+| 0x0C         | 2      | Refresh Rate (Hz)                         | `H`       | Little | Ex: `64 00` (100 Hz). This generator always writes 100Hz. |
 | 0x0E         | 2      | Constant Marker "PI"                      | `bytes`   | N/A    | `50 49` ('PI')                                |
 | 0x10         | 4      | Pointer1                                  | `I`       | Little | Ex: `28 00 00 00` (40 for N=2). Formula: `21 + 19*(N-1)` |
 | 0x14         | 2      | Segment Count (N)                         | `H`       | Little | Ex: `02 00` (2 segments). Directly stores N; confirmed for N > 255 (e.g., `01 01` for 257 segments). |
@@ -403,13 +386,13 @@ The total size of a `.prg` file can be calculated structurally based on the numb
 
 ### Implementation Notes
 
-*   **Timing Precision Rounding:** The generator automatically rounds all timing values (sequence keys and `end_time`) to the nearest integer to ensure compatibility with the refresh rate precision. For example, with a 100Hz refresh rate, fractional timing values like `101.5` will be rounded to `102`. This prevents timing precision issues that could cause problems in the PRG generation process. Any rounding adjustments are logged during generation.
-*   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 time units. If a segment's calculated duration in the JSON exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
+*   **Timing Precision Rounding:** JSON timing values (`sequence` keys and `end_time`) can be fractional. They are first rounded to the nearest integer JSON time unit. These integer JSON time units are then scaled to target PRG time units (for the 100Hz output). The result of this scaling is rounded again to obtain integer PRG time units. This two-step rounding ensures compatibility with the PRG format's integer-based timing. Any rounding adjustments are logged during generation.
+*   **Segment Splitting:** The `.prg` format uses a 2-byte field (`<H`) for segment durations in duration blocks, limiting each block to 65535 PRG time units (at 100Hz, this is 655.35 seconds). If a segment's calculated duration *in PRG time units* (after scaling from JSON) exceeds this, the `split_long_segments` function automatically breaks it into multiple consecutive `.prg` segments of the same color, ensuring the total duration is preserved within the format's limits.
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
 *   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag. Note that this is not an acceptable fix, this information is only here to help understand the nature of the issue.
 *   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-03):**
-    The logic for `Field[+0x09]` (composed of `field_09_part1` and `field_09_part2`) has been refined. `field_09_part1` is now understood to be `floor(Dur_k+1 / 100)` (where `Dur_k+1` is the duration of the next segment), and `field_09_part2` is consistently `100` (`64 00`) for intermediate blocks. This logic is robustly confirmed by all 1000Hz official app tests and ensures correct PRG generation.
+    The logic for `Field[+0x09]` (composed of `field_09_part1` and `field_09_part2`) has been refined. `field_09_part1` is now understood to be `floor(Dur_k+1 / 100)` (where `Dur_k+1` is the duration of the next segment *in PRG time units*), and `field_09_part2` is consistently `100` (`64 00`) for intermediate blocks. This logic is robustly confirmed by all 1000Hz official app tests and ensures correct PRG generation.
 
 ---
 
