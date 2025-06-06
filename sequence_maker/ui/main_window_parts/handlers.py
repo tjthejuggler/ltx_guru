@@ -117,19 +117,28 @@ def on_export_json(main_window):
     export_dir = QFileDialog.getExistingDirectory(
         main_window,
         "Select Directory for JSON Export",
-        "",
+        main_window.app.config.get("general", "default_export_dir", ""), # Use config or empty string
         QFileDialog.Option.ShowDirsOnly
     )
     
     if not export_dir:
         return  # User cancelled
+
+    # Determine default base filename using project name
+    default_base_name_suggestion = "export" # Fallback
+    current_project = main_window.app.project_manager.current_project
+    if current_project and hasattr(current_project, 'name') and isinstance(current_project.name, str) and current_project.name.strip():
+        # Ensure project name is not empty or just whitespace
+        sanitized_name = current_project.name.replace(' ', '_')
+        if sanitized_name: # Double check sanitized name is not empty
+             default_base_name_suggestion = sanitized_name
     
     # Get a base filename (optional)
     base_filename, ok = QFileDialog.getSaveFileName(
         main_window,
         "Enter Base Filename (Optional)",
-        os.path.join(export_dir, "export"),
-        "JSON Files (*.json)",
+        os.path.join(export_dir, default_base_name_suggestion),
+        "PRG JSON Files (*.prg.json)",
         options=QFileDialog.Option.DontConfirmOverwrite
     )
     
@@ -210,14 +219,30 @@ def on_export_prg(main_window):
         
         # Get the current project - be cautious about how we access it
         project = main_window.app.project_manager.current_project
-        
-        # Check the project type to avoid attribute errors
-        if not hasattr(project, 'name') or not isinstance(project.name, str):
-            logging.warning(f"Project name has unexpected type: {type(project)}/{type(project.name) if hasattr(project, 'name') else 'no name attribute'}")
-            project_name = "project"  # Default name if we can't get the real one
+        logging.debug(f"on_export_prg: current_project object: {project}")
+        project_name_to_use = "project"  # Fallback default
+
+        if project and hasattr(project, 'name') and isinstance(project.name, str):
+            logging.debug(f"on_export_prg: Initial project.name: '{project.name}' (type: {type(project.name)})")
+            trimmed_name = project.name.strip()
+            logging.debug(f"on_export_prg: trimmed_name: '{trimmed_name}'")
+            if trimmed_name: # Check if not empty after stripping
+                sanitized_project_name = trimmed_name.replace(' ', '_')
+                logging.debug(f"on_export_prg: sanitized_project_name: '{sanitized_project_name}'")
+                if sanitized_project_name: # Check if not empty after sanitizing
+                    project_name_to_use = sanitized_project_name
+                    logging.info(f"on_export_prg: Using sanitized project name: '{project_name_to_use}'")
+                else:
+                    logging.warning(f"on_export_prg: Project name '{project.name}' sanitized to an empty string. Falling back to 'project'.")
+            else:
+                logging.warning(f"on_export_prg: Project name '{project.name}' is empty or whitespace after stripping. Falling back to 'project'.")
         else:
-            # Sanitize project name (replace spaces with underscores)
-            project_name = project.name.replace(' ', '_')
+            logging.warning(
+                f"on_export_prg: Project.name is not a valid string or project/name attribute missing. "
+                f"Project object: {project}, Project type: {type(project)}, "
+                f"Name attribute: {getattr(project, 'name', 'N/A')}. Falling back to 'project'."
+            )
+        logging.debug(f"on_export_prg: Final project_name_to_use for filenames: '{project_name_to_use}'")
         
         # Check if project has timelines
         if not hasattr(project, 'timelines') or not isinstance(project.timelines, list):
@@ -243,8 +268,8 @@ def on_export_prg(main_window):
                 timeline_name = timeline.name
                 
             # Generate filenames with project name and ball number
-            base_name = f"{project_name}_Ball_{i+1}"
-            json_path = os.path.join(export_dir, f"{base_name}.json")
+            base_name = f"{project_name_to_use}_Ball_{i+1}"
+            json_path = os.path.join(export_dir, f"{base_name}.prg.json")
             prg_path = os.path.join(export_dir, f"{base_name}.prg")
             
             # Export JSON

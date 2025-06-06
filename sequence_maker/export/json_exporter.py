@@ -106,7 +106,7 @@ class JSONExporter:
         
         for i, timeline in enumerate(project.timelines):
             # Create file path with project name prefix
-            file_name = f"{base_filename}_{timeline.name.replace(' ', '_')}.json"
+            file_name = f"{base_filename}_{timeline.name.replace(' ', '_')}.prg.json"
             file_path = os.path.join(directory, file_name)
             
             # Export timeline

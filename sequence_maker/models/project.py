@@ -36,7 +36,11 @@ class Project:
         self.logger = logging.getLogger("SequenceMaker.Project")
         
         # Project metadata
-        self.name = name
+        if not isinstance(name, str) or not name.strip():
+            self.name = "Untitled Project"
+            self.logger.warning(f"Invalid project name '{name}' provided to __init__, defaulting to 'Untitled Project'.")
+        else:
+            self.name = name.strip()
         self.created = datetime.now().isoformat()
         self.modified = self.created
         self.description = ""
@@ -151,7 +155,15 @@ class Project:
         """
         from models.timeline import Timeline
         
-        project = cls(name=data["metadata"]["name"])
+        raw_name = data.get("metadata", {}).get("name")
+        if not isinstance(raw_name, str) or not raw_name.strip():
+            logger = logging.getLogger("SequenceMaker.Project") # Get class logger
+            logger.warning(f"Invalid project name '{raw_name}' found in loaded data, defaulting to 'Untitled Project'.")
+            project_name_to_init = "Untitled Project"
+        else:
+            project_name_to_init = raw_name.strip()
+            
+        project = cls(name=project_name_to_init)
         
         # Set metadata
         project.created = data["metadata"]["created"]
@@ -272,10 +284,41 @@ class Project:
             with open(file_path, 'r') as f:
                 data = json.load(f)
             
-            project = cls.from_dict(data)
+            project = cls.from_dict(data) # This might default name to "Untitled Project"
             project.file_path = file_path
+
+            # If project name defaulted to "Untitled Project" specifically because of
+            # invalid data in the file (as warned by from_dict or __init__),
+            # and we have a valid file_path, try to use the filename as a more sensible name.
+            # We check project.name here which would have been set by from_dict (which calls __init__)
+            if project.name == "Untitled Project" and file_path:
+                try:
+                    # Attempt to derive a better name from the .smproj filename
+                    filename_stem = Path(file_path).stem
+                    # Basic sanitization: replace underscores/hyphens often used in filenames with spaces
+                    # and strip whitespace.
+                    potential_name_from_file = filename_stem.replace('_', ' ').replace('-', ' ').strip()
+
+                    if potential_name_from_file and potential_name_from_file.lower() != "untitled project":
+                        # Validate this potential name again (e.g., ensure it's not empty)
+                        # The Project.__init__ validation is quite robust, so we can rely on it
+                        # by effectively "renaming" it.
+                        # For simplicity here, just assign if it's a non-empty string.
+                        # A more robust way might be to pass it through a static validation method.
+                        if isinstance(potential_name_from_file, str) and potential_name_from_file.strip():
+                            logger.info(f"Project name was defaulted to 'Untitled Project' due to invalid data in '{file_path}'. "
+                                        f"Using sanitized filename stem '{potential_name_from_file}' as project name instead.")
+                            project.name = potential_name_from_file.strip()
+                        else:
+                            logger.info(f"Project name defaulted to 'Untitled Project'. Filename stem '{filename_stem}' "
+                                        f"also resulted in an invalid/empty name, keeping 'Untitled Project'.")
+                    else:
+                        logger.info(f"Project name is 'Untitled Project' and filename stem "
+                                    f"('{filename_stem}') does not offer a better alternative.")
+                except Exception as e_fn:
+                    logger.warning(f"Could not derive project name from filename {file_path} during load: {e_fn}")
             
-            logger.info(f"Project loaded from {file_path}")
+            logger.info(f"Project loaded from {file_path}, final project name in memory: '{project.name}'")
             return project
         except Exception as e:
             logger.error(f"Error loading project: {e}")

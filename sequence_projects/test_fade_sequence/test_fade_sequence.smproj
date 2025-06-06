@@ -1,0 +1,148 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "created": "2025-06-06T14:54:08.315176",
+    "modified": "2025-06-06T15:08:39.482538",
+    "name": "Untitled Project",
+    "description": ""
+  },
+  "settings": {
+    "defaultPixels": 4,
+    "refreshRate": 1,
+    "totalDuration": 60,
+    "zoomLevel": 1.0
+  },
+  "keyMappings": {},
+  "effects": {},
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "defaultPixels": 4,
+      "created": "2025-06-06T14:54:08.315212",
+      "modified": "2025-06-06T15:08:39.482511",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 2.0,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 2.0,
+          "endTime": 5.0,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            0,
+            255,
+            0
+          ]
+        },
+        {
+          "startTime": 5.0,
+          "endTime": 7.0,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 7.0,
+          "endTime": 10.0,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            255,
+            255,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ball 2",
+      "defaultPixels": 4,
+      "created": "2025-06-06T14:54:08.315220",
+      "modified": "2025-06-06T15:08:39.482531",
+      "segments": []
+    },
+    {
+      "name": "Ball 3",
+      "defaultPixels": 4,
+      "created": "2025-06-06T14:54:08.315225",
+      "modified": "2025-06-06T15:08:39.482535",
+      "segments": []
+    }
+  ],
+  "audio": {
+    "embedded": false,
+    "filename": null,
+    "filepath": null,
+    "duration": 0,
+    "data": null
+  },
+  "visualizations": {
+    "selected": [
+      "waveform",
+      "beats"
+    ],
+    "settings": {
+      "waveform": {
+        "color": [
+          0,
+          0,
+          255
+        ],
+        "height": 100
+      },
+      "beats": {
+        "color": [
+          255,
+          0,
+          0
+        ],
+        "threshold": 0.5
+      }
+    }
+  },
+  "lyrics": {
+    "song_name": "",
+    "artist_name": "",
+    "lyrics_text": "",
+    "word_timestamps": []
+  },
+  "chat_history": [],
+  "llm_metadata": {
+    "token_usage": 0,
+    "estimated_cost": 0.0,
+    "interactions": []
+  },
+  "llm_customization": {
+    "custom_instructions": "",
+    "presets": [],
+    "task_templates": [],
+    "active_preset": "Default"
+  }
+}

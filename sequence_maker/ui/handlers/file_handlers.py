@@ -316,7 +316,7 @@ class FileHandlers:
             self.main_window,
             "Import Ball Sequence",
             self.app.config.get("general", "default_project_dir"),
-            "Ball Sequence Files (*.ball.json)"
+            "Sequence Files (*.ball.json *.prg.json)"
         )
         
         if file_path:
@@ -326,84 +326,129 @@ class FileHandlers:
                 with open(file_path, 'r') as f:
                     ball_data = json.load(f)
                 
-                self.app.logger.debug(f"Ball data loaded: {len(ball_data.get('segments', []))} segments found")
-                
+                self.app.logger.debug(f"Sequence data loaded. Checking format...")
+
+                # Determine if it's a .ball.json or .prg.json based on keys
+                is_prg_json_format = "sequence" in ball_data and "refresh_rate" in ball_data
+                is_ball_json_format = "segments" in ball_data and "metadata" in ball_data
+
+                imported_timeline_name = os.path.splitext(os.path.basename(file_path))[0]
+                if imported_timeline_name.endswith(".prg"): # if it was .prg.json
+                    imported_timeline_name = os.path.splitext(imported_timeline_name)[0]
+
+
                 if import_to_existing and selected_timeline:
                     # Import into existing timeline
-                    self.app.logger.info(f"Importing ball sequence into existing timeline: {selected_timeline.name}")
-                    
-                    # Clear existing segments from the timeline before importing
-                    selected_timeline.clear()
+                    self.app.logger.info(f"Importing sequence into existing timeline: {selected_timeline.name}")
+                    selected_timeline.clear() # Clear existing segments
                     self.app.logger.info(f"Cleared existing segments from timeline: {selected_timeline.name}")
-                    
-                    # Add segments to timeline
-                    for segment in ball_data.get("segments", []):
-                        timeline_segment = TimelineSegment(
-                            start_time=segment["start_time"],
-                            end_time=segment["end_time"],
-                            color=tuple(segment["color"]),
-                            pixels=segment["pixels"]
-                        )
-                        selected_timeline.add_segment(timeline_segment)
-                    
-                    # Update project total_duration to accommodate the imported sequence
-                    timeline_duration = selected_timeline.get_duration()
-                    old_project_duration = self.app.project_manager.current_project.total_duration
-                    if timeline_duration > old_project_duration:
-                        self.app.project_manager.current_project.total_duration = timeline_duration
-                        self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after ball sequence import into existing timeline")
-                        
-                        # Trigger timeline container size update
-                        if hasattr(self.main_window, 'timeline_widget'):
-                            self.main_window.timeline_widget.timeline_container.update_size()
-                            self.app.logger.info("Triggered timeline container size update after ball sequence import into existing timeline")
-                    
-                    # Emit signal to update UI
-                    self.app.logger.debug(f"Emitting timeline_modified signal for timeline: {selected_timeline.name}")
-                    self.app.timeline_manager.timeline_modified.emit(selected_timeline)
-                    
-                    # Update UI
-                    self.main_window._update_ui()
-                    self.main_window.statusBar().showMessage(
-                        f"Imported ball sequence from {file_path} into {selected_timeline.name}", 3000)
+                    target_timeline = selected_timeline
                 else:
                     # Create a new timeline
-                    self.app.logger.info("Creating new timeline for ball sequence import")
+                    default_pixels_from_file = 4 # Default
+                    if is_ball_json_format:
+                        default_pixels_from_file = ball_data.get("metadata", {}).get("default_pixels", 4)
+                    elif is_prg_json_format:
+                        default_pixels_from_file = ball_data.get("default_pixels", 4)
                     
-                    timeline = Timeline(
-                        name=ball_data.get("metadata", {}).get("name", "Imported Ball"),
-                        default_pixels=ball_data.get("metadata", {}).get("default_pixels", 4)
+                    target_timeline = Timeline(
+                        name=imported_timeline_name,
+                        default_pixels=default_pixels_from_file
                     )
-                    
-                    # Add segments to timeline
-                    for segment in ball_data.get("segments", []):
+                    self.app.project_manager.current_project.add_timeline(target_timeline)
+                    self.app.logger.info(f"Created new timeline for import: {target_timeline.name}")
+
+                # Populate timeline with segments
+                if is_ball_json_format:
+                    self.app.logger.info("Parsing as .ball.json format")
+                    for segment_data in ball_data.get("segments", []):
                         timeline_segment = TimelineSegment(
-                            start_time=segment["start_time"],
-                            end_time=segment["end_time"],
-                            color=tuple(segment["color"]),
-                            pixels=segment["pixels"]
+                            start_time=segment_data["start_time"],
+                            end_time=segment_data["end_time"],
+                            color=tuple(segment_data["color"]),
+                            pixels=segment_data.get("pixels", target_timeline.default_pixels) # Use segment pixels or timeline default
                         )
-                        timeline.add_segment(timeline_segment)
+                        target_timeline.add_segment(timeline_segment)
+                elif is_prg_json_format:
+                    self.app.logger.info("Parsing as .prg.json format")
+                    # The .prg.json has times scaled to its refresh_rate (e.g., 100Hz)
+                    # We need to convert these back to seconds.
+                    # Timestamps in .prg.json are keys of the "sequence" dictionary.
+                    # Values are dicts like {"color": [r,g,b], "pixels": N} or {"start_color": [], "end_color": [], "pixels": N}
                     
-                    # Add timeline to project
-                    self.app.project_manager.current_project.add_timeline(timeline)
+                    # Get refresh rate from the file, default to 100 if not present (though it should be)
+                    file_refresh_rate = ball_data.get("refresh_rate", 100)
                     
-                    # Update project total_duration to accommodate the imported sequence
-                    timeline_duration = timeline.get_duration()
-                    old_project_duration = self.app.project_manager.current_project.total_duration
-                    if timeline_duration > old_project_duration:
-                        self.app.project_manager.current_project.total_duration = timeline_duration
-                        self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after ball sequence import")
+                    # Sort sequence by time (keys are strings, convert to int for sorting)
+                    sorted_time_keys = sorted(ball_data.get("sequence", {}).keys(), key=int)
+                    
+                    for i, time_key_str in enumerate(sorted_time_keys):
+                        segment_data = ball_data["sequence"][time_key_str]
+                        start_time_units = int(time_key_str)
+                        start_time_seconds = start_time_units / file_refresh_rate
                         
-                        # Trigger timeline container size update
-                        if hasattr(self.main_window, 'timeline_widget'):
-                            self.main_window.timeline_widget.timeline_container.update_size()
-                            self.app.logger.info("Triggered timeline container size update after ball sequence import")
+                        # Determine end_time_seconds
+                        if i + 1 < len(sorted_time_keys):
+                            next_start_time_units = int(sorted_time_keys[i+1])
+                            end_time_seconds = next_start_time_units / file_refresh_rate
+                        else:
+                            # Last segment, use end_time from file metadata or extend
+                            file_end_time_units = ball_data.get("end_time", start_time_units + file_refresh_rate) # Default 1 sec duration if no end_time
+                            end_time_seconds = file_end_time_units / file_refresh_rate
+                            # Ensure end_time is at least start_time + a minimal duration (e.g., 1 frame)
+                            if end_time_seconds <= start_time_seconds:
+                                end_time_seconds = start_time_seconds + (1.0 / file_refresh_rate)
+
+                        pixels = segment_data.get("pixels", target_timeline.default_pixels)
+                        
+                        # Check if it's a fade or solid color segment
+                        if "start_color" in segment_data and "end_color" in segment_data:
+                            # Fade segment
+                            timeline_segment = TimelineSegment(
+                                start_time=start_time_seconds,
+                                end_time=end_time_seconds,
+                                color=tuple(segment_data["start_color"]),
+                                end_color=tuple(segment_data["end_color"]), # This makes it a fade
+                                pixels=pixels
+                            )
+                        elif "color" in segment_data:
+                            # Solid color segment
+                            timeline_segment = TimelineSegment(
+                                start_time=start_time_seconds,
+                                end_time=end_time_seconds,
+                                color=tuple(segment_data["color"]),
+                                pixels=pixels
+                                # end_color will be None, making it solid
+                            )
+                        else:
+                            self.app.logger.warning(f"Segment data at time {time_key_str} in {file_path} is missing color/start_color. Skipping.")
+                            continue
+                            
+                        target_timeline.add_segment(timeline_segment)
+                else:
+                    self.app.logger.warning(f"Unknown sequence file format for {file_path}. Neither .ball.json nor .prg.json keys found.")
+                    QMessageBox.warning(self.main_window, "Import Error", f"Unknown sequence file format: {file_path}")
+                    return
+
+                # Update project total_duration to accommodate the imported sequence
+                timeline_duration = target_timeline.get_duration()
+                old_project_duration = self.app.project_manager.current_project.total_duration
+                if timeline_duration > old_project_duration:
+                    self.app.project_manager.current_project.total_duration = timeline_duration
+                    self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after sequence import")
                     
-                    # Update UI
-                    self.app.logger.info("Updating UI after ball sequence import")
-                    self.main_window._update_ui()
-                    self.main_window.statusBar().showMessage(f"Imported ball sequence from {file_path}", 3000)
+                    if hasattr(self.main_window, 'timeline_widget'):
+                        self.main_window.timeline_widget.timeline_container.update_size()
+                        self.app.logger.info("Triggered timeline container size update after sequence import")
+                
+                # Emit signal and update UI
+                if import_to_existing:
+                    self.app.timeline_manager.timeline_modified.emit(target_timeline)
+                else: # New timeline was created
+                    self.app.timeline_manager.timeline_added.emit(target_timeline)
+
+                self.main_window._update_ui()
+                self.main_window.statusBar().showMessage(f"Imported sequence from {file_path} into {target_timeline.name}", 3000)
             except Exception as e:
                 self.app.logger.error(f"Error importing ball sequence: {str(e)}", exc_info=True)
                 QMessageBox.warning(
