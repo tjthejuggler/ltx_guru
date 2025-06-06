@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-06 15:29 UTC+7
+**Last Updated:** 2025-06-06 16:49 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -540,6 +540,7 @@ This dynamic approach ensures accurate file size prediction regardless of the mi
     *   If the *next* segment is solid: `field_09_part1 = floor(next_segment_block_duration_prg / 100)`, and `field_09_part2 = 100`.
     This ensures correct PRG generation, especially for sequences containing fades with varying durations.
 *   **Index Calculations (Updated 2025-06-06):** The calculations for `Index1` and `Index2` values within duration blocks now use dynamic step sizes derived from the types and PRG block durations of preceding segments, crucial for handling mixed sequences with non-standard fade durations correctly.
+*   **Solid Color Compatibility Fix (2025-06-06):** Fixed a critical issue where the addition of fade support broke solid color sequence generation. The `_calculate_intermediate_block_index1_base` and `_calculate_last_block_index2_bases` functions now use the original simple logic (fixed horizontal step of 300) for pure solid sequences, while maintaining the complex fade-aware logic only for sequences that actually contain fades. This ensures backward compatibility with existing solid color sequences while preserving fade functionality.
 
 ---
 

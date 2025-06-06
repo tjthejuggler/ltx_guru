@@ -95,7 +95,7 @@ def bytes_to_hex(data):
     return str(data)
 
 
-def _calculate_intermediate_block_index1_base(target_index, total_segments, segments_list, is_any_fade_in_sequence):
+def _calculate_intermediate_block_index1_base(target_index, total_segments, segments_list=None, is_any_fade_in_sequence=False):
     """
     Calculates the base value for the Index1 field in intermediate duration blocks.
     This value can exceed 16 bits. The lower 16 bits go to field +0x0D,
@@ -105,8 +105,7 @@ def _calculate_intermediate_block_index1_base(target_index, total_segments, segm
         target_index (int): The 1-based index for this value pair,
                              corresponding to (block_index + 1). Ranges from 1 to N-1.
         total_segments (int): The total number of segments (N) in the sequence.
-        segments_list (list): The list of processed segments, used for dynamic step calculation.
-                              Each element is (s_block_dur_prg, s_color_info, s_pixels, s_type, s_json_dur_prg)
+        segments_list (list, optional): The list of processed segments, used for dynamic step calculation.
         is_any_fade_in_sequence (bool): True if the overall sequence contains any fade segments.
     Returns:
         int: The calculated base value (potentially >16 bits).
@@ -114,17 +113,23 @@ def _calculate_intermediate_block_index1_base(target_index, total_segments, segm
     if not (1 <= target_index < total_segments):
          print(f"[WARN] _calculate_intermediate_block_index1_base called with invalid target_index {target_index} for {total_segments} segments.")
          return 0
-    if not segments_list:
-        print(f"[WARN] _calculate_intermediate_block_index1_base called with empty segments_list.")
-        return 0
-
 
     base_value_n2_t1 = 370
     vertical_step = 19
-    # horizontal_step = 300 # Replaced by dynamic calculation
+    horizontal_step = 300
 
     value_n_t1 = base_value_n2_t1 + (total_segments - 2) * vertical_step
     
+    # For pure solid sequences (no fades), use the original simple logic
+    if not is_any_fade_in_sequence:
+        value_pair_full = value_n_t1 + (target_index - 1) * horizontal_step
+        return value_pair_full
+    
+    # For sequences with fades, use the complex logic
+    if not segments_list:
+        print(f"[WARN] _calculate_intermediate_block_index1_base called with empty segments_list for fade sequence.")
+        return 0
+
     cumulative_horizontal_offset = 0
     # Iterate for segments 0 to target_index-2, which contribute to the offset for target_index
     for j in range(target_index - 1):
@@ -136,13 +141,10 @@ def _calculate_intermediate_block_index1_base(target_index, total_segments, segm
         
         current_step = 0
         if seg_j_type == 'solid':
-            if is_any_fade_in_sequence:
-                if seg_j_block_dur > NOMINAL_BASE_FOR_HEADER_FIELDS: # > 100
-                    current_step = 300 + (3 * seg_j_block_dur)
-                else: # <= 100 (covers == 100 and < 100)
-                    current_step = 300
-            else: # No fades in the entire sequence (purely solid)
-                current_step = 300 # Baseline for pure solid sequences
+            if seg_j_block_dur > NOMINAL_BASE_FOR_HEADER_FIELDS: # > 100
+                current_step = 300 + (3 * seg_j_block_dur)
+            else: # <= 100 (covers == 100 and < 100)
+                current_step = 300
         elif seg_j_type == 'fade':
             current_step = seg_j_block_dur # Fades use their own duration
         else:
@@ -150,11 +152,10 @@ def _calculate_intermediate_block_index1_base(target_index, total_segments, segm
             current_step = 300 # Fallback
         cumulative_horizontal_offset += current_step
 
-
     value_pair_full = value_n_t1 + cumulative_horizontal_offset
     return value_pair_full
 
-def _calculate_last_block_index2_bases(total_segments, segments_list, is_any_fade_in_sequence):
+def _calculate_last_block_index2_bases(total_segments, segments_list=None, is_any_fade_in_sequence=False):
     """
     Calculates the base values for Index2 Part1 and Part2 fields in the *last*
     duration block. These values can exceed 16 bits.
@@ -163,12 +164,23 @@ def _calculate_last_block_index2_bases(total_segments, segments_list, is_any_fad
 
     Args:
         total_segments (int): The total number of segments.
-        segments_list (list): The list of processed segments.
+        segments_list (list, optional): The list of processed segments.
         is_any_fade_in_sequence (bool): True if the overall sequence contains any fade segments.
 
     Returns:
         tuple(int, int): (part1_full_value, part2_full_value).
     """
+    # For pure solid sequences (no fades), use the original simple logic
+    if not is_any_fade_in_sequence:
+        part1_full = 304 + (total_segments - 1) * 300
+        part2_full = 100 * total_segments
+        return part1_full, part2_full
+    
+    # For sequences with fades, use the complex logic
+    if not segments_list:
+        print(f"[WARN] _calculate_last_block_index2_bases called with empty segments_list for fade sequence.")
+        return 0, 0
+
     cumulative_horizontal_offset_for_part1 = 0
     # Sum H_eff for j=0 to total_segments-2 (i.e., all segments *before* the last one)
     for j in range(total_segments - 1): # Corresponds to segments[0] through segments[total_segments-2]
@@ -180,14 +192,11 @@ def _calculate_last_block_index2_bases(total_segments, segments_list, is_any_fad
         
         current_step_part1 = 0
         if seg_j_type == 'solid':
-            if is_any_fade_in_sequence:
-                if seg_j_block_dur > NOMINAL_BASE_FOR_HEADER_FIELDS: # > 100
-                    current_step_part1 = 300 + (3 * seg_j_block_dur)
-                elif seg_j_block_dur == NOMINAL_BASE_FOR_HEADER_FIELDS: # == 100
-                    current_step_part1 = 300 + (2 * seg_j_block_dur) # Results in 500
-                else: # < 100
-                    current_step_part1 = 300
-            else: # No fades in the entire sequence (purely solid)
+            if seg_j_block_dur > NOMINAL_BASE_FOR_HEADER_FIELDS: # > 100
+                current_step_part1 = 300 + (3 * seg_j_block_dur)
+            elif seg_j_block_dur == NOMINAL_BASE_FOR_HEADER_FIELDS: # == 100
+                current_step_part1 = 300 + (2 * seg_j_block_dur) # Results in 500
+            else: # < 100
                 current_step_part1 = 300
         elif seg_j_type == 'fade':
             current_step_part1 = seg_j_block_dur # Fades use their own duration
@@ -198,16 +207,11 @@ def _calculate_last_block_index2_bases(total_segments, segments_list, is_any_fad
             
     part1_full = 304 + cumulative_horizontal_offset_for_part1
 
-    # Calculate part2_full
-    if not is_any_fade_in_sequence:
-        # For purely solid sequences (e.g., 1to10_100r), the expected Index2 Part2 fields are 0.
-        part2_full = 0
-    else:
-        # For sequences with fades, use the existing logic.
-        part2_full_base = NOMINAL_BASE_FOR_HEADER_FIELDS
-        if segments_list and total_segments > 0 and segments_list[0][3] == 'solid':
-            part2_full_base = segments_list[0][0]
-        part2_full = part2_full_base * total_segments
+    # Calculate part2_full for fade sequences
+    part2_full_base = NOMINAL_BASE_FOR_HEADER_FIELDS
+    if segments_list and total_segments > 0 and segments_list[0][3] == 'solid':
+        part2_full_base = segments_list[0][0]
+    part2_full = part2_full_base * total_segments
     return part1_full, part2_full
 
 def split_long_segments(segments, max_duration=65535):
