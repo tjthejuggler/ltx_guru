@@ -1,6 +1,6 @@
 # LTX Guru Tools - PRG Generator Documentation
 
-**Last Updated:** 2025-06-05 19:30 UTC+7
+**Last Updated:** 2025-06-06 15:29 UTC+7
 
 ```markdown
 # LTX Guru Tools
@@ -114,9 +114,9 @@ Commands:
 A Python script (`prg_generator.py`) that converts JSON files describing color sequences into the binary `.prg` format used by LTX programmable juggling balls. **This generator always produces `.prg` files with a 100Hz refresh rate.** The `refresh_rate` specified in the input JSON is used to interpret the time units for `sequence` keys and `end_time`; these JSON-based timings are then automatically scaled by the script to match the 100Hz timing of the output `.prg` file.
 
 This script incorporates the latest understanding of PRG header fields and **now supports both solid color segments and fade effects**, including:
-- **N=1 Full Program Fades**: Single fade sequences that use the entire program duration for smooth color transitions
-- **Embedded Fades**: Fade segments within mixed sequences that are compressed to 100 PRG units (1 second at 100Hz)
-- **Mixed Sequences**: Combinations of solid colors and embedded fades
+- **N=1 Full Program Fades**: Single fade sequences that use the entire program duration for smooth color transitions. The number of RGB interpolation steps matches the PRG duration of the fade.
+- **Embedded Fades**: Fade segments within mixed sequences. The number of RGB interpolation steps for an embedded fade now correctly matches its PRG duration (which is its JSON-defined duration scaled to PRG units), rather than being fixed at 100 steps. The `s_block_dur_prg` for these fades also reflects their actual PRG duration.
+- **Mixed Sequences**: Combinations of solid colors and embedded fades, with accurate duration and RGB step handling for all segment types.
 
 The generator automatically detects the sequence type and applies the appropriate PRG format rules based on analysis of official app-generated files.
 
@@ -274,9 +274,15 @@ Command: `python3 prg_generator.py mixed_solid_fade.json mixed_output.prg`
 *Resulting `mixed_output.prg` (100Hz PRG file):*
 *   **Standard Mode**: 3 segments (solid red, embedded fade, solid green)
 *   **Segment 1**: 100 PRG units solid red (300 bytes RGB data)
-*   **Segment 2**: 100 PRG units embedded fade (300 bytes interpolated RGB data, compressed from 200 JSON units)
-*   **Segment 3**: 200 PRG units solid green (300 bytes RGB data)
-*   **Header fields**: `0x16` = 1, `0x18` = 100 (standard values)
+*   **Segment 2**: 200 PRG units embedded fade (start_color [255,0,0] to end_color [0,0,255]).
+    *   PRG Block Duration (`s_block_dur_prg`): 200 units.
+    *   RGB Data: 200 interpolated RGB steps (200 * 3 = 600 bytes).
+*   **Segment 3**: 200 PRG units solid green (`0,255,0`).
+    *   PRG Block Duration (`s_block_dur_prg`): 200 units.
+    *   RGB Data: 300 bytes (standard 100 repetitions).
+*   **Header fields**: `0x16` = 1 (floor(100/100)), `0x18` = 100 (standard values).
+*   The `Index1` and `Index2` fields in duration blocks are now calculated using dynamic step sizes based on preceding segment types and durations.
+*   `Field[+0x09]` in duration blocks now correctly uses the next segment's original JSON duration for `part2` if the next segment is a fade.
 
 ### `.prg` File Format Specification
 
@@ -362,17 +368,20 @@ One block exists for each segment, immediately following the header. Let N be th
 | +0x0F                            | 2      | Index1 Value (Higher 16 bits / Carry) | `H`       | Little | Higher 16 bits (carry) of the Index1 value. Example: `01 00` for value `0x1144C`. Formerly thought to be `00 00`. |
 | +0x11                            | 2      | Next Segment Info (Conditional)       | `H`       | Little | Duration of next segment, with conditions. See logic below. Ex: `00 00` if next segment is 100 units. |
 
-**Field `+0x09` (Next Segment Duration Info & Constant) Logic for Intermediate Blocks (Revised 2025-06-03):**
-This 4-byte field (at offset `+0x09` from the start of an intermediate duration block) consists of two 2-byte Little Endian values: `field_09_part1` followed by `field_09_part2`.
+**Field `+0x09` (Next Segment Duration Info & Constant) Logic for Intermediate Blocks (Revised 2025-06-06):**
+This 4-byte field (at offset `+0x09` from the start of an intermediate duration block `k`) consists of two 2-byte Little Endian values: `field_09_part1` followed by `field_09_part2`.
 
-*   **`field_09_part1`:**
-    *   **Hypothesis (Official App Tests A-V, 1000Hz):** For an intermediate duration block `k` (describing segment `k`), if the *next* segment (segment `k+1`) has a duration `Dur_k+1` (in PRG time units):
-        **`field_09_part1 (for block k) = floor(Dur_k+1 / 100)`**
-    *   **Status:** Confirmed robustly across all 1000Hz tests (A-V, M-R, S-V, DB_11).
+Let `s_next_block_dur_prg` be the block duration (PRG units) of the *next* segment (`k+1`).
+Let `s_next_type` be the type ('solid' or 'fade') of the *next* segment (`k+1`).
+Let `s_next_json_dur_original` be the original JSON duration (scaled to PRG units) of the *next* segment (`k+1`).
 
-*   **`field_09_part2`:**
-    *   **Observation (Official App Tests A-V, 1000Hz):** For all intermediate duration blocks (segments 0 to N-2), `field_09_part2` is consistently `64 00` (decimal 100).
-    *   **Status:** Confirmed.
+*   **`field_09_part1` (for block `k`):**
+    *   If `s_next_type == 'fade'`: `field_09_part1 = 1`
+    *   Else (if `s_next_type == 'solid'`): `field_09_part1 = floor(s_next_block_dur_prg / 100)`
+
+*   **`field_09_part2` (for block `k`):**
+    *   If `s_next_type == 'fade'`: `field_09_part2 = s_next_json_dur_original`
+    *   Else (if `s_next_type == 'solid'`): `field_09_part2 = 100` (decimal `64 00`)
 
 **Field `+0x11` (Next Segment Info (Conditional)) Logic for Intermediate Blocks (Current Segment `k`) (Revised 2025-06-03):**
 Let `Dur_k+1` be the duration of the next segment (segment `k+1`) in PRG time units.
@@ -423,8 +432,23 @@ This is the final duration block in the sequence.
 | +0x0F                            | 2      | Index2 Part 2 (Lower 16 bits)              | `H`       | Little | Lower 16 bits of a second calculated index value. Example: `64 64` for value `0x6464`. |
 | +0x11                            | 2      | Index2 Part 2 (Higher 16 bits / Carry)     | `H`       | Little | Higher 16 bits (carry) of Index2 Part 2. Example: `00 00` for value `0x6464`. Formerly `00 00`. |
 
-**Index Value Calculation (Known Complexities):**
-The `Index1 Value` (split across `+0x0D` and `+0x0F` in intermediate blocks), and `Index2 Part 1` / `Part 2` (split across `+0x0B`/`+0x0D` and `+0x0F`/`+0x11` respectively in the last block) are crucial for the firmware to correctly step through the sequence. Their calculation is based on arithmetic progressions (see `_calculate_intermediate_block_index1_base` and `_calculate_last_block_index2_bases` in the code). These progressions can result in values exceeding 16 bits. The lower 16 bits are stored in the primary field (`+0x0D` or `+0x0B`/`+0x0F`), and the higher 16 bits (effectively a carry or page counter) are stored in the adjacent field that was previously believed to be a constant zero (`+0x0F` for intermediate blocks, or `+0x0D`/`+0x11` for the last block). This behavior becomes apparent in sequences with a large number of segments. Refer to the code comments within these functions for the specific arithmetic logic discovered.
+**Index Value Calculation (Revised 2025-06-06):**
+The `Index1 Value` (split across `+0x0D` and `+0x0F` in intermediate blocks), and `Index2 Part 1` / `Part 2` (split across `+0x0B`/`+0x0D` and `+0x0F`/`+0x11` respectively in the last block) are crucial for the firmware to correctly step through the sequence.
+
+*   **`_calculate_intermediate_block_index1_base`**:
+    *   The `horizontal_step` contributing to the `Index1` value for an intermediate block `k` (target_index `k+1`) is now a dynamic sum. For each preceding segment `j` (from `0` to `k-1`):
+        *   If segment `j` is 'solid': its contribution is `300 + (3 * segment_j_block_duration_prg)`.
+        *   If segment `j` is 'fade': its contribution is `segment_j_block_duration_prg`.
+    *   The `base_value_n2_t1` (370) and `vertical_step` (19) remain.
+
+*   **`_calculate_last_block_index2_bases`**:
+    *   `part1_full`: The cumulative horizontal offset is calculated similarly to the intermediate blocks, summing the dynamic contributions from all segments *before* the last one (segments `0` to `N-2`). The base is 304.
+    *   `part2_full`:
+        *   If the first segment of the sequence is 'solid': `part2_full_base = first_segment_block_duration_prg`.
+        *   Else (first segment is 'fade' or sequence is empty for some reason): `part2_full_base = 100`.
+        *   Then, `part2_full = part2_full_base * total_segments`.
+
+These changes ensure that the index calculations correctly reflect the varying sizes and types of segments, particularly when fades with non-100 PRG durations are involved. Values can exceed 16 bits, with the lower 16 bits in the primary field and higher 16 bits (carry) in the adjacent field.
 
 #### 3. RGB Color Data (Variable Size per Segment)
 
@@ -443,12 +467,11 @@ Starts immediately after the last Duration Block (at the offset specified in Hea
 *   Example: 300 PRG unit fade from Red to Blue
     *   Data: `FF 00 00 FE 00 01 FD 00 02 ... (300 interpolated steps) ... 00 00 FF`
 
-**Embedded Fade Segments (300 bytes each):**
-*   For fade segments within mixed sequences, RGB values are interpolated across exactly 100 steps.
-*   Total size = 100 steps × 3 bytes = 300 bytes (same as solid segments).
-*   The fade speed is determined by the JSON duration, but the PRG block always uses 100 interpolated steps.
-*   Example: Red to Blue embedded fade
-    *   Data: `FF 00 00 FC 00 03 F9 00 06 ... (100 interpolated steps) ... 00 00 FF`
+**Embedded Fade Segments (duration × 3 bytes):**
+*   For fade segments within mixed sequences, RGB values are interpolated across a number of steps equal to their `s_block_dur_prg` (which is their JSON duration scaled to PRG units).
+*   Total size per embedded fade = `s_block_dur_prg × 3` bytes.
+*   Example: Red to Blue embedded fade with a PRG duration of 200 units
+    *   Data: `FF 00 00 FE 00 00 FD 00 01 ... (200 interpolated steps) ... 00 00 FF`
 
 **Interpolation Formula:**
 For fade segments, each RGB component is calculated as:
@@ -496,10 +519,10 @@ The total size of a `.prg` file depends on the segment types and must be calcula
 ```
 Total RGB Data Size = 0
 For each segment:
-    If segment_type == 'fade' and N == 1:
-        Total RGB Data Size += fade_duration × 3
-    Else:  // solid or embedded fade
-        Total RGB Data Size += 300
+    If segment_type == 'fade': // Applies to N=1 Full Fade AND Embedded Fades
+        Total RGB Data Size += s_block_dur_prg_of_this_fade_segment × 3
+    Else if segment_type == 'solid':
+        Total RGB Data Size += 300 // Standard 100 repetitions * 3 bytes
 ```
 
 This dynamic approach ensures accurate file size prediction regardless of the mix of segment types in the sequence.
@@ -511,8 +534,12 @@ This dynamic approach ensures accurate file size prediction regardless of the mi
 *   **HSV Conversion:** If `color_format` is "hsv", colors are converted to RGB before being written.
 *   **Debugging Output:** The script provides verbose output during generation, showing calculated values and file offsets.
 *   **Automatic Black Gaps:** To prevent strobing effects on hardware with non-instantaneous color changes, the script can insert a 1ms black segment before each change to a new, different color if the segment is long enough. This behavior is **disabled by default** and can be enabled with the `--use-gaps` flag. Note that this is not an acceptable fix, this information is only here to help understand the nature of the issue.
-*   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-03):**
-    The logic for `Field[+0x09]` (composed of `field_09_part1` and `field_09_part2`) has been refined. `field_09_part1` is now understood to be `floor(Dur_k+1 / 100)` (where `Dur_k+1` is the duration of the next segment *in PRG time units*), and `field_09_part2` is consistently `100` (`64 00`) for intermediate blocks. This logic is robustly confirmed by all 1000Hz official app tests and ensures correct PRG generation.
+*   **Important Note on Duration Block Field `+0x09` (Updated 2025-06-06):**
+    The logic for `Field[+0x09]` (composed of `field_09_part1` and `field_09_part2`) has been significantly updated.
+    *   If the *next* segment is a fade: `field_09_part1 = 1`, and `field_09_part2 = next_segment_original_json_duration_prg_units`.
+    *   If the *next* segment is solid: `field_09_part1 = floor(next_segment_block_duration_prg / 100)`, and `field_09_part2 = 100`.
+    This ensures correct PRG generation, especially for sequences containing fades with varying durations.
+*   **Index Calculations (Updated 2025-06-06):** The calculations for `Index1` and `Index2` values within duration blocks now use dynamic step sizes derived from the types and PRG block durations of preceding segments, crucial for handling mixed sequences with non-standard fade durations correctly.
 
 ---
 
