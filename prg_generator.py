@@ -95,7 +95,7 @@ def bytes_to_hex(data):
     return str(data)
 
 
-def _calculate_intermediate_block_index1_base(target_index, total_segments, segments_list):
+def _calculate_intermediate_block_index1_base(target_index, total_segments, segments_list, is_any_fade_in_sequence):
     """
     Calculates the base value for the Index1 field in intermediate duration blocks.
     This value can exceed 16 bits. The lower 16 bits go to field +0x0D,
@@ -107,7 +107,7 @@ def _calculate_intermediate_block_index1_base(target_index, total_segments, segm
         total_segments (int): The total number of segments (N) in the sequence.
         segments_list (list): The list of processed segments, used for dynamic step calculation.
                               Each element is (s_block_dur_prg, s_color_info, s_pixels, s_type, s_json_dur_prg)
-
+        is_any_fade_in_sequence (bool): True if the overall sequence contains any fade segments.
     Returns:
         int: The calculated base value (potentially >16 bits).
     """
@@ -134,19 +134,27 @@ def _calculate_intermediate_block_index1_base(target_index, total_segments, segm
         seg_j_block_dur = segments_list[j][0] # This is s_block_dur_prg
         seg_j_type = segments_list[j][3]
         
+        current_step = 0
         if seg_j_type == 'solid':
-            cumulative_horizontal_offset += 300 + (3 * seg_j_block_dur)
+            if is_any_fade_in_sequence:
+                if seg_j_block_dur > NOMINAL_BASE_FOR_HEADER_FIELDS: # > 100
+                    current_step = 300 + (3 * seg_j_block_dur)
+                else: # <= 100 (covers == 100 and < 100)
+                    current_step = 300
+            else: # No fades in the entire sequence (purely solid)
+                current_step = 300 # Baseline for pure solid sequences
         elif seg_j_type == 'fade':
-            cumulative_horizontal_offset += seg_j_block_dur
+            current_step = seg_j_block_dur # Fades use their own duration
         else:
-            print(f"[WARN] Unknown segment type '{seg_j_type}' at index {j} encountered in _calculate_intermediate_block_index1_base. Using default step 300.")
-            cumulative_horizontal_offset += 300
+            print(f"[WARN] Unknown segment type '{seg_j_type}' at index {j} in _calculate_intermediate_block_index1_base. Using default step 300.")
+            current_step = 300 # Fallback
+        cumulative_horizontal_offset += current_step
 
 
     value_pair_full = value_n_t1 + cumulative_horizontal_offset
     return value_pair_full
 
-def _calculate_last_block_index2_bases(total_segments, segments_list):
+def _calculate_last_block_index2_bases(total_segments, segments_list, is_any_fade_in_sequence):
     """
     Calculates the base values for Index2 Part1 and Part2 fields in the *last*
     duration block. These values can exceed 16 bits.
@@ -156,6 +164,7 @@ def _calculate_last_block_index2_bases(total_segments, segments_list):
     Args:
         total_segments (int): The total number of segments.
         segments_list (list): The list of processed segments.
+        is_any_fade_in_sequence (bool): True if the overall sequence contains any fade segments.
 
     Returns:
         tuple(int, int): (part1_full_value, part2_full_value).
@@ -168,21 +177,37 @@ def _calculate_last_block_index2_bases(total_segments, segments_list):
             break
         seg_j_block_dur = segments_list[j][0]
         seg_j_type = segments_list[j][3]
+        
+        current_step_part1 = 0
         if seg_j_type == 'solid':
-            cumulative_horizontal_offset_for_part1 += 300 + (3 * seg_j_block_dur)
+            if is_any_fade_in_sequence:
+                if seg_j_block_dur > NOMINAL_BASE_FOR_HEADER_FIELDS: # > 100
+                    current_step_part1 = 300 + (3 * seg_j_block_dur)
+                elif seg_j_block_dur == NOMINAL_BASE_FOR_HEADER_FIELDS: # == 100
+                    current_step_part1 = 300 + (2 * seg_j_block_dur) # Results in 500
+                else: # < 100
+                    current_step_part1 = 300
+            else: # No fades in the entire sequence (purely solid)
+                current_step_part1 = 300
         elif seg_j_type == 'fade':
-            cumulative_horizontal_offset_for_part1 += seg_j_block_dur
+            current_step_part1 = seg_j_block_dur # Fades use their own duration
         else:
-            print(f"[WARN] Unknown segment type '{seg_j_type}' at index {j} encountered in _calculate_last_block_index2_bases (part1). Using default step 300.")
-            cumulative_horizontal_offset_for_part1 += 300
+            print(f"[WARN] Unknown segment type '{seg_j_type}' at index {j} in _calculate_last_block_index2_bases (part1). Using default step 300.")
+            current_step_part1 = 300 # Fallback
+        cumulative_horizontal_offset_for_part1 += current_step_part1
             
     part1_full = 304 + cumulative_horizontal_offset_for_part1
 
-    part2_full_base = NOMINAL_BASE_FOR_HEADER_FIELDS
-    if segments_list and total_segments > 0 and segments_list[0][3] == 'solid':
-        part2_full_base = segments_list[0][0] # Use duration of the first segment if it's solid
-    
-    part2_full = part2_full_base * total_segments
+    # Calculate part2_full
+    if not is_any_fade_in_sequence:
+        # For purely solid sequences (e.g., 1to10_100r), the expected Index2 Part2 fields are 0.
+        part2_full = 0
+    else:
+        # For sequences with fades, use the existing logic.
+        part2_full_base = NOMINAL_BASE_FOR_HEADER_FIELDS
+        if segments_list and total_segments > 0 and segments_list[0][3] == 'solid':
+            part2_full_base = segments_list[0][0]
+        part2_full = part2_full_base * total_segments
     return part1_full, part2_full
 
 def split_long_segments(segments, max_duration=65535):
@@ -435,12 +460,14 @@ def generate_prg_file(input_json, output_prg):
     if segment_count == 0:
          print("[ERROR] No segments remaining after processing/splitting.")
          sys.exit(1)
+         
+    is_any_fade_in_sequence = any(s[3] == 'fade' for s in segments)
+    print(f"\n[SUMMARY] Total PRG segments to write: {segment_count}. Contains fades: {is_any_fade_in_sequence}")
 
-    print(f"\n[SUMMARY] Total PRG segments to write: {segment_count}")
 
     # Header Value Calculation
     # After segments are finalized and split_long_segments may have run
-    is_n1_full_program_fade = (segment_count == 1 and segments[0][3] == 'fade')
+    is_n1_full_program_fade = (segment_count == 1 and segments[0][3] == 'fade') # This implies is_any_fade_in_sequence is true
 
     if is_n1_full_program_fade:
         # N=1 TRUE FADE MODE
@@ -525,7 +552,7 @@ def generate_prg_file(input_json, output_prg):
                     if idx < segment_count - 1:
                         next_block_duration_prg_units = segments[idx + 1][0] # Get block_duration of next segment
                         
-                        index1_full_base_value = _calculate_intermediate_block_index1_base(idx + 1, segment_count, segments)
+                        index1_full_base_value = _calculate_intermediate_block_index1_base(idx + 1, segment_count, segments, is_any_fade_in_sequence)
                         index1_value_at_0D = index1_full_base_value & 0xFFFF
                         index1_carry_at_0F = (index1_full_base_value >> 16) & 0xFFFF
 
@@ -549,10 +576,18 @@ def generate_prg_file(input_json, output_prg):
                         # This logic for field_11_val seems highly specific and based on observed patterns.
                         if dur_k_plus_1 == 1930: field_11_val = 30
                         elif dur_k_plus_1 == 103: field_11_val = 3
-                        elif dur_k_plus_1 == 100: field_11_val = 0
-                        elif dur_k_plus_1 > 100 and dur_k_plus_1 % 100 == 0:
+                        elif dur_k_plus_1 == 100:
+                            # next_seg_type was already fetched for field_09 logic
+                            # Rule: If Dur_k+1 == 100, Field[+0x11] is 0.
+                            # This aligns with official_prg_app_tests.md (red1s_red-blue1s_green1s_100r.prg dump)
+                            # and prg_generator_README.md (line 395-397).
+                            field_11_val = 0
+                        elif dur_k_plus_1 > 100 and dur_k_plus_1 % 100 == 0: # Multiples of 100, but not 100 itself
                             if dur_k == dur_k_plus_1: field_11_val = dur_k_plus_1
-                            elif dur_k >= 1000 and dur_k_plus_1 >= 600: field_11_val = dur_k_plus_1
+                            # This rule for dur_k >= 1000 and dur_k_plus_1 >=600 seems to be for specific official app quirks.
+                            # The more general behavior for multiples of 100 (not equal to current) is 0, unless overridden.
+                            # Example L5 (1000ms -> 600ms -> 1930ms): Block0 Field[+0x11] (for 600ms) is 600. Here Dur0=1000, Dur1=600. (Dur_k >=1000 and Dur_k+1 >=600)
+                            elif dur_k >= 1000 and dur_k_plus_1 >= 600: field_11_val = dur_k_plus_1 # This seems to be an override
                             else: field_11_val = 0
                         elif dur_k_plus_1 == 150:
                             if dur_k >= 100: field_11_val = 150
@@ -581,7 +616,7 @@ def generate_prg_file(input_json, output_prg):
                             index2_part2_full = dur_val         # For N=1 True Fade, s_block_dur is dur_val
                         else:
                             # Standard N=1 Solid or N>1 Last Block
-                            index2_part1_full, index2_part2_full = _calculate_last_block_index2_bases(segment_count, segments)
+                            index2_part1_full, index2_part2_full = _calculate_last_block_index2_bases(segment_count, segments, is_any_fade_in_sequence)
                         
                         index2_part1_at_0B = index2_part1_full & 0xFFFF
                         index2_part1_carry_at_0D = (index2_part1_full >> 16) & 0xFFFF
@@ -662,16 +697,17 @@ def generate_prg_file(input_json, output_prg):
 
     # File Size Verification
     expected_rgb_data_size = 0
-    is_n1_full_program_fade = (segment_count == 1 and segments[0][3] == 'fade')
+    # is_n1_full_program_fade is already defined
 
-    if is_n1_full_program_fade:
-        expected_rgb_data_size = segments[0][0] * 3 # s_block_dur * 3 (number of steps * 3 bytes/step)
-    else:
-        for s_block_dur, _, _, segment_type, _ in segments:
-            if segment_type == 'fade': # Embedded fade
-                expected_rgb_data_size += 100 * 3 # 100 steps * 3 bytes/step
-            else: # Solid
-                expected_rgb_data_size += RGB_TRIPLE_COUNT * 3 # 100 repeats * 3 bytes/color
+    # The following calculation for expected_rgb_data_size was simplified and corrected
+    # based on the final logic for RGB data writing.
+    for s_block_dur, _, _, segment_type, _ in segments: # s_block_dur is the key
+        if segment_type == 'fade': 
+            # For N=1 True Fade, s_block_dur is its actual duration.
+            # For Embedded Fade, s_block_dur is also its actual (JSON-derived) duration.
+            expected_rgb_data_size += s_block_dur * 3 
+        else: # Solid
+            expected_rgb_data_size += RGB_TRIPLE_COUNT * 3 # Solids always have 100 repeats of 3 bytes
     
     expected_size = HEADER_SIZE + (segment_count * DURATION_BLOCK_SIZE) + expected_rgb_data_size + len(FOOTER)
     
