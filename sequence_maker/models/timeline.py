@@ -167,17 +167,25 @@ class Timeline:
             if existing_segment.start_time == time:
                 existing_segment.color = color
                 existing_segment.pixels = pixels
+                existing_segment.color = color
+                existing_segment.pixels = pixels
+                # If it was a fade, setting a single color here makes it solid
+                existing_segment.end_color = None
+                existing_segment.segment_type = 'solid'
                 return existing_segment
             
             # If the segment contains this time, split it
+            # The new segment created by add_color_at_time is always a solid segment
             new_segment = TimelineSegment(
                 start_time=time,
                 end_time=existing_segment.end_time,
-                color=color,
-                pixels=pixels
+                color=color, # This is the start_color
+                pixels=pixels,
+                end_color=None # Solid segment
             )
             
             # Update the end time of the existing segment
+            # The existing segment properties (color, end_color, type) remain for its new, shorter duration
             existing_segment.end_time = time
             
             # Add the new segment
@@ -204,11 +212,13 @@ class Timeline:
                 new_segment = TimelineSegment(
                     start_time=time,
                     end_time=next_segment.start_time,
-                    color=color,
-                    pixels=pixels
+                    color=color, # This is the start_color
+                    pixels=pixels,
+                    end_color=None # Solid segment
                 )
             else:
                 # If there's no next segment, create one that extends to the end of the timeline
+                # This new segment is solid.
                 # Use a longer default duration that will likely cover the entire timeline
                 end_time = time + 3600  # Default to 1 hour
                 
@@ -222,8 +232,9 @@ class Timeline:
                 new_segment = TimelineSegment(
                     start_time=time,
                     end_time=end_time,  # Extend to the end of the timeline
-                    color=color,
-                    pixels=pixels
+                    color=color, # This is the start_color
+                    pixels=pixels,
+                    end_color=None # Solid segment
                 )
             
             self.segments.append(new_segment)
@@ -276,10 +287,12 @@ class Timeline:
                     new_other = TimelineSegment(
                         start_time=segment.end_time,
                         end_time=other.end_time,
-                        color=other.color,
-                        pixels=other.pixels
+                        color=other.color, # This is start_color
+                        pixels=other.pixels,
+                        end_color=other.end_color # Preserve fade if other was a fade
                     )
-                    
+                    # new_other's segment_type is set by its __init__
+
                     # Adjust the end time of the original segment
                     other.end_time = segment.start_time
                     
@@ -370,20 +383,27 @@ class Timeline:
             adjusted_segments.append({
                 'start_time': rounded_start_time,
                 'end_time': rounded_end_time,
-                'color': segment.color,
+                'color': segment.color, # This is start_color
+                'end_color': segment.end_color,
+                'segment_type': segment.segment_type,
                 'pixels': segment.pixels
             })
             
             # Convert time to time units based on the target 1000Hz refresh rate
-            # We use round to avoid floating point precision issues
             time_units = round(rounded_start_time * output_json_refresh_rate)
             time_key = str(time_units)
             
             # Add segment to sequence
-            sequence[time_key] = {
-                "color": list(segment.color),
+            segment_data_for_json = {
                 "pixels": segment.pixels
             }
+            if segment.segment_type == 'fade' and segment.end_color is not None:
+                segment_data_for_json["start_color"] = list(segment.color)
+                segment_data_for_json["end_color"] = list(segment.end_color)
+            else: # solid
+                segment_data_for_json["color"] = list(segment.color)
+            
+            sequence[time_key] = segment_data_for_json
             
             # Check if there's a gap between this segment and the next one
             # If so, add a black color block at the end of this segment

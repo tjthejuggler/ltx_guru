@@ -1087,20 +1087,35 @@ class TimelineContainer(QWidget):
             )
             
             # Draw segment background
-            r, g, b = segment.color
-            segment_color = QColor(r, g, b)
-            
-            # Create gradient
             from PyQt6.QtCore import QPointF
             gradient = QLinearGradient(
-                QPointF(segment_rect.topLeft()),
-                QPointF(segment_rect.bottomLeft())
+                QPointF(segment_rect.left(), segment_rect.top()), # Start of gradient at top-left
+                QPointF(segment_rect.right(), segment_rect.top()) # End of gradient at top-right for horizontal fade
             )
-            gradient.setColorAt(0, segment_color.lighter(120))
-            gradient.setColorAt(1, segment_color)
-            
+
+            if hasattr(segment, 'segment_type') and segment.segment_type == 'fade' and segment.end_color is not None:
+                start_r, start_g, start_b = segment.color
+                start_q_color = QColor(start_r, start_g, start_b)
+                
+                end_r, end_g, end_b = segment.end_color
+                end_q_color = QColor(end_r, end_g, end_b)
+                
+                gradient.setColorAt(0, start_q_color)
+                gradient.setColorAt(1, end_q_color)
+            else: # Solid color
+                r, g, b = segment.color
+                segment_q_color = QColor(r, g, b)
+                # For solid, use a subtle vertical gradient for 3D effect as before, but make it simpler.
+                # Re-initialize gradient for vertical
+                gradient = QLinearGradient(
+                    QPointF(segment_rect.left(), segment_rect.top()),
+                    QPointF(segment_rect.left(), segment_rect.bottom())
+                )
+                gradient.setColorAt(0, segment_q_color.lighter(120))
+                gradient.setColorAt(1, segment_q_color)
+
             # Fill segment
-            painter.fillRect(segment_rect, gradient)
+            painter.fillRect(segment_rect, QBrush(gradient))
             
             # Draw segment border
             if segment == self.parent_widget.selected_segment:
@@ -2374,12 +2389,62 @@ class TimelineContainer(QWidget):
         if not self.parent_widget.selected_timeline or not self.parent_widget.selected_segment:
             return
         
-        # Add effect
-        self.app.timeline_manager.add_effect_to_segment(
-            timeline=self.parent_widget.selected_timeline,
-            segment=self.parent_widget.selected_segment,
-            effect_type=effect_type
-        )
+        if effect_type == "fade":
+            if not self.parent_widget.selected_timeline or not self.parent_widget.selected_segment:
+                return
+
+            segment_to_edit = self.parent_widget.selected_segment
+            
+            # Import and use the actual FadeEffectDialog
+            try:
+                from sequence_maker.ui.dialogs.fade_effect_dialog import FadeEffectDialog
+            except ImportError as e:
+                self.logger.error(f"Failed to import FadeEffectDialog: {e}")
+                # Show an error message to the user (optional)
+                from PyQt6.QtWidgets import QMessageBox
+                QMessageBox.critical(self, "Error", "Could not load the Fade Effect Dialog.")
+                return
+
+            initial_start_c = segment_to_edit.color
+            initial_end_c = segment_to_edit.end_color # This will be None if it's a solid segment
+
+            dialog = FadeEffectDialog(initial_start_color=initial_start_c,
+                                      initial_end_color=initial_end_c,
+                                      parent=self)
+            
+            if dialog.exec():
+                new_start_color_rgb, new_end_color_rgb = dialog.get_colors()
+
+                # Update the segment directly first for immediate visual feedback if needed,
+                # though TimelineManager.modify_segment should handle this and emit signals.
+                segment_to_edit.color = new_start_color_rgb
+                segment_to_edit.end_color = new_end_color_rgb
+                segment_to_edit.segment_type = 'fade' # Explicitly set as fade
+
+                self.logger.info(f"Segment updated to fade: {segment_to_edit.color} to {segment_to_edit.end_color}")
+
+                # Call TimelineManager.modify_segment. This method will need to be
+                # updated to accept end_color and segment_type.
+                # Call TimelineManager.modify_segment with all necessary parameters
+                self.app.timeline_manager.modify_segment(
+                    timeline=self.parent_widget.selected_timeline,
+                    segment=segment_to_edit,
+                    color=new_start_color_rgb,    # This is the start_color
+                    end_color=new_end_color_rgb,  # Pass the new end_color
+                    segment_type='fade'           # Explicitly set the type
+                    # pixels are not changed by this dialog, so we don't pass them
+                )
+                # The segment_modified signal will be emitted by modify_segment if changes occurred.
+                # self.timeline_container.update() will be triggered by the signal chain.
+                # No need to call it directly here if modify_segment handles signals correctly.
+
+        else: # Original effect logic for other types
+            # This part remains unchanged for other effect types like "strobe", "pulse", "rainbow"
+            self.app.timeline_manager.add_effect_to_segment(
+                timeline=self.parent_widget.selected_timeline,
+                segment=self.parent_widget.selected_segment,
+                effect_type=effect_type
+            )
     
     def _rename_timeline(self, timeline):
         """

@@ -566,27 +566,41 @@ class MainWindow(QMainWindow):
             color = mapping["color"]
             timelines = mapping["timelines"]
             
-            # Check for effect modifiers
+            # Check for fade creation first, then other effect modifiers
             effect_type = None
-            if modifiers & Qt.KeyboardModifier.ShiftModifier and "shift" in EFFECT_MODIFIERS:
-                effect_type = EFFECT_MODIFIERS["shift"]
+            create_fade = False
+
+            if modifiers & Qt.KeyboardModifier.ShiftModifier:
+                # Shift + color key is designated for creating a fade
+                create_fade = True
             elif modifiers & Qt.KeyboardModifier.ControlModifier and "ctrl" in EFFECT_MODIFIERS:
-                effect_type = EFFECT_MODIFIERS["ctrl"]
+                effect_type = EFFECT_MODIFIERS["ctrl"] # This is "fade" according to constants, might need review
             elif modifiers & Qt.KeyboardModifier.AltModifier and "alt" in EFFECT_MODIFIERS:
                 effect_type = EFFECT_MODIFIERS["alt"]
+            # Note: If "ctrl" in EFFECT_MODIFIERS is also "fade", then Ctrl+Key would trigger
+            # the add_effect_to_segment logic for "fade", which opens the dialog.
+            # This might be acceptable or might need further differentiation if Ctrl+Key
+            # was intended for something else. For now, this prioritizes Shift for direct fade creation.
             
-            # Add color to each timeline
+            # Add color/fade to each timeline
             for timeline_index in timelines:
                 if hasattr(self.app, 'timeline_manager'):
-                    segment = self.app.timeline_manager.add_color_at_position(timeline_index, color)
-                    
-                    # Add effect if specified
-                    if effect_type and segment:
-                        self.app.timeline_manager.add_effect_to_segment(
-                            self.app.timeline_manager.get_timeline(timeline_index),
-                            segment,
-                            effect_type
-                        )
+                    if create_fade:
+                        # Call a new method in timeline_manager to handle fade creation
+                        # This method will need to find the previous segment's color for the start_color
+                        # and use 'color' (from key mapping) as the end_color.
+                        self.app.timeline_manager.add_fade_at_position(timeline_index, color)
+                    else:
+                        # Original behavior: add solid color segment
+                        segment = self.app.timeline_manager.add_color_at_position(timeline_index, color)
+                        
+                        # Add effect if specified (and not creating a fade)
+                        if effect_type and segment:
+                            self.app.timeline_manager.add_effect_to_segment(
+                                self.app.timeline_manager.get_timeline(timeline_index),
+                                segment,
+                                effect_type
+                            )
             
             # Update UI
             self._update_ui()

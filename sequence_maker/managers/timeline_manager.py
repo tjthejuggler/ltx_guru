@@ -421,7 +421,7 @@ class TimelineManager(QObject):
         
         return success
     
-    def modify_segment(self, timeline, segment, start_time=None, end_time=None, color=None, pixels=None):
+    def modify_segment(self, timeline, segment, start_time=None, end_time=None, color=None, pixels=None, end_color=None, segment_type=None):
         """
         Modify a segment.
         
@@ -430,8 +430,11 @@ class TimelineManager(QObject):
             segment (TimelineSegment): Segment to modify.
             start_time (float, optional): New start time. If None, keeps the current start time.
             end_time (float, optional): New end time. If None, keeps the current end time.
-            color (tuple, optional): New color. If None, keeps the current color.
-            pixels (int, optional): New pixel count. If None, keeps the current pixel count.
+            color (tuple, optional): New start color (for solid or fade). If None, keeps current.
+            pixels (int, optional): New pixel count. If None, keeps current.
+            end_color (tuple, optional): New end color (for fades). If None, keeps current.
+                                         If segment_type becomes 'solid', this should be cleared.
+            segment_type (str, optional): New segment type ('solid' or 'fade'). If None, keeps current or infers.
         
         Returns:
             bool: True if the segment was modified, False otherwise.
@@ -461,14 +464,45 @@ class TimelineManager(QObject):
             modified = True
         
         if color is not None and segment.color != color:
-            segment.color = color
+            segment.color = color # This is start_color for fades
             modified = True
+
+        if end_color is not None and segment.end_color != end_color:
+            segment.end_color = end_color
+            modified = True
+            # If end_color is explicitly set, ensure type is fade
+            if segment.segment_type != 'fade':
+                 segment.segment_type = 'fade'
         
+        if segment_type is not None and segment.segment_type != segment_type:
+            segment.segment_type = segment_type
+            modified = True
+            # If type changes to solid, clear end_color
+            if segment_type == 'solid' and segment.end_color is not None:
+                segment.end_color = None # Ensure consistency
+                modified = True # Count this as a modification
+        
+        # If end_color was passed as None (e.g. to make it solid) and type wasn't 'solid' explicitly
+        # this implies it should become solid.
+        if end_color is None and 'end_color' in locals() and segment.segment_type == 'fade': # Check if end_color was an explicit arg
+            segment.end_color = None
+            segment.segment_type = 'solid'
+            modified = True
+
         if pixels is not None and segment.pixels != pixels:
             segment.pixels = pixels
             modified = True
         
         if modified:
+            # Ensure consistency: if it's solid, end_color must be None.
+            if segment.segment_type == 'solid' and segment.end_color is not None:
+                segment.end_color = None
+            # Ensure consistency: if it's fade, end_color should ideally exist.
+            # If end_color is None but type is 'fade', it's an invalid state;
+            # it should default to its start_color (effectively making it solid but typed as fade).
+            # Or, better, the UI should prevent this. For now, trust segment's internal logic.
+            # The TimelineSegment.__init__ handles setting type based on end_color.
+
             # Emit signals
             self.segment_modified.emit(timeline, segment)
             
@@ -678,7 +712,80 @@ class TimelineManager(QObject):
         self.app.project_manager.project_changed.emit()
         
         return segment
-    
+
+    def add_fade_at_position(self, timeline_index, new_key_color_tuple, pixels=None):
+        """
+        Modifies the current segment at the cursor to fade from its original color
+        to new_key_color_tuple. Then, adds a new solid segment after it with
+        new_key_color_tuple.
+        If no segment is at the cursor, it adds a solid new_key_color_tuple segment.
+        """
+        self.logger.debug(f"Attempting to apply fade to {new_key_color_tuple} at position {self.position:.3f}s on timeline {timeline_index}")
+
+        timeline = self.get_timeline(timeline_index)
+        if not timeline:
+            self.logger.warning(f"Cannot add fade: Timeline {timeline_index} not found")
+            return None
+
+        # Find the segment currently at self.position
+        # Timeline.get_segment_at_time is inclusive of start_time and exclusive of end_time.
+        segment_to_make_fade = timeline.get_segment_at_time(self.position)
+
+        if segment_to_make_fade:
+            self.logger.info(f"Found current segment: {segment_to_make_fade.start_time}-{segment_to_make_fade.end_time}, color: {segment_to_make_fade.color}")
+            original_start_color = segment_to_make_fade.color # This is the true original start
+            if segment_to_make_fade.segment_type == 'fade' and segment_to_make_fade.end_color is not None:
+                 # If it's already a fade, its 'color' attribute is its start_color
+                 original_start_color = segment_to_make_fade.color
+            
+            original_pixels = segment_to_make_fade.pixels
+            # If pixels arg is None, use the current segment's pixels
+            effective_pixels = pixels if pixels is not None else original_pixels
+
+            # Modify the current segment to become a fade
+            # The segment's existing start_time and end_time are preserved.
+            self.modify_segment(
+                timeline,
+                segment_to_make_fade,
+                color=original_start_color, # Keep its original start color
+                end_color=new_key_color_tuple,
+                segment_type='fade',
+                pixels=effective_pixels # Ensure pixels are consistent
+            )
+            self.logger.info(f"Modified segment {segment_to_make_fade.start_time}-{segment_to_make_fade.end_time} to fade from {original_start_color} to {new_key_color_tuple}")
+
+            # Now, add a new solid segment *after* this one
+            # The new solid segment starts where the fade segment ends.
+            # The add_color_at_time method will handle splitting any subsequent segment.
+            new_solid_segment_start_time = segment_to_make_fade.end_time
+            
+            self.logger.info(f"Adding new solid segment of color {new_key_color_tuple} at {new_solid_segment_start_time}")
+            # This call will create a new solid segment. If there's a segment starting exactly at
+            # new_solid_segment_start_time, add_color_at_time will make that segment start with new_key_color_tuple.
+            # If there's empty space, it will create a new segment.
+            # If new_solid_segment_start_time is within another segment, it will split it.
+            newly_added_solid_segment = timeline.add_color_at_time(
+                new_solid_segment_start_time,
+                new_key_color_tuple,
+                effective_pixels
+            )
+            
+            if self.undo_manager:
+                # This combined action should ideally be one undo step.
+                # For now, it's two: modify_segment (implicit in add_color_at_time if split occurs) and add_color_at_time.
+                # modify_segment (for fade) has its own undo save. add_color_at_time also saves.
+                # This might need a custom UndoCommand for a single undo step.
+                self.undo_manager.save_state("apply_fade_and_add_solid_segment_keypress")
+
+            self.app.project_manager.project_changed.emit()
+            # segment_modified and segment_added signals are emitted by modify_segment and add_color_at_time respectively.
+            return segment_to_make_fade # Return the segment that was turned into a fade
+        else:
+            # No segment at the current cursor position.
+            # Fallback: just add a new solid segment with new_key_color_tuple at self.position.
+            self.logger.info(f"No segment at cursor {self.position}. Adding solid segment {new_key_color_tuple}.")
+            return self.add_color_at_position(timeline_index, new_key_color_tuple, pixels)
+
     def get_color_at_position(self, timeline_index):
         """
         Get the color at the current position.
