@@ -59,7 +59,7 @@ You can ask Roocode what it can do:
 *   "Tell me about the 'fade' effect."
 *   "What parameters does the 'strobe' effect take?"
 
-Roocode will then list the available effects or describe a specific one, including the parameters it needs. For example, for a 'fade' effect, it would tell you it needs a start color, an end color, and optionally, the number of steps per second for the fade.
+Roocode will then list the available effects or describe a specific one, including the parameters it needs. For example, for a 'fade' effect, it would tell you it needs a start color and an end color. The `prg_generator.py` script handles the smooth interpolation automatically when creating the final `.prg` file. An optional `steps_per_second` parameter exists in the schema but is not used by `compile_seqdesign.py` for generating `.prg.json` files intended for `prg_generator.py`'s native fade handling; it might be relevant for other visualizers or direct effect implementations.
 
 ## 5. Specifying Effect Parameters
 
@@ -223,5 +223,6 @@ If you agree, Roocode would guide you through defining the new effect. This defi
 **Important Note:** Roocode can help *define* the new effect, but a human developer would then need to write the actual Python code to implement the logic for this new effect and integrate it into the compiler system. Once implemented, the new effect would become available for everyone to use.
 
 ---
+**Last Updated:** 2025-06-06 12:06 UTC+7
 
 This guide provides a conceptual overview of how you might interact with Roocode Sequence Designer. As the system is developed, specific commands and capabilities may evolve. Happy sequencing!

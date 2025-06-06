@@ -5,6 +5,7 @@
 This directory, [`roocode_sequence_designer_tools/`](./), contains Python tools and configurations that are integral to the Roocode Sequence Designer System. These components are primarily utilized by the Roocode agent (the LLM) and the [`compile_seqdesign.py`](./compile_seqdesign.py) script to interpret, process, and compile lighting sequence designs.
 
 The tools within this directory facilitate the translation of abstract effect descriptions (as understood by Roocode) into concrete, executable lighting programs. Advanced features include **Pattern Templates** for creating sophisticated sequences with minimal manual work.
+**Update (2025-06-06):** Fade effect handling has been improved. [`compile_seqdesign.py`](./compile_seqdesign.py) now prepares fade definitions in `.seqdesign.json` files for native processing by `prg_generator.py`, allowing for smoother and more accurate fade transitions in the final `.prg` files.
 
 For details on the structure of `.seqdesign.json` files, please refer to the [Sequence Design JSON Schema](./docs/seqdesign_json_schema.md).
 
@@ -462,3 +463,6 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 *   **Code Quality:**
     *   **Variable Shadowing:** Be mindful of variable names. Avoid using local variable names that shadow imported modules or built-in functions (e.g., naming a loop variable `os` if the `os` module is also used in the same scope). This can lead to `UnboundLocalError` or unexpected behavior.
     *   **Testing:** Thoroughly test new effects and changes to the compilation scripts to catch errors early.
+
+---
+Last Updated: 2025-06-06 12:08 UTC+7

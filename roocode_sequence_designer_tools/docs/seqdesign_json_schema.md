@@ -78,7 +78,8 @@ Each **Effect Object** in the array has the following structure:
   "params": {
     "color_start": {"name": "black"},
     "color_end": {"rgb": [0, 0, 255]},
-    "steps_per_second": 20
+    "steps_per_second": 20 // Note: This parameter is NOT USED by compile_seqdesign.py for native PRG fades.
+                           // prg_generator.py handles interpolation. May be used by visualizers or other tools.
   }
 },
 {
@@ -178,7 +179,8 @@ The `timing` object within each effect defines its temporal boundaries.
       "params": {
         "color_start": {"name": "black"},
         "color_end": {"rgb": [75, 0, 130]},
-        "steps_per_second": 25
+        "steps_per_second": 25 // Note: This parameter is NOT USED by compile_seqdesign.py for native PRG fades.
+                               // prg_generator.py handles interpolation. May be used by visualizers or other tools.
       }
     },
     {
@@ -218,6 +220,8 @@ The `timing` object within each effect defines its temporal boundaries.
       "params": {
         "color_start": {"rgb": [75, 0, 130]},
         "color_end": {"name": "black"}
+        // steps_per_second is optional for fade; if omitted, a default might be assumed by some tools,
+        // but it's not used by compile_seqdesign.py for native PRG fades.
       }
     },
     {
@@ -624,4 +628,5 @@ Pattern templates support various ball selection strategies:
 ```
 
 ---
+**Last Updated:** 2025-06-06 12:06 UTC+7
 This documentation should provide a solid reference for understanding and creating `.seqdesign.json` files and related file types in the LTX Guru ecosystem.

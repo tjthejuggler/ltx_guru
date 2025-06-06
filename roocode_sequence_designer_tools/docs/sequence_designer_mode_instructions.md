@@ -116,6 +116,7 @@ This is the **preferred workflow for single-ball requests based on lyrics**.
 Use this for multi-ball sequences or when advanced effects from the `.seqdesign.json` schema are needed.
 
 *   **Understand Requirements:** Clearly define colors, timings, effects (fades, pulses, etc.), and pixel usage.
+    *   **For Fades:** When a user requests a fade effect, Roocode should ask for the `start_color` and `end_color`. The `compile_seqdesign.py` script, in conjunction with `prg_generator.py`, will handle the smooth transition. The `steps_per_second` parameter for fades in the `.seqdesign.json` schema is not used by `compile_seqdesign.py` for generating `.prg.json` files intended for native PRG fade handling by `prg_generator.py`.
 *   **Consult Schema:** Strictly adhere to [`roocode_sequence_designer_tools/docs/seqdesign_json_schema.md`](roocode_sequence_designer_tools/docs/seqdesign_json_schema.md).
 *   **Tool-Assisted Generation:**
     *   If generating from lyrics or audio analysis, look for tools in `roocode_sequence_designer_tools/` that can output or help construct `.seqdesign.json` elements (e.g., pattern templates).
@@ -211,5 +212,8 @@ In the context of Roocode's operations, especially when dealing with programmati
 - [`roocode_sequence_designer_tools/docs/lyrics_extraction_efficiency.md`](roocode_sequence_designer_tools/docs/lyrics_extraction_efficiency.md)
 - [`roocode_sequence_designer_tools/docs/seqdesign_json_schema.md`](roocode_sequence_designer_tools/docs/seqdesign_json_schema.md)
 - [`roocode_sequence_designer_tools/docs/ball_sequence_format.md`](roocode_sequence_designer_tools/docs/ball_sequence_format.md)
+
+---
+**Last Updated:** 2025-06-06 12:07 UTC+7
 
 By following these updated instructions, future Roocode instances will be better equipped to handle sequence design tasks efficiently and accurately, particularly for single-ball requests.

@@ -1,0 +1,61 @@
+{
+  "metadata": {
+    "title": "Test Fade Sequence",
+    "total_duration_seconds": 10.0,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "default_base_color": {"name": "black"}
+  },
+  "effects_timeline": [
+    {
+      "id": "solid_red_1",
+      "type": "solid_color",
+      "description": "Solid red for 2 seconds",
+      "timing": {
+        "start_seconds": 0.0,
+        "end_seconds": 2.0
+      },
+      "params": {
+        "color": {"name": "red"}
+      }
+    },
+    {
+      "id": "fade_red_to_green_1",
+      "type": "fade",
+      "description": "Fade from red to green over 3 seconds",
+      "timing": {
+        "start_seconds": 2.0,
+        "end_seconds": 5.0
+      },
+      "params": {
+        "color_start": {"name": "red"},
+        "color_end": {"name": "green"}
+      }
+    },
+    {
+      "id": "solid_blue_1",
+      "type": "solid_color",
+      "description": "Solid blue for 2 seconds",
+      "timing": {
+        "start_seconds": 5.0,
+        "end_seconds": 7.0
+      },
+      "params": {
+        "color": {"name": "blue"}
+      }
+    },
+    {
+      "id": "fade_blue_to_yellow_1",
+      "type": "fade",
+      "description": "Fade from blue to yellow over 3 seconds",
+      "timing": {
+        "start_seconds": 7.0,
+        "end_seconds": 10.0
+      },
+      "params": {
+        "color_start": {"name": "blue"},
+        "color_end": {"name": "yellow"}
+      }
+    }
+  ]
+}

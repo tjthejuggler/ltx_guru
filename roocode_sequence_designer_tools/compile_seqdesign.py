@@ -424,28 +424,45 @@ def main() -> None:
         
         # Merge Segments (Core Override Logic)
         for new_segment in newly_generated_segments_for_this_effect:
-            # Unpack the new segment
-            ns, ne, nc, np = new_segment
+            # Unpack the new segment (robustly handling optional 5th element for fades)
+            segment_type_marker = None
+            if len(new_segment) == 5:
+                ns, ne, nc_data, np, segment_type_marker = new_segment
+            elif len(new_segment) == 4:
+                ns, ne, nc_data, np = new_segment
+            else:
+                print(f"Warning: Skipping invalid segment structure: {new_segment}")
+                continue
             
             # Create a temporary list for the updated timeline segments
             temp_final_segments = []
             
             # Process each existing segment
-            for old_s, old_e, old_c, old_p in final_segments:
+            for old_segment in final_segments:
+                old_segment_type_marker = None
+                if len(old_segment) == 5:
+                    old_s, old_e, old_c_data, old_p, old_segment_type_marker = old_segment
+                elif len(old_segment) == 4:
+                    old_s, old_e, old_c_data, old_p = old_segment
+                else:
+                    # Should not happen if final_segments is always maintained correctly
+                    temp_final_segments.append(old_segment)
+                    continue
+
                 # Case 1: Old segment is completely before new segment
                 if old_e <= ns:
-                    temp_final_segments.append((old_s, old_e, old_c, old_p))
+                    temp_final_segments.append(old_segment)
                 # Case 2: Old segment is completely after new segment
                 elif old_s >= ne:
-                    temp_final_segments.append((old_s, old_e, old_c, old_p))
+                    temp_final_segments.append(old_segment)
                 # Case 3: Old segment overlaps with new segment
                 else:
                     # Part of old segment before new segment
                     if old_s < ns:
-                        temp_final_segments.append((old_s, ns, old_c, old_p))
+                        temp_final_segments.append((old_s, ns, old_c_data, old_p) + ((old_segment_type_marker,) if old_segment_type_marker else ()))
                     # Part of old segment after new segment
                     if old_e > ne:
-                        temp_final_segments.append((ne, old_e, old_c, old_p))
+                        temp_final_segments.append((ne, old_e, old_c_data, old_p) + ((old_segment_type_marker,) if old_segment_type_marker else ()))
             
             # Add the new segment itself
             temp_final_segments.append(new_segment)
@@ -456,21 +473,33 @@ def main() -> None:
             # Clean up segments (merge adjacent identical segments, remove zero-duration segments)
             cleaned_segments = []
             if temp_final_segments:
-                current_segment = temp_final_segments[0]
-                for next_s, next_e, next_c, next_p in temp_final_segments[1:]:
-                    curr_s, curr_e, curr_c, curr_p = current_segment
-                    # Merge adjacent identical segments
-                    if next_s == curr_e and next_c == curr_c and next_p == curr_p:
-                        current_segment = (curr_s, next_e, curr_c, curr_p)
+                current_segment_tuple = temp_final_segments[0]
+                
+                for next_segment_tuple in temp_final_segments[1:]:
+                    # Unpack current segment robustly
+                    curr_s, curr_e, curr_c_data, curr_p = current_segment_tuple[:4]
+                    curr_type_marker = current_segment_tuple[4] if len(current_segment_tuple) == 5 else None
+
+                    # Unpack next segment robustly
+                    next_s, next_e, next_c_data, next_p = next_segment_tuple[:4]
+                    next_type_marker = next_segment_tuple[4] if len(next_segment_tuple) == 5 else None
+                    
+                    # Merge adjacent identical segments (same color/fade, same pixels, same type)
+                    if (next_s == curr_e and
+                        next_c_data == curr_c_data and
+                        next_p == curr_p and
+                        next_type_marker == curr_type_marker):
+                        # Extend current_segment_tuple's end time
+                        current_segment_tuple = (curr_s, next_e, curr_c_data, curr_p) + ((curr_type_marker,) if curr_type_marker else ())
                     else:
                         # Add current segment if it has positive duration
                         if curr_e > curr_s:
-                            cleaned_segments.append(current_segment)
-                        current_segment = (next_s, next_e, next_c, next_p)
+                            cleaned_segments.append(current_segment_tuple)
+                        current_segment_tuple = next_segment_tuple
                 
                 # Add the last segment if it has positive duration
-                if current_segment[1] > current_segment[0]:
-                    cleaned_segments.append(current_segment)
+                if current_segment_tuple[1] > current_segment_tuple[0]: # Check end_time > start_time
+                    cleaned_segments.append(current_segment_tuple)
             
             # Update final_segments with the cleaned segments
             final_segments = cleaned_segments
@@ -491,18 +520,26 @@ def main() -> None:
     }
     
     # Populate the sequence dictionary
-    for segment in final_segments:
-        start_time_sec, end_time_sec, rgb_color_tuple, pixels_int = segment
+    for segment_tuple in final_segments:
+        # Unpack segment robustly
+        start_time_sec, end_time_sec, color_data, pixels_int = segment_tuple[:4]
+        segment_type_marker = segment_tuple[4] if len(segment_tuple) == 5 else None
         
         # Convert start_time_sec to start_time_units
         start_time_units = round(start_time_sec * processed_metadata['target_prg_refresh_rate'])
         
+        segment_entry = {"pixels": pixels_int}
+
+        if segment_type_marker == "fade":
+            start_color_rgb, end_color_rgb = color_data # color_data is a tuple of (start_rgb, end_rgb)
+            segment_entry["start_color"] = list(start_color_rgb)
+            segment_entry["end_color"] = list(end_color_rgb)
+        else: # Solid color
+            segment_entry["color"] = list(color_data) # color_data is a single rgb_tuple
+
         # Add entry to the sequence dictionary
         # The key must be a string representation of start_time_units
-        prg_json_data['sequence'][str(start_time_units)] = {
-            "color": list(rgb_color_tuple),
-            "pixels": pixels_int
-        }
+        prg_json_data['sequence'][str(start_time_units)] = segment_entry
     
     # Print summary of the PRG-JSON data
     print(f"PRG-JSON construction complete.")

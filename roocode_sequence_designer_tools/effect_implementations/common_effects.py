@@ -65,9 +65,10 @@ def apply_fade_effect(
     params: Dict[str, Any],
     metadata: Dict[str, Any],
     audio_analysis_data=None
-) -> List[Tuple[float, float, Tuple[int, int, int], int]]:
+) -> List[Tuple[float, float, Any, int, Optional[str]]]: # Return type changed for fade segment
     """
     Apply a fade effect that transitions between two colors over the specified duration.
+    This version prepares a single segment descriptor for native PRG generator fade.
     
     Args:
         effect_start_sec: Start time of the effect in seconds
@@ -76,14 +77,16 @@ def apply_fade_effect(
                 Expected to contain:
                 - 'color_start': Starting color specification
                 - 'color_end': Ending color specification
-                - 'steps_per_second': Optional, number of steps per second (default: 20)
+                - 'steps_per_second': Optional, (Currently NOT USED by this function for PRG generation,
+                                      prg_generator.py handles interpolation. Kept for potential
+                                      UI/visualizer use or other effect types).
         metadata: The metadata section from the .seqdesign.json file
                  Expected to contain 'default_pixels' key
         audio_analysis_data: Optional audio analysis data (not used by this effect)
     
     Returns:
-        A list of segment tuples: [(start_sec, end_sec, color_rgb_tuple, pixels_int), ...]
-        Each segment represents a step in the fade transition.
+        A list containing a single segment tuple representing the fade:
+        [(start_sec, end_sec, (start_color_rgb, end_color_rgb), pixels_int, "fade")]
         
         Returns an empty list if effect_end_sec <= effect_start_sec
     """
@@ -108,35 +111,14 @@ def apply_fade_effect(
     
     pixels = metadata['default_pixels']
     
-    # Determine the number of steps based on steps_per_second
-    steps_per_second = params.get('steps_per_second', 20)
-    num_steps = max(2, round(effect_duration * steps_per_second))
+    # The 'steps_per_second' parameter is not used here for PRG generation,
+    # as prg_generator.py handles the interpolation for native fades.
+    # params.get('steps_per_second', 20) # Kept commented for awareness
     
-    # Calculate the duration of each step
-    step_duration = effect_duration / num_steps
-    
-    # Generate the segments for the fade
-    segments = []
-    for i in range(num_steps):
-        # Calculate the start and end time for this segment
-        segment_start = effect_start_sec + (i * step_duration)
-        
-        # Ensure the last segment ends exactly at effect_end_sec
-        if i == num_steps - 1:
-            segment_end = effect_end_sec
-        else:
-            segment_end = effect_start_sec + ((i + 1) * step_duration)
-        
-        # Calculate the interpolation factor for this step
-        factor = i / (num_steps - 1) if num_steps > 1 else 0
-        
-        # Interpolate the color for this step
-        color_rgb = interpolate_color(color_start_rgb, color_end_rgb, factor)
-        
-        # Add the segment to the list
-        segments.append((segment_start, segment_end, color_rgb, pixels))
-    
-    return segments
+    # Return a single segment representing the entire fade
+    # The third element is a tuple of (start_color, end_color)
+    # The fifth element is a marker string "fade"
+    return [(effect_start_sec, effect_end_sec, (color_start_rgb, color_end_rgb), pixels, "fade")]
 
 
 def apply_strobe_effect(

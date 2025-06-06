@@ -1,0 +1,50 @@
+{
+    "default_pixels": 4,
+    "refresh_rate": 100,
+    "end_time": 1000,
+    "color_format": "RGB",
+    "sequence": {
+        "0": {
+            "pixels": 4,
+            "color": [
+                255,
+                0,
+                0
+            ]
+        },
+        "200": {
+            "pixels": 4,
+            "start_color": [
+                255,
+                0,
+                0
+            ],
+            "end_color": [
+                0,
+                255,
+                0
+            ]
+        },
+        "500": {
+            "pixels": 4,
+            "color": [
+                0,
+                0,
+                255
+            ]
+        },
+        "700": {
+            "pixels": 4,
+            "start_color": [
+                0,
+                0,
+                255
+            ],
+            "end_color": [
+                255,
+                255,
+                0
+            ]
+        }
+    }
+}
