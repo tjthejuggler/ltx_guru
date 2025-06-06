@@ -5,7 +5,7 @@ import os # Added for path operations if needed, but string formatting is enough
 # --- Configuration ---
 DEFAULT_PIXELS = 4
 COLOR_FORMAT = "rgb"
-REFRESH_RATE = 1000
+REFRESH_RATE = 100
 TIMESTAMP_INCREMENT = 100
 COLORS_CYCLE = [
     [255, 0, 0],  # Red
