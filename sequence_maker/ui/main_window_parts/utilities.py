@@ -148,15 +148,9 @@ def load_settings(main_window):
     if state:
         main_window.restoreState(state)
     
-    # Load recent files
-    recent_files = settings.value("recentFiles", [])
-    
-    # Check if recent_files attribute exists
-    if not hasattr(main_window.app.project_manager, 'recent_files'):
-        main_window.app.project_manager.recent_files = []
-    
-    if recent_files:
-        main_window.app.project_manager.recent_files = recent_files
+    # Recent files are handled by app.config, which loads itself.
+    # We just need to ensure the menu reflects app.config's state at startup.
+    main_window._update_recent_files_menu()
 
 
 def save_settings(main_window):
@@ -169,33 +163,29 @@ def save_settings(main_window):
     # Save window state
     settings.setValue("windowState", main_window.saveState())
     
-    # Check if recent_files attribute exists
-    if not hasattr(main_window.app.project_manager, 'recent_files'):
-        main_window.app.project_manager.recent_files = []
-    
-    # Save recent files
-    settings.setValue("recentFiles", main_window.app.project_manager.recent_files)
+    # Recent files are handled by app.config.save()
+    pass
 
 
 def update_recent_files_menu(main_window):
     """Update the recent files menu."""
     main_window.recent_files_menu.clear()
-    
-    # Check if recent_files attribute exists
-    if not hasattr(main_window.app.project_manager, 'recent_files'):
-        # Initialize recent_files attribute if it doesn't exist
-        main_window.app.project_manager.recent_files = []
-    
-    # Add recent files
-    for file_path in main_window.app.project_manager.recent_files:
+
+    # Get the list directly from app.config
+    recent_files_list = main_window.app.config.get("general", "recent_projects", [])
+
+    for file_path in recent_files_list:
         action = main_window.recent_files_menu.addAction(file_path)
         action.triggered.connect(lambda checked, path=file_path: main_window._open_recent_project(path))
-    
-    # Add separator and clear action if there are recent files
-    if main_window.app.project_manager.recent_files:
+
+    if recent_files_list:
         main_window.recent_files_menu.addSeparator()
         clear_action = main_window.recent_files_menu.addAction("Clear Recent Files")
         clear_action.triggered.connect(main_window._clear_recent_files)
+    else:
+        # Add a disabled placeholder if the list is empty
+        empty_action = main_window.recent_files_menu.addAction("(No Recent Files)")
+        empty_action.setEnabled(False)
 
 
 def open_recent_project(main_window, project_path):
@@ -210,24 +200,19 @@ def open_recent_project(main_window, project_path):
         logging.error(f"Error loading recent project: {e}")
         QMessageBox.critical(main_window, "Error", f"Failed to load project: {str(e)}")
         
-        # Check if recent_files attribute exists
-        if not hasattr(main_window.app.project_manager, 'recent_files'):
-            main_window.app.project_manager.recent_files = []
-        
-        # Remove the file from recent files if it couldn't be loaded
-        if project_path in main_window.app.project_manager.recent_files:
-            main_window.app.project_manager.recent_files.remove(project_path)
-            main_window._update_recent_files_menu()
+        # If loading fails, remove the project_path from app.config's recent_projects list
+        recent_list_from_config = main_window.app.config.get("general", "recent_projects", [])
+        if project_path in recent_list_from_config:
+            recent_list_from_config.remove(project_path)
+            main_window.app.config.set("general", "recent_projects", recent_list_from_config)
+            main_window.app.config.save() # Persist the removal
+            main_window._update_recent_files_menu() # Update the UI
 
 
 def clear_recent_files(main_window):
     """Clear the recent files list."""
-    # Check if recent_files attribute exists
-    if not hasattr(main_window.app.project_manager, 'recent_files'):
-        main_window.app.project_manager.recent_files = []
-    else:
-        main_window.app.project_manager.recent_files.clear()
-    
+    main_window.app.config.set("general", "recent_projects", [])
+    main_window.app.config.save() # Persist the change
     main_window._update_recent_files_menu()
 
 
@@ -306,3 +291,6 @@ def update_ui(main_window):
     # Since there's no get_selected_segments_count method, we'll disable this for now
     # In a real implementation, you would need to track multiple segment selection
     main_window.merge_segments_action.setEnabled(False)
+    
+    # Update recent files menu
+    main_window._update_recent_files_menu()

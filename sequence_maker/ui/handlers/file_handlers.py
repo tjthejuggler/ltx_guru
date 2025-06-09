@@ -12,6 +12,8 @@ from models.timeline import Timeline
 from models.segment import TimelineSegment
 from utils.file_type_utils import is_valid_ball_sequence, is_valid_seqdesign, is_valid_lyrics_timestamps
 
+MAX_RECENT_FILES = 10
+
 
 class FileHandlers:
     """File operation handlers for the main window."""
@@ -54,11 +56,16 @@ class FileHandlers:
         
         if file_path:
             # Load project
-            self.app.project_manager.load_project(file_path)
-            
-            # Update UI
-            self.main_window._update_ui()
-    
+            try:
+                self.app.project_manager.load_project(file_path)
+                # ProjectManager calls app.config.add_recent_project
+                self.app.config.save()
+                self.main_window._update_ui()
+                self.main_window._update_recent_files_menu()
+            except Exception as e:
+                self.app.logger.error(f"Error loading project in on_open: {e}", exc_info=True)
+                QMessageBox.critical(self.main_window, "Error", f"Failed to load project: {str(e)}")
+
     def on_save(self):
         """Save the current project."""
         # Check if project has a file path
@@ -72,6 +79,9 @@ class FileHandlers:
         # Update UI
         if success:
             self.main_window.statusBar().showMessage("Project saved", 3000)
+            # ProjectManager calls app.config.add_recent_project and app.config.save()
+            self.app.config.load() # Force reload from disk
+            self.main_window._update_recent_files_menu()
             
         return success
     
@@ -92,6 +102,9 @@ class FileHandlers:
             # Update UI
             if success:
                 self.main_window.statusBar().showMessage("Project saved", 3000)
+                # ProjectManager calls app.config.add_recent_project and app.config.save()
+                self.app.config.load() # Force reload from disk
+                self.main_window._update_recent_files_menu()
                 
             return success
             

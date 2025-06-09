@@ -2,8 +2,8 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2025-06-06T14:54:08.315176",
-    "modified": "2025-06-06T15:08:39.482538",
-    "name": "Untitled Project",
+    "modified": "2025-06-09T18:46:18.828439",
+    "name": "test fade sequence",
     "description": ""
   },
   "settings": {
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2025-06-06T14:54:08.315212",
-      "modified": "2025-06-06T15:08:39.482511",
+      "modified": "2025-06-09T18:46:18.828417",
       "segments": [
         {
           "startTime": 0.0,
@@ -85,14 +85,14 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2025-06-06T14:54:08.315220",
-      "modified": "2025-06-06T15:08:39.482531",
+      "modified": "2025-06-09T18:46:18.828433",
       "segments": []
     },
     {
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2025-06-06T14:54:08.315225",
-      "modified": "2025-06-06T15:08:39.482535",
+      "modified": "2025-06-09T18:46:18.828436",
       "segments": []
     }
   ],

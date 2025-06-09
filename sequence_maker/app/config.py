@@ -152,6 +152,8 @@ class Config:
         try:
             with open(self.config_file, 'w') as f:
                 json.dump(self.config, f, indent=2)
+                f.flush()  # Ensure Python's internal buffer is written to the OS
+                os.fsync(f.fileno())  # Ensure OS buffer is written to disk
             self.logger.info("Configuration saved successfully")
         except Exception as e:
             self.logger.error(f"Error saving configuration: {e}")

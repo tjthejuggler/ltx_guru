@@ -143,9 +143,9 @@ Sequence Maker is designed to work with prg_generator to create .prg files for L
 
 The application keeps track of recently opened projects:
 
-1. Access recent projects from **File > Recent Projects**.
+1. Access recent projects from **File > Recent Files**. (Fixed in vX.Y.Z - menu now correctly populates and updates).
 2. Click on a project in the list to open it.
-3. Use the "Clear Recent Projects" option to clear the list.
+3. Use the "Clear Recent Files" option to clear the list.
 4. The application will remember the last opened project and can reopen it automatically.
 
 ## Keyboard Shortcuts
@@ -183,4 +183,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-*Last updated: 2025-06-06*
+*Last updated: 2025-06-09*
