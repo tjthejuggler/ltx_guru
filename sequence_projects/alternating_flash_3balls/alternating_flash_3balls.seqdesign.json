@@ -1,0 +1,8157 @@
+{
+  "metadata": {
+    "title": "Alternating Flash Sequence - 3 Balls",
+    "total_duration_seconds": 120.0,
+    "target_prg_refresh_rate": 100,
+    "default_pixels": 4,
+    "default_base_color": {
+      "name": "black"
+    },
+    "num_balls": 3
+  },
+  "effects_timeline": [
+    {
+      "id": "flash_ball1_1",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 0.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_161",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 0.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_321",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 0.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_2",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 1.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_162",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 1.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_322",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 1.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_3",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 1.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_163",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 2.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_323",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 2.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_4",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 2.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_164",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 2.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_324",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 3.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_5",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 3.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_165",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 3.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_325",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 3.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_6",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 4.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_166",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 4.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_326",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 4.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_7",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 4.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_167",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 5.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_327",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 5.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_8",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 5.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_168",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 5.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_328",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 6.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_9",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 6.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_169",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 6.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_329",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 6.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_10",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 7.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_170",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 7.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_330",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 7.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_11",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 7.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_171",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 8.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_331",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 8.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_12",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 8.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_172",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 8.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_332",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 9.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_13",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 9.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_173",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 9.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_333",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 9.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_14",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 10.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_174",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 10.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_334",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 10.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_15",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 10.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_175",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 11.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_335",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 11.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_16",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 11.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_176",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 11.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_336",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 12.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_17",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 12.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_177",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 12.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_337",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 12.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_18",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 13.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_178",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 13.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_338",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 13.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_19",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 13.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_179",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 14.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_339",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 14.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_20",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 14.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_180",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 14.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_340",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 15.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_21",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 15.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_181",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 15.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_341",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 15.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_22",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 16.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_182",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 16.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_342",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 16.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_23",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 16.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_183",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 17.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_343",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 17.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_24",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 17.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_184",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 17.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_344",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 18.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_25",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 18.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_185",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 18.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_345",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 18.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_26",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 19.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_186",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 19.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_346",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 19.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_27",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 19.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_187",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 20.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_347",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 20.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_28",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 20.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_188",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 20.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_348",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 21.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_29",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 21.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_189",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 21.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_349",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 21.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_30",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 22.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_190",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 22.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_350",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 22.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_31",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 22.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_191",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 23.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_351",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 23.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_32",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 23.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_192",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 23.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_352",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 24.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_33",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 24.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_193",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 24.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_353",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 24.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_34",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 25.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_194",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 25.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_354",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 25.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_35",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 25.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_195",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 26.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_355",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 26.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_36",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 26.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_196",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 26.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_356",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 27.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_37",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 27.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_197",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 27.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_357",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 27.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_38",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 28.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_198",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 28.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_358",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 28.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_39",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 28.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_199",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 29.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_359",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 29.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_40",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 29.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_200",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 29.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_360",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 30.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_41",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 30.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_201",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 30.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_361",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 30.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_42",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 31.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_202",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 31.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_362",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 31.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_43",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 31.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_203",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 32.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_363",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 32.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_44",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 32.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_204",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 32.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_364",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 33.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_45",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 33.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_205",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 33.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_365",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 33.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_46",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 34.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_206",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 34.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_366",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 34.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_47",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 34.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_207",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 35.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_367",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 35.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_48",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 35.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_208",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 35.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_368",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 36.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_49",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 36.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_209",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 36.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_369",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 36.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_50",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 37.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_210",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 37.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_370",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 37.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_51",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 37.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_211",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 38.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_371",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 38.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_52",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 38.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_212",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 38.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_372",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 39.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_53",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 39.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_213",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 39.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_373",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 39.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_54",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 40.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_214",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 40.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_374",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 40.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_55",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 40.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_215",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 41.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_375",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 41.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_56",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 41.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_216",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 41.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_376",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 42.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_57",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 42.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_217",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 42.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_377",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 42.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_58",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 43.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_218",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 43.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_378",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 43.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_59",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 43.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_219",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 44.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_379",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 44.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_60",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 44.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_220",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 44.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_380",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 45.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_61",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 45.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_221",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 45.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_381",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 45.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_62",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 46.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_222",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 46.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_382",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 46.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_63",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 46.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_223",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 47.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_383",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 47.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_64",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 47.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_224",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 47.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_384",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 48.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_65",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 48.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_225",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 48.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_385",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 48.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_66",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 49.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_226",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 49.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_386",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 49.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_67",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 49.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_227",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 50.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_387",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 50.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_68",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 50.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_228",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 50.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_388",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 51.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_69",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 51.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_229",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 51.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_389",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 51.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_70",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 52.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_230",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 52.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_390",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 52.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_71",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 52.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_231",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 53.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_391",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 53.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_72",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 53.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_232",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 53.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_392",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 54.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_73",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 54.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_233",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 54.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_393",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 54.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_74",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 55.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_234",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 55.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_394",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 55.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_75",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 55.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_235",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 56.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_395",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 56.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_76",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 56.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_236",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 56.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_396",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 57.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_77",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 57.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_237",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 57.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_397",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 57.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_78",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 58.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_238",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 58.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_398",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 58.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_79",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 58.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_239",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 59.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_399",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 59.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_80",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 59.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_240",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 59.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_400",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 60.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_81",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 60.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_241",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 60.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_401",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 60.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_82",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 61.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_242",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 61.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_402",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 61.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_83",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 61.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_243",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 62.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_403",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 62.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_84",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 62.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_244",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 62.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_404",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 63.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_85",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 63.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_245",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 63.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_405",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 63.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_86",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 64.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_246",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 64.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_406",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 64.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_87",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 64.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_247",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 65.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_407",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 65.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_88",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 65.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_248",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 65.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_408",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 66.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_89",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 66.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_249",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 66.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_409",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 66.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_90",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 67.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_250",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 67.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_410",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 67.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_91",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 67.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_251",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 68.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_411",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 68.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_92",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 68.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_252",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 68.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_412",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 69.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_93",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 69.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_253",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 69.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_413",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 69.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_94",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 70.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_254",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 70.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_414",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 70.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_95",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 70.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_255",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 71.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_415",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 71.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_96",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 71.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_256",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 71.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_416",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 72.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_97",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 72.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_257",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 72.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_417",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 72.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_98",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 73.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_258",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 73.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_418",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 73.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_99",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 73.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_259",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 74.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_419",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 74.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_100",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 74.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_260",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 74.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_420",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 75.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_101",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 75.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_261",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 75.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_421",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 75.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_102",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 76.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_262",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 76.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_422",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 76.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_103",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 76.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_263",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 77.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_423",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 77.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_104",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 77.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_264",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 77.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_424",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 78.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_105",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 78.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_265",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 78.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_425",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 78.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_106",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 79.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_266",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 79.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_426",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 79.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_107",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 79.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_267",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 80.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_427",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 80.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_108",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 80.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_268",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 80.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_428",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 81.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_109",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 81.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_269",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 81.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_429",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 81.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_110",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 82.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_270",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 82.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_430",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 82.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_111",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 82.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_271",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 83.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_431",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 83.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_112",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 83.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_272",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 83.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_432",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 84.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_113",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 84.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_273",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 84.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_433",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 84.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_114",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 85.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_274",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 85.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_434",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 85.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_115",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 85.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_275",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 86.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_435",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 86.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_116",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 86.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_276",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 86.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_436",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 87.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_117",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 87.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_277",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 87.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_437",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 87.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_118",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 88.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_278",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 88.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_438",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 88.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_119",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 88.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_279",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 89.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_439",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 89.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_120",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 89.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_280",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 89.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_440",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 90.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_121",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 90.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_281",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 90.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_441",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 90.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_122",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 91.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_282",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 91.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_442",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 91.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_123",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 91.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_283",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 92.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_443",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 92.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_124",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 92.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_284",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 92.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_444",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 93.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_125",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 93.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_285",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 93.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_445",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 93.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_126",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 94.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_286",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 94.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_446",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 94.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_127",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 94.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_287",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 95.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_447",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 95.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_128",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 95.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_288",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 95.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_448",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 96.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_129",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 96.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_289",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 96.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_449",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 96.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_130",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 97.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_290",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 97.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_450",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 97.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_131",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 97.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_291",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 98.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_451",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 98.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_132",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 98.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_292",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 98.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_452",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 99.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_133",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 99.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_293",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 99.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_453",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 99.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_134",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 100.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_294",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 100.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_454",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 100.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_135",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 100.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_295",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 101.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_455",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 101.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_136",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 101.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_296",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 101.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_456",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 102.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_137",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 102.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_297",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 102.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_457",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 102.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_138",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 103.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_298",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 103.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_458",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 103.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_139",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 103.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_299",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 104.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_459",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 104.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_140",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 104.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_300",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 104.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_460",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 105.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_141",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 105.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_301",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 105.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_461",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 105.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_142",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 106.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_302",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 106.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_462",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 106.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_143",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 106.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_303",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 107.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_463",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 107.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_144",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 107.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_304",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 107.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_464",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 108.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_145",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 108.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_305",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 108.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_465",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 108.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_146",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 109.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_306",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 109.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_466",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 109.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_147",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 109.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_307",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 110.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_467",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 110.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_148",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 110.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_308",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 110.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_468",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 111.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_149",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 111.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_309",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 111.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_469",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 111.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_150",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 112.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_310",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 112.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_470",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 112.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_151",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 112.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_311",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 113.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_471",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 113.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_152",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 113.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_312",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 113.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_472",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 114.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_153",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 114.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_313",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 114.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_473",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 114.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_154",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 115.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_314",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 115.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_474",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 115.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_155",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 115.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_315",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 116.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_475",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 116.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_156",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 116.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_316",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 116.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_476",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 117.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_157",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 117.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_317",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 117.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_477",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 117.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_158",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 118.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_318",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 118.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_478",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 118.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_159",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 118.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_319",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 119.0,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball3_479",
+      "type": "solid_color",
+      "description": "Flash ball3 green",
+      "timing": {
+        "start_seconds": 119.25,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "green"
+        },
+        "ball_ids": [
+          "ball3"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball1_160",
+      "type": "solid_color",
+      "description": "Flash ball1 red",
+      "timing": {
+        "start_seconds": 119.5,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "red"
+        },
+        "ball_ids": [
+          "ball1"
+        ]
+      }
+    },
+    {
+      "id": "flash_ball2_320",
+      "type": "solid_color",
+      "description": "Flash ball2 blue",
+      "timing": {
+        "start_seconds": 119.75,
+        "duration_seconds": 0.1
+      },
+      "params": {
+        "color": {
+          "name": "blue"
+        },
+        "ball_ids": [
+          "ball2"
+        ]
+      }
+    }
+  ]
+}

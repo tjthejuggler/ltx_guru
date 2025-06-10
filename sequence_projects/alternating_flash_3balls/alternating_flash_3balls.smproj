@@ -1,0 +1,108 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "created": "2025-06-10T16:23:33.000000",
+    "modified": "2025-06-10T16:23:33.000000",
+    "name": "Alternating Flash 3 Balls",
+    "description": "3-ball alternating flash sequence: Ball 1 (red) at 0.25s intervals, Ball 2 (blue) at 0.5s intervals, Ball 3 (green) at 0.75s intervals. Each flash lasts 0.1 seconds for 2 minutes total."
+  },
+  "settings": {
+    "defaultPixels": 4,
+    "refreshRate": 100,
+    "totalDuration": 120,
+    "zoomLevel": 1.0
+  },
+  "keyMappings": {},
+  "effects": {},
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "defaultPixels": 4,
+      "created": "2025-06-10T16:23:33.000000",
+      "modified": "2025-06-10T16:23:33.000000",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 120.0,
+          "color": [0, 0, 0],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    },
+    {
+      "name": "Ball 2", 
+      "defaultPixels": 4,
+      "created": "2025-06-10T16:23:33.000000",
+      "modified": "2025-06-10T16:23:33.000000",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 120.0,
+          "color": [0, 0, 0],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    },
+    {
+      "name": "Ball 3",
+      "defaultPixels": 4,
+      "created": "2025-06-10T16:23:33.000000",
+      "modified": "2025-06-10T16:23:33.000000",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 120.0,
+          "color": [0, 0, 0],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "embedded": false,
+    "filename": null,
+    "filepath": null,
+    "duration": 0,
+    "data": null
+  },
+  "visualizations": {
+    "selected": [
+      "waveform",
+      "beats"
+    ],
+    "settings": {
+      "waveform": {
+        "color": [0, 0, 255],
+        "height": 100
+      },
+      "beats": {
+        "color": [255, 0, 0],
+        "threshold": 0.5
+      }
+    }
+  },
+  "lyrics": {
+    "song_name": "",
+    "artist_name": "",
+    "lyrics_text": "",
+    "word_timestamps": []
+  },
+  "chat_history": [],
+  "llm_metadata": {
+    "token_usage": 0,
+    "estimated_cost": 0.0,
+    "interactions": []
+  },
+  "llm_customization": {
+    "custom_instructions": "",
+    "presets": [],
+    "task_templates": [],
+    "active_preset": "Default"
+  }
+}

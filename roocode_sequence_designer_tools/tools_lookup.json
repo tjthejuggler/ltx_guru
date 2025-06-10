@@ -133,6 +133,12 @@
       "script_path": "combine_audio_data.py",
       "description": "Combines multiple audio analysis JSON files into a single timeline, offsetting timestamps and prefixing section labels.",
       "usage": "python -m roocode_sequence_designer_tools.combine_audio_data --analysis-jsons <file1.json> <file2.json> ... --audio-files <audio1.mp3> <audio2.mp3> ... --output-json <combined_output.json>"
+    },
+    {
+      "name": "generate_smproj_from_prg",
+      "script_path": "generate_smproj_from_prg.py",
+      "description": "Generates a properly formatted Sequence Maker project file (.smproj) from compiled PRG JSON files (.prg.json). Essential for creating project files that display colors correctly in Sequence Maker.",
+      "usage": "python roocode_sequence_designer_tools/generate_smproj_from_prg.py <ball1.prg.json> <ball2.prg.json> <ball3.prg.json> --project-name \"Project Name\" --output project.smproj"
     }
   ],
   "pattern_templates": [

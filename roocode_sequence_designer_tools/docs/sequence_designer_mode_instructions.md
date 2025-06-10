@@ -5,6 +5,7 @@
 - **Tool-Centric:** Prioritize using existing tools in `roocode_sequence_designer_tools/` over manual file manipulation or creating new scripts for established tasks.
 - **Schema Adherence:** Strictly follow the JSON schemas for all LTX Guru file formats (e.g., `.ball.json`, `.seqdesign.json`, `.lyrics.json`). Refer to schema documents in `roocode_sequence_designer_tools/docs/`.
 - **Clear Communication:** If a user's request is ambiguous or a tool has limitations, clearly explain the situation and propose solutions or request clarification.
+- **CRITICAL: Code Generation for Repetitive Content:** Use Python scripts to generate large, repetitive sequence files instead of manual writing. Never manually write repetitive JSON content.
 
 ## File Organization and Types
 
@@ -19,7 +20,11 @@ sequence_projects/
     ├── song_name.ball.json   # Single ball sequence file (for single ball timelines)
     ├── song_name.analysis.json # Audio analysis data
     ├── song_name.seqdesign.json # High-level sequence design file (multi-ball or advanced effects)
-    └── song_name.prg.json    # Compiled program file for LTX balls
+    ├── song_name.prg.json    # Compiled program file for LTX balls (single ball or combined)
+    ├── song_name_Ball_1.prg.json # Per-ball program files (for multi-ball sequences)
+    ├── song_name_Ball_2.prg.json # Per-ball program files (for multi-ball sequences)
+    ├── song_name_Ball_3.prg.json # Per-ball program files (for multi-ball sequences)
+    └── song_name.smproj      # Sequence Maker project file (openable by Sequence Maker)
 ```
 
 ### File Types and Extensions
@@ -29,6 +34,7 @@ sequence_projects/
 | Sequence Design Files     | `.seqdesign.json` | High-level sequence design (multi-ball/advanced) |
 | PRG JSON Files            | `.prg.json`       | Compiled program files for LTX balls             |
 | Ball Sequence Files       | `.ball.json`      | Single ball color sequences                      |
+| Sequence Maker Projects   | `.smproj`         | Project files openable by Sequence Maker        |
 | Lyrics Timestamps         | `.lyrics.json`    | Timestamped/aligned lyrics                       |
 | Audio Analysis Reports    | `.analysis.json`  | Audio analysis data                              |
 | Raw Lyrics Text           | `.txt`            | User-provided or raw lyrics text                 |
@@ -51,8 +57,13 @@ Understanding the user's need is key to selecting the correct output format:
 
 2.  **Multi-Ball or Advanced Sequences (`.seqdesign.json` then `.prg.json`):**
     *   **Trigger:** When the user requests sequences for multiple balls, or requires advanced design features unique to `.seqdesign.json` (like pattern templates, complex effect layering, audio-reactive effects not directly generatable into `.ball.json`).
-    *   **Primary Output:** A `.seqdesign.json` file, which is then compiled into a `.prg.json` file using `compile_seqdesign.py`.
+    *   **Primary Output:** A `.seqdesign.json` file, which is then compiled into per-ball `.prg.json` files using `compile_seqdesign.py`.
     *   **Schema:** Consult [`roocode_sequence_designer_tools/docs/seqdesign_json_schema.md`](roocode_sequence_designer_tools/docs/seqdesign_json_schema.md).
+
+3.  **Project Files for Sequence Maker (`.smproj`):**
+    *   **Trigger:** When the user requests a "project file" or a file "openable by Sequence Maker."
+    *   **Primary Output:** A properly formatted `.smproj` file with populated timeline segments.
+    *   **Critical:** Use [`generate_smproj_from_prg.py`](roocode_sequence_designer_tools/generate_smproj_from_prg.py) to convert compiled `.prg.json` files into `.smproj` format. Never create `.smproj` files with empty timeline segments.
 
 ## Sequence Generation Workflows
 
@@ -129,13 +140,64 @@ Use this for multi-ball sequences or when advanced effects from the `.seqdesign.
     ```
 *   **Troubleshoot:** Address any compilation errors by re-checking the `.seqdesign.json` against its schema.
 
+### 4. Multi-Ball Sequence Workflow (Complete Process)
+
+For multi-ball sequences (e.g., alternating flash patterns, synchronized effects), follow this complete workflow:
+
+*   **Step 1: Generate `.seqdesign.json`**
+    *   Use Python scripts to generate complex, repetitive patterns programmatically
+    *   Ensure `metadata.num_balls` is set correctly (e.g., 3 for 3-ball sequences)
+    *   Use `ball_ids` in effect `params` to target specific balls (e.g., "ball1", "ball2", "ball3")
+
+*   **Step 2: Compile to Combined `.prg.json`**
+    ```bash
+    python roocode_sequence_designer_tools/compile_seqdesign.py input.seqdesign.json combined.prg.json
+    ```
+
+*   **Step 3: Split into Per-Ball `.prg.json` Files**
+    *   Create a script to filter the combined sequence by ball colors/IDs
+    *   Generate separate `.prg.json` files for each ball (e.g., `project_Ball_1.prg.json`, `project_Ball_2.prg.json`)
+
+*   **Step 4: Generate Proper `.smproj` File**
+    ```bash
+    python roocode_sequence_designer_tools/generate_smproj_from_prg.py \
+        project_Ball_1.prg.json project_Ball_2.prg.json project_Ball_3.prg.json \
+        --project-name "Project Name" --output project.smproj
+    ```
+
+*   **Step 5: Verify in Sequence Maker**
+    *   ALWAYS test the generated `.smproj` file in Sequence Maker to ensure colors display correctly
+    *   The file should show proper timeline segments with colors, not empty timelines
+
+**Critical Notes:**
+- Never create `.smproj` files manually with empty segments
+- Always use `generate_smproj_from_prg.py` for proper segment structure
+- Each timeline segment needs: `startTime`, `endTime`, `color` (RGB array), `pixels`, `effects` (empty array), `segment_type` ("solid")
+
 ## Tool Usage Guidelines (Reinforced)
 
 1.  **ALWAYS first search for existing tools** in the `roocode_sequence_designer_tools` directory (especially in `converters/` and `effect_implementations/`) that can accomplish your task or part of it. This is especially critical for standard file conversions (e.g., lyrics to `.ball.json`, `.seqdesign.json` to `.prg.json`). **Prioritize using these tools over manual JSON construction via `write_to_file` or `apply_diff` for generating entire structured files.**
-2.  **Augmenting Existing Tools / Handling Complex Manipulations:** If an existing tool provides a base output that needs further programmatic transformation (like color cycling, complex data mapping, or significant JSON restructuring), **the preferred method is to create a small, focused Python script** (either a temporary one in the project's directory or a reusable one in `roocode_sequence_designer_tools/modifiers/`) to perform these modifications. Execute this script after the base tool runs. This is more robust and maintainable than complex internal LLM logic. Note such limitations or patterns for potential future enhancements to the base tool itself or for the creation of new, dedicated tools.
-3.  **Creating New Reusable Tools:** If a new, generally useful utility or a complex transformation not covered by existing tools is needed, propose and create a well-documented Python script within `roocode_sequence_designer_tools/`. Ensure it's added to `tools_lookup.json` if appropriate.
-4.  When using CLI tools, always verify their expected arguments (e.g., via `--help` or by reading their source/documentation).
-5.  **Temporary vs. Reusable Scripts:**
+
+2.  **CRITICAL: Code Generation for Repetitive Sequence Content:**
+    *   **When to Use Code Generation:** For any sequence file that contains large amounts of repetitive data, you MUST use Python code generation instead of manual writing. Examples include:
+        - Ball sequences with >20 segments
+        - Flasher patterns with repeated timing cycles
+        - Color sequences with repetitive patterns
+        - .smproj files with large timeline arrays
+        - Any JSON file where you would be copy-pasting similar structures multiple times
+    *   **Process:**
+        1. Write a Python script that generates the complete JSON structure programmatically
+        2. Use `execute_command` to run the script and write output directly to the target file
+        3. NEVER paste large, script-generated outputs into `write_to_file` content tags
+    *   **Exception:** Only write files manually when they are small, non-repetitive, or when editing documentation/code.
+
+3.  **Augmenting Existing Tools / Handling Complex Manipulations:** If an existing tool provides a base output that needs further programmatic transformation (like color cycling, complex data mapping, or significant JSON restructuring), **the preferred method is to create a small, focused Python script** (either a temporary one in the project's directory or a reusable one in `roocode_sequence_designer_tools/modifiers/`) to perform these modifications. Execute this script after the base tool runs. This is more robust and maintainable than complex internal LLM logic. Note such limitations or patterns for potential future enhancements to the base tool itself or for the creation of new, dedicated tools.
+
+4.  **Creating New Reusable Tools:** If a new, generally useful utility or a complex transformation not covered by existing tools is needed, propose and create a well-documented Python script within `roocode_sequence_designer_tools/`. Ensure it's added to `tools_lookup.json` if appropriate.
+
+5.  When using CLI tools, always verify their expected arguments (e.g., via `--help` or by reading their source/documentation).
+
+6.  **Temporary vs. Reusable Scripts:**
     *   **Temporary Scripts:** For modifications highly specific to one project or sequence, a script can be created within that project's subfolder (e.g., `sequence_projects/song_name/apply_custom_logic.py`).
     *   **Reusable Tools:** If the logic is likely to be useful for other sequences, create it as a new tool in `roocode_sequence_designer_tools/` (e.g., `roocode_sequence_designer_tools/modifiers/apply_color_cycle.py`) with proper documentation.
 
@@ -214,6 +276,6 @@ In the context of Roocode's operations, especially when dealing with programmati
 - [`roocode_sequence_designer_tools/docs/ball_sequence_format.md`](roocode_sequence_designer_tools/docs/ball_sequence_format.md)
 
 ---
-**Last Updated:** 2025-06-06 12:07 UTC+7
+**Last Updated:** 2025-06-10 16:48 UTC+7
 
-By following these updated instructions, future Roocode instances will be better equipped to handle sequence design tasks efficiently and accurately, particularly for single-ball requests.
+By following these updated instructions, future Roocode instances will be better equipped to handle sequence design tasks efficiently and accurately, particularly for multi-ball sequences and proper .smproj file generation.

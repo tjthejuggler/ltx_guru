@@ -58,4 +58,48 @@
 
 **Impact:** These changes aim to significantly improve efficiency, reduce errors, and ensure Roocode correctly handles multi-ball sequence generation and project file requests as per user expectations and LTX system requirements.
 
+### 2025-06-10 16:19 (Asia/Bangkok) - CRITICAL: Code Generation for Repetitive Content
+
+**Issue Identified:** Sequence Designer roomode was manually writing out large, repetitive JSON content instead of using code generation, leading to extreme inefficiency and user frustration.
+
+**Example Problem:** When creating ball sequences or .smproj files with repetitive segments (e.g., flasher patterns with 160+ repeated segments), the roomode was attempting to manually write the entire JSON structure in `write_to_file` content tags, resulting in truncated files and wasted tokens.
+
+**Root Cause:** Lack of explicit guidance about when to use code generation vs. manual writing for sequence content.
+
+**Solution Implemented:**
+1. **Updated `.roomodes` customInstructions:** Added section 2a with explicit directive to use Python code generation for repetitive sequence content.
+2. **Updated `sequence_designer_mode_instructions.md`:** Added detailed guidelines in Tool Usage section about when and how to use code generation.
+3. **Clear Criteria:** Defined specific thresholds (>20 segments, flasher patterns, color cycles, large timeline arrays) that trigger code generation requirement.
+4. **Process Clarification:** Emphasized using `execute_command` to run Python scripts that write directly to files, never pasting large generated content into `write_to_file`.
+
+**Key Rule Added:** "NEVER manually write repetitive JSON content in write_to_file. Use Python scripts for generation and direct file writing."
+
+**Exception Clarified:** Manual writing is only appropriate for small, non-repetitive files or when editing documentation/code.
+
+**Expected Impact:** This should eliminate the inefficient pattern of manually writing large repetitive sequence files and ensure the roomode uses appropriate code generation for such tasks.
+
+### 2025-06-10 16:28 (Asia/Bangkok) - CRITICAL: .smproj Generation Fix
+
+**Issue:** Created .smproj file with empty timeline segments, resulting in no visible colors in Sequence Maker despite correct .prg.json files.
+
+**Root Cause:** Misunderstood .smproj structure - assumed it only needed metadata and basic timeline structure, but Sequence Maker requires actual segment data with startTime, endTime, color, and segment_type fields.
+
+**Solution Implemented:**
+1. **Created new tool:** [`generate_smproj_from_prg.py`](roocode_sequence_designer_tools/generate_smproj_from_prg.py) to properly convert .prg.json files back to .smproj format
+2. **Tool converts PRG sequence entries into timeline segments** with correct timing and colors
+3. **Documented tool:** Created [`generate_smproj_from_prg_tool.md`](roocode_sequence_designer_tools/docs/generate_smproj_from_prg_tool.md) and registered in [`tools_lookup.json`](roocode_sequence_designer_tools/tools_lookup.json)
+
+**Key Learnings:**
+1. **Always verify .smproj files in Sequence Maker** - Don't assume structure is correct without testing
+2. **PRG-to-SMPROJ conversion is essential** - Multi-ball workflows need this bridge between compiled PRG and displayable project files
+3. **Segment structure is critical** - Each segment needs: startTime, endTime, color (RGB array), pixels, effects (empty array), segment_type ("solid")
+4. **Tool creation workflow** - When missing functionality is identified, create reusable tools rather than one-off fixes
+
+**Process Improvement Added:**
+- **Verification step:** Always test generated .smproj files in Sequence Maker before completion
+- **Established pattern:** .seqdesign.json → compile → .prg.json → split per ball → generate .smproj
+- **Tool documentation:** Created comprehensive tool documentation and registration process
+
+**Expected Impact:** This ensures all future .smproj files will display correctly in Sequence Maker and establishes a reliable multi-ball workflow.
+
 ---
