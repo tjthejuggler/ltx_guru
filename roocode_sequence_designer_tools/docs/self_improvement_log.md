@@ -37,3 +37,25 @@
 **Potential Future Improvement:** None identified for this specific interaction, as it was a test of existing, newly documented functionality. The process was optimal for the task.
 
 ---
+### 2025-06-10: Major Inefficiencies and Misinterpretations in Multi-Ball Sequence Generation
+
+**Task:** Create a 3-ball alternating flash sequence (`.seqdesign.json` and compiled `.prg.json`).
+**Issues Identified:**
+1.  **Grossly Inefficient File Creation:** Used `write_to_file` with massive script-generated JSON string instead of script writing directly or using shell redirection.
+2.  **Missing Directory Prerequisite:** Attempted file creation in a non-existent directory.
+3.  **Multiple Schema Violations in `.seqdesign.json`:** Incorrect `default_pixels`, missing `total_duration_seconds`, incorrect effect `timing` keys (used ms-based keys instead of `_seconds`). Led to multiple compilation failures.
+4.  **Misinterpretation of "Project File":** Did not create an `.smproj` file as expected for Sequence Maker.
+5.  **Critical Flaw in Multi-Ball PRG Output:** The `compile_seqdesign.py` tool (or its usage) resulted in a single `.prg.json` timeline that did not differentiate events per ball, failing the core multi-ball requirement.
+6.  **Overall Inefficiency:** Required extensive user re-guidance due to lack of proactive schema/doc consultation.
+
+**Learnings & Corrective Actions (Applied to Roocode's Instructions):**
+*   Reinforced strict adherence to schemas *before* script/file generation.
+*   Clarified efficient file creation methods (direct script write or shell redirection).
+*   Added explicit instruction for `mkdir -p` before writing to new subdirectories.
+*   Added guidance on creating `.smproj` files when "project file" is requested.
+*   **Crucially, added detailed instructions on how to handle multi-ball `.seqdesign.json` compilation to ensure distinct per-ball `.prg.json` outputs, likely involving multiple invocations of `compile_seqdesign.py` with filtered inputs if the tool doesn't natively split.**
+*   Re-emphasized proactive verification and the self-improvement logging mechanism.
+
+**Impact:** These changes aim to significantly improve efficiency, reduce errors, and ensure Roocode correctly handles multi-ball sequence generation and project file requests as per user expectations and LTX system requirements.
+
+---
