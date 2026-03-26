@@ -12,6 +12,7 @@ Sequence Maker is a desktop application that allows you to create, edit, and vis
 - **Multiple Ball Support**: Design sequences for multiple juggling balls simultaneously.
 - **Audio Synchronization**: Import audio files and synchronize color changes with the music.
 - **Real-time Visualization**: See how your sequences will look on the juggling balls in real-time.
+- **Real Ball Output** *(2026-03-07)*: Send live color changes to physical LTX LED balls over UDP during playback. Configure ball IP addresses via **File > Ball IPs…** — colors are transmitted automatically as the timeline plays.
 - **Keyboard Mapping**: Customize keyboard shortcuts for quick color changes.
 - **Export to JSON and PRG**: Export your sequences to JSON format for use with prg_generator.
 - **Color Fades**: Create smooth transitions between colors.

@@ -21,7 +21,8 @@ class Config:
             "default_project_dir": str(Path.home() / "SequenceMaker"),
             "recent_projects": [],
             "recent_audio_files": [],
-            "last_project": ""
+            "last_project": "",
+            "last_buddy_export_dir": ""
         },
         "timeline": {
             "default_duration": 60,  # seconds

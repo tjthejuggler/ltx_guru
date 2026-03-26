@@ -366,13 +366,15 @@ class AudioManager(QObject):
         if self.paused:
             self.paused = False
             self.logger.info("Resuming playback")
-            
-            # Update start time to account for the time spent paused
-            if hasattr(self, '_pause_time'):
-                pause_duration = time.time() - self._pause_time
-                if hasattr(self, '_start_time'):
-                    self._start_time += pause_duration
-            
+
+            # Recalculate _start_time so that playback continues from
+            # self.position (which may have been changed by seek() while paused).
+            self._start_time = time.time() - self.position
+
+            # Re-sync the sample pointer to the (possibly seeked) position
+            if self.audio_data is not None:
+                self._current_sample = int(self.position * self.sample_rate)
+
             self.audio_started.emit()
             return True
         

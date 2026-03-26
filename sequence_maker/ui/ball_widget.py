@@ -560,25 +560,20 @@ class BallVisualization(QFrame):
     
     def _send_color_to_ball(self, color):
         """
-        Send color to physical ball if connected.
-        
+        Send color to physical ball if connected or if an IP is configured.
+
         Args:
             color: RGB color tuple.
         """
-        # Check if color has changed since last send
+        # Only send when color actually changes
         if color == self.last_sent_color:
             return
-            
-        # Store current color as last sent
+
         self.last_sent_color = color
-        
-        # Get ball assigned to this timeline
-        ball = self.app.ball_manager.get_ball_for_timeline(self.timeline_index)
-        if not ball:
-            return
-            
-        # Send color to ball directly (bypass streaming)
-        self.app.ball_manager.send_color(ball, color)
+
+        # send_color_to_timeline handles both the LED controller (IP-based)
+        # and the legacy Ball-discovery path automatically.
+        self.app.ball_manager.send_color_to_timeline(self.timeline_index, color)
     
     def _get_timeline(self):
         """

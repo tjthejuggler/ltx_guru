@@ -186,6 +186,68 @@ def on_export_json(main_window):
         QMessageBox.critical(main_window, "Error", f"Failed to export JSON: {str(e)}")
 
 
+def on_export_buddy(main_window):
+    """Handle the 'Export Buddy' action — exports a single .smbuddy bundle."""
+    # Check if a project is loaded
+    if not main_window.app.project_manager.current_project:
+        QMessageBox.warning(
+            main_window,
+            "No Project",
+            "No project is loaded. Please create or open a project first."
+        )
+        return
+
+    project = main_window.app.project_manager.current_project
+    default_name = (project.name or "sequence").strip().replace(' ', '_') + ".smbuddy"
+
+    # Get last export directory from config (remembered across sessions)
+    from pathlib import Path
+    last_dir = main_window.app.config.get("general", "last_buddy_export_dir", "")
+    if not last_dir or not os.path.isdir(last_dir):
+        last_dir = str(Path.home())
+
+    # Show save file dialog starting at the remembered directory
+    file_path, _ = QFileDialog.getSaveFileName(
+        main_window,
+        "Export Buddy Bundle (.smbuddy)",
+        os.path.join(last_dir, default_name),
+        "Buddy Bundle (*.smbuddy)"
+    )
+
+    if not file_path:
+        return  # User cancelled
+
+    # Remember the export directory for next time
+    export_dir = os.path.dirname(os.path.abspath(file_path))
+    main_window.app.config.set("general", "last_buddy_export_dir", export_dir)
+    main_window.app.config.save()
+
+    try:
+        from export.buddy_exporter import BuddyExporter
+        exporter = BuddyExporter(main_window.app)
+        success = exporter.export_project(file_path)
+
+        if success:
+            main_window.statusBar().showMessage(
+                f"Exported buddy bundle to {file_path}", 3000
+            )
+            QMessageBox.information(
+                main_window,
+                "Export Complete",
+                f"Buddy bundle exported to:\n{file_path}\n\n"
+                "Transfer this file to your phone and open with Sequence Maker Buddy.\n"
+                "(Audio is included in the bundle.)"
+            )
+        else:
+            QMessageBox.warning(
+                main_window, "Export Failed",
+                "Failed to export buddy bundle. Check the log for details."
+            )
+    except Exception as e:
+        logging.error(f"Error exporting buddy bundle: {e}")
+        QMessageBox.critical(main_window, "Error", f"Failed to export buddy bundle: {str(e)}")
+
+
 def on_export_prg(main_window):
     """Handle the 'Export PRG' action."""
     # Check if a project is loaded
@@ -470,6 +532,14 @@ def on_crop_audio(main_window):
     
     # Create and show dialog
     dialog = CropAudioDialog(main_window.app, main_window)
+    dialog.exec()
+
+
+def on_ball_ips(main_window):
+    """Handle the 'Ball IPs' action — open the IP configuration dialog."""
+    from ui.dialogs.ball_ip_dialog import BallIPDialog
+
+    dialog = BallIPDialog(main_window.app, main_window)
     dialog.exec()
 
 

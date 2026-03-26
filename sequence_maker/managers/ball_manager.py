@@ -12,6 +12,7 @@ import struct
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from app.constants import BALL_DISCOVERY_TIMEOUT, BALL_CONTROL_PORT, BALL_BROADCAST_IDENTIFIER
+from managers.led_ball_controller import LEDBallController
 
 
 class Ball:
@@ -89,6 +90,13 @@ class BallManager(QObject):
         self.streaming = False
         self.streaming_thread = None
         self.streaming_stop_event = threading.Event()
+        
+        # LED ball controllers (one per timeline slot, index 0-2)
+        saved_ips = app.config.get("ball_control", "ball_ips", ["", "", ""])
+        self._controllers = [
+            LEDBallController(ip=saved_ips[i] if i < len(saved_ips) else "")
+            for i in range(3)
+        ]
     
     def start_discovery(self):
         """
@@ -266,6 +274,17 @@ class BallManager(QObject):
                 return ball
         return None
     
+    def set_ball_ips(self, ips):
+        """Update the IP addresses for the LED ball controllers.
+
+        Args:
+            ips (list[str]): List of IP strings for ball 1, 2, 3.
+        """
+        for i, controller in enumerate(self._controllers):
+            ip = ips[i] if i < len(ips) else ""
+            controller.set_ip(ip)
+        self.logger.info(f"Ball IPs updated: {ips}")
+
     def send_color(self, ball, color):
         """
         Send a color command to a ball.
@@ -304,20 +323,33 @@ class BallManager(QObject):
     
     def send_color_to_timeline(self, timeline_index, color):
         """
-        Send a color command to the ball assigned to a timeline.
-        
+        Send a color command to the ball assigned to a timeline via LEDBallController.
+
+        Falls back to the legacy Ball-based path if no controller IP is set.
+
         Args:
-            timeline_index (int): Timeline index.
+            timeline_index (int): Timeline index (0-based).
             color (tuple): RGB color tuple.
-        
+
         Returns:
             bool: True if command sent successfully, False otherwise.
         """
+        r, g, b = color
+
+        # Use the direct LED controller if an IP is configured for this slot
+        if 0 <= timeline_index < len(self._controllers):
+            controller = self._controllers[timeline_index]
+            self.logger.debug(
+                f"send_color_to_timeline: slot={timeline_index} ip='{controller.ip}' color=({r},{g},{b})"
+            )
+            if controller.ip:
+                controller.send_color(r, g, b)
+                return True
+
+        # Legacy path: use Ball object assigned via discovery
         ball = self.get_ball_for_timeline(timeline_index)
         if not ball:
-            self.logger.warning(f"Cannot send color: No ball assigned to timeline {timeline_index}")
             return False
-        
         return self.send_color(ball, color)
     
     def start_streaming(self):

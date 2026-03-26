@@ -62,6 +62,10 @@ class FileActions:
         self.export_prg_action.setStatusTip("Export timeline to PRG format")
         self.export_prg_action.triggered.connect(self.main_window._on_export_prg)
         
+        self.export_buddy_action = QAction("Export to &Buddy (.smbuddy)...", self.main_window)
+        self.export_buddy_action.setStatusTip("Export all timelines as a single .smbuddy bundle for the Android app")
+        self.export_buddy_action.triggered.connect(self.main_window._on_export_buddy)
+        
         # Version history action
         self.version_history_action = QAction("&Version History...", self.main_window)
         self.version_history_action.setStatusTip("View and restore previous versions")
@@ -91,3 +95,8 @@ class FileActions:
         self.import_lyrics_timestamps_action.triggered.connect(
             self.main_window.file_handler.on_import_lyrics_timestamps
         )
+
+        # Ball IP configuration action
+        self.ball_ips_action = QAction("Ball &IPs...", self.main_window)
+        self.ball_ips_action.setStatusTip("Set IP addresses for the three LED balls")
+        self.ball_ips_action.triggered.connect(self.main_window._on_ball_ips)

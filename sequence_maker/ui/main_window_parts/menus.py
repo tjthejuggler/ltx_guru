@@ -4,7 +4,22 @@ Sequence Maker - Main Window Menus
 This module contains functions for creating and managing menus in the main window.
 """
 
-from PyQt6.QtWidgets import QLabel
+from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtCore import Qt
+
+
+class _PositionLineEdit(QLineEdit):
+    """QLineEdit that passes arrow-key events up to the parent window."""
+
+    def keyPressEvent(self, event):
+        if event.key() in (Qt.Key.Key_Left, Qt.Key.Key_Right):
+            # Let the main window handle scrubbing
+            self.clearFocus()
+            parent = self.window()
+            if parent:
+                parent.keyPressEvent(event)
+        else:
+            super().keyPressEvent(event)
 
 
 def create_menus(main_window):
@@ -36,8 +51,14 @@ def create_file_menu(main_window):
     main_window.export_menu.addAction(main_window.export_json_action)
     main_window.export_menu.addAction(main_window.export_prg_action)
     main_window.export_menu.addAction(main_window.export_ball_sequence_action)
+    main_window.export_menu.addSeparator()
+    main_window.export_menu.addAction(main_window.export_buddy_action)
     
     
+    # Ball IP configuration
+    main_window.file_menu.addSeparator()
+    main_window.file_menu.addAction(main_window.ball_ips_action)
+
     # Recent files submenu
     main_window.recent_files_menu = main_window.file_menu.addMenu("Recent Files")
     main_window._update_recent_files_menu()
@@ -166,6 +187,13 @@ def create_statusbar(main_window):
     main_window.cursor_hover_label = QLabel("Cursor: --:--.--)")
     main_window.statusbar.addPermanentWidget(main_window.cursor_hover_label)
     
-    # Add cursor position label with formatted time (on the right side)
-    main_window.cursor_position_label = QLabel("Position: 00:00.00")
+    # Editable position field — user can type a time and press Enter to seek
+    main_window.cursor_position_label = _PositionLineEdit("00:00.00")
+    main_window.cursor_position_label.setFixedWidth(90)
+    main_window.cursor_position_label.setToolTip(
+        "Current position. Type a time (MM:SS.hh) and press Enter to seek."
+    )
+    main_window.cursor_position_label.returnPressed.connect(
+        main_window._on_position_edit_committed
+    )
     main_window.statusbar.addPermanentWidget(main_window.cursor_position_label)

@@ -49,10 +49,10 @@ from ui.main_window_parts.widgets import create_widgets
 from ui.main_window_parts.signals import connect_signals
 from ui.main_window_parts.handlers import (
     on_new, on_open, on_save, on_save_as, on_load_audio, on_export_json, on_export_prg,
-    on_version_history, on_undo, on_redo, on_cut, on_copy, on_paste,
+    on_export_buddy, on_version_history, on_undo, on_redo, on_cut, on_copy, on_paste,
     on_delete, on_select_all, on_preferences, on_zoom_in, on_zoom_out,
     on_zoom_fit, on_play, on_pause, on_stop, on_loop, on_key_mapping,
-    on_connect_balls, on_llm_chat, on_llm_diagnostics, on_about, on_crop_audio
+    on_ball_ips, on_connect_balls, on_llm_chat, on_llm_diagnostics, on_about, on_crop_audio
 )
 from ui.main_window_parts.editors import (
     show_segment_editor, hide_segment_editor, show_boundary_editor,
@@ -157,6 +157,9 @@ class MainWindow(QMainWindow):
     def _on_export_prg(self):
         on_export_prg(self)
     
+    def _on_export_buddy(self):
+        on_export_buddy(self)
+    
     def _on_version_history(self):
         on_version_history(self)
     
@@ -247,6 +250,8 @@ class MainWindow(QMainWindow):
         # Update UI
         self.pause_action.setVisible(False)
         self.play_action.setVisible(True)
+        # Return focus to the main window so arrow keys work immediately
+        self.setFocus()
     
     def _on_playback_stopped(self):
         """Handle playback stopped event."""
@@ -257,6 +262,9 @@ class MainWindow(QMainWindow):
     def _on_key_mapping(self):
         on_key_mapping(self)
     
+    def _on_ball_ips(self):
+        on_ball_ips(self)
+
     def _on_connect_balls(self):
         on_connect_balls(self)
     
@@ -348,7 +356,26 @@ class MainWindow(QMainWindow):
         clear_recent_files(self)
     
     def _update_cursor_position(self, position):
-        self.cursor_position_label.setText(f"Position: {self._format_seconds_to_hms(position)}")
+        # Don't overwrite the field while the user is actively editing it
+        if not self.cursor_position_label.hasFocus():
+            self.cursor_position_label.setText(
+                self._format_seconds_to_hms(position, hide_hours_if_zero=True)
+            )
+
+    def _on_position_edit_committed(self):
+        """User pressed Enter in the position field — seek to the typed time."""
+        text = self.cursor_position_label.text().strip()
+        new_pos = self._parse_time_string(text)
+        if new_pos is None:
+            # Bad input — restore the current position display
+            self._update_cursor_position(self.app.timeline_manager.position)
+            return
+        new_pos = max(0.0, new_pos)
+        self.app.timeline_manager.set_position(new_pos)
+        if hasattr(self.app, 'audio_manager'):
+            self.app.audio_manager.seek(new_pos)
+        # Return focus to the main window so arrow keys / space work immediately
+        self.setFocus()
     
     def update_cursor_hover_position(self, position):
         self.cursor_hover_label.setText(f"Cursor: {self._format_seconds_to_hms(position)}")
@@ -632,7 +659,22 @@ class MainWindow(QMainWindow):
                 self._on_play()
             event.accept()
             return
-        
+
+        if key in (Qt.Key.Key_Left, Qt.Key.Key_Right):
+            # Shift = 1 s step, default = 0.1 s step
+            step = 1.0 if modifiers & Qt.KeyboardModifier.ShiftModifier else 0.1
+            if key == Qt.Key.Key_Left:
+                step = -step
+            if hasattr(self.app, 'timeline_manager'):
+                current = self.app.timeline_manager.position
+                new_pos = max(0.0, current + step)
+                self.app.timeline_manager.set_position(new_pos)
+                # Also seek audio to keep them in sync
+                if hasattr(self.app, 'audio_manager'):
+                    self.app.audio_manager.seek(new_pos)
+            event.accept()
+            return
+
         # If we get here, the key wasn't handled, so pass it to the parent
         super().keyPressEvent(event)
     
