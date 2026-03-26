@@ -168,6 +168,11 @@ def create_toolbars(main_window):
     main_window.playback_toolbar.addAction(main_window.pause_action)
     main_window.playback_toolbar.addAction(main_window.stop_action)
     main_window.playback_toolbar.addAction(main_window.loop_action)
+    
+    # Notes toolbar
+    main_window.notes_toolbar = main_window.addToolBar("Notes")
+    main_window.notes_toolbar.setObjectName("NotesToolbar")
+    main_window.notes_toolbar.addAction(main_window.show_notes_action)
 
 
 def create_statusbar(main_window):

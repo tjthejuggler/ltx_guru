@@ -163,6 +163,17 @@ class MainWindow(QMainWindow):
     def _on_version_history(self):
         on_version_history(self)
     
+    def _on_show_notes(self):
+        """Open the Notes List dialog."""
+        project = self.app.project_manager.current_project
+        if not project:
+            return
+        from ui.dialogs.notes_list_dialog import NotesListDialog
+        dialog = NotesListDialog(self, project, self.timeline_widget)
+        dialog.exec()
+        # Repaint timeline in case notes were edited/deleted
+        self.timeline_widget.timeline_container.update()
+    
     def _check_unsaved_changes(self):
         return check_unsaved_changes(self)
     

@@ -13,6 +13,7 @@ from pathlib import Path
 
 from app.constants import APP_VERSION, PROJECT_FILE_EXTENSION
 from models.lyrics import Lyrics
+from models.note import TimelineNote
 from models.timeline import Timeline
 from models.segment import TimelineSegment
 from utils.file_type_utils import is_valid_ball_sequence, is_valid_seqdesign
@@ -70,6 +71,9 @@ class Project:
         
         # Lyrics data
         self.lyrics = Lyrics()
+        
+        # Timeline notes
+        self.notes = []
         
         # LLM data
         self.chat_history = []
@@ -132,6 +136,7 @@ class Project:
             },
             "visualizations": self.visualizations,
             "lyrics": self.lyrics.to_dict() if self.lyrics else {},
+            "notes": [note.to_dict() for note in self.notes],
             "chat_history": self.chat_history,
             "llm_metadata": self.llm_metadata,
             "llm_customization": {
@@ -215,6 +220,10 @@ class Project:
         # Set lyrics data
         if "lyrics" in data:
             project.lyrics = Lyrics.from_dict(data["lyrics"])
+        
+        # Set notes data
+        for note_data in data.get("notes", []):
+            project.notes.append(TimelineNote.from_dict(note_data))
         
         # Set LLM data
         project.chat_history = data.get("chat_history", [])

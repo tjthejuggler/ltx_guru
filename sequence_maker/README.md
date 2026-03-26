@@ -19,6 +19,12 @@ Sequence Maker is a desktop application that allows you to create, edit, and vis
   - Visually represented as gradients on the timeline.
   - Shift + (color key) creates a fade from the previous segment's color to the new color.
   - Right-click a segment > "Add Effect" > "Fade" to configure start and end colors via a dialog.
+- **Timeline Notes** *(2026-03-26)*: Pin color-coded notes to any position on the timeline.
+  - Right-click a timeline or segment and choose **Add Note Here** to create a note.
+  - Click a note marker (colored circle above the timelines) to open and edit it.
+  - Right-click a note marker to edit or delete it.
+  - Click the **📝 Notes** button in the toolbar to see a list of all notes (color, timestamp, preview). Click any row to open its editor.
+  - Notes are saved with the project and support custom colors.
 - **LLM Integration**: Use AI to automatically generate sequences based on music analysis, lyrics synchronization, and natural language instructions.
 
 ## Installation
@@ -75,6 +81,16 @@ python sequence_maker/main.py
 2. The audio waveform will be displayed in the audio visualization panel.
 3. Use the playback controls to play, pause, and stop the audio.
 4. Add color changes at specific points in the audio.
+
+### Using Timeline Notes
+
+1. Right-click on a timeline or segment and select **Add Note Here**.
+2. Type your note text and optionally pick a custom color, then click **OK**.
+3. Notes appear as colored circles above the first timeline with a dotted guide line.
+4. **Click** a note marker to open and edit it.
+5. **Right-click** a note marker to edit or delete it.
+6. Click the **📝 Notes** button in the toolbar to browse all notes in a list. Click any row to open its editor.
+7. Notes are saved automatically with the project file.
 
 ### Exporting Sequences
 
@@ -184,4 +200,4 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-*Last updated: 2025-06-09*
+*Last updated: 2026-03-26*

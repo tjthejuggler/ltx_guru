@@ -109,6 +109,11 @@ def create_timeline_actions(main_window):
     
     # Add view JSONs action from timeline_actions
     main_window.view_jsons_action = main_window.timeline_actions.view_jsons_action
+    
+    # Notes action
+    main_window.show_notes_action = QAction("📝 &Notes", main_window)
+    main_window.show_notes_action.setStatusTip("View all timeline notes")
+    main_window.show_notes_action.triggered.connect(main_window._on_show_notes)
 
 
 def create_playback_actions(main_window):

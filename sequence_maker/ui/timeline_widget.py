@@ -717,6 +717,9 @@ class TimelineContainer(QWidget):
         # Draw the timelines
         self._draw_timelines(painter)
         
+        # Draw note markers on top of timelines
+        self._draw_notes(painter)
+        
         # Draw the position marker on top
         self._draw_position_marker(painter)
     
@@ -1352,6 +1355,12 @@ class TimelineContainer(QWidget):
             event: Mouse event.
         """
         if event.button() == Qt.MouseButton.LeftButton:
+            # Check for note marker click first (notes sit above timelines)
+            clicked_note = self._get_note_at_pos(event.pos())
+            if clicked_note:
+                self._edit_note(clicked_note)
+                return
+            
             # Get timeline at position
             timeline, y_offset = self._get_timeline_at_pos(event.pos())
             
@@ -1447,6 +1456,12 @@ class TimelineContainer(QWidget):
                 self.parent_widget.set_position(time)
         
         elif event.button() == Qt.MouseButton.RightButton:
+            # Check for note marker right-click first
+            clicked_note = self._get_note_at_pos(event.pos())
+            if clicked_note:
+                self._show_note_context_menu(clicked_note, event.pos())
+                return
+            
             # Get timeline at position
             timeline, y_offset = self._get_timeline_at_pos(event.pos())
             
@@ -2148,9 +2163,18 @@ class TimelineContainer(QWidget):
                 lambda checked, t=effect_type: self._add_segment_effect(t)
             )
         
+        menu.addSeparator()
+        
+        # Add Note action
+        time_at_pos = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
+        add_note_action = menu.addAction("Add Note Here")
+        add_note_action.triggered.connect(
+            lambda checked, m=menu, t=time_at_pos: (m.close(), self._add_note_at_time(t))
+        )
+        
         # Show menu
         menu.exec(self.mapToGlobal(pos))
-    
+        
     def _show_timeline_context_menu(self, timeline, pos):
         """
         Show context menu for a timeline.
@@ -2185,6 +2209,15 @@ class TimelineContainer(QWidget):
         import_action = menu.addAction("Import JSON...")
         import_action.triggered.connect(
             lambda: self._import_json_to_timeline(timeline)
+        )
+        
+        menu.addSeparator()
+        
+        # Add Note action
+        add_note_action = menu.addAction("Add Note Here")
+        time_at_pos = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
+        add_note_action.triggered.connect(
+            lambda checked, m=menu, t=time_at_pos: (m.close(), self._add_note_at_time(t))
         )
         
         menu.addSeparator()
@@ -2467,3 +2500,156 @@ class TimelineContainer(QWidget):
         if ok and name:
             # Rename timeline
             self.app.timeline_manager.rename_timeline(timeline, name)
+    
+    # ------------------------------------------------------------------
+    # Note-related methods
+    # ------------------------------------------------------------------
+    
+    NOTE_MARKER_RADIUS = 6  # radius of the circular note marker
+    
+    def _draw_notes(self, painter):
+        """
+        Draw note markers pinned to the top of the first timeline.
+        
+        Each note is drawn as a small filled circle at its time position,
+        sitting just above the first timeline row.
+        """
+        project = self.app.project_manager.current_project
+        if not project or not project.notes:
+            return
+        
+        zoom = self.parent_widget.zoom_level
+        time_scale = self.parent_widget.time_scale
+        
+        # Notes sit in the spacing area above the first timeline
+        marker_y = self.parent_widget.timeline_spacing // 2
+        
+        for note in project.notes:
+            x = int(note.time * time_scale * zoom)
+            r, g, b = note.color
+            
+            # Draw filled circle
+            painter.setBrush(QBrush(QColor(r, g, b)))
+            painter.setPen(QPen(QColor(255, 255, 255), 1))
+            painter.drawEllipse(
+                QPoint(x, marker_y),
+                self.NOTE_MARKER_RADIUS,
+                self.NOTE_MARKER_RADIUS,
+            )
+            
+            # Draw a thin vertical line down through all timelines
+            pen = QPen(QColor(r, g, b, 100), 1, Qt.PenStyle.DotLine)
+            painter.setPen(pen)
+            painter.drawLine(x, marker_y + self.NOTE_MARKER_RADIUS, x, self.height())
+    
+    def _get_note_at_pos(self, pos):
+        """
+        Return the note whose marker contains *pos*, or None.
+        
+        Args:
+            pos: QPoint position.
+        
+        Returns:
+            TimelineNote or None.
+        """
+        project = self.app.project_manager.current_project
+        if not project or not project.notes:
+            return None
+        
+        zoom = self.parent_widget.zoom_level
+        time_scale = self.parent_widget.time_scale
+        marker_y = self.parent_widget.timeline_spacing // 2
+        hit = self.NOTE_MARKER_RADIUS + 3  # a little extra tolerance
+        
+        for note in project.notes:
+            nx = int(note.time * time_scale * zoom)
+            if abs(pos.x() - nx) <= hit and abs(pos.y() - marker_y) <= hit:
+                return note
+        return None
+    
+    def _add_note_at_time(self, time_pos):
+        """
+        Create a new note at *time_pos* and open the editor dialog.
+        
+        Args:
+            time_pos (float): Time in seconds.
+        """
+        from models.note import TimelineNote
+        from ui.dialogs.note_dialog import NoteDialog
+        
+        note = TimelineNote(time=time_pos)
+        
+        dialog = NoteDialog(
+            parent=self,
+            text=note.text,
+            color=note.color,
+            time_pos=note.time,
+            title="New Note",
+        )
+        # Hide the delete button for a brand-new note
+        dialog.delete_btn.setVisible(False)
+        
+        result = dialog.exec()
+        if result == 1:  # QDialog.Accepted
+            note.text = dialog.note_text
+            note.color = dialog.note_color
+            project = self.app.project_manager.current_project
+            if project:
+                project.notes.append(note)
+                self.update()
+    
+    def _edit_note(self, note):
+        """
+        Open the editor dialog for an existing note.
+        
+        Args:
+            note: TimelineNote to edit.
+        """
+        from ui.dialogs.note_dialog import NoteDialog
+        
+        dialog = NoteDialog(
+            parent=self,
+            text=note.text,
+            color=note.color,
+            time_pos=note.time,
+            title="Edit Note",
+        )
+        
+        result = dialog.exec()
+        if result == 1:  # Accepted
+            note.text = dialog.note_text
+            note.color = dialog.note_color
+            self.update()
+        elif result == 2:  # Delete
+            self._delete_note(note)
+    
+    def _delete_note(self, note):
+        """
+        Remove a note from the project.
+        
+        Args:
+            note: TimelineNote to remove.
+        """
+        project = self.app.project_manager.current_project
+        if project and note in project.notes:
+            project.notes.remove(note)
+            self.update()
+    
+    def _show_note_context_menu(self, note, pos):
+        """
+        Show a right-click context menu for a note marker.
+        
+        Args:
+            note: The TimelineNote.
+            pos: QPoint screen position.
+        """
+        menu = QMenu(self)
+        
+        edit_action = menu.addAction("Edit Note")
+        edit_action.triggered.connect(lambda: self._edit_note(note))
+        
+        delete_action = menu.addAction("Delete Note")
+        delete_action.setStyleSheet("color: red;")
+        delete_action.triggered.connect(lambda: self._delete_note(note))
+        
+        menu.exec(self.mapToGlobal(pos))
