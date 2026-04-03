@@ -46,12 +46,20 @@ The LTX Guru project uses standardized file extensions for different types of da
 | Audio Analysis Reports | `.analysis_report.json` | Audio analysis data |
 | Beat Patterns | `.beatpattern.json` | Beat-synchronized patterns |
 | Section Themes | `.sectiontheme.json` | Section-based color themes |
+| Song Data | `song_data.json` | Persistent per-song data (lyrics, analysis, versions) |
+| Sequence Maker Projects | `.smproj` | Project files openable by Sequence Maker |
 
 Using these standardized extensions helps ensure compatibility with all tools in the ecosystem.
 
 ## Directory Structure
 
 Below is an overview of the key subdirectories and files within `roocode_sequence_designer_tools/`:
+
+*   **[`song_data_manager.py`](./song_data_manager.py):** *(Added 2026-04-03)*
+    *   Manages persistent per-song data storage via `song_data.json` files in each project directory. Stores lyrics, audio analysis results, metadata, and sequence version information so that work is never repeated across sessions.
+    *   Also manages **sequence versioning** — each sequence created for a song is registered as a named version with a description, file references, tags, and derivation history. Descriptions are designed to be displayed in the Sequence Maker GUI.
+    *   Usage: `python -m roocode_sequence_designer_tools.song_data_manager <project_dir> <action> [options]`
+    *   Actions: `show`, `get`, `set`, `has`, `init`, `register-version`, `list-versions`, `clear`
 
 *   **[`compile_seqdesign.py`](./compile_seqdesign.py):**
     *   The main script responsible for compiling `.seqdesign.json` files (Roocode's high-level design format) into `.prg.json` files (the low-level executable sequence format for the lighting hardware).

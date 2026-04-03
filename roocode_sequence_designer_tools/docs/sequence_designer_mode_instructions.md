@@ -269,13 +269,126 @@ In the context of Roocode's operations, especially when dealing with programmati
 *   **It is generally *not* considered over-engineering** to create such a script if it improves the robustness, clarity, or reusability of the sequence design process, or if it contributes to Roocode's toolset (either as a temporary helper or a new permanent tool).
 *   The "simplest possible solution" should be evaluated in terms of overall workflow clarity and maintainability, not just the raw number of tool calls in a single interaction.
 
+## Song Data Persistence (CRITICAL)
+
+*Added: 2026-04-03*
+
+Every song project has a `song_data.json` file that stores all gathered data persistently. This is managed by [`roocode_sequence_designer_tools/song_data_manager.py`](roocode_sequence_designer_tools/song_data_manager.py).
+
+### Why This Matters
+
+Previously, every time a new session started, lyrics had to be re-extracted, audio had to be re-analyzed, and all prior work was lost. The `song_data.json` system ensures that **once data is gathered for a song, it is saved permanently** and never needs to be re-gathered (unless explicitly requested by the user).
+
+### What Gets Stored
+
+The `song_data.json` file stores:
+- **Metadata:** Song title, artist, audio file path, duration, genre
+- **Lyrics:** Raw text, synced/aligned lyrics data, word count, file paths
+- **Audio Analysis:** Tempo, time signature, key, beats, downbeats, sections, energy profile, onsets, spectral features
+- **Sequence Versions:** All versions of sequences created for this song, with descriptions, file references, tags, and derivation history
+
+### Workflow
+
+1. **Before ANY work on a song:** Check if `song_data.json` exists and what data is already available:
+   ```bash
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> show
+   ```
+
+2. **After extracting lyrics:** Save immediately:
+   ```bash
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> set lyrics.raw_text '<text>'
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> set lyrics.synced_lyrics_file 'song_name.synced_lyrics.json'
+   ```
+
+3. **After audio analysis:** Save all results:
+   ```bash
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> set audio_analysis.estimated_tempo 120
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> set audio_analysis.beats '[0.5, 1.0, 1.5, ...]'
+   ```
+   For large data (beats arrays, sections), you can also write a small Python script that loads the analysis report and saves relevant fields to song_data.json.
+
+4. **Check before re-doing work:**
+   ```bash
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> has lyrics.synced_lyrics_data
+   python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> has audio_analysis.beats
+   ```
+
+## Sequence Versioning
+
+*Added: 2026-04-03*
+
+Every sequence created for a song MUST be registered as a version with a clear, descriptive description. This enables:
+- Users to compare different versions at a glance
+- The Sequence Maker GUI to display version descriptions when loading sequences
+- Tracking of how versions relate to each other (derivation history)
+
+### Registering a Version
+
+```bash
+python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> register-version v1_beat_pulse \
+  --description "Beat-synchronized pulse pattern: Red pulses on every beat during verses, blue pulses on downbeats during choruses. Energy-mapped brightness makes high-energy sections brighter. Background is dim purple." \
+  --files '{"seqdesign": "song_v1_beat_pulse.seqdesign.json", "prg": "song_v1_beat_pulse.prg.json", "smproj": "song_v1_beat_pulse.smproj"}' \
+  --tags "beat-sync,energy-mapped,verse-chorus-contrast"
+```
+
+### Description Best Practices
+
+The description should answer:
+1. **What does it look like?** — Describe the visual effect in plain language
+2. **What music features drive it?** — Beats, lyrics, sections, energy?
+3. **How does it differ from other versions?** — What's unique about this approach?
+4. **What colors are used?** — Primary color palette
+
+Example good description:
+> "Lyric-driven rainbow: Each word triggers a color flash cycling through the rainbow spectrum. Between words, balls fade to black. Chorus sections use brighter, more saturated colors. Designed for 3 balls with round-robin word assignment."
+
+### Listing Versions
+
+```bash
+python -m roocode_sequence_designer_tools.song_data_manager sequence_projects/<song_name> list-versions
+```
+
+## Music Analysis Capabilities
+
+*Added: 2026-04-03*
+
+The Sequence Designer can extract and use the following audio features (via `extract_audio_features.py` and `audio_analysis_report.py`):
+
+| Feature | Description | Use in Sequences |
+|---------|-------------|-----------------|
+| Beat times | Timestamps of all detected beats | Pulse/flash on beat, beat-sync patterns |
+| Downbeat times | Timestamps of measure starts | Accent effects on downbeats |
+| Tempo (BPM) | Estimated beats per minute | Calculate timing intervals |
+| Time signature | Estimated time signature (e.g., 4/4) | Group beats into measures |
+| Sections | Labeled sections with start/end times | Section-based color themes |
+| Energy profile | Per-frame energy values | Brightness/intensity mapping |
+| Onset times | Note onset timestamps | Rhythmic flash effects |
+| Spectral centroid | Brightness of sound over time | Map sound brightness to color brightness |
+| Spectral contrast | Tonal vs noise content | Distinguish melodic vs percussive sections |
+| Chroma | Pitch class profiles | Harmonic-based color mapping |
+| Key | Estimated musical key | Thematic color selection |
+
+### Pattern Types for Music-Driven Sequences
+
+| Pattern | Trigger | Description |
+|---------|---------|-------------|
+| `pulse_on_beat` | Beats/downbeats | Flash a color on each beat |
+| `BeatSync` | Beats | Synchronize any effect to beats |
+| `LyricHighlight` | Specific words | Highlight when certain words are sung |
+| `WarningThenEvent` | Lyrics/beats/times | Warning flash before main event |
+| `section_theme_energy` | Sections + energy | Color themes per section with energy modulation |
+| `apply_section_theme` | Sections | Simple color per section |
+| `apply_beat_pattern` | Beats | Pulse/toggle/fade patterns on beats |
+
 ## Additional Resources
 - [`roocode_sequence_designer_tools/docs/lyrics_extraction_guide.md`](roocode_sequence_designer_tools/docs/lyrics_extraction_guide.md)
 - [`roocode_sequence_designer_tools/docs/lyrics_extraction_efficiency.md`](roocode_sequence_designer_tools/docs/lyrics_extraction_efficiency.md)
 - [`roocode_sequence_designer_tools/docs/seqdesign_json_schema.md`](roocode_sequence_designer_tools/docs/seqdesign_json_schema.md)
 - [`roocode_sequence_designer_tools/docs/ball_sequence_format.md`](roocode_sequence_designer_tools/docs/ball_sequence_format.md)
+- [`roocode_sequence_designer_tools/song_data_manager.py`](roocode_sequence_designer_tools/song_data_manager.py) — Song data persistence and versioning
+- [`roocode_sequence_designer_tools/tools_lookup.json`](roocode_sequence_designer_tools/tools_lookup.json) — Complete tool and effect catalog
 
 ---
-**Last Updated:** 2025-06-10 16:48 UTC+7
+**Last Updated:** 2026-04-03 11:47 UTC-6
 
-By following these updated instructions, future Roocode instances will be better equipped to handle sequence design tasks efficiently and accurately, particularly for multi-ball sequences and proper .smproj file generation.
+By following these updated instructions, future Roocode instances will be better equipped to handle sequence design tasks efficiently and accurately, with persistent song data that eliminates redundant work and versioned sequences with clear descriptions.

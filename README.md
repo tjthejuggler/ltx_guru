@@ -23,6 +23,21 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-04-03 11:48 UTC-6 - Sequence Designer Major Overhaul
+- **Comprehensive Sequence Designer mode rewrite** — The `.roomodes` Sequence Designer mode has been completely rewritten with:
+  - All available tools cataloged with usage examples
+  - Full music analysis capabilities (beats, tempo, sections, energy, onsets, spectral features, key detection)
+  - Lyrics processing workflow (extraction, alignment via Gentle, synced timestamps)
+  - Pattern creation capabilities (beat-sync, section themes, lyric-triggered effects)
+- **Song Data Persistence** — New [`song_data_manager.py`](roocode_sequence_designer_tools/song_data_manager.py) tool that stores all gathered data (lyrics, audio analysis, metadata) in a per-project `song_data.json` file. Once data is gathered for a song, it never needs to be re-gathered.
+- **Sequence Versioning** — Multiple sequence versions per song with descriptions, file references, tags, and derivation history. Descriptions are designed to be displayed in the Sequence Maker GUI.
+- **Files created/updated:**
+  - [`roocode_sequence_designer_tools/song_data_manager.py`](roocode_sequence_designer_tools/song_data_manager.py) — New persistent song data manager
+  - [`.roomodes`](.roomodes) — Complete Sequence Designer mode rewrite
+  - [`roocode_sequence_designer_tools/docs/sequence_designer_mode_instructions.md`](roocode_sequence_designer_tools/docs/sequence_designer_mode_instructions.md) — Added song data persistence, versioning, and music analysis docs
+  - [`roocode_sequence_designer_tools/tools_lookup.json`](roocode_sequence_designer_tools/tools_lookup.json) — Added song_data_manager tool entry
+  - [`roocode_sequence_designer_tools/README.md`](roocode_sequence_designer_tools/README.md) — Added song_data_manager documentation
+
 ### 2025-06-10 16:19 UTC+7 - Sequence Designer Efficiency Improvements
 - **Updated Sequence Designer roomode** to use code generation for repetitive content instead of manual writing
 - **Added explicit guidelines** for when to use Python scripts vs manual file creation
@@ -33,4 +48,4 @@ This repository contains tools and projects for creating light sequences for LTX
   - [`roocode_sequence_designer_tools/docs/self_improvement_log.md`](roocode_sequence_designer_tools/docs/self_improvement_log.md) - Documented the learning
 
 ---
-*Timestamp: 2025-06-10 16:19 UTC+7*
+*Timestamp: 2026-04-03 11:48 UTC-6*

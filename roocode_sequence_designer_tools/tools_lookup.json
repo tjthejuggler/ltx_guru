@@ -139,6 +139,22 @@
       "script_path": "generate_smproj_from_prg.py",
       "description": "Generates a properly formatted Sequence Maker project file (.smproj) from compiled PRG JSON files (.prg.json). Essential for creating project files that display colors correctly in Sequence Maker.",
       "usage": "python roocode_sequence_designer_tools/generate_smproj_from_prg.py <ball1.prg.json> <ball2.prg.json> <ball3.prg.json> --project-name \"Project Name\" --output project.smproj"
+    },
+    {
+      "name": "song_data_manager",
+      "script_path": "song_data_manager.py",
+      "description": "Manages persistent per-song data storage (song_data.json). Stores lyrics, audio analysis, metadata, and sequence version info. Once data is gathered for a song, it never needs to be re-gathered. Also manages sequence versioning with descriptions.",
+      "usage": "python -m roocode_sequence_designer_tools.song_data_manager <project_dir> <action> [options]",
+      "actions": [
+        {"name": "show", "description": "Display current song data summary"},
+        {"name": "get", "description": "Get a specific data field by dot-path (e.g., 'lyrics.raw_text')"},
+        {"name": "set", "description": "Set a specific data field"},
+        {"name": "has", "description": "Check if a data field exists and is not None"},
+        {"name": "init", "description": "Initialize song_data.json with basic metadata (--title, --artist, --audio-file)"},
+        {"name": "register-version", "description": "Register a sequence version with description and files"},
+        {"name": "list-versions", "description": "List all registered sequence versions"},
+        {"name": "clear", "description": "Clear a specific field or all data"}
+      ]
     }
   ],
   "pattern_templates": [
