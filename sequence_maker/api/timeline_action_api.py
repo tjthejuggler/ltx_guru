@@ -1,7 +1,7 @@
 """
 Sequence Maker - Timeline Action API
 
-This module defines the TimelineActionAPI class, which provides an API for LLM to manipulate timelines.
+This module defines the TimelineActionAPI class, which provides an API for manipulating timelines.
 """
 
 import logging
@@ -9,7 +9,7 @@ import logging
 
 class TimelineActionAPI:
     """
-    Provides an API for LLM to manipulate timelines.
+    Provides an API for manipulating timelines.
     """
     
     def __init__(self, app):
@@ -21,16 +21,6 @@ class TimelineActionAPI:
         """
         self.app = app
         self.logger = logging.getLogger("SequenceMaker.TimelineActionAPI")
-        
-        # Register action handlers with the LLM manager
-        self.app.llm_manager.register_action_handler("create_segment", self.create_segment)
-        self.app.llm_manager.register_action_handler("modify_segment", self.modify_segment)
-        self.app.llm_manager.register_action_handler("delete_segment", self.delete_segment)
-        self.app.llm_manager.register_action_handler("set_default_color", self.set_default_color)
-        self.app.llm_manager.register_action_handler("add_effect", self.add_effect)
-        self.app.llm_manager.register_action_handler("clear_timeline", self.clear_timeline)
-        self.app.llm_manager.register_action_handler("clear_all_timelines", self.clear_all_timelines)
-        self.app.llm_manager.register_action_handler("create_segments_batch", self.create_segments_batch)
     
     def create_segment(self, parameters):
         """

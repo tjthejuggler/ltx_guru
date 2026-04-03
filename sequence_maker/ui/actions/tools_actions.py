@@ -2,7 +2,7 @@
 Sequence Maker - Tools Actions
 
 This module defines the ToolsActions class, which contains tools-related actions
-for the main window, such as key mapping, connect balls, crop audio, and LLM-related actions.
+for the main window, such as key mapping, connect balls, and crop audio.
 """
 
 from PyQt6.QtGui import QAction
@@ -39,16 +39,6 @@ class ToolsActions:
         self.connect_balls_action.setStatusTip("Connect to juggling balls")
         self.connect_balls_action.triggered.connect(self.main_window._on_connect_balls)
         self.connect_balls_action.setCheckable(True)
-        
-        # LLM Chat action
-        self.llm_chat_action = QAction("&LLM Chat...", self.main_window)
-        self.llm_chat_action.setStatusTip("Open LLM chat interface")
-        self.llm_chat_action.triggered.connect(self.main_window._on_llm_chat)
-        
-        # LLM Diagnostics action
-        self.llm_diagnostics_action = QAction("LLM &Diagnostics...", self.main_window)
-        self.llm_diagnostics_action.setStatusTip("View LLM performance metrics and diagnostics")
-        self.llm_diagnostics_action.triggered.connect(self.main_window._on_llm_diagnostics)
         
         # Process Lyrics action
         self.process_lyrics_action = QAction("Process &Lyrics...", self.main_window)

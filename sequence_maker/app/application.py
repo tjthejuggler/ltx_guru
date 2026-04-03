@@ -21,11 +21,11 @@ from managers.project_manager import ProjectManager
 from managers.timeline_manager import TimelineManager
 from managers.audio_manager import AudioManager
 from managers.ball_manager import BallManager
-from managers.llm_manager import LLMManager
 from managers.undo_manager import UndoManager
 from managers.lyrics_manager import LyricsManager
 from managers.autosave_manager import AutosaveManager
 from managers.preference_manager import PreferenceManager
+from managers.sequence_swap_manager import SequenceSwapManager
 from resources.resources import get_icon_path
 
 # Create a custom style that forces our icon to be used
@@ -166,7 +166,6 @@ class SequenceMakerApp:
         self.timeline_manager = TimelineManager(self)
         self.audio_manager = AudioManager(self)
         self.ball_manager = BallManager(self)
-        self.llm_manager = LLMManager(self)
         self.undo_manager = UndoManager(self)
         self.lyrics_manager = LyricsManager(self)
         self.autosave_manager = AutosaveManager(self)
@@ -177,6 +176,9 @@ class SequenceMakerApp:
         
         # Add preference manager for preference learning system
         self.preference_manager = PreferenceManager(self)
+        
+        # Add sequence swap manager for hot-swapping from Sequence Designer
+        self.sequence_swap_manager = SequenceSwapManager(self)
         
         # Connect managers as needed
         self.timeline_manager.set_undo_manager(self.undo_manager)
@@ -235,6 +237,14 @@ class SequenceMakerApp:
         
         # Connect lyrics manager to lyrics widget
         self.lyrics_manager.set_lyrics_widget(self.main_window.lyrics_widget)
+        
+        # Connect sequence swap manager signals
+        self.sequence_swap_manager.sequence_swapped.connect(
+            self.main_window._on_sequence_swapped
+        )
+        self.sequence_swap_manager.swap_failed.connect(
+            self.main_window._on_swap_failed
+        )
     
     def run(self):
         """Run the application main loop."""
@@ -267,6 +277,9 @@ class SequenceMakerApp:
         
         # Disconnect from balls
         self.ball_manager.disconnect_balls()
+        
+        # Clean up sequence swap watcher
+        self.sequence_swap_manager.cleanup()
         
         # Save application state
         self.config.save()

@@ -127,10 +127,8 @@ def create_tools_menu(main_window):
     main_window.tools_menu.addSeparator()
     main_window.tools_menu.addAction(main_window.crop_audio_action)
     
-    # LLM tools section
+    # Version history
     main_window.tools_menu.addSeparator()
-    main_window.tools_menu.addAction(main_window.llm_chat_action)
-    main_window.tools_menu.addAction(main_window.llm_diagnostics_action)
     main_window.tools_menu.addAction(main_window.version_history_action)
 
 
@@ -182,6 +180,17 @@ def create_statusbar(main_window):
     # Add project status label (empty by default)
     main_window.project_status_label = QLabel("")
     main_window.statusbar.addWidget(main_window.project_status_label)
+    
+    # Add sequence description label (shows description from Sequence Designer)
+    main_window.sequence_description_label = QLabel("")
+    main_window.sequence_description_label.setVisible(False)
+    main_window.sequence_description_label.setStyleSheet(
+        "QLabel { color: #2196F3; font-style: italic; padding: 0 8px; }"
+    )
+    main_window.sequence_description_label.setToolTip(
+        "Description of the current sequence from Sequence Designer"
+    )
+    main_window.statusbar.addWidget(main_window.sequence_description_label)
     
     # Add hover info label for segment information
     main_window.hover_info_label = QLabel("")

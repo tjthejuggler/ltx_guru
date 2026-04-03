@@ -23,6 +23,28 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-04-03 17:37 UTC-6 - LLM GUI Removal & Hot-Swap System
+- **Removed all LLM integration from the Sequence Maker GUI** — menus, actions, handlers, settings tab, manager initialization, and imports have been gutted
+- **Created hot-swap system** ([`sequence_maker/managers/sequence_swap_manager.py`](sequence_maker/managers/sequence_swap_manager.py)) — uses QFileSystemWatcher to monitor `~/.sequence_maker/sequence_swap_inbox.json` for new sequences pushed by the Sequence Designer Roo mode
+- **Auto-save before swap** — current project is automatically saved before loading a new sequence
+- **Sequence description display** — GUI status bar shows the description of the currently loaded sequence (blue italic label)
+- **Updated Sequence Designer mode** — [`.roomodes`](.roomodes) and [`sequence_designer_mode_instructions.md`](roocode_sequence_designer_tools/docs/sequence_designer_mode_instructions.md) now include complete hot-swap system documentation
+- **Files created:**
+  - [`sequence_maker/managers/sequence_swap_manager.py`](sequence_maker/managers/sequence_swap_manager.py) — Hot-swap inbox watcher
+- **Files modified:**
+  - [`sequence_maker/app/application.py`](sequence_maker/app/application.py) — Replaced LLMManager with SequenceSwapManager
+  - [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py) — Removed LLM imports/handlers, added swap handlers
+  - [`sequence_maker/ui/main_window_parts/menus.py`](sequence_maker/ui/main_window_parts/menus.py) — Removed LLM menu items, added description label
+  - [`sequence_maker/ui/main_window_parts/actions.py`](sequence_maker/ui/main_window_parts/actions.py) — Removed LLM actions
+  - [`sequence_maker/ui/main_window_parts/signals.py`](sequence_maker/ui/main_window_parts/signals.py) — Removed LLM signal connections
+  - [`sequence_maker/ui/main_window_parts/handlers.py`](sequence_maker/ui/main_window_parts/handlers.py) — Removed LLM handlers
+  - [`sequence_maker/ui/actions/tools_actions.py`](sequence_maker/ui/actions/tools_actions.py) — Removed LLM action creation
+  - [`sequence_maker/ui/handlers/tools_handlers.py`](sequence_maker/ui/handlers/tools_handlers.py) — Removed LLM handler methods
+  - [`sequence_maker/ui/dialogs/settings_dialog.py`](sequence_maker/ui/dialogs/settings_dialog.py) — Removed LLM settings tab
+  - [`sequence_maker/ui/dialogs/__init__.py`](sequence_maker/ui/dialogs/__init__.py) — Removed LLMChatDialog import
+  - [`sequence_maker/api/audio_action_api.py`](sequence_maker/api/audio_action_api.py) — Removed LLM manager registration
+  - [`sequence_maker/api/timeline_action_api.py`](sequence_maker/api/timeline_action_api.py) — Removed LLM manager registration
+
 ### 2026-04-03 11:48 UTC-6 - Sequence Designer Major Overhaul
 - **Comprehensive Sequence Designer mode rewrite** — The `.roomodes` Sequence Designer mode has been completely rewritten with:
   - All available tools cataloged with usage examples
@@ -48,4 +70,4 @@ This repository contains tools and projects for creating light sequences for LTX
   - [`roocode_sequence_designer_tools/docs/self_improvement_log.md`](roocode_sequence_designer_tools/docs/self_improvement_log.md) - Documented the learning
 
 ---
-*Timestamp: 2026-04-03 11:48 UTC-6*
+*Timestamp: 2026-04-03 17:37 UTC-6*

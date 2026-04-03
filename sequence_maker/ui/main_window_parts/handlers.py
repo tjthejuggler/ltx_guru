@@ -454,13 +454,7 @@ def on_preferences(main_window):
     from ui.dialogs.settings_dialog import SettingsDialog
     
     dialog = SettingsDialog(main_window.app, main_window)
-    result = dialog.exec()
-    
-    # If dialog was accepted, reload LLM manager configuration
-    if result:
-        # Update LLM manager with new settings
-        if hasattr(main_window.app, 'llm_manager'):
-            main_window.app.llm_manager.reload_configuration()
+    dialog.exec()
 
 
 def on_zoom_in(main_window):
@@ -548,26 +542,6 @@ def on_connect_balls(main_window):
     from ui.dialogs.ball_scan_dialog import BallScanDialog
     
     dialog = BallScanDialog(main_window.app, main_window)
-    dialog.exec()
-
-
-def on_llm_chat(main_window):
-    """Handle the 'LLM Chat' action."""
-    # Create the chat window if it doesn't exist
-    if not hasattr(main_window, 'llm_chat_window') or main_window.llm_chat_window is None:
-        main_window._create_llm_chat_window()
-    
-    # Show the chat window
-    main_window.llm_chat_window.show()
-    main_window.llm_chat_window.raise_()
-    main_window.llm_chat_window.activateWindow()
-
-
-def on_llm_diagnostics(main_window):
-    """Handle the 'LLM Diagnostics' action."""
-    from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
-    
-    dialog = LLMDiagnosticsDialog(main_window.app, main_window)
     dialog.exec()
 
 

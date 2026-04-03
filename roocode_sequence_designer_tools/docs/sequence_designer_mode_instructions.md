@@ -45,6 +45,50 @@ This organization:
 - Prevents clutter in the root directory.
 - Simplifies backup and sharing of complete projects.
 
+## GUI Hot-Swap System
+
+The Sequence Maker GUI has a **hot-swap inbox** that allows you to push new sequences directly into the running GUI. When you write to the inbox file, the GUI will:
+1. **Auto-save** the user's current project
+2. **Load** the new `.smproj` file into the timeline
+3. **Display** the sequence description in the status bar
+
+### How to use it
+
+After generating an `.smproj` file, write a JSON file to the swap inbox:
+
+```python
+import json
+from datetime import datetime
+from pathlib import Path
+
+inbox = Path.home() / '.sequence_maker' / 'sequence_swap_inbox.json'
+inbox.parent.mkdir(parents=True, exist_ok=True)
+
+swap_data = {
+    'smproj_path': '/absolute/path/to/the/sequence.smproj',
+    'description': 'Human-readable description of the sequence',
+    'timestamp': datetime.now().isoformat(),
+    'version_name': 'v1_beat_sync'
+}
+
+with open(inbox, 'w') as f:
+    json.dump(swap_data, f, indent=2)
+```
+
+### Rules
+- `smproj_path` MUST be an **absolute path** to the `.smproj` file.
+- `description` should be clear and descriptive — it is shown to the user in the GUI status bar.
+- `timestamp` must be unique for each swap (use `datetime.now().isoformat()`).
+- **ALWAYS** generate the `.smproj` file FIRST, then write the inbox JSON.
+- The inbox file location is: `~/.sequence_maker/sequence_swap_inbox.json`
+
+### Typical workflow
+1. Design the sequence (`.seqdesign.json`)
+2. Compile to `.prg.json`
+3. Generate `.smproj` from `.prg.json` files
+4. Register the version in `song_data.json`
+5. Write the swap inbox JSON to push it to the GUI
+
 ## Target Output File Formats
 
 Understanding the user's need is key to selecting the correct output format:

@@ -2,7 +2,7 @@
 Sequence Maker - Tools Handlers
 
 This module defines the ToolsHandlers class, which contains handlers for tools-related
-operations such as key mapping, connect balls, and LLM-related operations.
+operations such as key mapping and connect balls.
 """
 
 
@@ -34,19 +34,6 @@ class ToolsHandlers:
         else:
             # Disconnect from balls
             self.app.ball_manager.disconnect_balls()
-    
-    def on_llm_chat(self):
-        """Show LLM chat window."""
-        if self.main_window.llm_chat_window:
-            self.main_window.llm_chat_window.show()
-            self.main_window.llm_chat_window.raise_()
-            self.main_window.llm_chat_window.activateWindow()
-    
-    def on_llm_diagnostics(self):
-        """Show LLM diagnostics dialog."""
-        from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
-        dialog = LLMDiagnosticsDialog(self.app, self.main_window)
-        dialog.exec()
     
     def on_process_lyrics(self):
         """Process lyrics for timeline."""

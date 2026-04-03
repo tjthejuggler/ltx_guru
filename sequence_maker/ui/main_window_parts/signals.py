@@ -10,7 +10,6 @@ def connect_signals(main_window):
     connect_timeline_signals(main_window)
     connect_audio_signals(main_window)
     connect_project_signals(main_window)
-    connect_llm_signals(main_window)
     connect_editor_signals(main_window)
 
 
@@ -46,13 +45,6 @@ def connect_project_signals(main_window):
     # Connect undo/redo signals
     main_window.app.undo_manager.undo_stack_changed.connect(main_window._update_ui)
     main_window.app.undo_manager.redo_stack_changed.connect(main_window._update_ui)
-
-
-def connect_llm_signals(main_window):
-    """Connect LLM-related signals."""
-    # Connect LLM signals if LLM manager is available
-    if hasattr(main_window.app, 'llm_manager'):
-        main_window.app.llm_manager.llm_action_requested.connect(main_window._on_llm_action)
 
 
 def connect_editor_signals(main_window):

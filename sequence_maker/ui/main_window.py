@@ -20,10 +20,8 @@ from ui.lyrics_widget import LyricsWidget
 from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
 from ui.dialogs.about_dialog import AboutDialog
-from ui.dialogs.llm_chat_window import LLMChatWindow
 from ui.dialogs.version_history_dialog import VersionHistoryDialog
 from ui.dialogs.crop_audio_dialog import CropAudioDialog
-from ui.dialogs.llm_diagnostics_dialog import LLMDiagnosticsDialog
 
 from ui.actions.file_actions import FileActions
 from ui.actions.edit_actions import EditActions
@@ -52,7 +50,7 @@ from ui.main_window_parts.handlers import (
     on_export_buddy, on_version_history, on_undo, on_redo, on_cut, on_copy, on_paste,
     on_delete, on_select_all, on_preferences, on_zoom_in, on_zoom_out,
     on_zoom_fit, on_play, on_pause, on_stop, on_loop, on_key_mapping,
-    on_ball_ips, on_connect_balls, on_llm_chat, on_llm_diagnostics, on_about, on_crop_audio
+    on_ball_ips, on_connect_balls, on_about, on_crop_audio
 )
 from ui.main_window_parts.editors import (
     show_segment_editor, hide_segment_editor, show_boundary_editor,
@@ -282,14 +280,20 @@ class MainWindow(QMainWindow):
     def _on_crop_audio(self):
         on_crop_audio(self)
     
-    def _on_llm_chat(self):
-        on_llm_chat(self)
+    def _on_sequence_swapped(self, description):
+        """Handle a successful sequence swap from the Sequence Designer."""
+        self._update_ui()
+        # Update the sequence description label
+        if description:
+            self.sequence_description_label.setText(f"🎨 {description}")
+            self.sequence_description_label.setVisible(True)
+        self.statusBar().showMessage("✅ New sequence loaded from Sequence Designer", 5000)
     
-    def _create_llm_chat_window(self):
-        self.llm_chat_window = LLMChatWindow(self.app, self)
-    
-    def _on_llm_diagnostics(self):
-        on_llm_diagnostics(self)
+    def _on_swap_failed(self, error_msg):
+        """Handle a failed sequence swap."""
+        from PyQt6.QtWidgets import QMessageBox
+        self.statusBar().showMessage(f"❌ Sequence swap failed: {error_msg}", 5000)
+        QMessageBox.warning(self, "Sequence Swap Failed", error_msg)
     
     def _on_process_lyrics(self):
         if hasattr(self.app, 'lyrics_manager'):
@@ -524,67 +528,6 @@ class MainWindow(QMainWindow):
             self._on_segment_cancel()
         else:
             self.hide_boundary_editor()
-    
-    def _on_llm_action(self, action_type, parameters):
-        """Handle LLM action requests."""
-        self.logger.info(f"LLM action requested: {action_type}")
-        
-        # Handle different action types
-        if action_type == "add_segment":
-            # Extract parameters
-            start_time = parameters.get("start_time")
-            end_time = parameters.get("end_time")
-            color = parameters.get("color")
-            
-            # Validate parameters
-            if start_time is None or end_time is None or color is None:
-                self.logger.warning("Missing parameters for add_segment action")
-                return
-            
-            # Add segment
-            self.timeline_action_api.add_segment(start_time, end_time, color)
-            
-        elif action_type == "edit_segment":
-            # Extract parameters
-            segment_id = parameters.get("segment_id")
-            start_time = parameters.get("start_time")
-            end_time = parameters.get("end_time")
-            color = parameters.get("color")
-            
-            # Validate parameters
-            if segment_id is None:
-                self.logger.warning("Missing segment_id for edit_segment action")
-                return
-            
-            # Edit segment
-            self.timeline_action_api.edit_segment(segment_id, start_time, end_time, color)
-            
-        elif action_type == "delete_segment":
-            # Extract parameters
-            segment_id = parameters.get("segment_id")
-            
-            # Validate parameters
-            if segment_id is None:
-                self.logger.warning("Missing segment_id for delete_segment action")
-                return
-            
-            # Delete segment
-            self.timeline_action_api.delete_segment(segment_id)
-            
-        elif action_type == "play_audio":
-            # Play audio
-            self.audio_action_api.play()
-            
-        elif action_type == "pause_audio":
-            # Pause audio
-            self.audio_action_api.pause()
-            
-        elif action_type == "stop_audio":
-            # Stop audio
-            self.audio_action_api.stop()
-            
-        else:
-            self.logger.warning(f"Unknown LLM action type: {action_type}")
     
     def keyPressEvent(self, event: QKeyEvent):
         """Handle key press events."""

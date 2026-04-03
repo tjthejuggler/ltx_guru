@@ -1,7 +1,7 @@
 """
 Sequence Maker - Audio Action API
 
-This module defines the AudioActionAPI class, which provides an API for LLM to control audio playback.
+This module defines the AudioActionAPI class, which provides an API for controlling audio playback.
 """
 
 import logging
@@ -9,7 +9,7 @@ import logging
 
 class AudioActionAPI:
     """
-    Provides an API for LLM to control audio playback.
+    Provides an API for controlling audio playback.
     """
     
     def __init__(self, app):
@@ -21,13 +21,6 @@ class AudioActionAPI:
         """
         self.app = app
         self.logger = logging.getLogger("SequenceMaker.AudioActionAPI")
-        
-        # Register action handlers with the LLM manager
-        self.app.llm_manager.register_action_handler("play_audio", self.play)
-        self.app.llm_manager.register_action_handler("pause_audio", self.pause)
-        self.app.llm_manager.register_action_handler("stop_audio", self.stop)
-        self.app.llm_manager.register_action_handler("seek_audio", self.seek)
-        self.app.llm_manager.register_action_handler("set_volume", self.set_volume)
     
     def play(self, parameters=None):
         """
