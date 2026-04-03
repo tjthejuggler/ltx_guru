@@ -45,3 +45,5 @@ pdf_extractor/
 manual/
 gentle_docker/
 gentle_output/
+# Memory Bank (local AI context)
+memory-bank/
