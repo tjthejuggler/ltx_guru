@@ -45,16 +45,42 @@ This organization:
 - Prevents clutter in the root directory.
 - Simplifies backup and sharing of complete projects.
 
-## GUI Hot-Swap System
+## GUI Hot-Swap System (CRITICAL — ALWAYS USE THIS TO UPDATE THE GUI)
 
-The Sequence Maker GUI has a **hot-swap inbox** that allows you to push new sequences directly into the running GUI. When you write to the inbox file, the GUI will:
-1. **Auto-save** the user's current project
-2. **Load** the new `.smproj` file into the timeline
-3. **Display** the sequence description in the status bar
+The Sequence Maker GUI has a **hot-swap inbox** that you MUST use to push new sequences into the running GUI. There is NO LLM integration in the GUI — the Sequence Designer Roo mode is the sequence designer, and the hot-swap system is how your work reaches the user's screen.
 
-### How to use it
+### What happens when you write to the inbox:
+1. The GUI **auto-saves** the user's current project (so nothing is lost)
+2. The GUI **loads** the new `.smproj` file into the timeline
+3. The GUI **displays** your sequence description in the status bar (blue italic text)
+4. The user immediately sees the new sequence in the GUI timeline
 
-After generating an `.smproj` file, write a JSON file to the swap inbox:
+### Complete end-to-end workflow
+
+**Step 1: Design the sequence**
+Create `.seqdesign.json` file(s) for each ball.
+
+**Step 2: Compile to `.prg.json`**
+```bash
+python -m roocode_sequence_designer_tools.compile_seqdesign \
+    path/to/ball1.seqdesign.json path/to/ball1.prg.json
+```
+Repeat for each ball.
+
+**Step 3: Generate `.smproj` from `.prg.json` files**
+```bash
+python roocode_sequence_designer_tools/generate_smproj_from_prg.py \
+    ball1.prg.json ball2.prg.json ball3.prg.json \
+    --project-name "My Sequence" \
+    --output path/to/my_sequence.smproj
+```
+This creates a Sequence Maker project file with one timeline per ball, with properly formatted color segments.
+
+**Step 4: Register the version in `song_data.json`**
+Use the `song_data_manager.py` tool to register this version.
+
+**Step 5: Push to the GUI via hot-swap inbox**
+Write a JSON file to `~/.sequence_maker/sequence_swap_inbox.json`:
 
 ```python
 import json
@@ -65,29 +91,31 @@ inbox = Path.home() / '.sequence_maker' / 'sequence_swap_inbox.json'
 inbox.parent.mkdir(parents=True, exist_ok=True)
 
 swap_data = {
-    'smproj_path': '/absolute/path/to/the/sequence.smproj',
-    'description': 'Human-readable description of the sequence',
+    'smproj_path': '/absolute/path/to/my_sequence.smproj',
+    'description': 'Beat-synced RGB cycle with lyric-triggered flashes',
     'timestamp': datetime.now().isoformat(),
     'version_name': 'v1_beat_sync'
 }
 
 with open(inbox, 'w') as f:
     json.dump(swap_data, f, indent=2)
+
+print(f'Sequence pushed to GUI: {inbox}')
 ```
 
-### Rules
-- `smproj_path` MUST be an **absolute path** to the `.smproj` file.
-- `description` should be clear and descriptive — it is shown to the user in the GUI status bar.
-- `timestamp` must be unique for each swap (use `datetime.now().isoformat()`).
-- **ALWAYS** generate the `.smproj` file FIRST, then write the inbox JSON.
-- The inbox file location is: `~/.sequence_maker/sequence_swap_inbox.json`
+### CRITICAL Rules
+- `smproj_path` MUST be an **absolute path** (use `os.path.abspath()` or `Path.resolve()`).
+- `description` is shown to the user in the GUI — make it clear and descriptive.
+- `timestamp` MUST be unique each time (use `datetime.now().isoformat()`). The GUI ignores duplicate timestamps.
+- **ALWAYS** generate the `.smproj` file FIRST, then write the inbox JSON. If the `.smproj` doesn't exist when the GUI reads the inbox, the swap fails.
+- The inbox file location is always: `~/.sequence_maker/sequence_swap_inbox.json`
+- You can push multiple times — each push auto-saves the previous state and loads the new one.
 
-### Typical workflow
-1. Design the sequence (`.seqdesign.json`)
-2. Compile to `.prg.json`
-3. Generate `.smproj` from `.prg.json` files
-4. Register the version in `song_data.json`
-5. Write the swap inbox JSON to push it to the GUI
+### When to push to the GUI
+- After creating a new sequence version
+- After making any changes to an existing sequence
+- Whenever the user asks to "show", "preview", "load", or "update" the sequence in the GUI
+- After iterating on a design based on user feedback
 
 ## Target Output File Formats
 
