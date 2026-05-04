@@ -2,8 +2,8 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T08:59:29.284031",
-    "modified": "2026-05-04T09:04:20.582168",
-    "name": "Untitled Project",
+    "modified": "2026-05-04T11:08:39.672272",
+    "name": "fast car orig",
     "description": ""
   },
   "settings": {
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T08:59:29.284061",
-      "modified": "2026-05-04T09:04:20.582135",
+      "modified": "2026-05-04T11:08:39.672227",
       "segments": [
         {
           "startTime": 0.0,
@@ -75,7 +75,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T08:59:29.284067",
-      "modified": "2026-05-04T09:04:20.582156",
+      "modified": "2026-05-04T11:08:39.672244",
       "segments": [
         {
           "startTime": 0.0,
@@ -131,7 +131,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T08:59:29.284070",
-      "modified": "2026-05-04T09:04:20.582165",
+      "modified": "2026-05-04T11:08:39.672267",
       "segments": [
         {
           "startTime": 0.0,
@@ -218,1537 +218,2407 @@
   "lyrics": {
     "song_name": "Fast Car",
     "artist_name": "Tracy Chapman",
-    "lyrics_text": "You got a fast car\nI want a ticket to anywhere\nMaybe we make a deal\nMaybe the two of us will work it out\nYou got a fast car\nI got a plan to get us out of here\nI been working at the convenience store\nManaged to save just a little bit of money\nWon't have to drive too far\nJust cross the border and into the city\nYou and I can both get jobs\nAnd finally see what it means to be living\n\nYou got a fast car\nIs it fast enough so we can fly away\nWe gotta make a decision\nLeave tonight or live and die this way\n\nI remember we were driving driving in your car\nSpeed so fast I felt like I was drunk\nCity lights lay out before us\nAnd your arm felt nice wrapped round my shoulder\nAnd I had a feeling that I belonged\nI had a feeling I could be someone\nHad a feeling I could be someone\n\nYou got a fast car\nWe go cruising entertain ourselves\nYou still ain't got a job\nI work in a market as a checkout girl\nI know things will get better\nYou'll find work and I'll get promoted\nWe'll move out of the shelter\nBuy a bigger house and live in the suburbs\n\nYou got a fast car\nIs it fast enough so we can fly away\nWe gotta make a decision\nLeave tonight or live and die this way\n\nI remember we were driving driving in your car\nSpeed so fast I felt like I was drunk\nCity lights lay out before us\nAnd your arm felt nice wrapped round my shoulder\nAnd I had a feeling that I belonged\nI had a feeling I could be someone\nHad a feeling I could be someone\n\nYou got a fast car\nI got a job that pays all our bills\nYou stay out drinking late at the bar\nSee more of your friends than you do of your kids\nI'd always hoped for better\nThought maybe together you and me would find it\nI got no plans I ain't going nowhere\nSo take your fast car and keep on driving\n\nYou got a fast car\nIs it fast enough so you can fly away\nYou gotta make a decision\nLeave tonight or live and die this way\n\nI remember we were driving driving in your car\nSpeed so fast I felt like I was drunk\nCity lights lay out before us\nAnd your arm felt nice wrapped round my shoulder\nAnd I had a feeling that I belonged\nI had a feeling I could be someone\nHad a feeling I could be someone\nHad a feeling I could be someone\n",
+    "lyrics_text": "you get a fast car \n    i wanted to get to anywhere \nmaybe we make a deal \nmaybe together we can get somewhere \nany is better \nstarting from zero \ngot nothing to lose \nmaybe we'll make something \nme myself i got nothing to prove\n\nyou got a fatter scarf \ni a plan to get us out of here \nbeen working at the convenience store \nmanaged to save just a little bit of money \nwon't have to drive too far \njust across the border and into the city \nyou and i can book your job \nand find and see what it means to be a living\n\nsee my old man's got a problem \nyeah but the bottle that's the way it is \nhe says body's too old for working \nbody's too young to look alike yes \nbut mama went off and left him \nshe wanted more of a life than he could give \ni said somebody's got to take care of him \ni quit school and that's what i did\n\nyou gotta fast car \nis it fast enough so we could fly away \nyou gotta make a decision \ntonight and live and die this way\n\nso remember when you were driving in your car \nspeed of bicycle like i was drunk \nso didn't i stay up before \ncan your arms run like crap around my shoulder \ni had a feeling that i belong \ni had a feeling i could see someone see someone see someone\n\ngot a fast car \nwe go cruise and entertain ourselves \nstill ain't got a job \nnow work in the market as a checkout girl \ni know things will get better \nyou'll find working out get promoted \nand we'll move out of the shelter \nbuy a bigger house and live in the suburbs\n\nso i remember when we were driving \ndriving in your car \nspeed are back it's i got was drunk \nit didn't i stay out before yeah i'm feeling nice about my children \ni i had a feeling that i belong \ni i a feeling i could be someone be someone be someone\n\nyou a fast car \ni got a job that pays all our bills \nit's now freaking big at the bottom \nmore your friends than you do your kids \ni'd always hope for better \nbut maybe together you and me find it \nthey got no plans i ain't going nowhere \ntake your best car and keep on driving\n\nso i remember when we were driving \ndriving in your car \nsees the back like i was drunk \ndidn't i stay out you're on the next around my shoulder \ni i had a feeling that i belong \ni i had a feeling i could be someone be someone be someone\n\nyou gotta fast god \nis it fast enough so you can fly away \nyou gotta make a decision \nleave tonight or live and die this way",
     "word_timestamps": [
       {
         "word": "you",
-        "start": 20.939999,
-        "end": 20.979999
+        "start": 20.639999,
+        "end": 20.96
       },
       {
-        "word": "got",
-        "start": 20.98,
-        "end": 21.09
+        "word": "get",
+        "start": 20.96,
+        "end": 21.1999999
       },
       {
         "word": "a",
-        "start": 21.09,
-        "end": 21.15
+        "start": 21.1999999,
+        "end": 21.36
       },
       {
         "word": "fast",
-        "start": 21.15,
-        "end": 21.5
+        "start": 21.36,
+        "end": 21.8399999
       },
       {
         "word": "car",
-        "start": 21.5,
-        "end": 21.53
+        "start": 21.8399999,
+        "end": 22.56
       },
       {
         "word": "i",
-        "start": 23.05,
-        "end": 23.3
+        "start": 23.12,
+        "end": 23.36
       },
       {
-        "word": "want",
-        "start": 23.3,
-        "end": 23.51
-      },
-      {
-        "word": "a",
-        "start": 23.509999999999998,
-        "end": 23.569999999999997
-      },
-      {
-        "word": "ticket",
-        "start": 23.57,
-        "end": 23.89
+        "word": "wanted",
+        "start": 23.36,
+        "end": 23.6799998
       },
       {
         "word": "to",
-        "start": 24.07,
-        "end": 24.18
+        "start": 23.6799998,
+        "end": 23.9199998
+      },
+      {
+        "word": "get",
+        "start": 23.9199998,
+        "end": 24.08
+      },
+      {
+        "word": "to",
+        "start": 24.08,
+        "end": 24.3199997
       },
       {
         "word": "anywhere",
-        "start": 24.36,
-        "end": 24.849999999999998
+        "start": 24.32,
+        "end": 24.799999
       },
       {
         "word": "maybe",
-        "start": 25.33,
-        "end": 25.65
+        "start": 25.3599997,
+        "end": 25.7599998
       },
       {
         "word": "we",
-        "start": 25.65,
-        "end": 25.9
+        "start": 25.7599998,
+        "end": 25.92
       },
       {
         "word": "make",
-        "start": 25.9,
-        "end": 26.13
+        "start": 25.92,
+        "end": 26.240000000000002
       },
       {
         "word": "a",
-        "start": 26.130000000000003,
-        "end": 26.21
+        "start": 26.240000000000002,
+        "end": 26.3999996
       },
       {
         "word": "deal",
-        "start": 26.21,
-        "end": 26.77
+        "start": 26.3999996,
+        "end": 27.04
       },
       {
         "word": "maybe",
-        "start": 27.639999,
-        "end": 28.109999
+        "start": 27.68,
+        "end": 28.08
       },
       {
-        "word": "the",
-        "start": 49.749998,
-        "end": 50.029998
+        "word": "together",
+        "start": 28.08,
+        "end": 28.72
       },
       {
-        "word": "two",
-        "start": 50.589999,
-        "end": 50.609999
-      },
-      {
-        "word": "of",
-        "start": 50.609999,
-        "end": 50.629999
-      },
-      {
-        "word": "us",
-        "start": 50.629998,
-        "end": 50.649998
-      },
-      {
-        "word": "will",
-        "start": 50.649998,
-        "end": 50.679998
-      },
-      {
-        "word": "work",
-        "start": 50.679998999999995,
-        "end": 50.779999000000004
-      },
-      {
-        "word": "i",
-        "start": 50.95,
-        "end": 51.18
-      },
-      {
-        "word": "got",
-        "start": 51.179999,
-        "end": 51.379999000000005
-      },
-      {
-        "word": "a",
-        "start": 51.38,
-        "end": 51.45
-      },
-      {
-        "word": "plan",
-        "start": 51.45,
-        "end": 51.93
-      },
-      {
-        "word": "to",
-        "start": 51.94,
-        "end": 52.03
-      },
-      {
-        "word": "get",
-        "start": 52.029999000000004,
-        "end": 52.249999
-      },
-      {
-        "word": "us",
-        "start": 52.25,
-        "end": 52.39
-      },
-      {
-        "word": "out",
-        "start": 52.389999,
-        "end": 52.529999000000004
-      },
-      {
-        "word": "of",
-        "start": 52.529999000000004,
-        "end": 52.639999
-      },
-      {
-        "word": "here",
-        "start": 52.639999,
-        "end": 52.889999
-      },
-      {
-        "word": "i",
-        "start": 52.91,
-        "end": 52.919999999999995
-      },
-      {
-        "word": "been",
-        "start": 52.92,
-        "end": 53.18
-      },
-      {
-        "word": "working",
-        "start": 53.339999999999996,
-        "end": 53.41
-      },
-      {
-        "word": "at",
-        "start": 53.41,
-        "end": 53.46
-      },
-      {
-        "word": "the",
-        "start": 53.66,
-        "end": 53.76
-      },
-      {
-        "word": "convenience",
-        "start": 53.76,
-        "end": 54.48
-      },
-      {
-        "word": "store",
-        "start": 54.53,
-        "end": 54.85
-      },
-      {
-        "word": "managed",
-        "start": 55.44,
-        "end": 55.8
-      },
-      {
-        "word": "to",
-        "start": 55.8,
-        "end": 55.88
-      },
-      {
-        "word": "save",
-        "start": 55.88,
-        "end": 56.38
-      },
-      {
-        "word": "a",
-        "start": 56.62,
-        "end": 56.629999999999995
-      },
-      {
-        "word": "little",
-        "start": 56.63,
-        "end": 56.93
-      },
-      {
-        "word": "bit",
-        "start": 56.93,
-        "end": 57.13
-      },
-      {
-        "word": "of",
-        "start": 57.13,
-        "end": 57.230000000000004
-      },
-      {
-        "word": "money",
-        "start": 57.23,
-        "end": 57.68
-      },
-      {
-        "word": "won't",
-        "start": 57.75,
-        "end": 58.15
-      },
-      {
-        "word": "have",
-        "start": 58.15,
-        "end": 58.22
-      },
-      {
-        "word": "to",
-        "start": 60.89,
-        "end": 60.96
-      },
-      {
-        "word": "drive",
-        "start": 60.96,
-        "end": 61.0
-      },
-      {
-        "word": "too",
-        "start": 61.0,
-        "end": 61.019999999999996
-      },
-      {
-        "word": "far",
-        "start": 61.019999999999996,
-        "end": 61.05
-      },
-      {
-        "word": "just",
-        "start": 61.05,
-        "end": 61.089999999999996
-      },
-      {
-        "word": "and",
-        "start": 61.26,
-        "end": 61.35
-      },
-      {
-        "word": "into",
-        "start": 61.35,
-        "end": 61.7
-      },
-      {
-        "word": "the",
-        "start": 61.7,
-        "end": 61.830000000000005
-      },
-      {
-        "word": "city",
-        "start": 61.83,
-        "end": 62.379999999999995
-      },
-      {
-        "word": "you",
-        "start": 62.429999,
-        "end": 62.729999
-      },
-      {
-        "word": "and",
-        "start": 62.730000000000004,
-        "end": 62.95
-      },
-      {
-        "word": "i",
-        "start": 62.95,
-        "end": 63.24
+        "word": "we",
+        "start": 28.72,
+        "end": 28.8
       },
       {
         "word": "can",
-        "start": 63.26,
-        "end": 63.559999999999995
-      },
-      {
-        "word": "both",
-        "start": 63.559999,
-        "end": 63.859998999999995
+        "start": 28.8,
+        "end": 28.96
       },
       {
         "word": "get",
-        "start": 63.9,
-        "end": 64.09
+        "start": 28.96,
+        "end": 29.2
       },
       {
-        "word": "jobs",
-        "start": 64.099999,
-        "end": 64.579999
+        "word": "somewhere",
+        "start": 29.2,
+        "end": 29.999999000000003
       },
       {
-        "word": "and",
-        "start": 64.58,
-        "end": 64.64
-      },
-      {
-        "word": "finally",
-        "start": 64.719999,
-        "end": 65.139999
-      },
-      {
-        "word": "see",
-        "start": 65.139999,
-        "end": 65.589999
-      },
-      {
-        "word": "what",
-        "start": 65.59,
-        "end": 65.79
-      },
-      {
-        "word": "it",
-        "start": 65.78999999999999,
-        "end": 65.85999999999999
-      },
-      {
-        "word": "means",
-        "start": 65.86,
-        "end": 66.07
-      },
-      {
-        "word": "to",
-        "start": 66.07,
-        "end": 66.14999999999999
-      },
-      {
-        "word": "be",
-        "start": 66.15,
-        "end": 66.4
-      },
-      {
-        "word": "living",
-        "start": 66.4,
-        "end": 66.71000000000001
-      },
-      {
-        "word": "you",
-        "start": 104.09999900000001,
-        "end": 104.19999900000002
-      },
-      {
-        "word": "got",
-        "start": 104.19999800000001,
-        "end": 104.32999800000002
-      },
-      {
-        "word": "a",
-        "start": 104.32999900000002,
-        "end": 104.409999
-      },
-      {
-        "word": "fast",
-        "start": 104.41999900000002,
-        "end": 104.75999900000002
-      },
-      {
-        "word": "car",
-        "start": 104.75999900000001,
-        "end": 104.78999900000001
+        "word": "any",
+        "start": 30,
+        "end": 30.4
       },
       {
         "word": "is",
-        "start": 105.92999700000001,
-        "end": 106.05999700000001
+        "start": 30.719999,
+        "end": 30.880000000000003
       },
       {
-        "word": "it",
-        "start": 106.05999800000001,
-        "end": 106.169998
+        "word": "better",
+        "start": 30.880000000000003,
+        "end": 31.679999000000002
       },
       {
-        "word": "fast",
-        "start": 106.19,
-        "end": 106.57000000000001
+        "word": "starting",
+        "start": 32.4,
+        "end": 32.719999
       },
       {
-        "word": "enough",
-        "start": 106.570001,
-        "end": 106.95000100000001
+        "word": "from",
+        "start": 32.719999,
+        "end": 32.96
       },
       {
-        "word": "so",
-        "start": 106.969998,
-        "end": 107.05999800000001
+        "word": "zero",
+        "start": 32.96,
+        "end": 33.2
       },
       {
-        "word": "we",
-        "start": 107.05999800000001,
-        "end": 107.07999800000002
+        "word": "got",
+        "start": 33.1999998,
+        "end": 33.6
       },
       {
-        "word": "can",
-        "start": 107.25,
-        "end": 107.35
+        "word": "nothing",
+        "start": 33.599999,
+        "end": 33.92
       },
       {
-        "word": "fly",
-        "start": 107.359999,
-        "end": 107.689999
+        "word": "to",
+        "start": 33.92,
+        "end": 34.16
       },
       {
-        "word": "away",
-        "start": 107.690001,
-        "end": 108.050001
+        "word": "lose",
+        "start": 34.16,
+        "end": 34.719999
       },
       {
-        "word": "gotta",
-        "start": 108.77,
-        "end": 109.02
+        "word": "maybe",
+        "start": 34.719999,
+        "end": 34.96
+      },
+      {
+        "word": "we'll",
+        "start": 35.04,
+        "end": 35.3599997
       },
       {
         "word": "make",
-        "start": 109.05,
-        "end": 109.39999999999999
+        "start": 35.3599997,
+        "end": 35.6
       },
       {
-        "word": "a",
-        "start": 109.4,
-        "end": 109.45
+        "word": "something",
+        "start": 35.6,
+        "end": 36.4
       },
       {
-        "word": "decision",
-        "start": 109.45,
-        "end": 110.23
+        "word": "me",
+        "start": 37.04,
+        "end": 37.3599997
       },
       {
-        "word": "leave",
-        "start": 110.76,
-        "end": 111.09
-      },
-      {
-        "word": "tonight",
-        "start": 111.12,
-        "end": 111.60000000000001
-      },
-      {
-        "word": "or",
-        "start": 111.6,
-        "end": 111.61
-      },
-      {
-        "word": "live",
-        "start": 111.61,
-        "end": 111.86
-      },
-      {
-        "word": "and",
-        "start": 111.86,
-        "end": 111.96
-      },
-      {
-        "word": "die",
-        "start": 111.96,
-        "end": 112.24
-      },
-      {
-        "word": "this",
-        "start": 112.27,
-        "end": 112.45
-      },
-      {
-        "word": "way",
-        "start": 112.49,
-        "end": 112.99
+        "word": "myself",
+        "start": 37.3599997,
+        "end": 37.8399997
       },
       {
         "word": "i",
-        "start": 121.00999999999999,
-        "end": 121.06
+        "start": 37.8399997,
+        "end": 38
       },
       {
-        "word": "remember",
-        "start": 121.06,
-        "end": 121.53
+        "word": "got",
+        "start": 38,
+        "end": 38.16
+      },
+      {
+        "word": "nothing",
+        "start": 38.16,
+        "end": 38.480000000000004
+      },
+      {
+        "word": "to",
+        "start": 38.480000000000004,
+        "end": 38.639999
+      },
+      {
+        "word": "prove",
+        "start": 38.639999,
+        "end": 39.12
+      },
+      {
+        "word": "you",
+        "start": 48.4,
+        "end": 48.96
+      },
+      {
+        "word": "got",
+        "start": 48.96,
+        "end": 49.2
+      },
+      {
+        "word": "a",
+        "start": 49.2,
+        "end": 49.36
+      },
+      {
+        "word": "fatter",
+        "start": 49.36,
+        "end": 49.679999
+      },
+      {
+        "word": "scarf",
+        "start": 49.679999,
+        "end": 50.559999
+      },
+      {
+        "word": "i",
+        "start": 50.96,
+        "end": 51.28
+      },
+      {
+        "word": "a",
+        "start": 51.439999900000004,
+        "end": 51.5999999
+      },
+      {
+        "word": "plan",
+        "start": 51.599999,
+        "end": 51.92
+      },
+      {
+        "word": "to",
+        "start": 51.92,
+        "end": 52.16
+      },
+      {
+        "word": "get",
+        "start": 52.1599998,
+        "end": 52.32
+      },
+      {
+        "word": "us",
+        "start": 52.32,
+        "end": 52.480000000000004
+      },
+      {
+        "word": "out",
+        "start": 52.48,
+        "end": 52.6399999
+      },
+      {
+        "word": "of",
+        "start": 52.6399999,
+        "end": 52.8
+      },
+      {
+        "word": "here",
+        "start": 52.8,
+        "end": 52.96
+      },
+      {
+        "word": "been",
+        "start": 52.96,
+        "end": 53.28
+      },
+      {
+        "word": "working",
+        "start": 53.28,
+        "end": 53.6
+      },
+      {
+        "word": "at",
+        "start": 53.599999,
+        "end": 53.84
+      },
+      {
+        "word": "the",
+        "start": 53.84,
+        "end": 53.9199998
+      },
+      {
+        "word": "convenience",
+        "start": 53.92,
+        "end": 54.719999
+      },
+      {
+        "word": "store",
+        "start": 54.719999,
+        "end": 54.96
+      },
+      {
+        "word": "managed",
+        "start": 55.6,
+        "end": 55.92
+      },
+      {
+        "word": "to",
+        "start": 55.92,
+        "end": 56.08
+      },
+      {
+        "word": "save",
+        "start": 56.08,
+        "end": 56.3999996
+      },
+      {
+        "word": "just",
+        "start": 56.3999996,
+        "end": 56.72
+      },
+      {
+        "word": "a",
+        "start": 56.72,
+        "end": 56.8799996
+      },
+      {
+        "word": "little",
+        "start": 56.8799996,
+        "end": 57.04
+      },
+      {
+        "word": "bit",
+        "start": 57.04,
+        "end": 57.2
+      },
+      {
+        "word": "of",
+        "start": 57.2,
+        "end": 57.3599997
+      },
+      {
+        "word": "money",
+        "start": 57.3599997,
+        "end": 57.8399997
+      },
+      {
+        "word": "won't",
+        "start": 57.8399997,
+        "end": 58.24
+      },
+      {
+        "word": "have",
+        "start": 58.24,
+        "end": 58.4
+      },
+      {
+        "word": "to",
+        "start": 58.4,
+        "end": 58.480000000000004
+      },
+      {
+        "word": "drive",
+        "start": 58.480000000000004,
+        "end": 58.72
+      },
+      {
+        "word": "too",
+        "start": 58.72,
+        "end": 59.04
+      },
+      {
+        "word": "far",
+        "start": 59.04,
+        "end": 59.679999
+      },
+      {
+        "word": "just",
+        "start": 59.92,
+        "end": 60.16
+      },
+      {
+        "word": "across",
+        "start": 60.16,
+        "end": 60.480000000000004
+      },
+      {
+        "word": "the",
+        "start": 60.480000000000004,
+        "end": 60.719999
+      },
+      {
+        "word": "border",
+        "start": 60.719999,
+        "end": 61.12
+      },
+      {
+        "word": "and",
+        "start": 61.12,
+        "end": 61.36
+      },
+      {
+        "word": "into",
+        "start": 61.36,
+        "end": 61.84
+      },
+      {
+        "word": "the",
+        "start": 61.84,
+        "end": 62
+      },
+      {
+        "word": "city",
+        "start": 62,
+        "end": 62.56
+      },
+      {
+        "word": "you",
+        "start": 62.559999,
+        "end": 62.799999
+      },
+      {
+        "word": "and",
+        "start": 62.799999,
+        "end": 63.12
+      },
+      {
+        "word": "i",
+        "start": 63.12,
+        "end": 63.28
+      },
+      {
+        "word": "can",
+        "start": 63.28,
+        "end": 63.599999
+      },
+      {
+        "word": "book",
+        "start": 63.6,
+        "end": 64
+      },
+      {
+        "word": "your",
+        "start": 64,
+        "end": 64.24
+      },
+      {
+        "word": "job",
+        "start": 64.24,
+        "end": 64.56
+      },
+      {
+        "word": "and",
+        "start": 64.639999,
+        "end": 64.88
+      },
+      {
+        "word": "find",
+        "start": 64.88,
+        "end": 65.12
+      },
+      {
+        "word": "and",
+        "start": 65.12,
+        "end": 65.2799997
+      },
+      {
+        "word": "see",
+        "start": 65.2799997,
+        "end": 65.52
+      },
+      {
+        "word": "what",
+        "start": 65.52,
+        "end": 65.83999969999999
+      },
+      {
+        "word": "it",
+        "start": 65.83999969999999,
+        "end": 66
+      },
+      {
+        "word": "means",
+        "start": 66,
+        "end": 66.16
+      },
+      {
+        "word": "to",
+        "start": 66.16,
+        "end": 66.3199997
+      },
+      {
+        "word": "be",
+        "start": 66.3199997,
+        "end": 66.48
+      },
+      {
+        "word": "a",
+        "start": 66.48,
+        "end": 66.64
+      },
+      {
+        "word": "living",
+        "start": 66.64,
+        "end": 66.8799996
+      },
+      {
+        "word": "see",
+        "start": 76,
+        "end": 76.56
+      },
+      {
+        "word": "my",
+        "start": 76.56,
+        "end": 76.64
+      },
+      {
+        "word": "old",
+        "start": 76.64,
+        "end": 76.8799996
+      },
+      {
+        "word": "man's",
+        "start": 76.8799996,
+        "end": 77.2799997
+      },
+      {
+        "word": "got",
+        "start": 77.2799997,
+        "end": 77.52
+      },
+      {
+        "word": "a",
+        "start": 77.52,
+        "end": 77.68
+      },
+      {
+        "word": "problem",
+        "start": 77.68,
+        "end": 78.32
+      },
+      {
+        "word": "yeah",
+        "start": 78.72,
+        "end": 78.96000000000001
+      },
+      {
+        "word": "but",
+        "start": 78.96000000000001,
+        "end": 79.2
+      },
+      {
+        "word": "the",
+        "start": 79.2,
+        "end": 79.28
+      },
+      {
+        "word": "bottle",
+        "start": 79.28,
+        "end": 79.679999
+      },
+      {
+        "word": "that's",
+        "start": 79.679999,
+        "end": 79.84
+      },
+      {
+        "word": "the",
+        "start": 79.84,
+        "end": 79.92
+      },
+      {
+        "word": "way",
+        "start": 79.92,
+        "end": 80.08
+      },
+      {
+        "word": "it",
+        "start": 80.08,
+        "end": 80.32
+      },
+      {
+        "word": "is",
+        "start": 80.32,
+        "end": 80.559999
+      },
+      {
+        "word": "he",
+        "start": 80.559999,
+        "end": 80.719999
+      },
+      {
+        "word": "says",
+        "start": 80.719999,
+        "end": 80.88
+      },
+      {
+        "word": "body's",
+        "start": 80.88,
+        "end": 81.44
+      },
+      {
+        "word": "too",
+        "start": 81.4399999,
+        "end": 81.5999999
+      },
+      {
+        "word": "old",
+        "start": 81.599999,
+        "end": 81.84
+      },
+      {
+        "word": "for",
+        "start": 81.8399999,
+        "end": 82.1599998
+      },
+      {
+        "word": "working",
+        "start": 82.16,
+        "end": 82.879999
+      },
+      {
+        "word": "body's",
+        "start": 83.12,
+        "end": 83.599999
+      },
+      {
+        "word": "too",
+        "start": 83.6799998,
+        "end": 83.84
+      },
+      {
+        "word": "young",
+        "start": 83.84,
+        "end": 84.08
+      },
+      {
+        "word": "to",
+        "start": 84.08,
+        "end": 84.4
+      },
+      {
+        "word": "look",
+        "start": 84.4,
+        "end": 84.64
+      },
+      {
+        "word": "alike",
+        "start": 84.639999,
+        "end": 84.88
+      },
+      {
+        "word": "yes",
+        "start": 85.12,
+        "end": 85.2799997
+      },
+      {
+        "word": "but",
+        "start": 85.2799997,
+        "end": 85.52
+      },
+      {
+        "word": "mama",
+        "start": 85.52,
+        "end": 85.83999969999999
+      },
+      {
+        "word": "went",
+        "start": 85.83999969999999,
+        "end": 86.08
+      },
+      {
+        "word": "off",
+        "start": 86.08,
+        "end": 86.3199997
+      },
+      {
+        "word": "and",
+        "start": 86.3199997,
+        "end": 86.56
+      },
+      {
+        "word": "left",
+        "start": 86.56,
+        "end": 86.96
+      },
+      {
+        "word": "him",
+        "start": 86.96,
+        "end": 87.6
+      },
+      {
+        "word": "she",
+        "start": 87.6,
+        "end": 87.83999969999999
+      },
+      {
+        "word": "wanted",
+        "start": 87.83999969999999,
+        "end": 88.16
+      },
+      {
+        "word": "more",
+        "start": 88.16,
+        "end": 88.32
+      },
+      {
+        "word": "of",
+        "start": 88.32,
+        "end": 88.4
+      },
+      {
+        "word": "a",
+        "start": 88.4,
+        "end": 88.48
+      },
+      {
+        "word": "life",
+        "start": 88.48,
+        "end": 88.72
+      },
+      {
+        "word": "than",
+        "start": 88.72,
+        "end": 88.96000000000001
+      },
+      {
+        "word": "he",
+        "start": 88.96000000000001,
+        "end": 89.12
+      },
+      {
+        "word": "could",
+        "start": 89.12,
+        "end": 89.36
+      },
+      {
+        "word": "give",
+        "start": 89.36,
+        "end": 89.679999
+      },
+      {
+        "word": "i",
+        "start": 89.679999,
+        "end": 89.84
+      },
+      {
+        "word": "said",
+        "start": 89.84,
+        "end": 90
+      },
+      {
+        "word": "somebody's",
+        "start": 90,
+        "end": 90.64
+      },
+      {
+        "word": "got",
+        "start": 90.639999,
+        "end": 90.8
+      },
+      {
+        "word": "to",
+        "start": 90.79999995,
+        "end": 90.96
+      },
+      {
+        "word": "take",
+        "start": 90.96000000000001,
+        "end": 91.2
+      },
+      {
+        "word": "care",
+        "start": 91.1999999,
+        "end": 91.52
+      },
+      {
+        "word": "of",
+        "start": 91.5199995,
+        "end": 91.679999
+      },
+      {
+        "word": "him",
+        "start": 91.679999,
+        "end": 92.16
+      },
+      {
+        "word": "i",
+        "start": 92.3999999,
+        "end": 92.56
+      },
+      {
+        "word": "quit",
+        "start": 92.56,
+        "end": 92.8
+      },
+      {
+        "word": "school",
+        "start": 92.8,
+        "end": 93.1999998
+      },
+      {
+        "word": "and",
+        "start": 93.2,
+        "end": 93.28
+      },
+      {
+        "word": "that's",
+        "start": 93.28,
+        "end": 93.599999
+      },
+      {
+        "word": "what",
+        "start": 93.599999,
+        "end": 93.759999
+      },
+      {
+        "word": "i",
+        "start": 93.759999,
+        "end": 94
+      },
+      {
+        "word": "did",
+        "start": 94,
+        "end": 94.32
+      },
+      {
+        "word": "you",
+        "start": 103.84,
+        "end": 104.24
+      },
+      {
+        "word": "gotta",
+        "start": 104.24,
+        "end": 104.559999
+      },
+      {
+        "word": "fast",
+        "start": 104.56,
+        "end": 105.04
+      },
+      {
+        "word": "car",
+        "start": 105.04,
+        "end": 105.76
+      },
+      {
+        "word": "is",
+        "start": 105.92,
+        "end": 106.16
+      },
+      {
+        "word": "it",
+        "start": 106.16,
+        "end": 106.3199997
+      },
+      {
+        "word": "fast",
+        "start": 106.3199997,
+        "end": 106.64
+      },
+      {
+        "word": "enough",
+        "start": 106.64,
+        "end": 106.96
+      },
+      {
+        "word": "so",
+        "start": 106.96,
+        "end": 107.2
       },
       {
         "word": "we",
-        "start": 121.83999899999999,
-        "end": 121.929999
+        "start": 107.2,
+        "end": 107.3599997
+      },
+      {
+        "word": "could",
+        "start": 107.3599997,
+        "end": 107.52
+      },
+      {
+        "word": "fly",
+        "start": 107.52,
+        "end": 107.7599998
+      },
+      {
+        "word": "away",
+        "start": 107.7599998,
+        "end": 108.48
+      },
+      {
+        "word": "you",
+        "start": 108.559999,
+        "end": 108.88
+      },
+      {
+        "word": "gotta",
+        "start": 108.88,
+        "end": 109.12
+      },
+      {
+        "word": "make",
+        "start": 109.12,
+        "end": 109.44
+      },
+      {
+        "word": "a",
+        "start": 109.44,
+        "end": 109.599999
+      },
+      {
+        "word": "decision",
+        "start": 109.599999,
+        "end": 110.4
+      },
+      {
+        "word": "tonight",
+        "start": 111.2,
+        "end": 111.599999
+      },
+      {
+        "word": "and",
+        "start": 111.5999999,
+        "end": 111.8399999
+      },
+      {
+        "word": "live",
+        "start": 111.84,
+        "end": 112
+      },
+      {
+        "word": "and",
+        "start": 112,
+        "end": 112.1599998
+      },
+      {
+        "word": "die",
+        "start": 112.16,
+        "end": 112.32
+      },
+      {
+        "word": "this",
+        "start": 112.32,
+        "end": 112.639999
+      },
+      {
+        "word": "way",
+        "start": 112.639999,
+        "end": 112.88
+      },
+      {
+        "word": "so",
+        "start": 120.88,
+        "end": 121.12
+      },
+      {
+        "word": "remember",
+        "start": 121.12,
+        "end": 121.679999
+      },
+      {
+        "word": "when",
+        "start": 121.679999,
+        "end": 121.92
+      },
+      {
+        "word": "you",
+        "start": 121.92,
+        "end": 122.08
       },
       {
         "word": "were",
-        "start": 121.92999999999999,
-        "end": 122.27
+        "start": 122.08,
+        "end": 122.3999999
       },
       {
         "word": "driving",
-        "start": 122.31,
-        "end": 122.83
-      },
-      {
-        "word": "driving",
-        "start": 123.209999,
+        "start": 123.2,
         "end": 123.599999
       },
       {
         "word": "in",
-        "start": 127.39,
-        "end": 127.54
+        "start": 123.599999,
+        "end": 123.84
       },
       {
         "word": "your",
-        "start": 128.70000000000002,
-        "end": 128.73000000000002
+        "start": 123.84,
+        "end": 124.08
       },
       {
         "word": "car",
-        "start": 128.73000000000002,
-        "end": 128.76000000000002
+        "start": 124.08,
+        "end": 124.64
       },
       {
         "word": "speed",
-        "start": 128.76000000000002,
-        "end": 128.8
+        "start": 124.639999,
+        "end": 125.03999999999999
       },
       {
-        "word": "so",
-        "start": 128.8,
-        "end": 128.82
+        "word": "of",
+        "start": 125.04,
+        "end": 125.2799997
       },
       {
-        "word": "and",
-        "start": 128.99,
-        "end": 129.10000000000002
+        "word": "bicycle",
+        "start": 125.2799997,
+        "end": 125.7599998
       },
       {
-        "word": "your",
-        "start": 129.1,
-        "end": 129.23999999999998
-      },
-      {
-        "word": "arm",
-        "start": 129.24,
-        "end": 129.45000000000002
-      },
-      {
-        "word": "felt",
-        "start": 129.45000000000002,
-        "end": 129.54000000000002
-      },
-      {
-        "word": "nice",
-        "start": 129.72000000000003,
-        "end": 130.02
-      },
-      {
-        "word": "wrapped",
-        "start": 130.07000000000002,
-        "end": 130.32000000000002
-      },
-      {
-        "word": "round",
-        "start": 130.32000000000002,
-        "end": 130.61
-      },
-      {
-        "word": "my",
-        "start": 130.63000000000002,
-        "end": 130.86
-      },
-      {
-        "word": "shoulder",
-        "start": 130.86,
-        "end": 131.3
-      },
-      {
-        "word": "and",
-        "start": 132.35000000000002,
-        "end": 132.39000000000001
+        "word": "like",
+        "start": 125.7599998,
+        "end": 126.08
       },
       {
         "word": "i",
-        "start": 132.39000000000001,
-        "end": 132.87
+        "start": 126.08,
+        "end": 126.24
+      },
+      {
+        "word": "was",
+        "start": 126.24,
+        "end": 126.48
+      },
+      {
+        "word": "drunk",
+        "start": 126.48,
+        "end": 127.12
+      },
+      {
+        "word": "so",
+        "start": 127.2,
+        "end": 127.44
+      },
+      {
+        "word": "didn't",
+        "start": 127.44,
+        "end": 127.68
+      },
+      {
+        "word": "i",
+        "start": 127.68,
+        "end": 127.83999969999999
+      },
+      {
+        "word": "stay",
+        "start": 127.83999969999999,
+        "end": 128.16
+      },
+      {
+        "word": "up",
+        "start": 128.16,
+        "end": 128.48
+      },
+      {
+        "word": "before",
+        "start": 128.48,
+        "end": 129.04
+      },
+      {
+        "word": "can",
+        "start": 129.04,
+        "end": 129.12
+      },
+      {
+        "word": "your",
+        "start": 129.12,
+        "end": 129.36
+      },
+      {
+        "word": "arms",
+        "start": 129.36,
+        "end": 129.599999
+      },
+      {
+        "word": "run",
+        "start": 129.599999,
+        "end": 129.84
+      },
+      {
+        "word": "like",
+        "start": 129.84,
+        "end": 130.08
+      },
+      {
+        "word": "crap",
+        "start": 130.08,
+        "end": 130.4
+      },
+      {
+        "word": "around",
+        "start": 130.48,
+        "end": 130.71999997
+      },
+      {
+        "word": "my",
+        "start": 130.719999,
+        "end": 130.96
+      },
+      {
+        "word": "shoulder",
+        "start": 131.04,
+        "end": 131.36
+      },
+      {
+        "word": "i",
+        "start": 131.5199995,
+        "end": 132.16
       },
       {
         "word": "had",
-        "start": 133.50000000000003,
-        "end": 133.67000000000002
+        "start": 132.72,
+        "end": 133.76
       },
       {
         "word": "a",
-        "start": 133.67000000000002,
-        "end": 133.73000000000002
+        "start": 133.76,
+        "end": 133.9199998
       },
       {
         "word": "feeling",
-        "start": 134.02,
-        "end": 134.36
+        "start": 133.9199998,
+        "end": 134.3199997
       },
       {
         "word": "that",
-        "start": 134.36,
-        "end": 134.55
+        "start": 134.4,
+        "end": 134.719999
       },
       {
         "word": "i",
         "start": 134.72,
-        "end": 135.08
+        "end": 135.04
       },
       {
-        "word": "belonged",
-        "start": 135.099999,
-        "end": 135.559999
+        "word": "belong",
+        "start": 135.04,
+        "end": 136
       },
       {
         "word": "i",
-        "start": 136.059999,
-        "end": 136.729999
+        "start": 136.3199997,
+        "end": 136.8799996
       },
       {
         "word": "had",
-        "start": 138.039999,
-        "end": 138.23999899999998
+        "start": 136.8799996,
+        "end": 137.6
       },
       {
         "word": "a",
-        "start": 138.23999899999998,
-        "end": 138.469999
+        "start": 138.32,
+        "end": 138.48
       },
       {
         "word": "feeling",
-        "start": 138.569999,
-        "end": 138.859999
+        "start": 138.48,
+        "end": 138.88
       },
       {
         "word": "i",
-        "start": 138.859999,
-        "end": 139.29999899999999
+        "start": 138.88,
+        "end": 139.28
       },
       {
         "word": "could",
-        "start": 139.499999,
-        "end": 139.529999
+        "start": 139.28,
+        "end": 139.599999
       },
       {
-        "word": "be",
-        "start": 139.529999,
-        "end": 139.699999
-      },
-      {
-        "word": "someone",
-        "start": 139.719999,
-        "end": 140.109999
-      },
-      {
-        "word": "a",
-        "start": 143.469999,
-        "end": 143.67999899999998
-      },
-      {
-        "word": "feeling",
-        "start": 143.89999899999998,
-        "end": 144.069999
-      },
-      {
-        "word": "i",
-        "start": 144.559999,
-        "end": 144.569999
-      },
-      {
-        "word": "could",
-        "start": 144.569999,
-        "end": 144.609999
-      },
-      {
-        "word": "be",
-        "start": 151.689999,
-        "end": 151.759999
+        "word": "see",
+        "start": 139.599999,
+        "end": 139.84
       },
       {
         "word": "someone",
-        "start": 151.759999,
-        "end": 152.109999
+        "start": 139.84,
+        "end": 140.559999
       },
       {
-        "word": "you",
-        "start": 152.319998,
-        "end": 152.599998
+        "word": "see",
+        "start": 140.719999,
+        "end": 140.88
+      },
+      {
+        "word": "someone",
+        "start": 140.88,
+        "end": 141.679999
+      },
+      {
+        "word": "see",
+        "start": 141.84,
+        "end": 142
+      },
+      {
+        "word": "someone",
+        "start": 142,
+        "end": 142.48
       },
       {
         "word": "got",
-        "start": 152.599999,
-        "end": 152.729999
+        "start": 152.56,
+        "end": 152.8799999
       },
       {
         "word": "a",
-        "start": 152.729999,
-        "end": 152.789999
+        "start": 152.8799999,
+        "end": 153.04
       },
       {
         "word": "fast",
-        "start": 152.789998,
-        "end": 153.249998
+        "start": 153.04,
+        "end": 153.4399998
       },
       {
         "word": "car",
-        "start": 153.449998,
-        "end": 153.58999799999998
+        "start": 153.4399998,
+        "end": 154.24
       },
       {
         "word": "we",
-        "start": 154.569999,
-        "end": 154.729999
+        "start": 154.56,
+        "end": 154.7999997
       },
       {
         "word": "go",
-        "start": 154.729999,
-        "end": 154.969999
+        "start": 154.7999997,
+        "end": 155.04
       },
       {
-        "word": "cruising",
-        "start": 154.969999,
-        "end": 155.48999899999998
+        "word": "cruise",
+        "start": 155.04,
+        "end": 155.44
+      },
+      {
+        "word": "and",
+        "start": 155.44,
+        "end": 155.6
       },
       {
         "word": "entertain",
-        "start": 155.48999899999998,
-        "end": 155.949999
+        "start": 155.6,
+        "end": 156
       },
       {
         "word": "ourselves",
-        "start": 155.949998,
-        "end": 156.549998
-      },
-      {
-        "word": "you",
-        "start": 157.09,
-        "end": 157.11
+        "start": 156,
+        "end": 156.8799996
       },
       {
         "word": "still",
-        "start": 157.11,
-        "end": 157.24
+        "start": 156.8799996,
+        "end": 157.2
       },
       {
         "word": "ain't",
-        "start": 157.24,
-        "end": 157.44
+        "start": 157.2,
+        "end": 157.52
       },
       {
         "word": "got",
-        "start": 157.44,
-        "end": 157.64
+        "start": 157.52,
+        "end": 157.7599998
       },
       {
         "word": "a",
-        "start": 157.639999,
-        "end": 157.689999
+        "start": 157.7599998,
+        "end": 157.9199996
       },
       {
         "word": "job",
-        "start": 157.69,
-        "end": 158.23
+        "start": 157.9199996,
+        "end": 158.559999
       },
       {
-        "word": "i",
-        "start": 158.809999,
-        "end": 158.819999
+        "word": "now",
+        "start": 158.88,
+        "end": 159.2
       },
       {
         "word": "work",
-        "start": 159.139999,
-        "end": 159.529999
+        "start": 159.2,
+        "end": 159.599999
       },
       {
         "word": "in",
-        "start": 159.529999,
-        "end": 159.669999
-      },
-      {
-        "word": "a",
-        "start": 159.669999,
-        "end": 159.749999
-      },
-      {
-        "word": "market",
-        "start": 159.749999,
-        "end": 160.099999
-      },
-      {
-        "word": "as",
-        "start": 160.099999,
-        "end": 160.179999
-      },
-      {
-        "word": "a",
-        "start": 160.699999,
-        "end": 160.70999899999998
-      },
-      {
-        "word": "checkout",
-        "start": 160.709999,
-        "end": 160.75999900000002
-      },
-      {
-        "word": "girl",
-        "start": 160.76,
-        "end": 161.17999999999998
-      },
-      {
-        "word": "i",
-        "start": 161.539999,
-        "end": 161.619999
-      },
-      {
-        "word": "know",
-        "start": 161.619999,
-        "end": 161.839999
-      },
-      {
-        "word": "things",
-        "start": 161.84,
-        "end": 162.25
-      },
-      {
-        "word": "will",
-        "start": 162.25,
-        "end": 162.3
-      },
-      {
-        "word": "get",
-        "start": 162.52,
-        "end": 162.62
-      },
-      {
-        "word": "better",
-        "start": 162.619999,
-        "end": 163.509999
-      },
-      {
-        "word": "you'll",
-        "start": 163.76999899999998,
-        "end": 164.069999
-      },
-      {
-        "word": "find",
-        "start": 164.069999,
-        "end": 164.169999
-      },
-      {
-        "word": "work",
-        "start": 164.34,
-        "end": 164.70000000000002
-      },
-      {
-        "word": "get",
-        "start": 165.21,
-        "end": 165.38
-      },
-      {
-        "word": "promoted",
-        "start": 165.38,
-        "end": 166.03
-      },
-      {
-        "word": "we'll",
-        "start": 166.04,
-        "end": 166.39
-      },
-      {
-        "word": "move",
-        "start": 166.39,
-        "end": 166.58999999999997
-      },
-      {
-        "word": "out",
-        "start": 166.59,
-        "end": 167.0
-      },
-      {
-        "word": "of",
-        "start": 167.0,
-        "end": 167.09
+        "start": 159.599999,
+        "end": 159.76
       },
       {
         "word": "the",
-        "start": 167.09,
-        "end": 167.19
+        "start": 159.76,
+        "end": 159.92
       },
       {
-        "word": "shelter",
-        "start": 167.2,
-        "end": 167.73
+        "word": "market",
+        "start": 159.92,
+        "end": 160.16
       },
       {
-        "word": "buy",
-        "start": 168.28,
-        "end": 168.64000000000001
+        "word": "as",
+        "start": 160.16,
+        "end": 160.32
       },
       {
         "word": "a",
-        "start": 168.67,
-        "end": 168.67999999999998
+        "start": 160.32,
+        "end": 160.48
+      },
+      {
+        "word": "checkout",
+        "start": 160.48,
+        "end": 160.8
+      },
+      {
+        "word": "girl",
+        "start": 160.8,
+        "end": 161.5199995
+      },
+      {
+        "word": "i",
+        "start": 161.5199995,
+        "end": 161.759999
+      },
+      {
+        "word": "know",
+        "start": 161.759999,
+        "end": 161.92
+      },
+      {
+        "word": "things",
+        "start": 161.92,
+        "end": 162.32
+      },
+      {
+        "word": "will",
+        "start": 162.32,
+        "end": 162.559999
+      },
+      {
+        "word": "get",
+        "start": 162.559999,
+        "end": 162.719999
+      },
+      {
+        "word": "better",
+        "start": 162.72,
+        "end": 163.4399998
+      },
+      {
+        "word": "you'll",
+        "start": 163.84,
+        "end": 164.24
+      },
+      {
+        "word": "find",
+        "start": 164.24,
+        "end": 164.48
+      },
+      {
+        "word": "working",
+        "start": 164.48,
+        "end": 164.88
+      },
+      {
+        "word": "out",
+        "start": 164.88,
+        "end": 165.3599997
+      },
+      {
+        "word": "get",
+        "start": 165.3599997,
+        "end": 165.52
+      },
+      {
+        "word": "promoted",
+        "start": 165.52,
+        "end": 166.08
+      },
+      {
+        "word": "and",
+        "start": 166.08,
+        "end": 166.24
+      },
+      {
+        "word": "we'll",
+        "start": 166.24,
+        "end": 166.56
+      },
+      {
+        "word": "move",
+        "start": 166.56,
+        "end": 166.72
+      },
+      {
+        "word": "out",
+        "start": 166.72,
+        "end": 166.96
+      },
+      {
+        "word": "of",
+        "start": 166.96,
+        "end": 167.2
+      },
+      {
+        "word": "the",
+        "start": 167.2,
+        "end": 167.3599997
+      },
+      {
+        "word": "shelter",
+        "start": 167.3599997,
+        "end": 168.16
+      },
+      {
+        "word": "buy",
+        "start": 168.4,
+        "end": 168.72
+      },
+      {
+        "word": "a",
+        "start": 168.72,
+        "end": 168.8
       },
       {
         "word": "bigger",
-        "start": 168.68,
-        "end": 168.93
+        "start": 168.8,
+        "end": 169.04
       },
       {
         "word": "house",
-        "start": 168.93,
+        "start": 169.04,
         "end": 169.28
       },
       {
         "word": "and",
         "start": 169.28,
-        "end": 169.48
+        "end": 169.599999
       },
       {
         "word": "live",
-        "start": 169.48,
-        "end": 169.82999999999998
+        "start": 169.599999,
+        "end": 169.92
       },
       {
         "word": "in",
-        "start": 169.83,
-        "end": 169.93
+        "start": 169.92,
+        "end": 170.08
       },
       {
         "word": "the",
-        "start": 169.93,
-        "end": 170.03
+        "start": 170.08,
+        "end": 170.24
       },
       {
         "word": "suburbs",
-        "start": 170.03,
-        "end": 170.6
-      },
-      {
-        "word": "live",
-        "start": 179.109999,
-        "end": 179.30999899999998
-      },
-      {
-        "word": "in",
-        "start": 179.309999,
-        "end": 179.449999
-      },
-      {
-        "word": "your",
-        "start": 181.359999,
-        "end": 181.499999
-      },
-      {
-        "word": "car",
-        "start": 181.51999899999998,
-        "end": 181.639999
-      },
-      {
-        "word": "speed",
-        "start": 182.199999,
-        "end": 182.579999
+        "start": 170.24,
+        "end": 170.639999
       },
       {
         "word": "so",
-        "start": 182.61999899999998,
-        "end": 182.639999
-      },
-      {
-        "word": "fast",
-        "start": 182.639999,
-        "end": 182.92999899999998
+        "start": 178.4,
+        "end": 178.72
       },
       {
         "word": "i",
-        "start": 182.92999899999998,
-        "end": 182.939999
+        "start": 178.72,
+        "end": 178.88
       },
       {
-        "word": "felt",
-        "start": 183.039999,
-        "end": 183.189999
+        "word": "remember",
+        "start": 178.88,
+        "end": 179.28
       },
       {
-        "word": "like",
-        "start": 183.219999,
-        "end": 183.559999
+        "word": "when",
+        "start": 179.28,
+        "end": 179.599999
       },
       {
-        "word": "i",
-        "start": 183.559999,
-        "end": 183.73999899999998
+        "word": "we",
+        "start": 179.599999,
+        "end": 179.76
       },
       {
-        "word": "was",
-        "start": 183.73999899999998,
-        "end": 183.83999899999998
-      },
-      {
-        "word": "drunk",
-        "start": 183.86999899999998,
-        "end": 184.379999
-      },
-      {
-        "word": "city",
-        "start": 184.70999899999998,
-        "end": 185.01999899999998
-      },
-      {
-        "word": "lights",
-        "start": 185.01999899999998,
-        "end": 185.249999
-      },
-      {
-        "word": "lay",
-        "start": 185.279999,
-        "end": 185.64999899999998
-      },
-      {
-        "word": "out",
-        "start": 185.64999899999998,
-        "end": 185.809999
-      },
-      {
-        "word": "before",
-        "start": 185.809999,
-        "end": 185.859999
-      },
-      {
-        "word": "us",
-        "start": 185.859999,
-        "end": 185.879999
-      },
-      {
-        "word": "and",
-        "start": 186.53,
-        "end": 186.62
-      },
-      {
-        "word": "your",
-        "start": 186.62,
-        "end": 186.76
-      },
-      {
-        "word": "arm",
-        "start": 186.76,
-        "end": 187.01
-      },
-      {
-        "word": "felt",
-        "start": 188.92999999999998,
-        "end": 188.97
-      },
-      {
-        "word": "nice",
-        "start": 188.97,
-        "end": 189.04999999999998
-      },
-      {
-        "word": "wrapped",
-        "start": 189.04999999999998,
-        "end": 189.10999999999999
-      },
-      {
-        "word": "round",
-        "start": 189.10999999999999,
-        "end": 189.14999999999998
-      },
-      {
-        "word": "i",
-        "start": 189.91,
-        "end": 190.38
-      },
-      {
-        "word": "had",
-        "start": 191.03,
-        "end": 191.22
-      },
-      {
-        "word": "a",
-        "start": 191.219999,
-        "end": 191.279999
-      },
-      {
-        "word": "feeling",
-        "start": 191.53,
-        "end": 191.87
-      },
-      {
-        "word": "that",
-        "start": 191.87,
-        "end": 192.25
-      },
-      {
-        "word": "i",
-        "start": 192.25,
-        "end": 192.62
-      },
-      {
-        "word": "belonged",
-        "start": 192.639999,
-        "end": 193.05999899999998
-      },
-      {
-        "word": "i",
-        "start": 193.61,
-        "end": 194.16000000000003
-      },
-      {
-        "word": "had",
-        "start": 194.23,
-        "end": 194.42
-      },
-      {
-        "word": "a",
-        "start": 194.42,
-        "end": 194.42999999999998
-      },
-      {
-        "word": "feeling",
-        "start": 196.10999999999999,
-        "end": 196.36999999999998
-      },
-      {
-        "word": "i",
-        "start": 196.36999999999998,
-        "end": 196.76999999999998
-      },
-      {
-        "word": "could",
-        "start": 196.92999999999998,
-        "end": 197.01
-      },
-      {
-        "word": "be",
-        "start": 197.01,
-        "end": 197.2
-      },
-      {
-        "word": "someone",
-        "start": 198.43999999999997,
-        "end": 198.7
-      },
-      {
-        "word": "you",
-        "start": 209.70999999999998,
-        "end": 210.01
-      },
-      {
-        "word": "got",
-        "start": 210.01,
-        "end": 210.12999999999997
-      },
-      {
-        "word": "a",
-        "start": 210.12999999999997,
-        "end": 210.2
-      },
-      {
-        "word": "fast",
-        "start": 210.2,
-        "end": 210.51999999999998
-      },
-      {
-        "word": "car",
-        "start": 210.51999999999998,
-        "end": 210.54999999999998
-      },
-      {
-        "word": "i",
-        "start": 212.03,
-        "end": 212.14000000000001
-      },
-      {
-        "word": "got",
-        "start": 212.17,
-        "end": 212.33999999999997
-      },
-      {
-        "word": "a",
-        "start": 212.34,
-        "end": 212.39000000000001
-      },
-      {
-        "word": "job",
-        "start": 212.389999,
-        "end": 212.80999899999998
-      },
-      {
-        "word": "that",
-        "start": 212.839999,
-        "end": 212.929999
-      },
-      {
-        "word": "pays",
-        "start": 212.929999,
-        "end": 213.179999
-      },
-      {
-        "word": "all",
-        "start": 213.179999,
-        "end": 213.339999
-      },
-      {
-        "word": "our",
-        "start": 213.339999,
-        "end": 213.509999
-      },
-      {
-        "word": "bills",
-        "start": 216.73999899999998,
-        "end": 216.779999
-      },
-      {
-        "word": "you",
-        "start": 216.789999,
-        "end": 217.04999899999999
-      },
-      {
-        "word": "stay",
-        "start": 217.169999,
-        "end": 217.199999
-      },
-      {
-        "word": "you",
-        "start": 217.369999,
-        "end": 217.38999900000002
-      },
-      {
-        "word": "do",
-        "start": 217.389999,
-        "end": 217.629999
-      },
-      {
-        "word": "of",
-        "start": 217.879999,
-        "end": 217.899999
-      },
-      {
-        "word": "your",
-        "start": 217.909999,
-        "end": 218.169999
-      },
-      {
-        "word": "kids",
-        "start": 218.169999,
-        "end": 218.529999
-      },
-      {
-        "word": "i'd",
-        "start": 218.929999,
-        "end": 219.059999
-      },
-      {
-        "word": "always",
-        "start": 219.059999,
-        "end": 219.26999899999998
-      },
-      {
-        "word": "hoped",
-        "start": 219.26999899999998,
-        "end": 219.579999
-      },
-      {
-        "word": "for",
-        "start": 219.629999,
-        "end": 219.939999
-      },
-      {
-        "word": "better",
-        "start": 219.939999,
-        "end": 220.429999
-      },
-      {
-        "word": "thought",
-        "start": 220.789999,
-        "end": 221.039999
-      },
-      {
-        "word": "maybe",
-        "start": 221.04999899999999,
-        "end": 221.559999
-      },
-      {
-        "word": "together",
-        "start": 221.559999,
-        "end": 222.189999
-      },
-      {
-        "word": "you",
-        "start": 222.199999,
-        "end": 222.419999
-      },
-      {
-        "word": "and",
-        "start": 222.419999,
-        "end": 222.539999
-      },
-      {
-        "word": "me",
-        "start": 222.539999,
-        "end": 222.759999
-      },
-      {
-        "word": "would",
-        "start": 222.779999,
-        "end": 222.809999
-      },
-      {
-        "word": "find",
-        "start": 222.809999,
-        "end": 223.169999
-      },
-      {
-        "word": "it",
-        "start": 223.169999,
-        "end": 223.239999
-      },
-      {
-        "word": "got",
-        "start": 223.41,
-        "end": 223.59
-      },
-      {
-        "word": "no",
-        "start": 223.59,
-        "end": 223.78
-      },
-      {
-        "word": "plans",
-        "start": 223.81,
-        "end": 224.19
-      },
-      {
-        "word": "i",
-        "start": 224.19,
-        "end": 224.2
-      },
-      {
-        "word": "ain't",
-        "start": 224.2,
-        "end": 224.54
-      },
-      {
-        "word": "going",
-        "start": 224.54,
-        "end": 224.82999999999998
-      },
-      {
-        "word": "nowhere",
-        "start": 224.83,
-        "end": 225.39000000000001
-      },
-      {
-        "word": "so",
-        "start": 225.61,
-        "end": 225.63000000000002
-      },
-      {
-        "word": "take",
-        "start": 225.65,
-        "end": 225.89000000000001
-      },
-      {
-        "word": "your",
-        "start": 225.9,
-        "end": 225.93
-      },
-      {
-        "word": "fast",
-        "start": 225.929999,
-        "end": 226.219999
-      },
-      {
-        "word": "car",
-        "start": 226.219999,
-        "end": 226.599999
-      },
-      {
-        "word": "and",
-        "start": 226.599999,
-        "end": 226.809999
-      },
-      {
-        "word": "keep",
-        "start": 226.809999,
-        "end": 227.009999
-      },
-      {
-        "word": "on",
-        "start": 227.01,
-        "end": 227.31
+        "word": "were",
+        "start": 179.76,
+        "end": 180.08
       },
       {
         "word": "driving",
-        "start": 227.32,
-        "end": 227.73999999999998
+        "start": 180.08,
+        "end": 180.799999
       },
       {
-        "word": "you",
-        "start": 266.889998,
-        "end": 267.129998
-      },
-      {
-        "word": "got",
-        "start": 267.129999,
-        "end": 267.279999
-      },
-      {
-        "word": "a",
-        "start": 267.28000099999997,
-        "end": 267.380001
-      },
-      {
-        "word": "fast",
-        "start": 269.10999899999996,
-        "end": 269.499999
-      },
-      {
-        "word": "enough",
-        "start": 269.499998,
-        "end": 269.759998
-      },
-      {
-        "word": "you",
-        "start": 269.93,
-        "end": 270.14
-      },
-      {
-        "word": "can",
-        "start": 270.139999,
-        "end": 270.259999
-      },
-      {
-        "word": "fly",
-        "start": 270.26,
-        "end": 270.63
-      },
-      {
-        "word": "away",
-        "start": 270.63,
-        "end": 271.0
-      },
-      {
-        "word": "you",
-        "start": 271.49,
-        "end": 271.73
-      },
-      {
-        "word": "gotta",
-        "start": 271.73,
-        "end": 271.96000000000004
-      },
-      {
-        "word": "make",
-        "start": 271.96,
-        "end": 272.33
-      },
-      {
-        "word": "a",
-        "start": 272.33,
-        "end": 272.39
-      },
-      {
-        "word": "decision",
-        "start": 272.39,
-        "end": 272.84999999999997
-      },
-      {
-        "word": "live",
-        "start": 273.07,
-        "end": 273.3
+        "word": "driving",
+        "start": 180.8,
+        "end": 181.2
       },
       {
         "word": "in",
-        "start": 273.3,
-        "end": 273.43
+        "start": 181.2,
+        "end": 181.44
       },
       {
         "word": "your",
-        "start": 285.77999900000003,
-        "end": 285.859999
+        "start": 181.44,
+        "end": 181.679999
       },
       {
         "word": "car",
-        "start": 285.859999,
-        "end": 285.889999
+        "start": 181.679999,
+        "end": 182.24
       },
       {
         "word": "speed",
-        "start": 286.899999,
-        "end": 286.939999
+        "start": 182.24,
+        "end": 182.559999
+      },
+      {
+        "word": "are",
+        "start": 182.6399999,
+        "end": 182.8
+      },
+      {
+        "word": "back",
+        "start": 182.799999,
+        "end": 183.04
+      },
+      {
+        "word": "it's",
+        "start": 183.12,
+        "end": 183.28
+      },
+      {
+        "word": "i",
+        "start": 183.36,
+        "end": 183.599999
+      },
+      {
+        "word": "got",
+        "start": 183.599999,
+        "end": 183.84
+      },
+      {
+        "word": "was",
+        "start": 183.84,
+        "end": 184.08
+      },
+      {
+        "word": "drunk",
+        "start": 184.08,
+        "end": 184.72
+      },
+      {
+        "word": "it",
+        "start": 184.72,
+        "end": 185.04
+      },
+      {
+        "word": "didn't",
+        "start": 185.04,
+        "end": 185.2
+      },
+      {
+        "word": "i",
+        "start": 185.2,
+        "end": 185.3599997
+      },
+      {
+        "word": "stay",
+        "start": 185.3599997,
+        "end": 185.68
+      },
+      {
+        "word": "out",
+        "start": 185.68,
+        "end": 186
+      },
+      {
+        "word": "before",
+        "start": 186,
+        "end": 186.64
+      },
+      {
+        "word": "yeah",
+        "start": 186.64,
+        "end": 187.04
+      },
+      {
+        "word": "i'm",
+        "start": 187.04,
+        "end": 187.2
+      },
+      {
+        "word": "feeling",
+        "start": 187.2,
+        "end": 187.44
+      },
+      {
+        "word": "nice",
+        "start": 187.44,
+        "end": 187.68
+      },
+      {
+        "word": "about",
+        "start": 187.68,
+        "end": 188
+      },
+      {
+        "word": "my",
+        "start": 188,
+        "end": 188.48
+      },
+      {
+        "word": "children",
+        "start": 188.48,
+        "end": 189.28
+      },
+      {
+        "word": "i",
+        "start": 189.44,
+        "end": 189.76
+      },
+      {
+        "word": "i",
+        "start": 190,
+        "end": 190.71999997
+      },
+      {
+        "word": "had",
+        "start": 190.96,
+        "end": 191.28
+      },
+      {
+        "word": "a",
+        "start": 191.28,
+        "end": 191.52
+      },
+      {
+        "word": "feeling",
+        "start": 191.52,
+        "end": 191.8399999
+      },
+      {
+        "word": "that",
+        "start": 191.92,
+        "end": 192.24
+      },
+      {
+        "word": "i",
+        "start": 192.24,
+        "end": 192.56
+      },
+      {
+        "word": "belong",
+        "start": 192.559999,
+        "end": 193.5199995
+      },
+      {
+        "word": "i",
+        "start": 194.08,
+        "end": 194.48
+      },
+      {
+        "word": "i",
+        "start": 194.48,
+        "end": 194.799999
+      },
+      {
+        "word": "a",
+        "start": 195.8399997,
+        "end": 196
+      },
+      {
+        "word": "feeling",
+        "start": 196,
+        "end": 196.3999996
+      },
+      {
+        "word": "i",
+        "start": 196.3999996,
+        "end": 196.7999997
+      },
+      {
+        "word": "could",
+        "start": 196.7999997,
+        "end": 197.12
+      },
+      {
+        "word": "be",
+        "start": 197.12,
+        "end": 197.2799997
+      },
+      {
+        "word": "someone",
+        "start": 197.2799997,
+        "end": 198.08
+      },
+      {
+        "word": "be",
+        "start": 198.16,
+        "end": 198.4
+      },
+      {
+        "word": "someone",
+        "start": 198.4,
+        "end": 199.12
+      },
+      {
+        "word": "be",
+        "start": 199.36,
+        "end": 199.5199995
+      },
+      {
+        "word": "someone",
+        "start": 199.5199995,
+        "end": 200
+      },
+      {
+        "word": "you",
+        "start": 209.679999,
+        "end": 210
+      },
+      {
+        "word": "a",
+        "start": 210.24,
+        "end": 210.39999998
+      },
+      {
+        "word": "fast",
+        "start": 210.39999998,
+        "end": 210.79999995
+      },
+      {
+        "word": "car",
+        "start": 210.79999995,
+        "end": 211.5999999
+      },
+      {
+        "word": "i",
+        "start": 212,
+        "end": 212.24
+      },
+      {
+        "word": "got",
+        "start": 212.24,
+        "end": 212.48
+      },
+      {
+        "word": "a",
+        "start": 212.48,
+        "end": 212.56
+      },
+      {
+        "word": "job",
+        "start": 212.56,
+        "end": 212.8
+      },
+      {
+        "word": "that",
+        "start": 212.8,
+        "end": 213.04
+      },
+      {
+        "word": "pays",
+        "start": 213.04,
+        "end": 213.28
+      },
+      {
+        "word": "all",
+        "start": 213.28,
+        "end": 213.52
+      },
+      {
+        "word": "our",
+        "start": 213.52,
+        "end": 213.6799998
+      },
+      {
+        "word": "bills",
+        "start": 213.6799998,
+        "end": 214.24
+      },
+      {
+        "word": "it's",
+        "start": 214.24,
+        "end": 214.48
+      },
+      {
+        "word": "now",
+        "start": 214.48,
+        "end": 214.72
+      },
+      {
+        "word": "freaking",
+        "start": 214.72,
+        "end": 215.44
+      },
+      {
+        "word": "big",
+        "start": 215.44,
+        "end": 215.68
+      },
+      {
+        "word": "at",
+        "start": 215.68,
+        "end": 215.92
+      },
+      {
+        "word": "the",
+        "start": 215.92,
+        "end": 216.08
+      },
+      {
+        "word": "bottom",
+        "start": 216.08,
+        "end": 216.64
+      },
+      {
+        "word": "more",
+        "start": 216.64,
+        "end": 216.8799996
+      },
+      {
+        "word": "your",
+        "start": 216.8799996,
+        "end": 217.12
+      },
+      {
+        "word": "friends",
+        "start": 217.12,
+        "end": 217.44
+      },
+      {
+        "word": "than",
+        "start": 217.44,
+        "end": 217.6
+      },
+      {
+        "word": "you",
+        "start": 217.6,
+        "end": 217.7599998
+      },
+      {
+        "word": "do",
+        "start": 217.7599998,
+        "end": 218.16
+      },
+      {
+        "word": "your",
+        "start": 218.16,
+        "end": 218.32
+      },
+      {
+        "word": "kids",
+        "start": 218.32,
+        "end": 218.88
+      },
+      {
+        "word": "i'd",
+        "start": 218.88,
+        "end": 219.2
+      },
+      {
+        "word": "always",
+        "start": 219.2,
+        "end": 219.44
+      },
+      {
+        "word": "hope",
+        "start": 219.44,
+        "end": 219.76
+      },
+      {
+        "word": "for",
+        "start": 219.76,
+        "end": 220
+      },
+      {
+        "word": "better",
+        "start": 220,
+        "end": 220.719999
+      },
+      {
+        "word": "but",
+        "start": 220.96,
+        "end": 221.12
+      },
+      {
+        "word": "maybe",
+        "start": 221.12,
+        "end": 221.599999
+      },
+      {
+        "word": "together",
+        "start": 221.599999,
+        "end": 222.24
+      },
+      {
+        "word": "you",
+        "start": 222.24,
+        "end": 222.48
+      },
+      {
+        "word": "and",
+        "start": 222.48,
+        "end": 222.719999
+      },
+      {
+        "word": "me",
+        "start": 222.72,
+        "end": 222.8799999
+      },
+      {
+        "word": "find",
+        "start": 222.88,
+        "end": 223.2
+      },
+      {
+        "word": "it",
+        "start": 223.1999998,
+        "end": 223.4399998
+      },
+      {
+        "word": "they",
+        "start": 223.44,
+        "end": 223.5199995
+      },
+      {
+        "word": "got",
+        "start": 223.52,
+        "end": 223.6799998
+      },
+      {
+        "word": "no",
+        "start": 223.6799998,
+        "end": 223.9199998
+      },
+      {
+        "word": "plans",
+        "start": 223.9199998,
+        "end": 224.3199997
+      },
+      {
+        "word": "i",
+        "start": 224.3199997,
+        "end": 224.4
+      },
+      {
+        "word": "ain't",
+        "start": 224.4,
+        "end": 224.64
+      },
+      {
+        "word": "going",
+        "start": 224.64,
+        "end": 224.96
+      },
+      {
+        "word": "nowhere",
+        "start": 224.96,
+        "end": 225.6
+      },
+      {
+        "word": "take",
+        "start": 225.6,
+        "end": 225.92
+      },
+      {
+        "word": "your",
+        "start": 225.92,
+        "end": 226.08
+      },
+      {
+        "word": "best",
+        "start": 226.08,
+        "end": 226.3999996
+      },
+      {
+        "word": "car",
+        "start": 226.3999996,
+        "end": 226.64
+      },
+      {
+        "word": "and",
+        "start": 226.64,
+        "end": 226.8799996
+      },
+      {
+        "word": "keep",
+        "start": 226.8799996,
+        "end": 227.12
+      },
+      {
+        "word": "on",
+        "start": 227.12,
+        "end": 227.3599997
+      },
+      {
+        "word": "driving",
+        "start": 227.3599997,
+        "end": 227.9199996
       },
       {
         "word": "so",
-        "start": 286.939999,
-        "end": 286.959999
+        "start": 235.6,
+        "end": 235.92
+      },
+      {
+        "word": "i",
+        "start": 235.92,
+        "end": 236.08
+      },
+      {
+        "word": "remember",
+        "start": 236.08,
+        "end": 236.48
+      },
+      {
+        "word": "when",
+        "start": 236.48,
+        "end": 236.72
+      },
+      {
+        "word": "we",
+        "start": 236.72,
+        "end": 236.8799996
+      },
+      {
+        "word": "were",
+        "start": 236.8799996,
+        "end": 237.2799997
+      },
+      {
+        "word": "driving",
+        "start": 237.2799997,
+        "end": 238
+      },
+      {
+        "word": "driving",
+        "start": 238,
+        "end": 238.4
+      },
+      {
+        "word": "in",
+        "start": 238.4,
+        "end": 238.639999
+      },
+      {
+        "word": "your",
+        "start": 238.639999,
+        "end": 238.8
+      },
+      {
+        "word": "car",
+        "start": 238.8,
+        "end": 239.44
+      },
+      {
+        "word": "sees",
+        "start": 239.44,
+        "end": 239.84
+      },
+      {
+        "word": "the",
+        "start": 239.84,
+        "end": 240
+      },
+      {
+        "word": "back",
+        "start": 240,
+        "end": 240.24
+      },
+      {
+        "word": "like",
+        "start": 240.48,
+        "end": 240.79999995
+      },
+      {
+        "word": "i",
+        "start": 240.79999995,
+        "end": 241.04
+      },
+      {
+        "word": "was",
+        "start": 241.04,
+        "end": 241.1999999
+      },
+      {
+        "word": "drunk",
+        "start": 241.1999999,
+        "end": 241.8399999
+      },
+      {
+        "word": "didn't",
+        "start": 242,
+        "end": 242.3999999
+      },
+      {
+        "word": "i",
+        "start": 242.3999999,
+        "end": 242.56
+      },
+      {
+        "word": "stay",
+        "start": 242.56,
+        "end": 242.8799999
+      },
+      {
+        "word": "out",
+        "start": 242.88,
+        "end": 243.12
+      },
+      {
+        "word": "you're",
+        "start": 243.759999,
+        "end": 244.16
+      },
+      {
+        "word": "on",
+        "start": 244.16,
+        "end": 244.32
+      },
+      {
+        "word": "the",
+        "start": 244.32,
+        "end": 244.559999
+      },
+      {
+        "word": "next",
+        "start": 244.559999,
+        "end": 244.88
+      },
+      {
+        "word": "around",
+        "start": 245.2,
+        "end": 245.44
+      },
+      {
+        "word": "my",
+        "start": 245.44,
+        "end": 245.68
+      },
+      {
+        "word": "shoulder",
+        "start": 245.68,
+        "end": 246.24
+      },
+      {
+        "word": "i",
+        "start": 246.24,
+        "end": 247.12
+      },
+      {
+        "word": "i",
+        "start": 247.2,
+        "end": 247.76
+      },
+      {
+        "word": "had",
+        "start": 248.08,
+        "end": 248.48
+      },
+      {
+        "word": "a",
+        "start": 248.48,
+        "end": 248.639999
+      },
+      {
+        "word": "feeling",
+        "start": 248.639999,
+        "end": 249.04
+      },
+      {
+        "word": "that",
+        "start": 249.04,
+        "end": 249.44
+      },
+      {
+        "word": "i",
+        "start": 249.44,
+        "end": 249.76
+      },
+      {
+        "word": "belong",
+        "start": 249.76,
+        "end": 250.639999
+      },
+      {
+        "word": "i",
+        "start": 251.04,
+        "end": 251.679999
+      },
+      {
+        "word": "i",
+        "start": 251.759999,
+        "end": 252.32
+      },
+      {
+        "word": "had",
+        "start": 252.559999,
+        "end": 252.96
+      },
+      {
+        "word": "a",
+        "start": 252.96,
+        "end": 253.12
+      },
+      {
+        "word": "feeling",
+        "start": 253.12,
+        "end": 253.52
+      },
+      {
+        "word": "i",
+        "start": 253.52,
+        "end": 253.9199998
+      },
+      {
+        "word": "could",
+        "start": 253.9199998,
+        "end": 254.24
+      },
+      {
+        "word": "be",
+        "start": 254.24,
+        "end": 254.4
+      },
+      {
+        "word": "someone",
+        "start": 254.4,
+        "end": 254.88
+      },
+      {
+        "word": "be",
+        "start": 255.2799997,
+        "end": 255.52
+      },
+      {
+        "word": "someone",
+        "start": 255.52,
+        "end": 256.32
+      },
+      {
+        "word": "be",
+        "start": 256.48,
+        "end": 256.72
+      },
+      {
+        "word": "someone",
+        "start": 256.72,
+        "end": 257.12
+      },
+      {
+        "word": "you",
+        "start": 266.56,
+        "end": 267.2
+      },
+      {
+        "word": "gotta",
+        "start": 267.2,
+        "end": 267.52
+      },
+      {
+        "word": "fast",
+        "start": 267.52,
+        "end": 268
+      },
+      {
+        "word": "god",
+        "start": 268,
+        "end": 268.559999
+      },
+      {
+        "word": "is",
+        "start": 268.88,
+        "end": 269.12
+      },
+      {
+        "word": "it",
+        "start": 269.12,
+        "end": 269.28
+      },
+      {
+        "word": "fast",
+        "start": 269.28,
+        "end": 269.5199995
+      },
+      {
+        "word": "enough",
+        "start": 269.5199995,
+        "end": 269.84
+      },
+      {
+        "word": "so",
+        "start": 269.84,
+        "end": 270.08
+      },
+      {
+        "word": "you",
+        "start": 270.08,
+        "end": 270.24
+      },
+      {
+        "word": "can",
+        "start": 270.24,
+        "end": 270.48
+      },
+      {
+        "word": "fly",
+        "start": 270.48,
+        "end": 270.719999
+      },
+      {
+        "word": "away",
+        "start": 270.719999,
+        "end": 271.44
+      },
+      {
+        "word": "you",
+        "start": 271.52,
+        "end": 271.76
+      },
+      {
+        "word": "gotta",
+        "start": 271.759999,
+        "end": 272.08
+      },
+      {
+        "word": "make",
+        "start": 272.08,
+        "end": 272.4
+      },
+      {
+        "word": "a",
+        "start": 272.3999999,
+        "end": 272.56
+      },
+      {
+        "word": "decision",
+        "start": 272.56,
+        "end": 273.36
+      },
+      {
+        "word": "leave",
+        "start": 273.76,
+        "end": 274.08
+      },
+      {
+        "word": "tonight",
+        "start": 274.08,
+        "end": 274.48
+      },
+      {
+        "word": "or",
+        "start": 274.48,
+        "end": 274.72
+      },
+      {
+        "word": "live",
+        "start": 274.72,
+        "end": 274.88
+      },
+      {
+        "word": "and",
+        "start": 274.88,
+        "end": 275.04
+      },
+      {
+        "word": "die",
+        "start": 275.04,
+        "end": 275.2799997
+      },
+      {
+        "word": "this",
+        "start": 275.2799997,
+        "end": 275.52
+      },
+      {
+        "word": "way",
+        "start": 275.52,
+        "end": 275.8399997
       }
     ]
   },

@@ -381,9 +381,12 @@ def align_with_anchors(asr_json_path: str,
         print(f"WARNING: {out_of_order} out-of-order timestamps detected")
 
     # Build output
+    # Use the original lyrics text (with its line breaks) as raw_lyrics.
+    # This preserves the song's natural line structure when ground-truth lyrics
+    # are provided. The lyrics_text variable already holds the full file content.
     result = dict(asr_data)
     result["word_timestamps"] = complete_words
-    result["raw_lyrics"] = " ".join(w["word"] for w in complete_words)
+    result["raw_lyrics"] = lyrics_text.strip()
     result["alignment_stats"] = {
         "total_words": len(complete_words),
         "aligned_words": anchored,

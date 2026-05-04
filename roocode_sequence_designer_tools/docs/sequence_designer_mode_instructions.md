@@ -141,17 +141,65 @@ Understanding the user's need is key to selecting the correct output format:
 
 ### 1. Lyrics Processing (Alignment)
 
-When extracting lyrics timestamps from audio files, follow this optimized workflow:
+*Updated: 2026-05-04 11:30:00*
 
-*   **Check Gentle Server First**:
-    *   ALWAYS check if the Gentle server is running: `python -m sequence_maker.scripts.start_gentle`. This is essential.
-*   **Gather Information**: Ask for the complete lyrics text in one prompt. Song title and artist can often be inferred from the MP3 filename.
-*   **Use `align_lyrics.py` Directly**:
-    *   Save user-provided lyrics to a `.txt` file (e.g., `sequence_projects/song_name/lyrics.txt`).
-    *   Run:
-        ```bash
-        python align_lyrics.py sequence_projects/song_name/artist_song_name.mp3 sequence_projects/song_name/lyrics.txt sequence_projects/song_name/song_name.lyrics.json --song-title "Song Title" --artist-name "Artist Name"
-        ```
+There are **two pipelines** depending on whether the user provides lyrics or not. Choose the right one:
+
+| Situation | Pipeline | Tool |
+|-----------|----------|------|
+| **No lyrics provided** — transcribe from audio | **ASR-only** | `transcribe_lyrics.py` |
+| **Lyrics provided** — use as ground truth | **Ground-truth alignment** | `align_lyrics_gentle.py` |
+
+---
+
+#### Pipeline A: ASR-Only (no lyrics provided)
+
+Use when the user does NOT have the lyrics text.
+
+*   **No Gentle server needed** — uses Deepgram Nova-3 via ppq.ai (API key at `sequence_maker/ppq_api_key.txt`).
+*   Run:
+    ```bash
+    source ltx_guru/bin/activate
+    python3 roocode_sequence_designer_tools/transcribe_lyrics.py \
+      "path/to/song.mp3" \
+      --output "sequence_projects/song_name/song_name_synced_lyrics.json" \
+      --song-title "Song Title" \
+      --artist-name "Artist Name"
+    ```
+*   **Line breaks:** `raw_lyrics` gets `\n` inserted automatically at silence gaps ≥ 1.5s.
+*   **Output:** `word_timestamps` array with `word`, `start`, `end`, `confidence` per word. All words have timestamps (0 unaligned).
+
+---
+
+#### Pipeline B: Ground-Truth Alignment (lyrics provided)
+
+Use when the user provides the full lyrics text. Gentle forced alignment gives precise per-word timestamps without any ASR step.
+
+*   **Step 1 — Save lyrics to file** (no section labels like `[Verse 1]`, preserve original line breaks):
+    ```
+    sequence_projects/song_name/lyrics.txt
+    ```
+*   **Step 2 — Check Gentle server is running:**
+    ```bash
+    curl http://localhost:8765  # should return a response
+    # If not running: docker run -p 8765:8765 lowerquality/gentle
+    ```
+*   **Step 3 — Run Gentle forced alignment:**
+    ```bash
+    source ltx_guru/bin/activate
+    python3 roocode_sequence_designer_tools/align_lyrics_gentle.py \
+      "path/to/song.mp3" \
+      "sequence_projects/song_name/lyrics.txt" \
+      --output "sequence_projects/song_name/song_name_synced_lyrics.json" \
+      --song-title "Song Title" \
+      --artist-name "Artist Name"
+    ```
+*   **Line breaks:** `raw_lyrics` is taken directly from the `lyrics.txt` file — **original line breaks are preserved exactly**.
+*   **Output:** `word_timestamps` with only successfully aligned words (unaligned words are omitted). `transcription_source` = `"gentle-forced-alignment"`.
+*   **Quality target:** ≥ 90% aligned words = EXCELLENT. Check `alignment_stats.quality` in the output.
+
+---
+
 *   **Present Results Efficiently**: Show only the first 5-10 timestamps. NEVER display the entire JSON.
 
 ### 2. Lyrics to `.ball.json` (Single Ball Sequence)

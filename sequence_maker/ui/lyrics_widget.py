@@ -693,8 +693,11 @@ class LyricsWidget(QWidget):
         print(f"[LyricsWidget] Timestamp clicked: {position:.2f}s")
         self.logger.info(f"Timestamp clicked: {position:.2f}s")
         
-        # Set the timeline position
+        # Set the timeline position (moves the visual position marker)
         self.app.timeline_manager.set_position(position)
+        # Also seek audio to keep them in sync so play starts from this position
+        if hasattr(self.app, 'audio_manager'):
+            self.app.audio_manager.seek(position)
     def _on_edit_lyrics_button_clicked(self):
         """Handle Edit Lyrics button click."""
         print("[LyricsWidget] Edit Lyrics button clicked")
