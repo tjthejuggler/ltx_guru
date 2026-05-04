@@ -511,6 +511,11 @@ class LyricsDisplayWidget(QWidget):
         """
         Handle mouse press events.
         
+        If a word that is already highlighted (current) is clicked, seek to
+        the *end* of that word.  Otherwise, seek to the *start* of the word.
+        This lets the user click once to jump to the beginning of a word, and
+        click again (while still on that word) to jump to its end.
+        
         Args:
             event: Mouse event.
         """
@@ -522,8 +527,12 @@ class LyricsDisplayWidget(QWidget):
                 # Skip unaligned words - we have no playback time to seek to.
                 if timestamp.start is None:
                     break
-                # Emit signal with the start time of the word
-                self.timestamp_clicked.emit(timestamp.start)
+                # If this word is already the current/highlighted word,
+                # seek to its end; otherwise seek to its start.
+                if timestamp.end is not None and timestamp.start <= self.current_position <= timestamp.end:
+                    self.timestamp_clicked.emit(timestamp.end)
+                else:
+                    self.timestamp_clicked.emit(timestamp.start)
                 break
         
         super().mousePressEvent(event)
