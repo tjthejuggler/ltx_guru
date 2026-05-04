@@ -1,0 +1,5669 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "created": "2026-05-04T11:59:00.064570",
+    "modified": "2026-05-04T19:07:21.557682",
+    "name": "fast car ground truth",
+    "description": ""
+  },
+  "settings": {
+    "defaultPixels": 4,
+    "refreshRate": 1,
+    "totalDuration": 294.11371882086166,
+    "zoomLevel": 1.0
+  },
+  "keyMappings": {},
+  "effects": {},
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "defaultPixels": 4,
+      "created": "2026-05-04T11:59:00.064586",
+      "modified": "2026-05-04T19:07:21.557291",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 23.05,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 23.05,
+          "endTime": 25.33,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 25.33,
+          "endTime": 27.64,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 27.64,
+          "endTime": 30.01,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 30.01,
+          "endTime": 32.25,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 32.25,
+          "endTime": 34.58,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 34.58,
+          "endTime": 37.08,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 37.08,
+          "endTime": 39.11,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 39.11,
+          "endTime": 50.95,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 50.95,
+          "endTime": 52.91,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 52.91,
+          "endTime": 55.45,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.45,
+          "endTime": 57.83,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 57.83,
+          "endTime": 59.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.5,
+          "endTime": 62.47,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 62.47,
+          "endTime": 64.72,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.72,
+          "endTime": 67.07,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 67.07,
+          "endTime": 69.37,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 69.37,
+          "endTime": 71.72,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 71.72,
+          "endTime": 74.06,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 74.06,
+          "endTime": 75.92,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.92,
+          "endTime": 78.26,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 78.26,
+          "endTime": 80.51,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 80.51,
+          "endTime": 82.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 82.9,
+          "endTime": 85.28,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.28,
+          "endTime": 87.66,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 87.66,
+          "endTime": 89.7,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 89.7,
+          "endTime": 92.2,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 92.2,
+          "endTime": 96.91,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 101.59,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 101.59,
+          "endTime": 103.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.9,
+          "endTime": 106.05,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 106.05,
+          "endTime": 108.55,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 108.55,
+          "endTime": 110.76,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 110.76,
+          "endTime": 112.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.76,
+          "endTime": 115.49,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 115.49,
+          "endTime": 117.8,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 117.8,
+          "endTime": 120.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 120.91,
+          "endTime": 126.63,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 126.63,
+          "endTime": 128.99,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 128.99,
+          "endTime": 131.28,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 131.28,
+          "endTime": 136.06,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 136.06,
+          "endTime": 139.38,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 139.38,
+          "endTime": 140.5,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 140.5,
+          "endTime": 141.69,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 141.69,
+          "endTime": 142.58,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 142.58,
+          "endTime": 145.15,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            0,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 147.36,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 147.36,
+          "endTime": 149.89,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 149.89,
+          "endTime": 152.03,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 152.03,
+          "endTime": 154.57,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 154.57,
+          "endTime": 157.09,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 157.09,
+          "endTime": 158.85,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 158.85,
+          "endTime": 161.54,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 161.54,
+          "endTime": 163.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 163.76,
+          "endTime": 165.38,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 165.38,
+          "endTime": 166.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 166.04,
+          "endTime": 168.28,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 168.28,
+          "endTime": 170.03,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 170.03,
+          "endTime": 173.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 173.04,
+          "endTime": 174.9,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 174.9,
+          "endTime": 177.6,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 177.6,
+          "endTime": 178.64,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 178.64,
+          "endTime": 180.87,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 180.87,
+          "endTime": 182.19,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 182.19,
+          "endTime": 183.88,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 183.88,
+          "endTime": 184.71,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 184.71,
+          "endTime": 186.5,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 186.5,
+          "endTime": 188.81,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.81,
+          "endTime": 190.78,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 190.78,
+          "endTime": 193.61,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 193.61,
+          "endTime": 195.56,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 195.56,
+          "endTime": 196.85,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 196.85,
+          "endTime": 198.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 198.04,
+          "endTime": 199.17,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 199.17,
+          "endTime": 236.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 236.04,
+          "endTime": 237.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.37,
+          "endTime": 237.97,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.97,
+          "endTime": 238.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.37,
+          "endTime": 238.47,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.47,
+          "endTime": 238.69,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.69,
+          "endTime": 239.41,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 239.41,
+          "endTime": 241.86,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 241.86,
+          "endTime": 3600.0,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    },
+    {
+      "name": "Ball 2",
+      "defaultPixels": 4,
+      "created": "2026-05-04T11:59:00.064589",
+      "modified": "2026-05-04T19:07:21.557620",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 23.05,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 23.05,
+          "endTime": 25.33,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 25.33,
+          "endTime": 27.64,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 27.64,
+          "endTime": 30.01,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 30.01,
+          "endTime": 32.25,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 32.25,
+          "endTime": 34.58,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 34.58,
+          "endTime": 37.08,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 37.08,
+          "endTime": 39.11,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 39.11,
+          "endTime": 50.95,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 50.95,
+          "endTime": 52.91,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 52.91,
+          "endTime": 55.45,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.45,
+          "endTime": 57.83,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 57.83,
+          "endTime": 59.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.5,
+          "endTime": 62.47,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 62.47,
+          "endTime": 64.72,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.72,
+          "endTime": 67.07,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 67.07,
+          "endTime": 69.37,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 69.37,
+          "endTime": 71.72,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 71.72,
+          "endTime": 74.06,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 74.06,
+          "endTime": 75.92,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.92,
+          "endTime": 78.26,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 78.26,
+          "endTime": 80.51,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 80.51,
+          "endTime": 82.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 82.9,
+          "endTime": 85.28,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.28,
+          "endTime": 87.66,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 87.66,
+          "endTime": 89.7,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 89.7,
+          "endTime": 96.91,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 96.91,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 99.27,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 99.27,
+          "endTime": 103.9,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.9,
+          "endTime": 106.05,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 106.05,
+          "endTime": 108.55,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 108.55,
+          "endTime": 110.76,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 110.76,
+          "endTime": 112.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.76,
+          "endTime": 115.49,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 115.49,
+          "endTime": 117.8,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 117.8,
+          "endTime": 120.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 120.91,
+          "endTime": 126.63,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 126.63,
+          "endTime": 128.99,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 128.99,
+          "endTime": 131.28,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 131.28,
+          "endTime": 136.06,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 136.06,
+          "endTime": 139.38,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 139.38,
+          "endTime": 140.5,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 140.5,
+          "endTime": 141.69,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 141.69,
+          "endTime": 142.58,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 142.58,
+          "endTime": 145.15,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            0,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 147.36,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 147.36,
+          "endTime": 149.89,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 149.89,
+          "endTime": 152.03,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 152.03,
+          "endTime": 154.57,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 154.57,
+          "endTime": 157.09,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 157.09,
+          "endTime": 158.85,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 158.85,
+          "endTime": 161.54,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 161.54,
+          "endTime": 163.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 163.76,
+          "endTime": 165.38,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 165.38,
+          "endTime": 166.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 166.04,
+          "endTime": 168.28,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 168.28,
+          "endTime": 170.03,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 170.03,
+          "endTime": 173.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 173.04,
+          "endTime": 174.9,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 174.9,
+          "endTime": 177.6,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 177.6,
+          "endTime": 178.64,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 178.64,
+          "endTime": 180.87,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 180.87,
+          "endTime": 182.19,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 182.19,
+          "endTime": 183.88,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 183.88,
+          "endTime": 184.71,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 184.71,
+          "endTime": 186.5,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 186.5,
+          "endTime": 188.81,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.81,
+          "endTime": 190.78,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 190.78,
+          "endTime": 193.61,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 193.61,
+          "endTime": 195.56,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 195.56,
+          "endTime": 196.85,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 196.85,
+          "endTime": 198.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 198.04,
+          "endTime": 199.17,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 199.17,
+          "endTime": 236.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 236.04,
+          "endTime": 237.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.37,
+          "endTime": 237.97,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.97,
+          "endTime": 238.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.37,
+          "endTime": 238.47,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.47,
+          "endTime": 238.69,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.69,
+          "endTime": 239.41,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 239.41,
+          "endTime": 241.86,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 241.86,
+          "endTime": 3600.0,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    },
+    {
+      "name": "Ball 3",
+      "defaultPixels": 4,
+      "created": "2026-05-04T11:59:00.064590",
+      "modified": "2026-05-04T19:07:21.557678",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 23.05,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 23.05,
+          "endTime": 25.33,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 25.33,
+          "endTime": 27.64,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 27.64,
+          "endTime": 30.01,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 30.01,
+          "endTime": 32.25,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 32.25,
+          "endTime": 34.58,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 34.58,
+          "endTime": 37.08,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 37.08,
+          "endTime": 39.11,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 39.11,
+          "endTime": 50.95,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 50.95,
+          "endTime": 52.91,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 52.91,
+          "endTime": 55.45,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.45,
+          "endTime": 57.83,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 57.83,
+          "endTime": 59.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.5,
+          "endTime": 62.47,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 62.47,
+          "endTime": 64.72,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.72,
+          "endTime": 67.07,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 67.07,
+          "endTime": 69.37,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 69.37,
+          "endTime": 71.72,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 71.72,
+          "endTime": 74.06,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 74.06,
+          "endTime": 75.92,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.92,
+          "endTime": 78.26,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 78.26,
+          "endTime": 80.51,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 80.51,
+          "endTime": 82.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 82.9,
+          "endTime": 85.28,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.28,
+          "endTime": 87.66,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 87.66,
+          "endTime": 89.7,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 89.7,
+          "endTime": 96.91,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 99.27,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 99.27,
+          "endTime": 101.59,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 101.59,
+          "endTime": 101.59,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 101.59,
+          "endTime": 103.9,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.9,
+          "endTime": 106.05,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 106.05,
+          "endTime": 108.55,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 108.55,
+          "endTime": 110.76,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 110.76,
+          "endTime": 112.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.76,
+          "endTime": 115.49,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 115.49,
+          "endTime": 117.8,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 117.8,
+          "endTime": 120.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 120.91,
+          "endTime": 126.63,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 126.63,
+          "endTime": 128.99,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 128.99,
+          "endTime": 131.28,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 131.28,
+          "endTime": 136.06,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 136.06,
+          "endTime": 139.38,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 139.38,
+          "endTime": 140.5,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 140.5,
+          "endTime": 141.69,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 141.69,
+          "endTime": 142.58,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 142.58,
+          "endTime": 145.15,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            0,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 145.15,
+          "color": [
+            255,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 145.15,
+          "endTime": 147.36,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 147.36,
+          "endTime": 149.89,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 149.89,
+          "endTime": 152.03,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 152.03,
+          "endTime": 154.57,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 154.57,
+          "endTime": 157.09,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 157.09,
+          "endTime": 158.85,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 158.85,
+          "endTime": 161.54,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 161.54,
+          "endTime": 163.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 163.76,
+          "endTime": 165.38,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 165.38,
+          "endTime": 166.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 166.04,
+          "endTime": 168.28,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 168.28,
+          "endTime": 170.03,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 170.03,
+          "endTime": 173.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 173.04,
+          "endTime": 174.9,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 174.9,
+          "endTime": 177.6,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 177.6,
+          "endTime": 178.64,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 178.64,
+          "endTime": 180.87,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 180.87,
+          "endTime": 182.19,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 182.19,
+          "endTime": 183.88,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 183.88,
+          "endTime": 184.71,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 184.71,
+          "endTime": 186.5,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 186.5,
+          "endTime": 188.81,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.81,
+          "endTime": 190.78,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 190.78,
+          "endTime": 193.61,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 193.61,
+          "endTime": 195.56,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 195.56,
+          "endTime": 196.85,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 196.85,
+          "endTime": 198.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 198.04,
+          "endTime": 199.17,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 199.17,
+          "endTime": 236.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 236.04,
+          "endTime": 237.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.37,
+          "endTime": 237.97,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.97,
+          "endTime": 238.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.37,
+          "endTime": 238.47,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.47,
+          "endTime": 238.69,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.69,
+          "endTime": 239.41,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 239.41,
+          "endTime": 241.86,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 241.86,
+          "endTime": 3600.0,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "embedded": false,
+    "filename": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Tracy Chapman Fast Car Lyrics.mp3",
+    "filepath": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Tracy Chapman Fast Car Lyrics.mp3",
+    "duration": 0,
+    "data": null
+  },
+  "visualizations": {
+    "selected": [
+      "waveform",
+      "beats"
+    ],
+    "settings": {
+      "waveform": {
+        "color": [
+          0,
+          0,
+          255
+        ],
+        "height": 100
+      },
+      "beats": {
+        "color": [
+          255,
+          0,
+          0
+        ],
+        "threshold": 0.5
+      }
+    }
+  },
+  "lyrics": {
+    "song_name": "Fast Car",
+    "artist_name": "Tracy Chapman",
+    "lyrics_text": "You got a fast car\nI want a ticket to anywhere\nMaybe we make a deal\nMaybe together we can get somewhere\nAny place is better\nStarting from zero, got nothing to lose\nMaybe we'll make something\nMe, myself, I got nothing to prove\n\nYou got a fast car\nI got a plan to get us outta here\nI been working at the convenience store\nManaged to save just a little bit of money\nWon't have to drive too far\nJust 'cross the border and into the city\nYou and I can both get jobs\nFinally see what it means to be living\n\nSee, my old man's got a problem\nHe lives with a bottle, that's the way it is\nHe says his body's too old for working\nHis body's too young to look like his\nWhen mama went off and left him\nShe wanted more from life than he could give\nI said, \"Somebody's gotta take care of him\"\nSo I quit school and that's what I did\n\nYou got a fast car\nIs it fast enough so we can fly away?\nWe gotta make a decision\nLeave tonight or live and die this way\n\nSo I remember when we were driving, driving in your car\nSpeed so fast, I felt like I was drunk\nCity lights lay out before us\nAnd your arm felt nice wrapped 'round my shoulder\nAnd I-I, had a feeling that I belonged\nI-I had a feeling I could be someone, be someone, be someone\n\nYou got a fast car\nWe go cruising, entertain ourselves\nYou still ain't got a job\nAnd I work in a market as a checkout girl\nI know things will get better\nYou'll find work and I'll get promoted\nWe'll move out of the shelter\nBuy a bigger house and live in the suburbs\n\nSo I remember when we were driving, driving in your car\nSpeed so fast, I felt like I was drunk\nCity lights lay out before us\nAnd your arm felt nice wrapped 'round my shoulder\nAnd I-I, had a feeling that I belonged\nI-I had a feeling I could be someone, be someone, be someone\n\nYou got a fast car\nI got a job that pays all our bills\nYou stay out drinkin' late at the bar\nSee more of your friends than you do of your kids\nI'd always hoped for better\nThought maybe together, you and me'd find it\nI got no plans, I ain't going nowhere\nSo take your fast car and keep on driving\n\nSo I remember when we were driving, driving in your car\nSpeed so fast, I felt like I was drunk\nCity lights lay out before us\nAnd your arm felt nice wrapped 'round my shoulder\nAnd I-I, had a feeling that I belonged\nI-I had a feeling I could be someone, be someone, be someone\n\nYou got a fast car\nIs it fast enough so you can fly away?\nYou gotta make a decision\nLeave tonight or live and die this way",
+    "word_timestamps": [
+      {
+        "word": "you",
+        "start": 20.94,
+        "end": 20.98
+      },
+      {
+        "word": "got",
+        "start": 20.98,
+        "end": 21.09
+      },
+      {
+        "word": "a",
+        "start": 21.09,
+        "end": 21.15
+      },
+      {
+        "word": "fast",
+        "start": 21.15,
+        "end": 21.5
+      },
+      {
+        "word": "car",
+        "start": 21.5,
+        "end": 21.53
+      },
+      {
+        "word": "i",
+        "start": 23.05,
+        "end": 23.3
+      },
+      {
+        "word": "want",
+        "start": 23.3,
+        "end": 23.51
+      },
+      {
+        "word": "a",
+        "start": 23.51,
+        "end": 23.57
+      },
+      {
+        "word": "ticket",
+        "start": 23.57,
+        "end": 23.89
+      },
+      {
+        "word": "to",
+        "start": 24.07,
+        "end": 24.18
+      },
+      {
+        "word": "anywhere",
+        "start": 24.36,
+        "end": 24.85
+      },
+      {
+        "word": "maybe",
+        "start": 25.33,
+        "end": 25.65
+      },
+      {
+        "word": "we",
+        "start": 25.65,
+        "end": 25.9
+      },
+      {
+        "word": "make",
+        "start": 25.9,
+        "end": 26.13
+      },
+      {
+        "word": "a",
+        "start": 26.13,
+        "end": 26.21
+      },
+      {
+        "word": "deal",
+        "start": 26.21,
+        "end": 26.77
+      },
+      {
+        "word": "maybe",
+        "start": 27.64,
+        "end": 28.11
+      },
+      {
+        "word": "together",
+        "start": 28.18,
+        "end": 28.56
+      },
+      {
+        "word": "we",
+        "start": 28.56,
+        "end": 28.69
+      },
+      {
+        "word": "can",
+        "start": 28.69,
+        "end": 28.84
+      },
+      {
+        "word": "get",
+        "start": 28.84,
+        "end": 29.05
+      },
+      {
+        "word": "somewhere",
+        "start": 29.06,
+        "end": 29.9
+      },
+      {
+        "word": "any",
+        "start": 30.01,
+        "end": 30.25
+      },
+      {
+        "word": "place",
+        "start": 30.25,
+        "end": 30.54
+      },
+      {
+        "word": "is",
+        "start": 30.62,
+        "end": 30.86
+      },
+      {
+        "word": "better",
+        "start": 30.87,
+        "end": 31.4
+      },
+      {
+        "word": "starting",
+        "start": 32.25,
+        "end": 32.6
+      },
+      {
+        "word": "from",
+        "start": 32.6,
+        "end": 32.87
+      },
+      {
+        "word": "zero",
+        "start": 32.87,
+        "end": 33.18
+      },
+      {
+        "word": "got",
+        "start": 33.18,
+        "end": 33.44
+      },
+      {
+        "word": "nothing",
+        "start": 33.45,
+        "end": 33.79
+      },
+      {
+        "word": "to",
+        "start": 33.79,
+        "end": 34.05
+      },
+      {
+        "word": "lose",
+        "start": 34.06,
+        "end": 34.56
+      },
+      {
+        "word": "maybe",
+        "start": 34.58,
+        "end": 34.9
+      },
+      {
+        "word": "we'll",
+        "start": 34.9,
+        "end": 35.15
+      },
+      {
+        "word": "make",
+        "start": 35.18,
+        "end": 35.45
+      },
+      {
+        "word": "something",
+        "start": 35.45,
+        "end": 36.14
+      },
+      {
+        "word": "me",
+        "start": 37.08,
+        "end": 37.21
+      },
+      {
+        "word": "myself",
+        "start": 37.21,
+        "end": 37.75
+      },
+      {
+        "word": "i",
+        "start": 37.78,
+        "end": 37.8
+      },
+      {
+        "word": "got",
+        "start": 37.8,
+        "end": 38.07
+      },
+      {
+        "word": "nothing",
+        "start": 38.07,
+        "end": 38.38
+      },
+      {
+        "word": "to",
+        "start": 38.38,
+        "end": 38.6
+      },
+      {
+        "word": "prove",
+        "start": 38.6,
+        "end": 39.07
+      },
+      {
+        "word": "you",
+        "start": 39.07,
+        "end": 39.15
+      },
+      {
+        "word": "got",
+        "start": 48.95,
+        "end": 49.04
+      },
+      {
+        "word": "a",
+        "start": 49.04,
+        "end": 49.12
+      },
+      {
+        "word": "fast",
+        "start": 49.12,
+        "end": 49.41
+      },
+      {
+        "word": "car",
+        "start": 49.41,
+        "end": 49.44
+      },
+      {
+        "word": "i",
+        "start": 50.95,
+        "end": 51.18
+      },
+      {
+        "word": "got",
+        "start": 51.18,
+        "end": 51.38
+      },
+      {
+        "word": "a",
+        "start": 51.38,
+        "end": 51.45
+      },
+      {
+        "word": "plan",
+        "start": 51.45,
+        "end": 51.93
+      },
+      {
+        "word": "to",
+        "start": 51.94,
+        "end": 52.03
+      },
+      {
+        "word": "get",
+        "start": 52.03,
+        "end": 52.25
+      },
+      {
+        "word": "us",
+        "start": 52.25,
+        "end": 52.39
+      },
+      {
+        "word": "outta",
+        "start": 52.39,
+        "end": 52.62
+      },
+      {
+        "word": "here",
+        "start": 52.62,
+        "end": 52.89
+      },
+      {
+        "word": "i",
+        "start": 52.91,
+        "end": 52.92
+      },
+      {
+        "word": "been",
+        "start": 52.92,
+        "end": 53.18
+      },
+      {
+        "word": "working",
+        "start": 53.74,
+        "end": 54.01
+      },
+      {
+        "word": "at",
+        "start": 54.02,
+        "end": 54.04
+      },
+      {
+        "word": "the",
+        "start": 54.05,
+        "end": 54.32
+      },
+      {
+        "word": "convenience",
+        "start": 54.52,
+        "end": 54.62
+      },
+      {
+        "word": "store",
+        "start": 54.62,
+        "end": 54.66
+      },
+      {
+        "word": "managed",
+        "start": 55.45,
+        "end": 55.86
+      },
+      {
+        "word": "to",
+        "start": 55.86,
+        "end": 55.88
+      },
+      {
+        "word": "save",
+        "start": 55.88,
+        "end": 56.38
+      },
+      {
+        "word": "of",
+        "start": 57.2,
+        "end": 57.23
+      },
+      {
+        "word": "money",
+        "start": 57.23,
+        "end": 57.68
+      },
+      {
+        "word": "won't",
+        "start": 57.75,
+        "end": 58.15
+      },
+      {
+        "word": "have",
+        "start": 58.15,
+        "end": 58.19
+      },
+      {
+        "word": "to",
+        "start": 58.23,
+        "end": 58.32
+      },
+      {
+        "word": "drive",
+        "start": 58.32,
+        "end": 58.65
+      },
+      {
+        "word": "too",
+        "start": 58.66,
+        "end": 58.88
+      },
+      {
+        "word": "far",
+        "start": 58.91,
+        "end": 59.28
+      },
+      {
+        "word": "just",
+        "start": 59.5,
+        "end": 59.54
+      },
+      {
+        "word": "<unk>",
+        "start": 60.12,
+        "end": 60.39
+      },
+      {
+        "word": "the",
+        "start": 60.44,
+        "end": 60.55
+      },
+      {
+        "word": "border",
+        "start": 60.55,
+        "end": 61.06
+      },
+      {
+        "word": "and",
+        "start": 61.06,
+        "end": 61.35
+      },
+      {
+        "word": "into",
+        "start": 61.35,
+        "end": 61.7
+      },
+      {
+        "word": "the",
+        "start": 61.7,
+        "end": 61.83
+      },
+      {
+        "word": "city",
+        "start": 61.83,
+        "end": 62.38
+      },
+      {
+        "word": "you",
+        "start": 62.43,
+        "end": 62.73
+      },
+      {
+        "word": "and",
+        "start": 62.73,
+        "end": 62.95
+      },
+      {
+        "word": "i",
+        "start": 62.95,
+        "end": 63.24
+      },
+      {
+        "word": "can",
+        "start": 63.26,
+        "end": 63.56
+      },
+      {
+        "word": "both",
+        "start": 63.56,
+        "end": 63.86
+      },
+      {
+        "word": "get",
+        "start": 63.9,
+        "end": 64.09
+      },
+      {
+        "word": "jobs",
+        "start": 64.1,
+        "end": 64.65
+      },
+      {
+        "word": "finally",
+        "start": 64.72,
+        "end": 65.14
+      },
+      {
+        "word": "see",
+        "start": 65.14,
+        "end": 65.59
+      },
+      {
+        "word": "what",
+        "start": 65.59,
+        "end": 65.79
+      },
+      {
+        "word": "it",
+        "start": 65.79,
+        "end": 65.86
+      },
+      {
+        "word": "means",
+        "start": 65.86,
+        "end": 66.07
+      },
+      {
+        "word": "to",
+        "start": 66.07,
+        "end": 66.15
+      },
+      {
+        "word": "be",
+        "start": 66.15,
+        "end": 66.4
+      },
+      {
+        "word": "living",
+        "start": 66.4,
+        "end": 66.7
+      },
+      {
+        "word": "see",
+        "start": 66.9,
+        "end": 66.92
+      },
+      {
+        "word": "my",
+        "start": 76.25,
+        "end": 76.42
+      },
+      {
+        "word": "old",
+        "start": 76.59,
+        "end": 76.73
+      },
+      {
+        "word": "man's",
+        "start": 76.76,
+        "end": 77.16
+      },
+      {
+        "word": "got",
+        "start": 77.19,
+        "end": 77.41
+      },
+      {
+        "word": "a",
+        "start": 77.41,
+        "end": 77.45
+      },
+      {
+        "word": "problem",
+        "start": 77.45,
+        "end": 78.01
+      },
+      {
+        "word": "he",
+        "start": 78.26,
+        "end": 78.28
+      },
+      {
+        "word": "lives",
+        "start": 78.28,
+        "end": 78.56
+      },
+      {
+        "word": "with",
+        "start": 78.92,
+        "end": 79.1
+      },
+      {
+        "word": "a",
+        "start": 79.1,
+        "end": 79.15
+      },
+      {
+        "word": "bottle",
+        "start": 79.15,
+        "end": 79.47
+      },
+      {
+        "word": "that's",
+        "start": 79.47,
+        "end": 79.63
+      },
+      {
+        "word": "the",
+        "start": 79.63,
+        "end": 79.72
+      },
+      {
+        "word": "way",
+        "start": 79.72,
+        "end": 80.01
+      },
+      {
+        "word": "it",
+        "start": 80.01,
+        "end": 80.24
+      },
+      {
+        "word": "is",
+        "start": 80.24,
+        "end": 80.51
+      },
+      {
+        "word": "he",
+        "start": 80.51,
+        "end": 80.57
+      },
+      {
+        "word": "says",
+        "start": 80.57,
+        "end": 80.81
+      },
+      {
+        "word": "his",
+        "start": 80.81,
+        "end": 80.88
+      },
+      {
+        "word": "body's",
+        "start": 80.88,
+        "end": 81.19
+      },
+      {
+        "word": "too",
+        "start": 81.19,
+        "end": 81.4
+      },
+      {
+        "word": "old",
+        "start": 81.4,
+        "end": 81.88
+      },
+      {
+        "word": "for",
+        "start": 81.94,
+        "end": 81.96
+      },
+      {
+        "word": "working",
+        "start": 81.97,
+        "end": 82.54
+      },
+      {
+        "word": "his",
+        "start": 82.9,
+        "end": 82.93
+      },
+      {
+        "word": "body's",
+        "start": 83.15,
+        "end": 83.46
+      },
+      {
+        "word": "too",
+        "start": 83.46,
+        "end": 83.66
+      },
+      {
+        "word": "young",
+        "start": 83.66,
+        "end": 83.98
+      },
+      {
+        "word": "to",
+        "start": 83.98,
+        "end": 84.0
+      },
+      {
+        "word": "look",
+        "start": 84.23,
+        "end": 84.5
+      },
+      {
+        "word": "like",
+        "start": 84.53,
+        "end": 84.9
+      },
+      {
+        "word": "his",
+        "start": 84.9,
+        "end": 85.25
+      },
+      {
+        "word": "when",
+        "start": 85.28,
+        "end": 85.4
+      },
+      {
+        "word": "mama",
+        "start": 85.41,
+        "end": 85.73
+      },
+      {
+        "word": "went",
+        "start": 85.73,
+        "end": 85.91
+      },
+      {
+        "word": "off",
+        "start": 85.91,
+        "end": 86.31
+      },
+      {
+        "word": "and",
+        "start": 86.31,
+        "end": 86.55
+      },
+      {
+        "word": "left",
+        "start": 86.55,
+        "end": 86.86
+      },
+      {
+        "word": "him",
+        "start": 86.86,
+        "end": 87.22
+      },
+      {
+        "word": "she",
+        "start": 87.66,
+        "end": 87.68
+      },
+      {
+        "word": "wanted",
+        "start": 87.73,
+        "end": 88.06
+      },
+      {
+        "word": "more",
+        "start": 88.06,
+        "end": 88.14
+      },
+      {
+        "word": "from",
+        "start": 88.28,
+        "end": 88.34
+      },
+      {
+        "word": "life",
+        "start": 88.34,
+        "end": 88.6
+      },
+      {
+        "word": "than",
+        "start": 88.6,
+        "end": 88.85
+      },
+      {
+        "word": "i",
+        "start": 89.7,
+        "end": 89.71
+      },
+      {
+        "word": "said",
+        "start": 89.71,
+        "end": 89.93
+      },
+      {
+        "word": "somebody's",
+        "start": 89.97,
+        "end": 90.43
+      },
+      {
+        "word": "gotta",
+        "start": 90.43,
+        "end": 90.8
+      },
+      {
+        "word": "take",
+        "start": 90.8,
+        "end": 91.1
+      },
+      {
+        "word": "care",
+        "start": 91.11,
+        "end": 91.47
+      },
+      {
+        "word": "of",
+        "start": 91.47,
+        "end": 91.5
+      },
+      {
+        "word": "him",
+        "start": 91.64,
+        "end": 92.17
+      },
+      {
+        "word": "so",
+        "start": 92.2,
+        "end": 92.3
+      },
+      {
+        "word": "i",
+        "start": 92.47,
+        "end": 92.48
+      },
+      {
+        "word": "quit",
+        "start": 92.48,
+        "end": 92.7
+      },
+      {
+        "word": "school",
+        "start": 92.72,
+        "end": 93.03
+      },
+      {
+        "word": "and",
+        "start": 93.03,
+        "end": 93.06
+      },
+      {
+        "word": "that's",
+        "start": 93.08,
+        "end": 93.37
+      },
+      {
+        "word": "what",
+        "start": 93.38,
+        "end": 93.59
+      },
+      {
+        "word": "i",
+        "start": 93.59,
+        "end": 93.89
+      },
+      {
+        "word": "did",
+        "start": 94.03,
+        "end": 94.34
+      },
+      {
+        "word": "you",
+        "start": 103.9,
+        "end": 104.2
+      },
+      {
+        "word": "got",
+        "start": 104.2,
+        "end": 104.33
+      },
+      {
+        "word": "a",
+        "start": 104.33,
+        "end": 104.41
+      },
+      {
+        "word": "fast",
+        "start": 104.42,
+        "end": 104.73
+      },
+      {
+        "word": "car",
+        "start": 104.73,
+        "end": 104.76
+      },
+      {
+        "word": "is",
+        "start": 106.05,
+        "end": 106.07
+      },
+      {
+        "word": "it",
+        "start": 106.07,
+        "end": 106.17
+      },
+      {
+        "word": "fast",
+        "start": 106.2,
+        "end": 106.57
+      },
+      {
+        "word": "enough",
+        "start": 106.57,
+        "end": 106.95
+      },
+      {
+        "word": "so",
+        "start": 106.97,
+        "end": 107.02
+      },
+      {
+        "word": "we",
+        "start": 107.03,
+        "end": 107.22
+      },
+      {
+        "word": "can",
+        "start": 107.22,
+        "end": 107.35
+      },
+      {
+        "word": "fly",
+        "start": 107.36,
+        "end": 107.69
+      },
+      {
+        "word": "away",
+        "start": 107.69,
+        "end": 108.05
+      },
+      {
+        "word": "gotta",
+        "start": 108.77,
+        "end": 109.02
+      },
+      {
+        "word": "make",
+        "start": 109.05,
+        "end": 109.4
+      },
+      {
+        "word": "a",
+        "start": 109.4,
+        "end": 109.45
+      },
+      {
+        "word": "decision",
+        "start": 109.45,
+        "end": 110.23
+      },
+      {
+        "word": "leave",
+        "start": 110.76,
+        "end": 111.09
+      },
+      {
+        "word": "tonight",
+        "start": 111.12,
+        "end": 111.6
+      },
+      {
+        "word": "or",
+        "start": 111.6,
+        "end": 111.61
+      },
+      {
+        "word": "live",
+        "start": 111.61,
+        "end": 111.86
+      },
+      {
+        "word": "and",
+        "start": 111.86,
+        "end": 111.96
+      },
+      {
+        "word": "die",
+        "start": 111.96,
+        "end": 112.24
+      },
+      {
+        "word": "this",
+        "start": 112.27,
+        "end": 112.45
+      },
+      {
+        "word": "way",
+        "start": 112.49,
+        "end": 113.02
+      },
+      {
+        "word": "so",
+        "start": 120.91,
+        "end": 121.02
+      },
+      {
+        "word": "i",
+        "start": 121.02,
+        "end": 121.07
+      },
+      {
+        "word": "remember",
+        "start": 121.07,
+        "end": 121.53
+      },
+      {
+        "word": "when",
+        "start": 121.68,
+        "end": 121.85
+      },
+      {
+        "word": "we",
+        "start": 121.86,
+        "end": 121.93
+      },
+      {
+        "word": "were",
+        "start": 121.93,
+        "end": 122.27
+      },
+      {
+        "word": "driving",
+        "start": 122.31,
+        "end": 122.83
+      },
+      {
+        "word": "driving",
+        "start": 123.21,
+        "end": 123.6
+      },
+      {
+        "word": "in",
+        "start": 123.6,
+        "end": 123.69
+      },
+      {
+        "word": "your",
+        "start": 123.69,
+        "end": 123.92
+      },
+      {
+        "word": "car",
+        "start": 123.92,
+        "end": 124.26
+      },
+      {
+        "word": "speed",
+        "start": 124.58,
+        "end": 124.99
+      },
+      {
+        "word": "so",
+        "start": 125.44,
+        "end": 125.61
+      },
+      {
+        "word": "fast",
+        "start": 126.11,
+        "end": 126.15
+      },
+      {
+        "word": "i",
+        "start": 126.15,
+        "end": 126.16
+      },
+      {
+        "word": "was",
+        "start": 126.16,
+        "end": 126.28
+      },
+      {
+        "word": "drunk",
+        "start": 126.3,
+        "end": 126.63
+      },
+      {
+        "word": "city",
+        "start": 126.63,
+        "end": 126.82
+      },
+      {
+        "word": "lights",
+        "start": 127.7,
+        "end": 127.74
+      },
+      {
+        "word": "lay",
+        "start": 127.78,
+        "end": 127.98
+      },
+      {
+        "word": "out",
+        "start": 128.15,
+        "end": 128.32
+      },
+      {
+        "word": "and",
+        "start": 128.99,
+        "end": 129.1
+      },
+      {
+        "word": "your",
+        "start": 129.1,
+        "end": 129.24
+      },
+      {
+        "word": "arm",
+        "start": 129.24,
+        "end": 129.42
+      },
+      {
+        "word": "felt",
+        "start": 129.66,
+        "end": 129.7
+      },
+      {
+        "word": "nice",
+        "start": 129.72,
+        "end": 130.08
+      },
+      {
+        "word": "wrapped",
+        "start": 130.08,
+        "end": 130.33
+      },
+      {
+        "word": "'round",
+        "start": 130.33,
+        "end": 130.61
+      },
+      {
+        "word": "my",
+        "start": 130.63,
+        "end": 130.86
+      },
+      {
+        "word": "shoulder",
+        "start": 130.86,
+        "end": 131.28
+      },
+      {
+        "word": "and",
+        "start": 131.28,
+        "end": 131.42
+      },
+      {
+        "word": "i",
+        "start": 131.5,
+        "end": 132.04
+      },
+      {
+        "word": "i",
+        "start": 132.56,
+        "end": 132.87
+      },
+      {
+        "word": "had",
+        "start": 133.49,
+        "end": 133.68
+      },
+      {
+        "word": "a",
+        "start": 133.68,
+        "end": 133.74
+      },
+      {
+        "word": "feeling",
+        "start": 133.74,
+        "end": 134.35
+      },
+      {
+        "word": "that",
+        "start": 134.35,
+        "end": 134.5
+      },
+      {
+        "word": "i",
+        "start": 134.72,
+        "end": 135.08
+      },
+      {
+        "word": "belonged",
+        "start": 135.1,
+        "end": 135.56
+      },
+      {
+        "word": "i",
+        "start": 136.06,
+        "end": 136.65
+      },
+      {
+        "word": "had",
+        "start": 136.7,
+        "end": 136.96
+      },
+      {
+        "word": "a",
+        "start": 136.96,
+        "end": 137.25
+      },
+      {
+        "word": "feeling",
+        "start": 137.76,
+        "end": 138.07
+      },
+      {
+        "word": "i",
+        "start": 138.07,
+        "end": 138.08
+      },
+      {
+        "word": "could",
+        "start": 139.38,
+        "end": 139.43
+      },
+      {
+        "word": "be",
+        "start": 139.46,
+        "end": 139.7
+      },
+      {
+        "word": "someone",
+        "start": 139.73,
+        "end": 140.49
+      },
+      {
+        "word": "be",
+        "start": 140.5,
+        "end": 140.79
+      },
+      {
+        "word": "someone",
+        "start": 140.82,
+        "end": 141.36
+      },
+      {
+        "word": "be",
+        "start": 141.69,
+        "end": 141.88
+      },
+      {
+        "word": "someone",
+        "start": 141.88,
+        "end": 142.67
+      },
+      {
+        "word": "you",
+        "start": 152.32,
+        "end": 152.6
+      },
+      {
+        "word": "got",
+        "start": 152.6,
+        "end": 152.72
+      },
+      {
+        "word": "a",
+        "start": 152.72,
+        "end": 152.8
+      },
+      {
+        "word": "fast",
+        "start": 152.8,
+        "end": 153.22
+      },
+      {
+        "word": "car",
+        "start": 153.42,
+        "end": 153.62
+      },
+      {
+        "word": "we",
+        "start": 154.57,
+        "end": 154.73
+      },
+      {
+        "word": "go",
+        "start": 154.73,
+        "end": 154.97
+      },
+      {
+        "word": "cruising",
+        "start": 154.97,
+        "end": 155.49
+      },
+      {
+        "word": "entertain",
+        "start": 155.49,
+        "end": 155.95
+      },
+      {
+        "word": "ourselves",
+        "start": 155.95,
+        "end": 156.51
+      },
+      {
+        "word": "you",
+        "start": 157.09,
+        "end": 157.11
+      },
+      {
+        "word": "still",
+        "start": 157.11,
+        "end": 157.24
+      },
+      {
+        "word": "ain't",
+        "start": 157.24,
+        "end": 157.44
+      },
+      {
+        "word": "got",
+        "start": 157.44,
+        "end": 157.64
+      },
+      {
+        "word": "a",
+        "start": 157.64,
+        "end": 157.69
+      },
+      {
+        "word": "job",
+        "start": 157.69,
+        "end": 158.23
+      },
+      {
+        "word": "and",
+        "start": 158.85,
+        "end": 158.88
+      },
+      {
+        "word": "work",
+        "start": 159.46,
+        "end": 159.53
+      },
+      {
+        "word": "in",
+        "start": 159.53,
+        "end": 159.67
+      },
+      {
+        "word": "a",
+        "start": 159.67,
+        "end": 159.74
+      },
+      {
+        "word": "market",
+        "start": 159.74,
+        "end": 160.09
+      },
+      {
+        "word": "as",
+        "start": 160.09,
+        "end": 160.24
+      },
+      {
+        "word": "a",
+        "start": 160.24,
+        "end": 160.3
+      },
+      {
+        "word": "checkout",
+        "start": 160.3,
+        "end": 160.74
+      },
+      {
+        "word": "girl",
+        "start": 160.74,
+        "end": 161.18
+      },
+      {
+        "word": "i",
+        "start": 161.54,
+        "end": 161.62
+      },
+      {
+        "word": "know",
+        "start": 161.62,
+        "end": 161.84
+      },
+      {
+        "word": "things",
+        "start": 161.84,
+        "end": 162.25
+      },
+      {
+        "word": "will",
+        "start": 162.25,
+        "end": 162.3
+      },
+      {
+        "word": "get",
+        "start": 162.52,
+        "end": 162.62
+      },
+      {
+        "word": "better",
+        "start": 162.62,
+        "end": 163.51
+      },
+      {
+        "word": "you'll",
+        "start": 163.76,
+        "end": 164.07
+      },
+      {
+        "word": "find",
+        "start": 164.07,
+        "end": 164.36
+      },
+      {
+        "word": "work",
+        "start": 164.36,
+        "end": 164.7
+      },
+      {
+        "word": "and",
+        "start": 164.7,
+        "end": 164.9
+      },
+      {
+        "word": "i'll",
+        "start": 164.9,
+        "end": 165.22
+      },
+      {
+        "word": "get",
+        "start": 165.22,
+        "end": 165.38
+      },
+      {
+        "word": "promoted",
+        "start": 165.38,
+        "end": 166.03
+      },
+      {
+        "word": "we'll",
+        "start": 166.04,
+        "end": 166.39
+      },
+      {
+        "word": "move",
+        "start": 166.39,
+        "end": 166.59
+      },
+      {
+        "word": "out",
+        "start": 166.59,
+        "end": 167.0
+      },
+      {
+        "word": "of",
+        "start": 167.0,
+        "end": 167.09
+      },
+      {
+        "word": "the",
+        "start": 167.09,
+        "end": 167.19
+      },
+      {
+        "word": "shelter",
+        "start": 167.2,
+        "end": 167.73
+      },
+      {
+        "word": "buy",
+        "start": 168.28,
+        "end": 168.64
+      },
+      {
+        "word": "a",
+        "start": 168.67,
+        "end": 168.68
+      },
+      {
+        "word": "bigger",
+        "start": 168.68,
+        "end": 168.93
+      },
+      {
+        "word": "house",
+        "start": 168.93,
+        "end": 169.28
+      },
+      {
+        "word": "and",
+        "start": 169.28,
+        "end": 169.48
+      },
+      {
+        "word": "live",
+        "start": 169.48,
+        "end": 169.83
+      },
+      {
+        "word": "in",
+        "start": 169.83,
+        "end": 169.93
+      },
+      {
+        "word": "the",
+        "start": 169.93,
+        "end": 170.03
+      },
+      {
+        "word": "suburbs",
+        "start": 170.03,
+        "end": 170.62
+      },
+      {
+        "word": "so",
+        "start": 170.62,
+        "end": 170.64
+      },
+      {
+        "word": "i",
+        "start": 178.64,
+        "end": 178.7
+      },
+      {
+        "word": "remember",
+        "start": 178.7,
+        "end": 178.91
+      },
+      {
+        "word": "when",
+        "start": 178.91,
+        "end": 179.09
+      },
+      {
+        "word": "we",
+        "start": 179.1,
+        "end": 179.12
+      },
+      {
+        "word": "were",
+        "start": 179.12,
+        "end": 179.14
+      },
+      {
+        "word": "in",
+        "start": 179.31,
+        "end": 179.45
+      },
+      {
+        "word": "your",
+        "start": 181.29,
+        "end": 181.5
+      },
+      {
+        "word": "car",
+        "start": 181.5,
+        "end": 181.66
+      },
+      {
+        "word": "speed",
+        "start": 182.19,
+        "end": 182.57
+      },
+      {
+        "word": "so",
+        "start": 183.04,
+        "end": 183.19
+      },
+      {
+        "word": "fast",
+        "start": 183.61,
+        "end": 183.65
+      },
+      {
+        "word": "i",
+        "start": 183.65,
+        "end": 183.74
+      },
+      {
+        "word": "was",
+        "start": 183.74,
+        "end": 183.85
+      },
+      {
+        "word": "drunk",
+        "start": 183.88,
+        "end": 184.17
+      },
+      {
+        "word": "city",
+        "start": 184.71,
+        "end": 185.02
+      },
+      {
+        "word": "lights",
+        "start": 185.02,
+        "end": 185.22
+      },
+      {
+        "word": "lay",
+        "start": 185.29,
+        "end": 185.48
+      },
+      {
+        "word": "out",
+        "start": 185.65,
+        "end": 185.83
+      },
+      {
+        "word": "and",
+        "start": 186.5,
+        "end": 186.62
+      },
+      {
+        "word": "your",
+        "start": 186.62,
+        "end": 186.76
+      },
+      {
+        "word": "arm",
+        "start": 186.76,
+        "end": 186.99
+      },
+      {
+        "word": "felt",
+        "start": 187.01,
+        "end": 187.21
+      },
+      {
+        "word": "nice",
+        "start": 187.26,
+        "end": 187.61
+      },
+      {
+        "word": "wrapped",
+        "start": 187.61,
+        "end": 187.87
+      },
+      {
+        "word": "'round",
+        "start": 187.87,
+        "end": 188.18
+      },
+      {
+        "word": "my",
+        "start": 188.18,
+        "end": 188.39
+      },
+      {
+        "word": "shoulder",
+        "start": 188.39,
+        "end": 188.81
+      },
+      {
+        "word": "and",
+        "start": 188.81,
+        "end": 188.94
+      },
+      {
+        "word": "i",
+        "start": 189.0,
+        "end": 189.56
+      },
+      {
+        "word": "i",
+        "start": 189.91,
+        "end": 190.05
+      },
+      {
+        "word": "had",
+        "start": 191.03,
+        "end": 191.22
+      },
+      {
+        "word": "a",
+        "start": 191.22,
+        "end": 191.28
+      },
+      {
+        "word": "feeling",
+        "start": 191.53,
+        "end": 191.87
+      },
+      {
+        "word": "that",
+        "start": 191.87,
+        "end": 192.25
+      },
+      {
+        "word": "i",
+        "start": 192.25,
+        "end": 192.47
+      },
+      {
+        "word": "belonged",
+        "start": 192.61,
+        "end": 193.06
+      },
+      {
+        "word": "i",
+        "start": 193.61,
+        "end": 194.16
+      },
+      {
+        "word": "i",
+        "start": 194.67,
+        "end": 194.97
+      },
+      {
+        "word": "had",
+        "start": 195.56,
+        "end": 195.74
+      },
+      {
+        "word": "a",
+        "start": 195.74,
+        "end": 195.81
+      },
+      {
+        "word": "feeling",
+        "start": 196.06,
+        "end": 196.38
+      },
+      {
+        "word": "i",
+        "start": 196.38,
+        "end": 196.82
+      },
+      {
+        "word": "could",
+        "start": 196.85,
+        "end": 196.93
+      },
+      {
+        "word": "be",
+        "start": 196.98,
+        "end": 197.19
+      },
+      {
+        "word": "someone",
+        "start": 197.23,
+        "end": 198.01
+      },
+      {
+        "word": "be",
+        "start": 198.04,
+        "end": 198.28
+      },
+      {
+        "word": "someone",
+        "start": 204.68,
+        "end": 204.86
+      },
+      {
+        "word": "you",
+        "start": 209.73,
+        "end": 210.01
+      },
+      {
+        "word": "got",
+        "start": 210.01,
+        "end": 210.13
+      },
+      {
+        "word": "a",
+        "start": 210.13,
+        "end": 210.2
+      },
+      {
+        "word": "fast",
+        "start": 210.2,
+        "end": 210.52
+      },
+      {
+        "word": "car",
+        "start": 210.52,
+        "end": 210.55
+      },
+      {
+        "word": "i",
+        "start": 212.03,
+        "end": 212.16
+      },
+      {
+        "word": "got",
+        "start": 212.16,
+        "end": 212.34
+      },
+      {
+        "word": "a",
+        "start": 212.34,
+        "end": 212.39
+      },
+      {
+        "word": "job",
+        "start": 212.39,
+        "end": 212.81
+      },
+      {
+        "word": "that",
+        "start": 212.84,
+        "end": 212.93
+      },
+      {
+        "word": "pays",
+        "start": 212.93,
+        "end": 213.18
+      },
+      {
+        "word": "all",
+        "start": 213.18,
+        "end": 213.34
+      },
+      {
+        "word": "our",
+        "start": 213.34,
+        "end": 213.54
+      },
+      {
+        "word": "bills",
+        "start": 213.54,
+        "end": 213.87
+      },
+      {
+        "word": "you",
+        "start": 213.87,
+        "end": 213.89
+      },
+      {
+        "word": "<unk>",
+        "start": 214.24,
+        "end": 215.33
+      },
+      {
+        "word": "late",
+        "start": 215.33,
+        "end": 215.6
+      },
+      {
+        "word": "at",
+        "start": 215.6,
+        "end": 215.72
+      },
+      {
+        "word": "the",
+        "start": 215.84,
+        "end": 215.95
+      },
+      {
+        "word": "bar",
+        "start": 215.96,
+        "end": 216.26
+      },
+      {
+        "word": "see",
+        "start": 216.26,
+        "end": 216.28
+      },
+      {
+        "word": "more",
+        "start": 216.43,
+        "end": 216.76
+      },
+      {
+        "word": "of",
+        "start": 216.76,
+        "end": 216.78
+      },
+      {
+        "word": "your",
+        "start": 216.79,
+        "end": 217.06
+      },
+      {
+        "word": "friends",
+        "start": 217.09,
+        "end": 217.31
+      },
+      {
+        "word": "than",
+        "start": 217.31,
+        "end": 217.41
+      },
+      {
+        "word": "you",
+        "start": 217.42,
+        "end": 217.64
+      },
+      {
+        "word": "do",
+        "start": 217.68,
+        "end": 217.87
+      },
+      {
+        "word": "of",
+        "start": 217.88,
+        "end": 217.9
+      },
+      {
+        "word": "your",
+        "start": 217.91,
+        "end": 218.17
+      },
+      {
+        "word": "kids",
+        "start": 218.17,
+        "end": 218.64
+      },
+      {
+        "word": "i'd",
+        "start": 218.92,
+        "end": 219.06
+      },
+      {
+        "word": "always",
+        "start": 219.06,
+        "end": 219.27
+      },
+      {
+        "word": "hoped",
+        "start": 219.27,
+        "end": 219.59
+      },
+      {
+        "word": "for",
+        "start": 219.62,
+        "end": 219.93
+      },
+      {
+        "word": "better",
+        "start": 219.93,
+        "end": 220.43
+      },
+      {
+        "word": "thought",
+        "start": 220.8,
+        "end": 221.04
+      },
+      {
+        "word": "maybe",
+        "start": 221.05,
+        "end": 221.56
+      },
+      {
+        "word": "together",
+        "start": 221.56,
+        "end": 222.19
+      },
+      {
+        "word": "you",
+        "start": 222.2,
+        "end": 222.42
+      },
+      {
+        "word": "and",
+        "start": 222.42,
+        "end": 222.52
+      },
+      {
+        "word": "<unk>",
+        "start": 222.52,
+        "end": 222.75
+      },
+      {
+        "word": "find",
+        "start": 222.81,
+        "end": 223.17
+      },
+      {
+        "word": "it",
+        "start": 223.17,
+        "end": 223.29
+      },
+      {
+        "word": "i",
+        "start": 223.29,
+        "end": 223.3
+      },
+      {
+        "word": "got",
+        "start": 223.41,
+        "end": 223.59
+      },
+      {
+        "word": "no",
+        "start": 223.59,
+        "end": 223.78
+      },
+      {
+        "word": "plans",
+        "start": 223.81,
+        "end": 224.19
+      },
+      {
+        "word": "i",
+        "start": 224.19,
+        "end": 224.2
+      },
+      {
+        "word": "ain't",
+        "start": 224.2,
+        "end": 224.54
+      },
+      {
+        "word": "going",
+        "start": 224.54,
+        "end": 224.83
+      },
+      {
+        "word": "nowhere",
+        "start": 224.83,
+        "end": 225.39
+      },
+      {
+        "word": "so",
+        "start": 225.61,
+        "end": 225.63
+      },
+      {
+        "word": "take",
+        "start": 225.65,
+        "end": 225.89
+      },
+      {
+        "word": "your",
+        "start": 225.9,
+        "end": 225.93
+      },
+      {
+        "word": "fast",
+        "start": 225.93,
+        "end": 226.22
+      },
+      {
+        "word": "car",
+        "start": 226.22,
+        "end": 226.6
+      },
+      {
+        "word": "and",
+        "start": 226.6,
+        "end": 226.81
+      },
+      {
+        "word": "keep",
+        "start": 226.81,
+        "end": 227.01
+      },
+      {
+        "word": "on",
+        "start": 227.01,
+        "end": 227.31
+      },
+      {
+        "word": "driving",
+        "start": 227.32,
+        "end": 227.77
+      },
+      {
+        "word": "so",
+        "start": 236.04,
+        "end": 236.06
+      },
+      {
+        "word": "i",
+        "start": 236.06,
+        "end": 236.07
+      },
+      {
+        "word": "remember",
+        "start": 236.07,
+        "end": 236.43
+      },
+      {
+        "word": "when",
+        "start": 236.46,
+        "end": 236.62
+      },
+      {
+        "word": "we",
+        "start": 236.62,
+        "end": 236.66
+      },
+      {
+        "word": "were",
+        "start": 237.35,
+        "end": 237.37
+      },
+      {
+        "word": "driving",
+        "start": 237.37,
+        "end": 237.59
+      },
+      {
+        "word": "driving",
+        "start": 237.97,
+        "end": 238.37
+      },
+      {
+        "word": "in",
+        "start": 238.37,
+        "end": 238.47
+      },
+      {
+        "word": "your",
+        "start": 238.47,
+        "end": 238.69
+      },
+      {
+        "word": "car",
+        "start": 238.69,
+        "end": 238.91
+      },
+      {
+        "word": "speed",
+        "start": 239.41,
+        "end": 239.77
+      },
+      {
+        "word": "so",
+        "start": 239.88,
+        "end": 239.9
+      },
+      {
+        "word": "fast",
+        "start": 239.9,
+        "end": 240.18
+      },
+      {
+        "word": "i",
+        "start": 240.2,
+        "end": 240.21
+      },
+      {
+        "word": "felt",
+        "start": 240.21,
+        "end": 240.37
+      },
+      {
+        "word": "like",
+        "start": 240.4,
+        "end": 240.62
+      },
+      {
+        "word": "i",
+        "start": 240.62,
+        "end": 240.65
+      },
+      {
+        "word": "was",
+        "start": 241.58,
+        "end": 241.61
+      },
+      {
+        "word": "drunk",
+        "start": 241.63,
+        "end": 241.74
+      },
+      {
+        "word": "city",
+        "start": 241.86,
+        "end": 242.21
+      },
+      {
+        "word": "lights",
+        "start": 242.21,
+        "end": 242.46
+      },
+      {
+        "word": "lay",
+        "start": 242.53,
+        "end": 242.7
+      },
+      {
+        "word": "out",
+        "start": 242.87,
+        "end": 243.09
+      },
+      {
+        "word": "before",
+        "start": 243.09,
+        "end": 243.49
+      },
+      {
+        "word": "us",
+        "start": 243.49,
+        "end": 243.67
+      },
+      {
+        "word": "and",
+        "start": 243.68,
+        "end": 243.84
+      },
+      {
+        "word": "your",
+        "start": 243.84,
+        "end": 243.96
+      },
+      {
+        "word": "arm",
+        "start": 243.96,
+        "end": 244.21
+      },
+      {
+        "word": "felt",
+        "start": 244.21,
+        "end": 244.38
+      },
+      {
+        "word": "nice",
+        "start": 244.76,
+        "end": 244.79
+      },
+      {
+        "word": "wrapped",
+        "start": 244.79,
+        "end": 245.05
+      },
+      {
+        "word": "'round",
+        "start": 245.05,
+        "end": 245.31
+      },
+      {
+        "word": "my",
+        "start": 245.36,
+        "end": 245.57
+      },
+      {
+        "word": "shoulder",
+        "start": 245.57,
+        "end": 246.12
+      },
+      {
+        "word": "and",
+        "start": 246.13,
+        "end": 246.16
+      },
+      {
+        "word": "i",
+        "start": 246.19,
+        "end": 246.83
+      },
+      {
+        "word": "i",
+        "start": 248.25,
+        "end": 248.26
+      },
+      {
+        "word": "had",
+        "start": 248.26,
+        "end": 248.39
+      },
+      {
+        "word": "a",
+        "start": 248.39,
+        "end": 248.45
+      },
+      {
+        "word": "feeling",
+        "start": 248.45,
+        "end": 249.04
+      },
+      {
+        "word": "that",
+        "start": 249.05,
+        "end": 249.42
+      },
+      {
+        "word": "i",
+        "start": 249.42,
+        "end": 249.76
+      },
+      {
+        "word": "belonged",
+        "start": 249.78,
+        "end": 250.25
+      },
+      {
+        "word": "i",
+        "start": 250.75,
+        "end": 251.32
+      },
+      {
+        "word": "i",
+        "start": 251.79,
+        "end": 252.13
+      },
+      {
+        "word": "had",
+        "start": 252.7,
+        "end": 252.9
+      },
+      {
+        "word": "a",
+        "start": 252.9,
+        "end": 252.95
+      },
+      {
+        "word": "feeling",
+        "start": 253.25,
+        "end": 253.5
+      },
+      {
+        "word": "i",
+        "start": 253.65,
+        "end": 253.93
+      },
+      {
+        "word": "could",
+        "start": 254.01,
+        "end": 254.06
+      },
+      {
+        "word": "be",
+        "start": 254.12,
+        "end": 254.33
+      },
+      {
+        "word": "someone",
+        "start": 254.36,
+        "end": 254.54
+      },
+      {
+        "word": "be",
+        "start": 255.19,
+        "end": 255.44
+      },
+      {
+        "word": "someone",
+        "start": 255.61,
+        "end": 255.85
+      },
+      {
+        "word": "you",
+        "start": 259.23,
+        "end": 259.53
+      },
+      {
+        "word": "got",
+        "start": 261.78,
+        "end": 261.81
+      },
+      {
+        "word": "a",
+        "start": 261.81,
+        "end": 261.82
+      },
+      {
+        "word": "fast",
+        "start": 261.82,
+        "end": 262.01
+      },
+      {
+        "word": "enough",
+        "start": 262.77,
+        "end": 262.96
+      },
+      {
+        "word": "so",
+        "start": 263.93,
+        "end": 263.95
+      },
+      {
+        "word": "you",
+        "start": 269.93,
+        "end": 270.14
+      },
+      {
+        "word": "can",
+        "start": 270.14,
+        "end": 270.26
+      },
+      {
+        "word": "fly",
+        "start": 270.26,
+        "end": 270.63
+      },
+      {
+        "word": "away",
+        "start": 270.63,
+        "end": 271.35
+      },
+      {
+        "word": "you",
+        "start": 271.49,
+        "end": 271.73
+      },
+      {
+        "word": "gotta",
+        "start": 271.73,
+        "end": 271.96
+      },
+      {
+        "word": "make",
+        "start": 271.96,
+        "end": 272.33
+      },
+      {
+        "word": "a",
+        "start": 272.33,
+        "end": 272.39
+      },
+      {
+        "word": "decision",
+        "start": 272.39,
+        "end": 273.08
+      },
+      {
+        "word": "leave",
+        "start": 273.68,
+        "end": 274.04
+      },
+      {
+        "word": "tonight",
+        "start": 274.04,
+        "end": 274.5
+      },
+      {
+        "word": "or",
+        "start": 274.5,
+        "end": 274.53
+      },
+      {
+        "word": "live",
+        "start": 274.53,
+        "end": 274.74
+      },
+      {
+        "word": "and",
+        "start": 274.74,
+        "end": 274.84
+      },
+      {
+        "word": "die",
+        "start": 274.84,
+        "end": 275.1
+      },
+      {
+        "word": "this",
+        "start": 275.38,
+        "end": 275.41
+      },
+      {
+        "word": "way",
+        "start": 275.41,
+        "end": 275.86
+      }
+    ]
+  },
+  "notes": [],
+  "chat_history": [],
+  "llm_metadata": {
+    "token_usage": 0,
+    "estimated_cost": 0.0,
+    "interactions": []
+  },
+  "llm_customization": {
+    "custom_instructions": "",
+    "presets": [],
+    "task_templates": [],
+    "active_preset": "Default"
+  }
+}

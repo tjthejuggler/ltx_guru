@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Log file for debugging crashes (wiped clean each run)
+LOG_FILE="/home/twain/Projects/ltx_guru/sequence_maker.log"
+
+# Redirect all output (stdout + stderr) to the log file, truncating it first
+exec > "$LOG_FILE" 2>&1
+
 # Set environment variables to help with icon display
 export QT_QPA_PLATFORMTHEME=gtk3
 export RESOURCE_NAME=SequenceMaker

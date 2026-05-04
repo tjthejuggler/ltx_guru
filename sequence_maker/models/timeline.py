@@ -163,10 +163,9 @@ class Timeline:
         self.logger.debug(f"Existing segment at time {time}: {existing_segment}")
         
         if existing_segment:
-            # If the segment starts exactly at this time, just update its color
-            if existing_segment.start_time == time:
-                existing_segment.color = color
-                existing_segment.pixels = pixels
+            # If the segment starts at (approximately) this time, just update its color
+            # Use epsilon comparison to handle floating-point drift between keypresses
+            if abs(existing_segment.start_time - time) < 0.001:
                 existing_segment.color = color
                 existing_segment.pixels = pixels
                 # If it was a fade, setting a single color here makes it solid

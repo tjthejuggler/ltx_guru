@@ -675,9 +675,8 @@ class TimelineManager(QObject):
         # Emit signal
         self.logger.debug(f"TimelineManager emitting position_changed signal with position={position:.3f}s")
         self.position_changed.emit(position)
-        self.position_changed.emit(position)
     
-    def add_color_at_position(self, timeline_index, color, pixels=None):
+    def add_color_at_position(self, timeline_index, color, pixels=None, skip_undo=False):
         """
         Add a color at the current position.
         
@@ -685,6 +684,7 @@ class TimelineManager(QObject):
             timeline_index (int): Timeline index.
             color (tuple): RGB color tuple.
             pixels (int, optional): Number of pixels. If None, uses the timeline default.
+            skip_undo (bool, optional): If True, skip saving undo state (caller handles it). Defaults to False.
         
         Returns:
             TimelineSegment: The new or modified segment, or None if the timeline is invalid.
@@ -701,8 +701,8 @@ class TimelineManager(QObject):
         segment = timeline.add_color_at_time(self.position, color, pixels)
         self.logger.debug(f"Created segment: {segment}")
         
-        # Save state for undo
-        if self.undo_manager:
+        # Save state for undo (unless caller will handle it for a grouped operation)
+        if self.undo_manager and not skip_undo:
             self.undo_manager.save_state("add_color")
         
         # Emit signals

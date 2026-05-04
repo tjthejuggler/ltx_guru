@@ -535,6 +535,24 @@ class MainWindow(QMainWindow):
         key = event.key()
         modifiers = event.modifiers()
         
+        # Handle Ctrl+Z (Undo) and Ctrl+Shift+Z / Ctrl+Y (Redo) BEFORE key mapping
+        # so that 'z' and 'y' aren't consumed as color keys when Ctrl is held
+        if key == Qt.Key.Key_Z and modifiers & Qt.KeyboardModifier.ControlModifier:
+            if modifiers & Qt.KeyboardModifier.ShiftModifier:
+                # Ctrl+Shift+Z = Redo
+                self._on_redo()
+            else:
+                # Ctrl+Z = Undo
+                self._on_undo()
+            event.accept()
+            return
+        
+        if key == Qt.Key.Key_Y and modifiers & Qt.KeyboardModifier.ControlModifier:
+            # Ctrl+Y = Redo
+            self._on_redo()
+            event.accept()
+            return
+        
         # Convert key to string representation
         key_text = chr(key).lower() if key >= 32 and key <= 126 else ""
         
@@ -563,6 +581,12 @@ class MainWindow(QMainWindow):
             # This might be acceptable or might need further differentiation if Ctrl+Key
             # was intended for something else. For now, this prioritizes Shift for direct fade creation.
             
+            # When multiple timelines are affected (e.g. keys 1-9 for all balls),
+            # save undo state once before the loop so they undo as a single action
+            is_multi_timeline = len(timelines) > 1
+            if is_multi_timeline and hasattr(self.app, 'undo_manager') and self.app.undo_manager:
+                self.app.undo_manager.save_state("add_color_all_balls")
+            
             # Add color/fade to each timeline
             for timeline_index in timelines:
                 if hasattr(self.app, 'timeline_manager'):
@@ -573,7 +597,10 @@ class MainWindow(QMainWindow):
                         self.app.timeline_manager.add_fade_at_position(timeline_index, color)
                     else:
                         # Original behavior: add solid color segment
-                        segment = self.app.timeline_manager.add_color_at_position(timeline_index, color)
+                        # Skip per-timeline undo when we already saved a grouped undo state
+                        segment = self.app.timeline_manager.add_color_at_position(
+                            timeline_index, color, skip_undo=is_multi_timeline
+                        )
                         
                         # Add effect if specified (and not creating a fade)
                         if effect_type and segment:
@@ -607,7 +634,7 @@ class MainWindow(QMainWindow):
         # Check for specific actions
         if key == Qt.Key.Key_Space:
             # Toggle play/pause
-            if hasattr(self.app, 'audio_manager') and self.app.audio_manager.is_playing():
+            if hasattr(self.app, 'audio_manager') and self.app.audio_manager.playing and not self.app.audio_manager.paused:
                 self._on_pause()
             else:
                 self._on_play()
