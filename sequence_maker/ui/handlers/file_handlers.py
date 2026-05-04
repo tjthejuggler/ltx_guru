@@ -7,9 +7,10 @@ operations such as new, open, save, and export operations.
 
 import os
 import json
-from PyQt6.QtWidgets import QFileDialog, QMessageBox, QColorDialog
+from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from models.timeline import Timeline
 from models.segment import TimelineSegment
+from models.lyrics import Lyrics, WordTimestamp
 from utils.file_type_utils import is_valid_ball_sequence, is_valid_seqdesign, is_valid_lyrics_timestamps
 
 MAX_RECENT_FILES = 10
@@ -539,7 +540,7 @@ class FileHandlers:
                 )
     
     def on_import_lyrics_timestamps(self):
-        """Import lyrics timestamps and convert to a timeline."""
+        """Import lyrics timestamps for display in the lyrics widget."""
         # Show file dialog
         file_path, _ = QFileDialog.getOpenFileName(
             self.main_window,
@@ -558,16 +559,6 @@ class FileHandlers:
                 )
                 return
             
-            # Ask for color preferences
-            color_dialog = QColorDialog(self.main_window)
-            color_dialog.setWindowTitle("Select Color for Words")
-            if color_dialog.exec():
-                word_color = color_dialog.selectedColor().getRgb()[:3]  # Get RGB values
-            else:
-                word_color = [0, 0, 255]  # Default blue
-            
-            background_color = [0, 0, 0]  # Default black
-            
             # Load lyrics timestamps
             try:
                 with open(file_path, 'r') as f:
@@ -578,70 +569,24 @@ class FileHandlers:
                 artist_name = lyrics_data.get("artist_name", "Unknown")
                 word_timestamps = lyrics_data.get("word_timestamps", [])
                 
-                # Create a new timeline
-                timeline = Timeline(
-                    name=f"{song_title} - {artist_name} - Word Flash",
-                    default_pixels=4
-                )
+                # Create Lyrics object and set on project so the lyrics widget displays it
+                lyrics = Lyrics()
+                lyrics.song_name = song_title
+                lyrics.artist_name = artist_name
+                lyrics.lyrics_text = lyrics_data.get("raw_lyrics", "")
+                lyrics.word_timestamps = [
+                    WordTimestamp(word=w["word"], start=w["start"], end=w["end"])
+                    for w in word_timestamps
+                ]
                 
-                # Find total duration
-                total_duration = 0
-                if word_timestamps:
-                    total_duration = max(word["end"] for word in word_timestamps) + 5.0  # Add 5 seconds buffer
+                # Set lyrics on the project
+                self.app.project_manager.current_project.lyrics = lyrics
+                self.app.project_manager.project_changed.emit()
                 
-                # Add initial black segment if first word doesn't start at 0
-                if word_timestamps and word_timestamps[0]["start"] > 0:
-                    timeline.add_segment(TimelineSegment(
-                        start_time=0.0,
-                        end_time=word_timestamps[0]["start"],
-                        color=tuple(background_color),
-                        pixels=4
-                    ))
-                
-                # Add segments for each word and gap
-                for i, word in enumerate(word_timestamps):
-                    # Add segment for the word
-                    timeline.add_segment(TimelineSegment(
-                        start_time=word["start"],
-                        end_time=word["end"],
-                        color=tuple(word_color),
-                        pixels=4
-                    ))
-                    
-                    # Add segment for the gap after this word (if not the last word)
-                    if i < len(word_timestamps) - 1:
-                        next_word = word_timestamps[i + 1]
-                        if word["end"] < next_word["start"]:
-                            timeline.add_segment(TimelineSegment(
-                                start_time=word["end"],
-                                end_time=next_word["start"],
-                                color=tuple(background_color),
-                                pixels=4
-                            ))
-                
-                # Add final black segment after the last word
-                if word_timestamps:
-                    timeline.add_segment(TimelineSegment(
-                        start_time=word_timestamps[-1]["end"],
-                        end_time=total_duration,
-                        color=tuple(background_color),
-                        pixels=4
-                    ))
-                
-                # Add timeline to project
-                self.app.project_manager.current_project.add_timeline(timeline)
-                
-                # Update project total_duration to accommodate the imported lyrics timeline
-                timeline_duration = timeline.get_duration()
-                old_project_duration = self.app.project_manager.current_project.total_duration
-                if timeline_duration > old_project_duration:
-                    self.app.project_manager.current_project.total_duration = timeline_duration
-                    self.app.logger.info(f"Updated project total_duration from {old_project_duration}s to {timeline_duration}s after lyrics import")
-                    
-                    # Trigger timeline container size update
-                    if hasattr(self.main_window, 'timeline_widget'):
-                        self.main_window.timeline_widget.timeline_container.update_size()
-                        self.app.logger.info("Triggered timeline container size update after lyrics import")
+                # Emit lyrics_processed signal so LyricsWidget updates its display
+                if hasattr(self.app, 'lyrics_manager') and self.app.lyrics_manager:
+                    self.app.lyrics_manager.lyrics_processed.emit(lyrics)
+                    self.app.logger.info("Emitted lyrics_processed signal after lyrics import")
                 
                 # Update UI
                 self.main_window._update_ui()
