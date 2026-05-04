@@ -242,18 +242,22 @@ class Project:
         
         return project
     
-    def save(self, file_path=None):
+    def save(self, file_path=None, update_file_path=True):
         """
         Save the project to a file.
         
         Args:
             file_path (str, optional): Path to save the project to. If None, uses the current file_path.
+            update_file_path (bool, optional): If True, update self.file_path to the given file_path.
+                Set to False when saving to an alternate location (e.g. autosave) to avoid
+                overwriting the user's actual project path. Defaults to True.
         
         Returns:
             bool: True if successful, False otherwise.
         """
         if file_path:
-            self.file_path = file_path
+            if update_file_path:
+                self.file_path = file_path
         
         if not self.file_path:
             self.logger.error("No file path specified for project save")

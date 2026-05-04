@@ -304,8 +304,8 @@ class ProjectManager(QObject):
             self.logger.error(f"Cannot autosave: current_project has no 'save' method. Type: {type(self.current_project)}")
             return
             
-        # Save the project
-        success = self.current_project.save(str(autosave_file))
+        # Save the project (don't update file_path — this is an autosave, not the user's save location)
+        success = self.current_project.save(str(autosave_file), update_file_path=False)
         
         if success:
             # Emit signal
