@@ -365,6 +365,10 @@ class LyricsDisplayWidget(QWidget):
         # Find the current word to scroll to it
         current_word_rect = None
         for timestamp, word_rect, time_rect in self.word_rects:
+            # Defensive: skip unaligned words (start/end can be None for words
+            # Gentle could not match in the audio).
+            if timestamp.start is None or timestamp.end is None:
+                continue
             if timestamp.start <= position <= timestamp.end:
                 current_word_rect = word_rect
                 break
@@ -416,10 +420,13 @@ class LyricsDisplayWidget(QWidget):
                         word_width = word_metrics.horizontalAdvance(timestamp.word)
                         
                         # Calculate timestamp width
-                        # Format time as mm:ss
-                        start_min, start_sec = divmod(timestamp.start, 60)
-                        end_min, end_sec = divmod(timestamp.end, 60)
-                        time_text = f"{int(start_min):02d}:{start_sec:05.2f}-{int(end_min):02d}:{end_sec:05.2f}"
+                        # Format time as mm:ss (handle unaligned words gracefully).
+                        if timestamp.start is None or timestamp.end is None:
+                            time_text = "--:--.--"
+                        else:
+                            start_min, start_sec = divmod(timestamp.start, 60)
+                            end_min, end_sec = divmod(timestamp.end, 60)
+                            time_text = f"{int(start_min):02d}:{start_sec:05.2f}-{int(end_min):02d}:{end_sec:05.2f}"
                         time_width = time_metrics.horizontalAdvance(time_text)
                         
                         # Use the larger of the two widths
@@ -472,8 +479,12 @@ class LyricsDisplayWidget(QWidget):
         
         # Draw each word and its timestamp
         for timestamp, word_rect, time_rect in self.word_rects:
-            # Check if this word is the current word
-            is_current = timestamp.start <= self.current_position <= timestamp.end
+            # Check if this word is the current word (unaligned words are
+            # never "current" because they have no playback range).
+            if timestamp.start is None or timestamp.end is None:
+                is_current = False
+            else:
+                is_current = timestamp.start <= self.current_position <= timestamp.end
             
             # Highlight current word
             if is_current:
@@ -481,10 +492,13 @@ class LyricsDisplayWidget(QWidget):
             
             # Draw timestamp above the word
             painter.setFont(self.time_font)
-            # Format time as mm:ss
-            start_min, start_sec = divmod(timestamp.start, 60)
-            end_min, end_sec = divmod(timestamp.end, 60)
-            time_text = f"{int(start_min):02d}:{start_sec:05.2f}-{int(end_min):02d}:{end_sec:05.2f}"
+            # Format time as mm:ss (handle unaligned words gracefully).
+            if timestamp.start is None or timestamp.end is None:
+                time_text = "--:--.--"
+            else:
+                start_min, start_sec = divmod(timestamp.start, 60)
+                end_min, end_sec = divmod(timestamp.end, 60)
+                time_text = f"{int(start_min):02d}:{start_sec:05.2f}-{int(end_min):02d}:{end_sec:05.2f}"
             painter.setPen(QPen(QColor(100, 100, 100)))  # Gray color for timestamps
             painter.drawText(time_rect, Qt.AlignmentFlag.AlignCenter, time_text)
             
@@ -505,6 +519,9 @@ class LyricsDisplayWidget(QWidget):
         for timestamp, word_rect, time_rect in self.word_rects:
             # Check if click is within the word or timestamp rect
             if word_rect.contains(pos) or time_rect.contains(pos):
+                # Skip unaligned words - we have no playback time to seek to.
+                if timestamp.start is None:
+                    break
                 # Emit signal with the start time of the word
                 self.timestamp_clicked.emit(timestamp.start)
                 break

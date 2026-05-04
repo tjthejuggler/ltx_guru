@@ -279,13 +279,16 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
 *   **Key Features:**
     - Automatically starts the Gentle server if needed
     - Handles all alignment steps in a single command
-    - Uses conservative alignment for better results
+    - Non-conservative alignment by default (best for sung music)
+    - Preserves unaligned words in the output (`start: null`) instead of dropping them
+    - Reports `alignment_stats` (total, aligned, percentage, quality) so you can spot poor alignments
     - Supports song title and artist name metadata
 
 *   **Command-Line Usage:**
     ```bash
-    python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title "Song Title"] [--artist-name "Artist Name"] [--no-conservative] [--no-cache] [--clear-all-cache]
+    python align_lyrics.py <audio_file> <lyrics_file> <output_file> [--song-title "Song Title"] [--artist-name "Artist Name"] [--conservative] [--no-cache] [--clear-all-cache]
     ```
+    *   By default, conservative alignment is OFF — Gentle's conservative mode silently rejects ~20–30 % of words on sung music. Only pass `--conservative` for spoken-word audio.
     *   Parameters are as described above.
     *   **Caching:** Supports caching of alignment results. New flags: `--no-cache`, `--clear-all-cache`.
 
@@ -305,11 +308,11 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
        ```bash
        python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> --output lyrics_data.json
        ```
-    4. **If automatic extraction fails, save lyrics to a text file** and use with conservative alignment:
+    4. **If automatic extraction fails, save lyrics to a text file** and align directly:
        ```bash
-       python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> --lyrics-file lyrics.txt --output lyrics_timestamps.json --conservative
+       python -m roocode_sequence_designer_tools.extract_lyrics <audio_file_path> --lyrics-file lyrics.txt --output lyrics_timestamps.json
        ```
-       The `--conservative` flag is crucial for successful alignment.
+       Do NOT pass `--conservative` for sung music — it drops too many words.
 
 *   **Command-Line Usage:**
     ```bash
@@ -433,10 +436,11 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
     python -m sequence_maker.scripts.start_gentle
     ```
 
-*   **Use Conservative Alignment:** When providing user-supplied lyrics, always use the `--conservative` flag for better alignment results:
+*   **Do NOT use Conservative Alignment for sung music:** Gentle's `conservative=true` mode silently rejects ~20–30 % of words on sung audio, leaving large gaps in the timeline. The tools default to non-conservative alignment for that reason. The recommended invocation is simply:
     ```bash
-    python -m roocode_sequence_designer_tools.extract_lyrics sequence_projects/song_name/artist_song_name.mp3 --lyrics-file sequence_projects/song_name/lyrics.txt --output sequence_projects/song_name/lyrics_timestamps.json --conservative
+    python -m roocode_sequence_designer_tools.extract_lyrics sequence_projects/song_name/artist_song_name.mp3 --lyrics-file sequence_projects/song_name/lyrics.txt --output sequence_projects/song_name/lyrics_timestamps.json
     ```
+    Only enable `--conservative` for spoken-word audio where you specifically need high-confidence-only timestamps.
 
 *   **Optimized Workflow Summary:**
     1. **RECOMMENDED:** Use align_lyrics.py for a one-step process
@@ -448,7 +452,7 @@ To add a new lighting effect type to the Roocode Sequence Designer System, devel
        - Start Gentle server first
        - Ask for lyrics in a single step
        - Save user-provided lyrics to a text file in the same directory as the MP3 file
-       - Process with conservative alignment
+       - Process with the default (non-conservative) alignment
        
     3. **ALWAYS maintain proper file organization:**
        - Store all related files in the same subdirectory as the MP3 file

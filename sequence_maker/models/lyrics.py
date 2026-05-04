@@ -141,6 +141,10 @@ class Lyrics:
             WordTimestamp or None: The word at the specified time, or None if not found.
         """
         for word_timestamp in self.word_timestamps:
+            # Skip unaligned words (start/end can be None for words that
+            # Gentle could not match in the audio).
+            if word_timestamp.start is None or word_timestamp.end is None:
+                continue
             if word_timestamp.start <= time <= word_timestamp.end:
                 return word_timestamp
         

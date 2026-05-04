@@ -96,10 +96,10 @@ Options:
 If you prefer to use the original extraction tool with more options:
 
 ```bash
-python -m roocode_sequence_designer_tools.extract_lyrics [audio_file] --lyrics-file [lyrics_file.lyrics.txt] --output [output_file.synced_lyrics.json] --conservative
+python -m roocode_sequence_designer_tools.extract_lyrics [audio_file] --lyrics-file [lyrics_file.lyrics.txt] --output [output_file.synced_lyrics.json]
 ```
 
-The `--conservative` flag is crucial for successful alignment and should always be used when providing your own lyrics.
+NOTE (updated 2026-05-04): the `--conservative` flag is now **off by default**. Conservative alignment silently rejects ~20–30 % of words on sung music, leaving large gaps in the timeline (the previous documentation, which advised always passing `--conservative`, was actually the cause of broken `fast_car_synced_lyrics.json`). Only enable it for spoken-word audio where you specifically need high-confidence-only timestamps.
 
 ## Troubleshooting
 

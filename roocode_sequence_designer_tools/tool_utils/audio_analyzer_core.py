@@ -885,30 +885,73 @@ class LyricsProcessor:
                 self.logger.error(f"Failed to parse Gentle response as JSON: {response.text[:200]}") # Log part of response
                 return []
             
-            # Extract word timestamps
-            aligned_word_timestamps = [] # Renamed
-            words_from_gentle = result_data.get('words', []) # Renamed
-            
+            # Extract word timestamps.
+            #
+            # IMPORTANT: We keep one entry per word in the original lyrics,
+            # even when Gentle could not align it. Unaligned words get
+            # start=None, end=None, case='not-found-in-audio'. This way
+            # downstream tools see the full lyric text (no silently dropped
+            # words) and can interpolate or report quality. Previously we
+            # dropped non-success words, which left huge gaps and missing
+            # phrases in the output (e.g. on Tracy Chapman's "Fast Car",
+            # ~25% of words were silently lost).
+            aligned_word_timestamps = []
+            words_from_gentle = result_data.get('words', [])
+
             if not words_from_gentle:
                 self.logger.warning("No words found in Gentle response")
                 return []
-            
-            # Process each word in the alignment result
-            for word_entry in words_from_gentle: # Renamed
-                # Only include words that were successfully aligned
-                if word_entry.get('case') == 'success':
-                    word_text = word_entry.get('alignedWord') # Renamed
-                    start_time = word_entry.get('start') # Renamed
-                    end_time = word_entry.get('end') # Renamed
-                    
-                    if word_text and start_time is not None and end_time is not None:
-                        aligned_word_timestamps.append({
-                            "word": word_text,
-                            "start": float(start_time), # Ensure float
-                            "end": float(end_time)    # Ensure float
-                        })
-            
-            self.logger.info(f"Successfully aligned {len(aligned_word_timestamps)} words")
+
+            aligned_count = 0
+            not_found_count = 0
+            other_count = 0
+
+            for word_entry in words_from_gentle:
+                case = word_entry.get('case', 'unknown')
+                original_word = word_entry.get('word', '')
+                aligned_word = word_entry.get('alignedWord') or original_word
+                start_time = word_entry.get('start')
+                end_time = word_entry.get('end')
+
+                if case == 'success' and start_time is not None and end_time is not None:
+                    aligned_word_timestamps.append({
+                        "word": aligned_word,
+                        "start": float(start_time),
+                        "end": float(end_time),
+                        "case": case,
+                    })
+                    aligned_count += 1
+                else:
+                    aligned_word_timestamps.append({
+                        "word": original_word,
+                        "start": None,
+                        "end": None,
+                        "case": case,
+                    })
+                    if case == 'not-found-in-audio':
+                        not_found_count += 1
+                    else:
+                        other_count += 1
+
+            total = len(aligned_word_timestamps)
+            pct = (100.0 * aligned_count / total) if total else 0.0
+            quality = (
+                "EXCELLENT" if pct >= 90 else
+                "GOOD"      if pct >= 75 else
+                "FAIR"      if pct >= 60 else
+                "POOR"
+            )
+            self.logger.info(
+                f"Gentle alignment: {aligned_count}/{total} words aligned "
+                f"({pct:.1f}%, {quality}); not-found={not_found_count}, "
+                f"other-unaligned={other_count}"
+            )
+            if pct < 75:
+                self.logger.warning(
+                    "Low Gentle alignment rate. Verify lyrics text matches "
+                    "the actual sung lyrics and that audio quality is good. "
+                    "Avoid conservative_alignment=True for sung music."
+                )
             return aligned_word_timestamps
             
         except requests.exceptions.RequestException as e:

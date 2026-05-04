@@ -96,7 +96,7 @@ python -m sequence_maker.scripts.start_gentle
 # Step 2: Ask user for song name, artist, and lyrics (multiple steps)
 
 # Step 3: Try extract_lyrics.py first (likely to fail)
-python -m roocode_sequence_designer_tools.extract_lyrics [audio_path] --lyrics-file lyrics.txt --output lyrics_timestamps.json --conservative
+python -m roocode_sequence_designer_tools.extract_lyrics [audio_path] --lyrics-file lyrics.txt --output lyrics_timestamps.json
 
 # Step 4: Fall back to align_lyrics.py
 python align_lyrics.py [audio_path] lyrics.txt lyrics_timestamps.json --song-title "[Title]" --artist-name "[Artist]"

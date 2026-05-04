@@ -574,9 +574,23 @@ class FileHandlers:
                 lyrics.song_name = song_title
                 lyrics.artist_name = artist_name
                 lyrics.lyrics_text = lyrics_data.get("raw_lyrics", "")
+                # The new lyrics-extraction schema preserves unaligned words with
+                # start=None / end=None (case='not-found-in-audio'). The GUI's
+                # WordTimestamp / LyricsDisplayWidget assume numeric timestamps,
+                # so filter unaligned entries out at the import boundary.
+                aligned_word_timestamps = [
+                    w for w in word_timestamps
+                    if w.get("start") is not None and w.get("end") is not None
+                ]
+                skipped = len(word_timestamps) - len(aligned_word_timestamps)
+                if skipped:
+                    self.app.logger.warning(
+                        f"Skipped {skipped} unaligned word(s) (start/end is None) "
+                        f"when importing lyrics timestamps from {file_path}"
+                    )
                 lyrics.word_timestamps = [
                     WordTimestamp(word=w["word"], start=w["start"], end=w["end"])
-                    for w in word_timestamps
+                    for w in aligned_word_timestamps
                 ]
                 
                 # Set lyrics on the project

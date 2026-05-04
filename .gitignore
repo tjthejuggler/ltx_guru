@@ -47,3 +47,5 @@ gentle_docker/
 gentle_output/
 # Memory Bank (local AI context)
 memory-bank/
+
+/sequence_maker/ppq_api_key.txt

@@ -172,16 +172,25 @@ def extract_lyrics(
         
         lyrics_data["processing_status"] = processing_status
         
-        # Filter by time range if specified
+        # Filter by time range if specified.
+        # Words without timestamps (start is None) are kept only if they fall
+        # between two aligned words that are inside the range, by interpolating
+        # nothing — instead we simply drop them from a time-range filter
+        # (their position is unknown).
         if time_range:
             start_time, end_time = time_range
             if 'word_timestamps' in lyrics_data:
                 filtered_words = [
                     word for word in lyrics_data['word_timestamps']
-                    if start_time <= word['start'] < end_time
+                    if word.get('start') is not None
+                    and start_time <= word['start'] < end_time
                 ]
                 lyrics_data['word_timestamps'] = filtered_words
-                logger.info(f"Filtered lyrics to {len(filtered_words)} words in time range {start_time}-{end_time}s")
+                logger.info(
+                    f"Filtered lyrics to {len(filtered_words)} aligned words "
+                    f"in time range {start_time}-{end_time}s "
+                    "(words without timestamps were excluded)"
+                )
     
     # Output path saving is handled by the main function after this returns.
     # This function is now primarily responsible for extraction and returning data.
@@ -227,18 +236,24 @@ def format_lyrics_text(lyrics_data, include_timestamps=False):
         last_end_time = 0
         
         for word in lyrics_data['word_timestamps']:
-            # Start a new line if there's a significant gap
-            if word['start'] - last_end_time > 1.0 and current_line:
+            ws = word.get('start')
+            we = word.get('end')
+
+            # Start a new line if there's a significant gap (only when we
+            # actually have timing on both sides).
+            if ws is not None and ws - last_end_time > 1.0 and current_line:
                 lines.append(" ".join(current_line))
                 current_line = []
-            
+
             # Add the word with its timestamp
             if include_timestamps:
-                current_line.append(f"{word['word']}[{word['start']:.2f}s]")
+                ts_label = f"{ws:.2f}s" if ws is not None else "??.??s"
+                current_line.append(f"{word['word']}[{ts_label}]")
             else:
                 current_line.append(word['word'])
-            
-            last_end_time = word['end']
+
+            if we is not None:
+                last_end_time = we
         
         # Add the last line
         if current_line:
@@ -280,24 +295,34 @@ def print_lyrics_summary(lyrics_data):
         print("\nSong identification: Not available")
     
     # Print word count
-    word_count = len(lyrics_data.get('word_timestamps', []))
-    print(f"Words with timestamps: {word_count}")
-    
+    word_timestamps = lyrics_data.get('word_timestamps', []) or []
+    word_count = len(word_timestamps)
+    aligned_count = sum(1 for w in word_timestamps if w.get('start') is not None)
+    print(f"Total words in lyrics: {word_count}")
+    print(f"Words with timestamps: {aligned_count}")
+    if word_count:
+        pct = 100.0 * aligned_count / word_count
+        print(f"Alignment rate: {pct:.1f}%")
+
     # Print lyrics preview
     if lyrics_data.get('raw_lyrics'):
         raw_lyrics_preview = lyrics_data['raw_lyrics'][:100] + "..." if len(lyrics_data['raw_lyrics']) > 100 else lyrics_data['raw_lyrics']
         print(f"\nLyrics preview: {raw_lyrics_preview}")
-    
+
     # Print word timestamps
-    if word_count > 0:
+    if aligned_count > 0:
         print("\nFirst few words with timestamps:")
-        for i, word in enumerate(lyrics_data['word_timestamps'][:10]):
+        shown = 0
+        for word in word_timestamps:
+            if word.get('start') is None:
+                continue
             print(f"  {word['word']} ({word['start']:.2f}s - {word['end']:.2f}s)")
-            if i >= 4:
+            shown += 1
+            if shown >= 5:
                 break
-        
-        if word_count > 5:
-            print(f"  ... and {word_count - 5} more words")
+
+        if aligned_count > 5:
+            print(f"  ... and {aligned_count - 5} more aligned words")
     
     print("\nExtraction complete!")
 

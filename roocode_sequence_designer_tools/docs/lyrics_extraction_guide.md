@@ -2,22 +2,77 @@
 
 This guide explains how to extract and align lyrics with audio files to generate precise word-level timestamps. These timestamps can be used for creating synchronized light sequences that match lyrics in songs.
 
+## ⭐ PREFERRED METHOD: Deepgram Nova-3 ASR (2026-05-04+)
+
+**Use [`transcribe_lyrics.py`](../transcribe_lyrics.py) for all new songs.** This tool uses Deepgram Nova-3 via ppq.ai to transcribe the audio directly, producing per-word timestamps from what the singer actually sang. No Docker, no Gentle, no alignment step needed.
+
+```bash
+source ltx_guru/bin/activate
+python3 roocode_sequence_designer_tools/transcribe_lyrics.py \
+  "path/to/song.mp3" \
+  --output "sequence_projects/my_song/my_song_synced_lyrics.json" \
+  --song-title "Song Title" \
+  --artist-name "Artist Name" \
+  --prompt "$(head -20 sequence_projects/my_song/lyrics.txt)"
+```
+
+**Why this is better than Gentle:**
+- Gentle forced-alignment requires Docker and a running server
+- Gentle silently drops ~20–30% of words on sung music (singer improvises, words differ from written lyrics)
+- Deepgram transcribes what is actually heard — 100% of words have timestamps, 0 out-of-order
+- The output is the synced lyrics file directly — no post-processing needed
+
+**API key:** stored at `sequence_maker/ppq_api_key.txt`
+
+**Chunking strategy (2026-05-04):** Audio is split into **10-second chunks with 5-second overlap** (`DEFAULT_CHUNK_DURATION = 10`, `CHUNK_OVERLAP = 5`). Short chunks prevent the Whisper backend from skipping sung sections. The overlap ensures words near chunk boundaries are not dropped by the deduplication logic.
+
+**Line breaks in `raw_lyrics`:** The `raw_lyrics` field uses `_build_raw_lyrics()` to insert `\n` whenever the gap between consecutive words is ≥ 1.5 s (`LINE_BREAK_GAP = 1.5`). This produces human-readable, line-separated lyrics that match the natural phrasing of the song.
+
+**Output format:**
+```json
+{
+  "word_timestamps": [{"word": "you", "start": 20.64, "end": 20.96, "confidence": 0.98}, ...],
+  "raw_lyrics": "you get a fast car...\nI remember we were driving...",
+  "transcription_source": "deepgram-nova3",
+  "alignment_stats": {"total_words": 480, "aligned_words": 480, "unaligned_words": 0, "quality": "EXCELLENT"}
+}
+```
+
+**Known limitation:** The Whisper backend consistently skips ~9-second sections at specific absolute positions in some songs (e.g. instrumental breaks). These gaps appear at the same timestamps regardless of chunk size or overlap — they are an inherent ASR limitation, not a bug in the tool. The `align_with_anchors.py` gap-filling approach was tested and found to produce worse results than the raw ASR output for sung music.
+
+**Note:** The ASR transcribes what the singer actually sang, which may differ from the written lyrics (improvised lines, repeated choruses, etc.). This is correct behaviour — the timestamps reflect the real audio.
+
+---
+
+## Legacy: Gentle Forced Alignment (NOT recommended for sung music)
+
+The tools below use [Gentle](https://github.com/lowerquality/gentle) forced alignment. **Do not use these for sung music** — Gentle silently rejects ~20–30% of words, producing large timestamp gaps. Only use Gentle for spoken-word audio where you need high-confidence-only timestamps.
+
+### Important: do NOT use conservative alignment for sung music
+
+Gentle has a "conservative" alignment mode that **silently rejects ~20–30 % of words on sung music**, leaving large gaps in the timeline (this is what produced the broken `fast_car_synced_lyrics.json` on 2026-05-04).
+
+As of **2026-05-04** all three tools default to **non-conservative** alignment. You only need to opt in to conservative mode (via `--conservative` on `align_lyrics.py` and `extract_lyrics_simple.py`) for spoken-word audio where you specifically need high-confidence-only timestamps.
+
 ## Available Tools
 
 The project provides several tools for lyrics extraction and alignment:
 
-1. **align_lyrics.py** (Recommended) - Direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. Automatically ensures Gentle server is running and handles all alignment steps in one command.
+0. **transcribe_lyrics.py** ⭐ **(PREFERRED)** - Uses Deepgram Nova-3 via ppq.ai. No Docker needed. Transcribes what is actually sung. Direct output, no alignment step.
 
-2. **extract_lyrics_simple.py** - Simplified tool for extracting lyrics timestamps using user-provided lyrics. Bypasses API requirements and automatically ensures Gentle server is running.
+1. **align_lyrics.py** (Gentle, legacy) - Direct lyrics alignment tool that uses the Gentle API to generate precise word-level timestamps. Automatically ensures Gentle server is running and handles all alignment steps in one command. **Conservative mode is OFF by default.**
 
-3. **extract_lyrics.py** - Advanced tool that extracts and processes lyrics from audio files with options for time range filtering and formatting.
+2. **extract_lyrics_simple.py** (Gentle, legacy) - Simplified tool for extracting lyrics timestamps using user-provided lyrics. Bypasses API requirements and automatically ensures Gentle server is running. **Conservative mode is OFF by default.**
+
+3. **extract_lyrics.py** (Gentle, legacy) - Advanced tool that extracts and processes lyrics from audio files with options for time range filtering and formatting. Conservative mode is OFF by default.
 
 ## Prerequisites
 
 - Python 3.6+
-- Docker (for running the Gentle forced alignment server)
+- ppq.ai API key at `sequence_maker/ppq_api_key.txt` (for Deepgram/transcribe_lyrics.py)
+- Docker (only needed for Gentle-based tools — legacy)
 - Audio file in a supported format (MP3, WAV, etc.)
-- Lyrics text file
+- Lyrics text file (optional for Deepgram — used as prompt hint only)
 
 ## Quick Start Guide
 
@@ -61,8 +116,10 @@ This method provides more advanced options but requires more setup:
 
 3. Run the extraction tool:
    ```bash
-   python -m roocode_sequence_designer_tools.extract_lyrics song.mp3 --lyrics-file song.lyrics.txt --output song.synced_lyrics.json --conservative
+   python -m roocode_sequence_designer_tools.extract_lyrics song.mp3 --lyrics-file song.lyrics.txt --output song.synced_lyrics.json
    ```
+
+   (Don't pass `--conservative` for sung music — it drops too many words. The flag still exists for spoken-word use cases.)
 
 ## Output Format
 
@@ -77,23 +134,50 @@ All tools generate a JSON file with the following structure:
     {
       "word": "first",
       "start": 10.2,
-      "end": 10.5
+      "end": 10.5,
+      "case": "success"
     },
     {
       "word": "word",
       "start": 10.6,
-      "end": 10.9
+      "end": 10.9,
+      "case": "success"
     },
-    ...
+    {
+      "word": "uh",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    }
   ],
+  "alignment_stats": {
+    "total_words": 459,
+    "aligned_words": 358,
+    "not_found_in_audio": 101,
+    "other_unaligned": 0,
+    "aligned_percentage": 77.99,
+    "quality": "GOOD",
+    "conservative_mode": false
+  },
   "processing_status": {
     "song_identified": true,
     "lyrics_retrieved": true,
     "lyrics_aligned": true,
     "user_assistance_needed": false,
-    "message": "Lyrics aligned successfully."
+    "message": "Lyrics aligned: 358/459 words (GOOD)."
   }
 }
+```
+
+### Consumer guidance
+
+When you read `word_timestamps`, **always check `start is None` (or `case != 'success'`)** before doing arithmetic. Older code that did `word['start']` unconditionally will need a tiny update:
+
+```python
+for w in data['word_timestamps']:
+    if w['start'] is None:
+        continue                  # un-aligned word — skip or interpolate
+    use(w['word'], w['start'], w['end'])
 ```
 
 ## Troubleshooting
@@ -111,12 +195,13 @@ If you encounter issues with the Gentle server:
 
 ### Alignment Issues
 
-If the alignment quality is poor:
+If the alignment quality is poor (look at `alignment_stats.quality` in the output JSON, or the warning log line):
 
-1. Ensure your lyrics text matches the actual sung lyrics as closely as possible
-2. Try using the `--conservative` flag (or avoid `--no-conservative` with align_lyrics.py) for more accurate but potentially fewer alignments
-3. Check that your audio file is clear and of good quality
-4. For songs with rapid lyrics, consider breaking the alignment into smaller sections
+1. Ensure your lyrics text matches the **actual sung lyrics** as closely as possible (Gentle is sensitive to filler words like "yeah" and ad-libs that aren't in the printed lyrics).
+2. **Do NOT enable `--conservative`** for sung music. It will silently drop a large fraction of words.
+3. Check that your audio file is clear and of good quality. Heavy backing vocals, mumbling, or lossy compression all reduce alignment rate.
+4. For songs with rapid lyrics, consider breaking the alignment into smaller sections.
+5. If a specific section refuses to align, transcribe just that section verbatim (including ad-libs and repeats) and re-run.
 
 ## Advanced Usage
 

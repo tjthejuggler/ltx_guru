@@ -66,17 +66,22 @@ def ensure_gentle_running():
         logger.error(f"Error starting Gentle server: {e}")
         return False
 
-def align_lyrics(audio_path, lyrics_path, output_path, song_title="Unknown Song", artist_name="Unknown Artist"):
+def align_lyrics(audio_path, lyrics_path, output_path, song_title="Unknown Song", artist_name="Unknown Artist", conservative=False):
     """
     Align lyrics with audio using the Gentle API.
-    
+
     Args:
         audio_path: Path to the audio file
         lyrics_path: Path to the lyrics file
         output_path: Path to save the output JSON
         song_title: Title of the song
         artist_name: Name of the artist
-    
+        conservative: If True, use Gentle's conservative alignment (stricter,
+            drops more words). Defaults to False because conservative mode
+            silently rejects 20-30%+ of words on sung music, leaving large
+            gaps in the timeline. Use True only if you specifically need
+            high-confidence-only timestamps for spoken-word audio.
+
     Returns:
         bool: Success status
     """
@@ -120,11 +125,16 @@ def align_lyrics(audio_path, lyrics_path, output_path, song_title="Unknown Song"
                 'transcript': (None, lyrics_text)
             }
             
-            logger.info("Sending request to Gentle API with conservative alignment")
-            
-            # Always use conservative alignment for better results
-            url = 'http://localhost:8765/transcriptions?async=false&conservative=true'
-            
+            mode_label = "conservative" if conservative else "standard"
+            logger.info(f"Sending request to Gentle API with {mode_label} alignment")
+
+            # Build URL based on conservative flag.
+            # Conservative mode is OFF by default — it drops too many words
+            # for sung music. See lyrics_extraction_guide.md for details.
+            url = 'http://localhost:8765/transcriptions?async=false'
+            if conservative:
+                url += '&conservative=true'
+
             response = requests.post(
                 url,
                 files=files,
@@ -151,35 +161,89 @@ def align_lyrics(audio_path, lyrics_path, output_path, song_title="Unknown Song"
         logger.error("Raw response saved to gentle_raw_response.txt")
         return False
     
-    # Extract word timestamps
+    # Extract word timestamps.
+    #
+    # IMPORTANT: We keep one entry per word in the original lyrics, even when
+    # Gentle could not align it. Unaligned words are stored with start=None,
+    # end=None, case='not-found-in-audio'. This way:
+    #   - downstream tools see the full lyric text (no missing words)
+    #   - they can interpolate timestamps for the gaps if they need to
+    #   - the output honestly reflects alignment quality instead of pretending
+    #     the words don't exist.
     word_timestamps = []
-    
+    aligned_count = 0
+    not_found_count = 0
+    other_count = 0
+
     for word in result.get('words', []):
-        # Skip words without alignment
-        if 'start' not in word or 'end' not in word:
-            continue
-        
-        # Create word timestamp object
-        word_timestamp = {
-            'word': word.get('alignedWord', word.get('word', '')),
-            'start': word.get('start', 0.0),
-            'end': word.get('end', 0.0)
-        }
-        
-        word_timestamps.append(word_timestamp)
-    
+        case = word.get('case', 'unknown')
+        original_word = word.get('word', '')
+        aligned_word = word.get('alignedWord', original_word)
+
+        if 'start' in word and 'end' in word:
+            word_timestamps.append({
+                'word': aligned_word or original_word,
+                'start': word['start'],
+                'end': word['end'],
+                'case': case
+            })
+            aligned_count += 1
+        else:
+            # Preserve the word in the timeline so downstream tools see the
+            # full lyric, but mark it as un-aligned.
+            word_timestamps.append({
+                'word': original_word,
+                'start': None,
+                'end': None,
+                'case': case
+            })
+            if case == 'not-found-in-audio':
+                not_found_count += 1
+            else:
+                other_count += 1
+
+    total = len(word_timestamps)
+    pct = (100.0 * aligned_count / total) if total else 0.0
+    quality = (
+        "EXCELLENT" if pct >= 90 else
+        "GOOD"      if pct >= 75 else
+        "FAIR"      if pct >= 60 else
+        "POOR"
+    )
+    logger.info(
+        f"Alignment quality: {quality} "
+        f"({aligned_count}/{total} aligned, {pct:.1f}%; "
+        f"not-found={not_found_count}, other-unaligned={other_count})"
+    )
+    if pct < 75:
+        logger.warning(
+            "Low alignment rate. Consider: (1) verifying the lyrics text "
+            "matches the actual sung lyrics; (2) checking audio quality; "
+            "(3) re-running with --conservative disabled (it already is by "
+            "default) — or, if you ran with --conservative, removing it."
+        )
+
     # Create the output data
     lyrics_data = {
         "song_title": song_title,
         "artist_name": artist_name,
         "raw_lyrics": lyrics_text,
         "word_timestamps": word_timestamps,
+        "alignment_stats": {
+            "total_words": total,
+            "aligned_words": aligned_count,
+            "not_found_in_audio": not_found_count,
+            "other_unaligned": other_count,
+            "aligned_percentage": round(pct, 2),
+            "quality": quality,
+            "conservative_mode": conservative,
+        },
         "processing_status": {
             "song_identified": True,
             "lyrics_retrieved": True,
-            "lyrics_aligned": len(word_timestamps) > 0,
+            "lyrics_aligned": aligned_count > 0,
             "user_assistance_needed": False,
-            "message": "Lyrics aligned successfully."
+            "message": f"Lyrics aligned: {aligned_count}/{total} words ({quality})."
         }
     }
     
@@ -220,21 +284,30 @@ def main():
     parser.add_argument("output_file", help="Path to save the output JSON file")
     parser.add_argument("--song-title", default="Unknown Song", help="Title of the song")
     parser.add_argument("--artist-name", default="Unknown Artist", help="Name of the artist")
-    
+    parser.add_argument(
+        "--conservative",
+        action="store_true",
+        help="Use Gentle's conservative alignment mode (stricter, drops more "
+             "words). OFF by default — conservative mode rejects too many "
+             "words on sung music, leaving large gaps. Only enable for "
+             "spoken-word audio where you need high-confidence-only timestamps."
+    )
+
     args = parser.parse_args()
-    
+
     # Ensure Gentle is running
     if not ensure_gentle_running():
         logger.error("Failed to ensure Gentle server is running. Exiting.")
         sys.exit(1)
-    
+
     # Align lyrics
     success = align_lyrics(
         args.audio_file,
         args.lyrics_file,
         args.output_file,
         args.song_title,
-        args.artist_name
+        args.artist_name,
+        conservative=args.conservative,
     )
     
     if success:
