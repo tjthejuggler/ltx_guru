@@ -72,6 +72,9 @@ class Project:
         # Lyrics data
         self.lyrics = Lyrics()
         
+        # Snippets data
+        self.snippets = []
+        
         # Timeline notes
         self.notes = []
         
@@ -136,6 +139,7 @@ class Project:
             },
             "visualizations": self.visualizations,
             "lyrics": self.lyrics.to_dict() if self.lyrics else {},
+            "snippets": [s.to_dict() for s in self.snippets] if hasattr(self, 'snippets') else [],
             "notes": [note.to_dict() for note in self.notes],
             "chat_history": self.chat_history,
             "llm_metadata": self.llm_metadata,
@@ -220,6 +224,15 @@ class Project:
         # Set lyrics data
         if "lyrics" in data:
             project.lyrics = Lyrics.from_dict(data["lyrics"])
+        
+        # Set snippets data
+        from models.snippet import Snippet
+        for snippet_data in data.get("snippets", []):
+            try:
+                snippet = Snippet.from_dict(snippet_data)
+                project.snippets.append(snippet)
+            except Exception as e:
+                project.logger.error(f"Error loading snippet: {e}")
         
         # Set notes data
         for note_data in data.get("notes", []):

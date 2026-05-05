@@ -180,6 +180,10 @@ class SequenceMakerApp:
         # Add sequence swap manager for hot-swapping from Sequence Designer
         self.sequence_swap_manager = SequenceSwapManager(self)
         
+        # Add snippet manager for reusable color patterns
+        from managers.snippet_manager import SnippetManager
+        self.snippet_manager = SnippetManager(self)
+        
         # Connect managers as needed
         self.timeline_manager.set_undo_manager(self.undo_manager)
     

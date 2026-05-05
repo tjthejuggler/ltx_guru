@@ -540,16 +540,31 @@ class MainWindow(QMainWindow):
         if key == Qt.Key.Key_Z and modifiers & Qt.KeyboardModifier.ControlModifier:
             if modifiers & Qt.KeyboardModifier.ShiftModifier:
                 # Ctrl+Shift+Z = Redo
-                self._on_redo()
+                if hasattr(self.app, 'snippet_manager') and self.app.snippet_manager.editing:
+                    self.app.snippet_manager.redo_snippet()
+                    if hasattr(self, 'snippet_widget'):
+                        self.snippet_widget._refresh_timeline_bars()
+                else:
+                    self._on_redo()
             else:
                 # Ctrl+Z = Undo
-                self._on_undo()
+                if hasattr(self.app, 'snippet_manager') and self.app.snippet_manager.editing:
+                    self.app.snippet_manager.undo_snippet()
+                    if hasattr(self, 'snippet_widget'):
+                        self.snippet_widget._refresh_timeline_bars()
+                else:
+                    self._on_undo()
             event.accept()
             return
         
         if key == Qt.Key.Key_Y and modifiers & Qt.KeyboardModifier.ControlModifier:
             # Ctrl+Y = Redo
-            self._on_redo()
+            if hasattr(self.app, 'snippet_manager') and self.app.snippet_manager.editing:
+                self.app.snippet_manager.redo_snippet()
+                if hasattr(self, 'snippet_widget'):
+                    self.snippet_widget._refresh_timeline_bars()
+            else:
+                self._on_redo()
             event.accept()
             return
         
@@ -558,12 +573,42 @@ class MainWindow(QMainWindow):
         
         # Check if the key is in the DEFAULT_KEY_MAPPING from constants
         from app.constants import DEFAULT_KEY_MAPPING, EFFECT_MODIFIERS
-        
+
+        # --- Snippet mode: intercept ANY key when snippet_mode is ON ---
+        # If snippet_mode is ON, apply snippet by hotkey instead of adding color.
+        # This must be checked BEFORE the DEFAULT_KEY_MAPPING block so it works
+        # for any hotkey, not just color keys.
+        if key_text and hasattr(self.app, 'snippet_manager') and self.app.snippet_manager.snippet_mode:
+            snippet = self.app.snippet_manager.get_snippet_by_hotkey(key_text)
+            if snippet is not None:
+                position = getattr(self.app.timeline_manager, 'position', 0.0)
+                if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
+                    self.app.undo_manager.save_state("apply_snippet")
+                self.app.snippet_manager.apply_snippet(snippet, position)
+                self._update_ui()
+                event.accept()
+                return
+        # --- End snippet mode ---
+
         if key_text in DEFAULT_KEY_MAPPING:
             # Get the mapping
             mapping = DEFAULT_KEY_MAPPING[key_text]
             color = mapping["color"]
             timelines = mapping["timelines"]
+            
+            # --- Snippet editing integration ---
+            # If snippet_manager is in editing mode, route color keys to the snippet timelines
+            if hasattr(self.app, 'snippet_manager') and self.app.snippet_manager.editing:
+                create_fade = bool(modifiers & Qt.KeyboardModifier.ShiftModifier)
+                # Save state for undo before modifying
+                self.app.snippet_manager.save_snippet_state()
+                if hasattr(self, 'snippet_widget'):
+                    for tl_idx in timelines:
+                        self.snippet_widget.add_color_to_current_snippet(tl_idx, color, create_fade=create_fade)
+                self._update_ui()
+                event.accept()
+                return
+            # --- End snippet editing integration ---
             
             # Check for fade creation first, then other effect modifiers
             effect_type = None

@@ -45,6 +45,16 @@ def connect_project_signals(main_window):
     # Connect undo/redo signals
     main_window.app.undo_manager.undo_stack_changed.connect(main_window._update_ui)
     main_window.app.undo_manager.redo_stack_changed.connect(main_window._update_ui)
+    
+    # Connect snippet signals
+    if hasattr(main_window.app, 'snippet_manager') and hasattr(main_window, 'snippet_widget'):
+        main_window.app.project_manager.project_loaded.connect(
+            lambda project: main_window.snippet_widget.load_snippets(
+                [s.to_dict() for s in getattr(project, 'snippets', [])]
+            )
+        )
+        main_window.app.snippet_manager.snippet_applied.connect(main_window._update_ui)
+        main_window.app.snippet_manager.snippet_modified.connect(main_window._update_ui)
 
 
 def connect_editor_signals(main_window):

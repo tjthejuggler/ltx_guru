@@ -6,7 +6,7 @@ This module contains functions for creating and managing widgets in the main win
 
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QSplitter, QLabel,
-    QLineEdit, QPushButton, QStackedWidget
+    QLineEdit, QPushButton, QStackedWidget, QToolButton, QFrame
 )
 from PyQt6.QtCore import Qt
 from utils.ui_utils import get_app_attr
@@ -17,6 +17,7 @@ from ui.timeline_widget import TimelineWidget
 from ui.ball_widget import BallWidget
 from ui.audio_widget import AudioWidget
 from ui.lyrics_widget import LyricsWidget
+from ui.snippet_widget import SnippetWidget
 
 
 def create_widgets(main_window):
@@ -55,13 +56,76 @@ def create_central_widget(main_window):
     main_window.audio_widget = AudioWidget(main_window.app, main_window)
     main_window.main_splitter.addWidget(main_window.audio_widget)
     
-    # Create lyrics widget if lyrics manager is available
+    # Create collapsible lyrics section if lyrics manager is available
     if get_app_attr(main_window.app, 'lyrics_manager'):
         main_window.lyrics_widget = LyricsWidget(main_window.app, main_window)
-        main_window.main_splitter.addWidget(main_window.lyrics_widget)
+        
+        # Wrap in a container that includes the toggle button + lyrics content.
+        # The entire container is added to the splitter. Collapsing hides the
+        # container widget so the splitter reclaims the space.
+        lyrics_container = QWidget()
+        lyrics_container_layout = QVBoxLayout(lyrics_container)
+        lyrics_container_layout.setContentsMargins(0, 0, 0, 0)
+        lyrics_container_layout.setSpacing(0)
+        
+        # Toggle button is the first item inside the container (always visible
+        # while the container is shown; when collapsed the whole container hides)
+        lyrics_toggle_btn = QToolButton()
+        lyrics_toggle_btn.setText("▼ Lyrics")
+        lyrics_toggle_btn.setCheckable(True)
+        lyrics_toggle_btn.setChecked(True)
+        lyrics_toggle_btn.setStyleSheet(
+            "QToolButton { text-align: left; padding: 2px 6px; font-weight: bold; }"
+        )
+        lyrics_toggle_btn.setFixedHeight(22)
+        
+        lyrics_container_layout.addWidget(lyrics_toggle_btn)
+        lyrics_container_layout.addWidget(main_window.lyrics_widget)
+        
+        # Store last size so we can restore it when expanding
+        _lyrics_last_size = [120]
+        
+        def _toggle_lyrics(checked, btn=lyrics_toggle_btn,
+                           lw=main_window.lyrics_widget,
+                           container=lyrics_container,
+                           splitter=main_window.main_splitter,
+                           last_size=_lyrics_last_size):
+            if checked:
+                # Restore: show the inner content; give the container its space back
+                lw.show()
+                sizes = splitter.sizes()
+                idx = splitter.indexOf(container)
+                if idx >= 0 and sizes[idx] <= 22:
+                    sizes[idx] = last_size[0]
+                    splitter.setSizes(sizes)
+            else:
+                # Collapse: remember current size, hide inner content, and
+                # shrink the splitter pane to just the toggle button height.
+                sizes = splitter.sizes()
+                idx = splitter.indexOf(container)
+                if idx >= 0 and sizes[idx] > 22:
+                    last_size[0] = sizes[idx]
+                    sizes[idx] = 22
+                    lw.hide()
+                    splitter.setSizes(sizes)
+                else:
+                    lw.hide()
+            btn.setText("▼ Lyrics" if checked else "▶ Lyrics")
+
+        lyrics_toggle_btn.toggled.connect(_toggle_lyrics)
+        
+        main_window.main_splitter.addWidget(lyrics_container)
     
-    # Set initial splitter sizes
-    main_window.main_splitter.setSizes(DEFAULT_SPLITTER_SIZES)
+    # Create snippet widget
+    main_window.snippet_widget = SnippetWidget(main_window.app, main_window)
+    main_window.main_splitter.addWidget(main_window.snippet_widget)
+    
+    # Set initial splitter sizes (add 0 for snippet widget - it starts collapsed)
+    sizes = list(DEFAULT_SPLITTER_SIZES)
+    if get_app_attr(main_window.app, 'lyrics_manager'):
+        sizes.append(120)  # lyrics container
+    sizes.append(0)  # snippet widget (collapsed by default)
+    main_window.main_splitter.setSizes(sizes)
 
 
 def create_dock_widgets(main_window):
