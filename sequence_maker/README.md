@@ -1,4 +1,5 @@
 # Sequence Maker
+<!-- Snippet visual-refresh fix appended 2026-05-05: see Snippets feature bullet. -->
 
 A tool for creating color sequences for LTX juggling balls.
 
@@ -25,6 +26,13 @@ Sequence Maker is a desktop application that allows you to create, edit, and vis
   - Right-click a note marker to edit or delete it.
   - Click the **📝 Notes** button in the toolbar to see a list of all notes (color, timestamp, preview). Click any row to open its editor.
   - Notes are saved with the project and support custom colors.
+- **Snippets** *(2026-05-05)*: Reusable color patterns that can be applied to timelines via hotkeys.
+  - Create snippets in the snippet panel (right side of the window).
+  - Each snippet has a name, hotkey, duration, and per-ball color segments.
+  - Cycle snippet mode with the **Snippet Mode** button: *off → begin → end → off*.
+  - In **begin** mode the snippet starts at the position marker; in **end** mode it ends at the marker.
+  - Snippets are **automatically persisted** to `~/.sequence_maker/snippets.json` and restored on the next launch — they are global to the application, not tied to any specific project. *(Fixed 2026-05-05: snippets were previously wiped whenever a project was loaded.)*
+  - **Undo / Redo** of snippet apply works just like normal color insertion: press <kbd>Ctrl</kbd>+<kbd>Z</kbd> after applying a snippet to revert the entire insertion in one step. *(Fixed 2026-05-05.)*
 - **LLM Integration**: Use AI to automatically generate sequences based on music analysis, lyrics synchronization, and natural language instructions.
 
 ## Installation

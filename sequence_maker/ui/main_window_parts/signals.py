@@ -47,11 +47,26 @@ def connect_project_signals(main_window):
     main_window.app.undo_manager.redo_stack_changed.connect(main_window._update_ui)
     
     # Connect snippet signals
+    # NOTE: Snippets are persisted *globally* in ~/.sequence_maker/snippets.json
+    # (loaded on SnippetManager construction), NOT per-project. We deliberately
+    # do NOT call snippet_widget.load_snippets() on project_loaded, because that
+    # method clears the snippet list and replaces it with the project's snippets
+    # field — which would wipe the user's persistent snippets every time a
+    # project is opened (including on startup when the last project auto-loads).
+    # We only refresh the snippet widget UI so it picks up any project-specific
+    # context (e.g. ball count for the per-snippet checkboxes).
     if hasattr(main_window.app, 'snippet_manager') and hasattr(main_window, 'snippet_widget'):
+        def _refresh_snippet_widget_on_project_loaded(_project):
+            sw = main_window.snippet_widget
+            sw.current_snippet = None
+            if hasattr(sw, '_refresh_combo'):
+                sw._refresh_combo()
+            if hasattr(sw, '_build_timeline_bars'):
+                sw._build_timeline_bars()
+            if hasattr(sw, '_update_ui_state'):
+                sw._update_ui_state()
         main_window.app.project_manager.project_loaded.connect(
-            lambda project: main_window.snippet_widget.load_snippets(
-                [s.to_dict() for s in getattr(project, 'snippets', [])]
-            )
+            _refresh_snippet_widget_on_project_loaded
         )
         main_window.app.snippet_manager.snippet_applied.connect(main_window._update_ui)
         main_window.app.snippet_manager.snippet_modified.connect(main_window._update_ui)

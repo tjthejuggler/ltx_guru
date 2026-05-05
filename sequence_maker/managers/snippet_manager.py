@@ -5,7 +5,9 @@ This module defines the SnippetManager class, which manages snippet
 creation, storage, and application to timelines.
 """
 
+import json
 import logging
+from pathlib import Path
 from PyQt6.QtCore import QObject, pyqtSignal
 
 from models.snippet import Snippet
@@ -29,6 +31,9 @@ class SnippetManager(QObject):
     snippet_modified = pyqtSignal(object)
     snippet_applied = pyqtSignal(str)  # snippet name
     editing_changed = pyqtSignal(bool)  # True = editing snippet
+
+    # Path where persistent snippets are stored
+    SNIPPETS_FILE = Path.home() / ".sequence_maker" / "snippets.json"
 
     def __init__(self, app):
         """
@@ -63,6 +68,15 @@ class SnippetManager(QObject):
         # Snippet-local undo/redo stacks (list of snippet to_dict() snapshots)
         self._snippet_undo_stack = []
         self._snippet_redo_stack = []
+
+        # Load persisted snippets from disk (before connecting auto-save
+        # so the load itself doesn't trigger a redundant write).
+        self.load_snippets()
+
+        # Auto-save whenever snippets are added, removed, or modified.
+        self.snippet_added.connect(lambda _s: self.save_snippets())
+        self.snippet_removed.connect(lambda _s: self.save_snippets())
+        self.snippet_modified.connect(lambda _s: self.save_snippets())
 
     # Allowed values for snippet_mode
     SNIPPET_MODE_VALUES = ("off", "begin", "end")
@@ -230,6 +244,7 @@ class SnippetManager(QObject):
             )
             return
 
+        modified_timelines = []
         for i, snippet_timeline in enumerate(snippet.timelines):
             # Skip if ball is not enabled for this snippet
             if i >= len(snippet.ball_enabled) or not snippet.ball_enabled[i]:
@@ -240,11 +255,23 @@ class SnippetManager(QObject):
                 continue
 
             main_timeline = main_timelines[i]
+            modified_timelines.append(main_timeline)
             end_position = position + snippet_duration
 
             # Trim/split existing segments that overlap with the snippet range
             # so that original colors are preserved outside [position, end_position].
-            tm = getattr(self.app, 'timeline_manager', None)
+            #
+            # IMPORTANT: We deliberately do NOT route remove/add through
+            # ``timeline_manager`` here. Each ``timeline_manager.add_segment``
+            # / ``remove_segment`` call pushes a new state onto the
+            # undo-stack, which would cause a single snippet apply to consume
+            # *many* undo slots — and Ctrl+Z would only revert the very last
+            # sub-step rather than the whole snippet. Callers that want the
+            # snippet apply to be undoable must call
+            # ``undo_manager.save_state("apply_snippet")`` BEFORE invoking
+            # ``apply_snippet`` (see ``MainWindow.keyPressEvent``); after that
+            # we mutate the timeline in-place so the entire apply is exactly
+            # one entry on the undo stack.
             segments_to_remove = []
             segments_to_add = []
 
@@ -282,10 +309,7 @@ class SnippetManager(QObject):
                     seg.end_time = position
 
             for seg in segments_to_remove:
-                if tm:
-                    tm.remove_segment(main_timeline, seg)
-                else:
-                    main_timeline.remove_segment(seg)
+                main_timeline.remove_segment(seg)
 
             for seg in segments_to_add:
                 main_timeline.add_segment(seg)
@@ -301,25 +325,43 @@ class SnippetManager(QObject):
                 if new_end > end_position:
                     new_end = end_position
 
-                if tm:
-                    tm.add_segment(
-                        main_timeline,
-                        new_start,
-                        new_end,
-                        seg.color,
-                        pixels=seg.pixels,
+                new_seg = TimelineSegment(
+                    start_time=new_start,
+                    end_time=new_end,
+                    color=seg.color,
+                    pixels=seg.pixels,
+                    end_color=seg.end_color,
+                )
+                for effect in seg.effects:
+                    new_seg.effects.append(effect)
+                main_timeline.add_segment(new_seg)
+
+        # Notify the UI that the affected timelines changed so the timeline
+        # widget repaints immediately. We deliberately emit ONE
+        # ``timeline_modified`` signal per affected timeline (rather than
+        # per-segment add/remove) — that's enough to trigger a full repaint
+        # without going through ``timeline_manager.add_segment`` /
+        # ``remove_segment`` (which would each call ``save_state`` and
+        # pollute the undo stack — see the long comment above).
+        tm = getattr(self.app, 'timeline_manager', None)
+        if tm is not None:
+            for tl in modified_timelines:
+                try:
+                    tm.timeline_modified.emit(tl)
+                except Exception:
+                    # Defensive: never let a UI-refresh failure break apply.
+                    self.logger.exception(
+                        "Failed to emit timeline_modified for timeline %r",
+                        getattr(tl, 'name', '<unknown>'),
                     )
-                else:
-                    new_seg = TimelineSegment(
-                        start_time=new_start,
-                        end_time=new_end,
-                        color=seg.color,
-                        pixels=seg.pixels,
-                        end_color=seg.end_color,
-                    )
-                    for effect in seg.effects:
-                        new_seg.effects.append(effect)
-                    main_timeline.add_segment(new_seg)
+            # Also notify the project manager so anything listening to
+            # project_changed (autosave, dirty-flag, etc.) updates too.
+            pm = getattr(self.app, 'project_manager', None)
+            if pm is not None and hasattr(pm, 'project_changed'):
+                try:
+                    pm.project_changed.emit()
+                except Exception:
+                    self.logger.exception("Failed to emit project_changed")
 
         self.snippet_applied.emit(snippet.name)
         self.logger.info(
@@ -533,3 +575,62 @@ class SnippetManager(QObject):
             dict: {hotkey_char: snippet}
         """
         return {s.hotkey: s for s in self.snippets if s.hotkey}
+
+    # ------------------------------------------------------------------
+    # Persistence: save / load snippets to ~/.sequence_maker/snippets.json
+    # ------------------------------------------------------------------
+
+    def save_snippets(self):
+        """
+        Persist all snippets to disk as JSON.
+
+        The file is written to ``~/.sequence_maker/snippets.json`` using
+        each snippet's ``to_dict()`` serialisation.  A write is a full
+        overwrite — the file always reflects the current in-memory list.
+        """
+        try:
+            self.SNIPPETS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            data = [s.to_dict() for s in self.snippets]
+            with open(self.SNIPPETS_FILE, "w") as f:
+                json.dump(data, f, indent=2)
+                f.flush()
+            self.logger.debug(
+                f"Saved {len(self.snippets)} snippet(s) to {self.SNIPPETS_FILE}"
+            )
+        except Exception as e:
+            self.logger.error(f"Error saving snippets: {e}")
+
+    def load_snippets(self):
+        """
+        Load persisted snippets from disk, replacing the in-memory list.
+
+        If the file does not exist or is corrupt, the snippet list is left
+        empty and the error is logged (not raised).
+        """
+        if not self.SNIPPETS_FILE.exists():
+            self.logger.debug("No snippets file found; starting with empty list")
+            return
+
+        try:
+            with open(self.SNIPPETS_FILE, "r") as f:
+                data = json.load(f)
+
+            if not isinstance(data, list):
+                self.logger.warning("Snippets file is not a list; ignoring it")
+                return
+
+            self.snippets = []
+            for item in data:
+                try:
+                    snippet = Snippet.from_dict(item)
+                    self.snippets.append(snippet)
+                except Exception as inner:
+                    self.logger.warning(
+                        f"Skipping malformed snippet: {inner}"
+                    )
+
+            self.logger.info(
+                f"Loaded {len(self.snippets)} snippet(s) from {self.SNIPPETS_FILE}"
+            )
+        except Exception as e:
+            self.logger.error(f"Error loading snippets: {e}")
