@@ -574,17 +574,31 @@ class MainWindow(QMainWindow):
         # Check if the key is in the DEFAULT_KEY_MAPPING from constants
         from app.constants import DEFAULT_KEY_MAPPING, EFFECT_MODIFIERS
 
-        # --- Snippet mode: intercept ANY key when snippet_mode is ON ---
-        # If snippet_mode is ON, apply snippet by hotkey instead of adding color.
+        # --- Snippet mode: intercept ANY key when snippet_mode is active ---
+        # snippet_mode is tri-state: "off" / "begin" / "end".
+        #   "begin" -> snippet starts AT the position marker (legacy behaviour)
+        #   "end"   -> snippet ends AT the position marker, so it is inserted
+        #              starting at (position - snippet.duration), clamped to 0.
         # This must be checked BEFORE the DEFAULT_KEY_MAPPING block so it works
         # for any hotkey, not just color keys.
-        if key_text and hasattr(self.app, 'snippet_manager') and self.app.snippet_manager.snippet_mode:
+        if (
+            key_text
+            and hasattr(self.app, 'snippet_manager')
+            and self.app.snippet_manager.is_snippet_mode_active()
+        ):
             snippet = self.app.snippet_manager.get_snippet_by_hotkey(key_text)
             if snippet is not None:
-                position = getattr(self.app.timeline_manager, 'position', 0.0)
+                marker = getattr(self.app.timeline_manager, 'position', 0.0)
+                mode = self.app.snippet_manager.snippet_mode
+                if mode == "end":
+                    # End of snippet should be at the position marker.
+                    apply_position = max(0.0, marker - snippet.duration)
+                else:
+                    # "begin" (default active mode): snippet starts at the marker.
+                    apply_position = marker
                 if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
                     self.app.undo_manager.save_state("apply_snippet")
-                self.app.snippet_manager.apply_snippet(snippet, position)
+                self.app.snippet_manager.apply_snippet(snippet, apply_position)
                 self._update_ui()
                 event.accept()
                 return

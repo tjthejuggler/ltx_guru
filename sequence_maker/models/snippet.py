@@ -97,17 +97,44 @@ class Snippet:
         while len(snippet.ball_enabled) < len(snippet.timelines):
             snippet.ball_enabled.append(True)
 
+        # Defensive: clamp any segments that escaped past the configured
+        # duration (legacy snippets created before the duration-clamp fix
+        # could have segments extending up to 3600s due to the old
+        # ``add_color_at_time`` behaviour).
+        snippet._clamp_segments_to_duration()
+
         return snippet
 
+    def _clamp_segments_to_duration(self):
+        """
+        Trim any internal segments so they never extend past ``self.duration``.
+
+        Segments fully past the duration are removed; segments overlapping
+        the boundary have their ``end_time`` set to ``self.duration``.
+        """
+        for timeline in self.timelines:
+            kept = []
+            for seg in timeline.segments:
+                if seg.start_time >= self.duration:
+                    # Entirely past the snippet — drop it
+                    continue
+                if seg.end_time > self.duration:
+                    seg.end_time = self.duration
+                kept.append(seg)
+            timeline.segments = kept
+
     def get_duration(self):
-        """Get the actual duration based on segments, or the set duration."""
-        max_end = 0.0
-        for i, timeline in enumerate(self.timelines):
-            if self.ball_enabled[i] if i < len(self.ball_enabled) else True:
-                for seg in timeline.segments:
-                    if seg.end_time > max_end:
-                        max_end = seg.end_time
-        return max(self.duration, max_end)
+        """
+        Get the snippet's duration in seconds.
+
+        A snippet's duration is *always* the user-configured ``self.duration``.
+        Internal segments must never extend past it; if they do (e.g. a buggy
+        legacy snippet loaded from disk) callers are expected to clamp them.
+        Returning the configured duration here keeps the apply-to-timeline
+        logic deterministic and prevents a runaway segment from making the
+        snippet "swallow" the entire main timeline.
+        """
+        return self.duration
 
     def set_ball_count(self, count):
         """Adjust the number of ball timelines."""

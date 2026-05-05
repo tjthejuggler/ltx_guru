@@ -247,14 +247,17 @@ class SnippetWidget(QWidget):
 
         header_layout.addStretch()
 
-        # Snippet mode toggle button in header
+        # Snippet mode cycle button in header (3 states: OFF / BEGIN / END)
         self.snippet_mode_button = QPushButton("🎵 Snippet Mode: OFF")
         self.snippet_mode_button.setFixedHeight(22)
-        self.snippet_mode_button.setCheckable(True)
+        self.snippet_mode_button.setCheckable(False)
         self.snippet_mode_button.setToolTip(
-            "Toggle Snippet Mode: when ON, keyboard hotkeys apply snippets instead of adding colors"
+            "Cycle Snippet Mode:\n"
+            "  OFF   - hotkeys add colors normally\n"
+            "  BEGIN - snippet starts at the position marker\n"
+            "  END   - snippet ends at the position marker"
         )
-        self.snippet_mode_button.toggled.connect(self._on_snippet_mode_toggled)
+        self.snippet_mode_button.clicked.connect(self._on_snippet_mode_clicked)
         header_layout.addWidget(self.snippet_mode_button)
 
         # New snippet button in header
@@ -433,18 +436,29 @@ class SnippetWidget(QWidget):
         self.content_widget.setVisible(not self._collapsed)
         self.toggle_button.setText("▶" if self._collapsed else "▼")
 
-    def _on_snippet_mode_toggled(self, checked: bool):
-        """Toggle snippet mode on/off — when ON, keyboard hotkeys apply snippets."""
-        if hasattr(self.app, 'snippet_manager'):
-            self.app.snippet_manager.snippet_mode = checked
-        label = "ON" if checked else "OFF"
-        self.snippet_mode_button.setText(f"🎵 Snippet Mode: {label}")
-        # Visual feedback: highlight button when active
-        if checked:
+    def _on_snippet_mode_clicked(self):
+        """Cycle snippet mode through OFF → BEGIN → END → OFF."""
+        if not hasattr(self.app, 'snippet_manager'):
+            return
+        new_mode = self.app.snippet_manager.cycle_snippet_mode()
+        self._refresh_snippet_mode_button(new_mode)
+
+    def _refresh_snippet_mode_button(self, mode: str):
+        """Update the snippet-mode button label/colour based on the current mode."""
+        if mode == "begin":
+            self.snippet_mode_button.setText("🎵 Snippet Mode: BEGIN")
+            # Blue when snippet starts at the position marker.
             self.snippet_mode_button.setStyleSheet(
                 "background-color: #2a6496; color: white; font-weight: bold;"
             )
+        elif mode == "end":
+            self.snippet_mode_button.setText("🎵 Snippet Mode: END")
+            # Purple when snippet ends at the position marker — visually distinct from BEGIN.
+            self.snippet_mode_button.setStyleSheet(
+                "background-color: #7a3ea1; color: white; font-weight: bold;"
+            )
         else:
+            self.snippet_mode_button.setText("🎵 Snippet Mode: OFF")
             self.snippet_mode_button.setStyleSheet("")
 
     def _on_new_snippet(self):

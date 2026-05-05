@@ -51,21 +51,68 @@ class SnippetManager(QObject):
         # Whether we're in snippet editing mode
         self._editing = False
 
-        # Whether keyboard keys apply snippets by hotkey (instead of adding colors)
-        self._snippet_mode = False
+        # Snippet-mode is a tri-state value:
+        #   "off"   -> hotkeys add colors as usual (snippet apply disabled)
+        #   "begin" -> snippet is inserted starting AT the position marker
+        #   "end"   -> snippet ends AT the position marker (so it's inserted
+        #              starting at position - snippet.duration)
+        # Stored as a string; the setter coerces legacy bool values too so
+        # any code that still does `snippet_mode = True/False` keeps working.
+        self._snippet_mode = "off"
 
         # Snippet-local undo/redo stacks (list of snippet to_dict() snapshots)
         self._snippet_undo_stack = []
         self._snippet_redo_stack = []
 
+    # Allowed values for snippet_mode
+    SNIPPET_MODE_VALUES = ("off", "begin", "end")
+
     @property
     def snippet_mode(self):
-        """Whether keyboard keys apply snippets by hotkey (instead of adding colors)."""
+        """
+        Tri-state snippet mode:
+          - "off"   : hotkeys add colors normally
+          - "begin" : snippet starts at the position marker
+          - "end"   : snippet ends at the position marker
+
+        Truthiness still works ("off" is falsy, "begin"/"end" are truthy)
+        because non-empty strings are truthy and "off" is handled by the
+        explicit checks in calling code. For safety also keep an explicit
+        ``is_active`` helper (see :pymeth:`is_snippet_mode_active`).
+        """
         return self._snippet_mode
 
     @snippet_mode.setter
     def snippet_mode(self, value):
-        self._snippet_mode = bool(value)
+        # Backwards-compat: accept bools (True -> "begin", False -> "off")
+        if isinstance(value, bool):
+            self._snippet_mode = "begin" if value else "off"
+            return
+        if isinstance(value, str) and value in self.SNIPPET_MODE_VALUES:
+            self._snippet_mode = value
+            return
+        # Unknown value -> turn it off rather than raise (defensive).
+        self.logger.warning(f"Invalid snippet_mode value {value!r}; setting to 'off'")
+        self._snippet_mode = "off"
+
+    def is_snippet_mode_active(self):
+        """Return True if snippet_mode is in any active state (not 'off')."""
+        return self._snippet_mode in ("begin", "end")
+
+    def cycle_snippet_mode(self):
+        """
+        Advance snippet_mode through the cycle off -> begin -> end -> off.
+
+        Returns:
+            str: The new mode value.
+        """
+        order = self.SNIPPET_MODE_VALUES  # ("off", "begin", "end")
+        try:
+            idx = order.index(self._snippet_mode)
+        except ValueError:
+            idx = -1
+        self._snippet_mode = order[(idx + 1) % len(order)]
+        return self._snippet_mode
 
     @property
     def editing(self):
@@ -157,8 +204,9 @@ class SnippetManager(QObject):
         Apply a snippet to the main timelines at the given position.
 
         This overwrites any existing segments in the time range
-        [position, position + snippet.get_duration()] for each
-        enabled ball timeline.
+        ``[position, position + snippet.duration]`` for each enabled ball
+        timeline. Anything outside that window — both before ``position``
+        and after ``position + snippet.duration`` — is preserved exactly.
 
         Args:
             snippet: The snippet to apply.
@@ -170,7 +218,17 @@ class SnippetManager(QObject):
 
         project = self.app.project_manager.current_project
         main_timelines = project.timelines
-        snippet_duration = snippet.get_duration()
+
+        # Always use the user-configured snippet.duration. ``get_duration()``
+        # also returns this now, but be explicit so the apply range is
+        # obviously bounded by the snippet's own length.
+        snippet_duration = snippet.duration
+        if snippet_duration <= 0:
+            self.logger.warning(
+                f"Snippet '{snippet.name}' has non-positive duration "
+                f"{snippet_duration}; skipping apply."
+            )
+            return
 
         for i, snippet_timeline in enumerate(snippet.timelines):
             # Skip if ball is not enabled for this snippet
@@ -184,20 +242,53 @@ class SnippetManager(QObject):
             main_timeline = main_timelines[i]
             end_position = position + snippet_duration
 
-            # Remove existing segments that overlap with the snippet range
-            # Use timeline_manager so signals are emitted and UI updates
+            # Trim/split existing segments that overlap with the snippet range
+            # so that original colors are preserved outside [position, end_position].
             tm = getattr(self.app, 'timeline_manager', None)
             segments_to_remove = []
+            segments_to_add = []
+
             for seg in main_timeline.segments:
-                # Check for overlap
-                if seg.start_time < end_position and seg.end_time > position:
+                # No overlap — skip
+                if seg.start_time >= end_position or seg.end_time <= position:
+                    continue
+
+                # Case 1: segment completely contained within snippet range → remove
+                if seg.start_time >= position and seg.end_time <= end_position:
                     segments_to_remove.append(seg)
+
+                # Case 2: segment starts before, ends within → trim end
+                elif seg.start_time < position and seg.end_time <= end_position:
+                    seg.end_time = position
+
+                # Case 3: segment starts within, ends after → trim start
+                elif seg.start_time >= position and seg.end_time > end_position:
+                    seg.start_time = end_position
+
+                # Case 4: segment completely contains snippet range → split
+                elif seg.start_time < position and seg.end_time > end_position:
+                    # Create a new segment for the portion after the snippet
+                    after_seg = TimelineSegment(
+                        start_time=end_position,
+                        end_time=seg.end_time,
+                        color=seg.color,
+                        pixels=seg.pixels,
+                        end_color=seg.end_color,
+                    )
+                    for effect in seg.effects:
+                        after_seg.effects.append(effect)
+                    segments_to_add.append(after_seg)
+                    # Trim original to the portion before the snippet
+                    seg.end_time = position
 
             for seg in segments_to_remove:
                 if tm:
                     tm.remove_segment(main_timeline, seg)
                 else:
                     main_timeline.remove_segment(seg)
+
+            for seg in segments_to_add:
+                main_timeline.add_segment(seg)
 
             # Add snippet segments, offset by position
             for seg in snippet_timeline.segments:
@@ -240,14 +331,20 @@ class SnippetManager(QObject):
         """
         Add a color segment to the current snippet's timeline.
 
-        Fills from `position` to the end of the snippet duration, replacing any
-        overlapping segments (same behaviour as the main timeline editor).
+        Fills from ``position`` to the end of the snippet duration, replacing any
+        overlapping segments. The new segment is *strictly* clamped to
+        ``[position, snippet.duration]`` — segments must never extend past the
+        snippet's configured duration. (The main-timeline editor uses
+        ``Timeline.add_color_at_time``, but that helper extends the new
+        segment open-endedly to the next segment or +3600s, which would let
+        a single colour swallow far more than the snippet's duration.)
 
         Args:
             timeline_index: Index of the snippet timeline.
             color: RGB color tuple.
             position: Start position in seconds within the snippet (usually 0.0).
-            create_fade: Whether to create a fade segment.
+            create_fade: Whether to create a fade segment (start colour = colour
+                of the previous segment, end colour = ``color``).
         """
         if not self.current_snippet:
             return
@@ -260,43 +357,63 @@ class SnippetManager(QObject):
         duration = snippet.duration
 
         start_time = max(0.0, position)
-        end_time = duration
+        end_time = duration  # Hard-clamped to the snippet's configured length
 
         if start_time >= duration:
+            # The user clicked past the snippet's end — nothing to add.
             return
 
+        # Determine the start colour for a fade (the colour of whatever was
+        # playing immediately before this position).
+        fade_start_color = color
         if create_fade:
-            # Find the colour of the segment immediately before position for the fade start
-            prev_color = color
             segs_before = [s for s in timeline.segments if s.end_time <= start_time]
             if segs_before:
                 prev_seg = max(segs_before, key=lambda s: s.end_time)
-                prev_color = prev_seg.color
+                fade_start_color = prev_seg.color
 
-            segment = TimelineSegment(
-                start_time=start_time,
-                end_time=end_time,
-                color=prev_color,
-                pixels=4,
-                end_color=color,
-            )
-        else:
-            segment = TimelineSegment(
-                start_time=start_time,
-                end_time=end_time,
-                color=color,
-                pixels=4,
-            )
+        # Splice the new segment into the snippet's timeline directly,
+        # mirroring the overlap rules used by ``apply_snippet`` so behaviour
+        # is consistent.
+        new_seg = TimelineSegment(
+            start_time=start_time,
+            end_time=end_time,
+            color=(fade_start_color if create_fade else color),
+            pixels=4,
+            end_color=(color if create_fade else None),
+        )
 
-        # Use Timeline.add_color_at_time which handles overlap removal cleanly
-        timeline.add_color_at_time(start_time, color)
-        # If it was a fade we need to replace the segment that was just added
-        if create_fade:
-            # Remove the solid segment add_color_at_time created and add the fade
-            segs_at = [s for s in timeline.segments if s.start_time == start_time]
-            for s in segs_at:
-                timeline.remove_segment(s)
-            timeline.add_segment(segment)
+        segments_to_remove = []
+        for seg in timeline.segments:
+            # No overlap → keep
+            if seg.start_time >= end_time or seg.end_time <= start_time:
+                continue
+            # Fully inside [start_time, end_time] → drop
+            if seg.start_time >= start_time and seg.end_time <= end_time:
+                segments_to_remove.append(seg)
+            # Starts before, ends inside → trim end
+            elif seg.start_time < start_time and seg.end_time <= end_time:
+                seg.end_time = start_time
+            # Starts inside, ends after → can't happen (end_time == duration is
+            # the timeline's hard ceiling) but handled defensively
+            elif seg.start_time >= start_time and seg.end_time > end_time:
+                seg.start_time = end_time
+            # Fully contains the new segment → split
+            elif seg.start_time < start_time and seg.end_time > end_time:
+                after_seg = TimelineSegment(
+                    start_time=end_time,
+                    end_time=seg.end_time,
+                    color=seg.color,
+                    pixels=seg.pixels,
+                    end_color=seg.end_color,
+                )
+                timeline.add_segment(after_seg)
+                seg.end_time = start_time
+
+        for seg in segments_to_remove:
+            timeline.remove_segment(seg)
+
+        timeline.add_segment(new_seg)
 
         self.snippet_modified.emit(snippet)
 
@@ -322,8 +439,14 @@ class SnippetManager(QObject):
         return True
 
     def set_snippet_duration(self, snippet, duration):
-        """Set the duration for a snippet."""
+        """
+        Set the duration for a snippet.
+
+        Also clamps any existing internal segments so they cannot extend
+        past the new duration — important when shrinking a snippet.
+        """
         snippet.duration = max(0.1, duration)
+        snippet._clamp_segments_to_duration()
         self.snippet_modified.emit(snippet)
 
     def set_ball_enabled(self, snippet, ball_index, enabled):
