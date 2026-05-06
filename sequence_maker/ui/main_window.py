@@ -616,8 +616,21 @@ class MainWindow(QMainWindow):
             event.accept()
             return
         
-        # Convert key to string representation
-        key_text = chr(key).lower() if key >= 32 and key <= 126 else ""
+        # Convert key to string representation.
+        # When Shift is held, Qt may return the shifted symbol (e.g. '$' for Shift+4).
+        # We always want the unshifted character for key-mapping lookups, so we use
+        # Qt.Key constants for the digit row (Key_0..Key_9 = 48..57) and fall back to
+        # chr(key).lower() for everything else.
+        from PyQt6.QtCore import Qt as _Qt
+        _SHIFT_TO_DIGIT = {
+            ord('!'): '1', ord('@'): '2', ord('#'): '3', ord('$'): '4',
+            ord('%'): '5', ord('^'): '6', ord('&'): '7', ord('*'): '8',
+            ord('('): '9', ord(')'): '0',
+        }
+        if key in _SHIFT_TO_DIGIT:
+            key_text = _SHIFT_TO_DIGIT[key]
+        else:
+            key_text = chr(key).lower() if key >= 32 and key <= 126 else ""
         
         # Check if the key is in the DEFAULT_KEY_MAPPING from constants
         from app.constants import DEFAULT_KEY_MAPPING, EFFECT_MODIFIERS
