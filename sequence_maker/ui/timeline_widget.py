@@ -648,21 +648,17 @@ class TimelineContainer(QWidget):
         if not self.app.project_manager.current_project:
             return
         
-        # Calculate width based on project duration and zoom level
-        duration = 0
-        for timeline in self.app.project_manager.current_project.timelines:
-            timeline_duration = timeline.get_duration()
-            if timeline_duration > duration:
-                duration = timeline_duration
-        
-        # Get project total_duration for comparison
+        # The project's total_duration is the AUTHORITATIVE max time the user
+        # has chosen for the project (e.g. via Timeline > Set Max Time...).
+        # The timeline view should respect that limit even if some leftover
+        # segments extend past it - those are just not shown in the visible
+        # area. This makes the "Set Max Time" feature actually shrink the
+        # visible timeline as the user expects.
         project_total_duration = self.app.project_manager.current_project.total_duration
-        
-        # Use the maximum of timeline durations and project total_duration
-        max_duration = max(duration, project_total_duration)
+        max_duration = float(project_total_duration) if project_total_duration else 60.0
         
         # Log the duration values for debugging
-        self.logger.debug(f"Timeline container update_size: timeline_duration={duration:.2f}s, project_total_duration={project_total_duration:.2f}s, using max_duration={max_duration:.2f}s")
+        self.logger.debug(f"Timeline container update_size: project_total_duration={max_duration:.2f}s")
         
         # Add some padding
         max_duration += 10.0

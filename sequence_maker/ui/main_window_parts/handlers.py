@@ -472,6 +472,90 @@ def on_zoom_fit(main_window):
     main_window.timeline_widget.zoom_fit()
 
 
+def on_set_max_time(main_window):
+    """Handle the 'Set Max Time' action.
+
+    Opens a dialog where the user enters the maximum project duration. This
+    controls how far the timelines extend (so the timelines don't keep going
+    on past the end of the song with empty space).
+    """
+    from ui.dialogs.set_max_time_dialog import SetMaxTimeDialog
+
+    project_manager = getattr(main_window.app, "project_manager", None)
+    project = getattr(project_manager, "current_project", None) if project_manager else None
+    if project is None:
+        main_window.statusBar().showMessage(
+            "No project open - can't set max time.", 3000
+        )
+        return
+
+    current = float(getattr(project, "total_duration", 60) or 60)
+    dialog = SetMaxTimeDialog(current_duration=current, parent=main_window)
+    if dialog.exec() != dialog.DialogCode.Accepted:
+        return
+
+    new_max = dialog.get_max_time()
+    trim = dialog.get_trim_segments()
+
+    # Update the project's total_duration. The timeline widget reads this
+    # in update_size() and zoom_fit(), so this is what controls how far the
+    # timelines visually extend.
+    project.total_duration = new_max
+
+    # Optionally trim segments that extend past the new max
+    if trim:
+        for timeline in getattr(project, "timelines", []) or []:
+            _trim_timeline_to_max(timeline, new_max)
+
+    # Mark the project dirty so the user is prompted to save
+    if hasattr(project_manager, "project_changed"):
+        try:
+            project_manager.project_changed.emit()
+        except Exception:
+            pass
+    if hasattr(project, "has_unsaved_changes"):
+        try:
+            project.has_unsaved_changes = True
+        except Exception:
+            pass
+
+    # Refresh UI - resize the timeline container and redraw
+    timeline_widget = getattr(main_window, "timeline_widget", None)
+    if timeline_widget is not None:
+        try:
+            timeline_widget.timeline_container.update_size()
+            timeline_widget.timeline_container.update()
+        except Exception:
+            pass
+        # Also re-fit the zoom so the new range is visible at a sensible scale
+        try:
+            timeline_widget.zoom_fit()
+        except Exception:
+            pass
+
+    main_window.statusBar().showMessage(
+        f"Max time set to {new_max:.2f}s", 3000
+    )
+
+
+def _trim_timeline_to_max(timeline, max_time):
+    """Drop or truncate any segments that extend past max_time."""
+    segments = getattr(timeline, "segments", None)
+    if not segments:
+        return
+    # Iterate over a copy because we may mutate the list
+    for seg in list(segments):
+        if seg.start_time >= max_time:
+            # Entirely past the new max -> remove it
+            try:
+                segments.remove(seg)
+            except ValueError:
+                pass
+        elif seg.end_time > max_time:
+            # Spans the boundary -> truncate
+            seg.end_time = max_time
+
+
 def on_play(main_window):
     """Handle the 'Play' action."""
     if hasattr(main_window.app, 'audio_manager'):

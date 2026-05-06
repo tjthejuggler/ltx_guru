@@ -43,3 +43,11 @@ class TimelineActions:
         self.view_jsons_action = QAction("&View JSONs", self.main_window)
         self.view_jsons_action.setStatusTip("View JSON representation of timelines")
         self.view_jsons_action.triggered.connect(self.main_window._on_view_jsons)
+
+        # Set Max Time action
+        self.set_max_time_action = QAction("Set &Max Time...", self.main_window)
+        self.set_max_time_action.setStatusTip(
+            "Set the maximum duration of the project so timelines don't extend "
+            "past the end of your song"
+        )
+        self.set_max_time_action.triggered.connect(self.main_window._on_set_max_time)

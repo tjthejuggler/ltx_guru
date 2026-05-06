@@ -49,7 +49,7 @@ from ui.main_window_parts.handlers import (
     on_new, on_open, on_save, on_save_as, on_load_audio, on_export_json, on_export_prg,
     on_export_buddy, on_version_history, on_undo, on_redo, on_cut, on_copy, on_paste,
     on_delete, on_select_all, on_preferences, on_zoom_in, on_zoom_out,
-    on_zoom_fit, on_play, on_pause, on_stop, on_loop, on_key_mapping,
+    on_zoom_fit, on_set_max_time, on_play, on_pause, on_stop, on_loop, on_key_mapping,
     on_ball_ips, on_connect_balls, on_about, on_crop_audio
 )
 from ui.main_window_parts.editors import (
@@ -210,6 +210,9 @@ class MainWindow(QMainWindow):
     
     def _on_zoom_fit(self):
         on_zoom_fit(self)
+    
+    def _on_set_max_time(self):
+        on_set_max_time(self)
     
     def _on_add_timeline(self):
         if hasattr(self.app, 'timeline_manager'):

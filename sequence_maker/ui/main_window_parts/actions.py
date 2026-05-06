@@ -109,7 +109,10 @@ def create_timeline_actions(main_window):
     
     # Add view JSONs action from timeline_actions
     main_window.view_jsons_action = main_window.timeline_actions.view_jsons_action
-    
+
+    # Set Max Time action
+    main_window.set_max_time_action = main_window.timeline_actions.set_max_time_action
+
     # Notes action
     main_window.show_notes_action = QAction("📝 &Notes", main_window)
     main_window.show_notes_action.setStatusTip("View all timeline notes")
