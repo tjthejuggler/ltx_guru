@@ -472,7 +472,7 @@ class FileHandlers:
                 )
     
     def on_export_ball_sequence(self):
-        """Export timeline to ball sequence format."""
+        """Export all timelines to individual ball sequence files in a chosen directory."""
         # Check if project exists
         if not self.app.project_manager.current_project:
             QMessageBox.warning(
@@ -481,63 +481,71 @@ class FileHandlers:
                 "No project is currently loaded."
             )
             return
-        
-        # Get selected timeline
-        timeline = self.main_window.timeline_widget.get_selected_timeline()
-        if not timeline:
+
+        timelines = self.app.timeline_manager.get_timelines()
+        if not timelines:
             QMessageBox.warning(
                 self.main_window,
-                "No Timeline Selected",
-                "Please select a timeline to export."
+                "No Timelines",
+                "There are no timelines to export."
             )
             return
-        
-        # Show file dialog
-        file_path, _ = QFileDialog.getSaveFileName(
+
+        # Ask user to pick a directory
+        export_dir = QFileDialog.getExistingDirectory(
             self.main_window,
-            "Export to Ball Sequence",
+            "Select Export Directory for Ball Sequences",
             self.app.config.get("general", "default_export_dir"),
-            "Ball Sequence Files (*.ball.json)"
         )
-        
-        if file_path:
-            # Ensure file has .ball.json extension
-            if not file_path.endswith(".ball.json"):
-                file_path += ".ball.json"
-            
-            # Create ball sequence data
+        if not export_dir:
+            return
+
+        audio_file = self.app.audio_manager.get_audio_file_path() or ""
+        exported = []
+        errors = []
+
+        for timeline in timelines:
+            # Build a safe filename from the timeline name
+            safe_name = timeline.name.replace(" ", "_").replace("/", "-")
+            file_path = os.path.join(export_dir, f"{safe_name}.ball.json")
+
             ball_data = {
                 "metadata": {
                     "name": timeline.name,
                     "default_pixels": timeline.default_pixels,
                     "refresh_rate": 50,
                     "total_duration": timeline.get_duration(),
-                    "audio_file": self.app.audio_manager.get_audio_file_path() or ""
+                    "audio_file": audio_file,
                 },
-                "segments": []
+                "segments": [
+                    {
+                        "start_time": seg.start_time,
+                        "end_time": seg.end_time,
+                        "color": list(seg.color),
+                        "pixels": seg.pixels,
+                    }
+                    for seg in timeline.segments
+                ],
             }
-            
-            # Add segments
-            for segment in timeline.segments:
-                ball_data["segments"].append({
-                    "start_time": segment.start_time,
-                    "end_time": segment.end_time,
-                    "color": list(segment.color),
-                    "pixels": segment.pixels
-                })
-            
-            # Write to file
+
             try:
-                with open(file_path, 'w') as f:
+                with open(file_path, "w") as f:
                     json.dump(ball_data, f, indent=2)
-                
-                self.main_window.statusBar().showMessage(f"Exported to {file_path}", 3000)
+                exported.append(file_path)
             except Exception as e:
-                QMessageBox.warning(
-                    self.main_window,
-                    "Export Error",
-                    f"Failed to export ball sequence: {str(e)}"
-                )
+                errors.append(f"{timeline.name}: {e}")
+
+        if errors:
+            QMessageBox.warning(
+                self.main_window,
+                "Export Errors",
+                "Some timelines failed to export:\n" + "\n".join(errors),
+            )
+
+        if exported:
+            self.main_window.statusBar().showMessage(
+                f"Exported {len(exported)} ball sequence(s) to {export_dir}", 5000
+            )
     
     def on_import_lyrics_timestamps(self):
         """Import lyrics timestamps for display in the lyrics widget."""
