@@ -1,0 +1,11 @@
+package:ltxremote/common/brightness.dart
+package:ltxremote/common/colorpicker.dart
+package:ltxremote/common/effects.dart
+package:ltxremote/engines/node.dart
+package:ltxremote/engines/nodeengine.dart
+package:ltxremote/engines/nodemanager.dart
+package:ltxremote/engines/showengine.dart
+package:ltxremote/main.dart
+package:ltxremote/pages/livecontrol.dart
+package:ltxremote/pages/nodelist.dart
+package:ltxremote/pages/showcontrol.dart

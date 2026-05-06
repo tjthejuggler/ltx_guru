@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-06T18:37:51.786939",
+    "modified": "2026-05-06T19:37:01.781426",
     "name": "fast car ground truth",
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-06T18:37:51.786795",
+      "modified": "2026-05-06T19:37:01.781282",
       "segments": [
         {
           "startTime": 0.0,
@@ -1203,7 +1203,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-06T18:37:51.786876",
+      "modified": "2026-05-06T19:37:01.781364",
       "segments": [
         {
           "startTime": 0.0,
@@ -2387,7 +2387,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-06T18:37:51.786934",
+      "modified": "2026-05-06T19:37:01.781423",
       "segments": [
         {
           "startTime": 0.0,

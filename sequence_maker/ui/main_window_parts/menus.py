@@ -71,6 +71,7 @@ def create_file_menu(main_window):
     # Ball IP configuration
     main_window.file_menu.addSeparator()
     main_window.file_menu.addAction(main_window.ball_ips_action)
+    main_window.file_menu.addAction(main_window.ball_sequences_action)
 
     # Recent files submenu
     main_window.recent_files_menu = main_window.file_menu.addMenu("Recent Files")

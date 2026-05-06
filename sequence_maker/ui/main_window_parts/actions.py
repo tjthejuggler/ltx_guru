@@ -44,6 +44,7 @@ def create_file_actions(main_window):
 
     # Ball IP configuration action
     main_window.ball_ips_action = main_window.file_actions.ball_ips_action
+    main_window.ball_sequences_action = main_window.file_actions.ball_sequences_action
 
 
 def create_edit_actions(main_window):

@@ -100,3 +100,11 @@ class FileActions:
         self.ball_ips_action = QAction("Ball &IPs...", self.main_window)
         self.ball_ips_action.setStatusTip("Set IP addresses for the three LED balls")
         self.ball_ips_action.triggered.connect(self.main_window._on_ball_ips)
+
+        # Ball Sequences (upload + play/stop) — added 2026-05-06
+        self.ball_sequences_action = QAction("Ball &Sequences (Upload + Play)…", self.main_window)
+        self.ball_sequences_action.setStatusTip(
+            "Upload .prg sequence files to balls and trigger PLAY/STOP "
+            "(synced with audio if desired)"
+        )
+        self.ball_sequences_action.triggered.connect(self.main_window._on_ball_sequences)

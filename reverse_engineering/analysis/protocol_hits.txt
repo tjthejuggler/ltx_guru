@@ -1,0 +1,193 @@
+ sending notification was
+"colors" and "colorStops" arguments must have equal length.
+"colors" must have length 2 if "colorStops" is omitted.
+.SF UI Display
+AudioPlaybackEvent
+AudioPlaybackState
+AudioPlaybackState.completed
+AudioPlaybackState.connecting
+AudioPlaybackState.none
+AudioPlaybackState.paused
+AudioPlaybackState.playing
+AudioPlaybackState.stopped
+AudioPlayer
+AudioPlayer.
+AudioPlayer._internal@560240691
+BallisticScrollActivity
+BallisticScrollActivity.
+BrowserStop
+Can call pause only from playing and buffering states (
+Cannot call play from connecting/none states (
+Cannot call stop from none state8
+Cannot send errors on sockets
+CommandIDs
+DisplayToggleIntExt
+Error playing file 
+Error uploading firmware : 
+EventHandler_SendData
+Failed to create datagram socket8
+FullAudioPlaybackState
+Isolate_sendOOB
+LongPressEndDetails
+MailSend
+MediaPlay
+MediaPlayPause
+MediaStop
+PLAYLTXBALL
+Play All
+Play audio here
+RawDatagramSocket
+RawReceivePortImpl_get_sendport
+RawSocket
+RawSocketEvent
+RawSocketEvent.closed
+RawSocketEvent.read
+RawSocketEvent.readClosed
+RawSocketEvent.write
+Send failed
+SendPort
+SendPortImpl_get_hashcode
+SendPortImpl_get_id
+SendPortImpl_sendInternal_
+Show stopped.
+Socket
+Socket has been closed
+SocketBase_IsBindError
+SocketClosed
+SocketDirection
+SocketException
+SocketOpened
+SocketOption
+SocketProfile
+Socket_Available8
+Socket_AvailableDatagram
+Socket_CreateBindConnect
+Socket_CreateBindDatagram
+Socket_CreateConnect
+Socket_CreateUnixDomainBindConnect
+Socket_CreateUnixDomainConnect
+Socket_GetError
+Socket_GetOption8
+Socket_GetPort
+Socket_GetRemotePeer
+Socket_Read
+Socket_RecvFrom
+Socket_SendTo
+Socket_SetOption8
+Socket_WriteList8
+SplayTreeMap
+SplayTreeMap.
+SplayTreeSet
+SplayTreeSet.
+Stopwatch
+Stopwatch.
+Stopwatch_frequency
+Stopwatch_now
+SystemSound.play8
+UDP sender bound to 
+Unrecognized command 
+Upload Sequence
+Uploading...
+Window_sendPlatformMessage
+] Node is not connected, not uploading.
+] Upload complete
+aStops
+assets/icons/play_off.png
+assets/icons/play_on.png
+assets/icons/playlogo.png
+assets/icons/stop.png
+bStops
+batchUploadPressed
+commandID
+createBallisticSimulation
+dense display1 2014
+dense display2 2014
+dense display3 2014
+dense display4 2014
+didStopListening8
+didStopTrackingLastPointer
+didStopUserGesture
+display1
+display2
+display3
+display4
+displayColor
+englishLike display1 2014
+englishLike display2 2014
+englishLike display3 2014
+englishLike display4 2014
+eventHandlerSendData
+ext.dart.io.clearSocketProfile
+ext.dart.io.getOpenSockets
+ext.dart.io.getSocketByID
+ext.dart.io.getSocketProfile
+ext.dart.io.pauseSocketProfiling8
+ext.dart.io.startSocketProfiling8
+gaplessPlayback
+get:_debugPrintStopwatch@160110992
+get:_idToSocketStatistic@15069316
+get:_sendDone@4048458
+get:batchUploadPressed
+get:gaplessPlayback
+get:hasEndDrawer8
+get:onPlayPressed
+get:onStopPressed
+get:openSockets
+get:playStateChanged
+get:sendColor
+get:sendPort
+get:socket
+get:socketConnected
+get:stopPlaying
+get:togglePlaying
+getOpenSockets
+getOpenSocketsList
+getSocketInfoMap8
+getSocketInfoMapByID
+goBallistic
+init:_debugPrintStopwatch@160110992
+init:_enableSocketProfiling@15069316
+init:_idToSocketStatistic@15069316
+init:openSockets8
+init:stopShow
+nativeSendTo
+onForcePressEnd
+onLongPressEnd
+openSockets
+playStateChanged8
+sendBrightness
+sendColor
+sendDone
+sendError
+sendEvent
+sendEventCommand8
+sendGlobalStateCommand
+sendPacket
+sendPlatformMessage
+sendPort
+sendSemanticsEvent
+sendSemanticsUpdate
+sendShowCommand
+sendStrobe
+sendToEventHandler
+setPlaying
+setUploading
+socket
+socketConnected
+socketType
+sockets
+startedPlaying
+stopPlaying
+stopRead
+stopRecordingIfNeeded
+stopShow
+stopShowNoSync
+stopTrackingIfPointerNoLongerDown
+stopTrackingPointer
+tall display1 2014
+tall display2 2014
+tall display3 2014
+tall display4 2014
+togglePlaying
+upload ok
+uploadFirmware

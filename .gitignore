@@ -45,6 +45,12 @@ pdf_extractor/
 manual/
 gentle_docker/
 gentle_output/
+
+# Reverse engineering - large binaries and captures
+reverse_engineering/tools/
+reverse_engineering/decompiled/
+reverse_engineering/capture/captures/
+
 # Memory Bank (local AI context)
 memory-bank/
 

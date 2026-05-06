@@ -13,6 +13,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 from app.constants import BALL_DISCOVERY_TIMEOUT, BALL_CONTROL_PORT, BALL_BROADCAST_IDENTIFIER
 from managers.led_ball_controller import LEDBallController
+from managers.ltx_ball_client import LTXController, upload_prg
 
 
 class Ball:
@@ -97,6 +98,10 @@ class BallManager(QObject):
             LEDBallController(ip=saved_ips[i] if i < len(saved_ips) else "")
             for i in range(3)
         ]
+
+        # Sequence upload + PLAY/STOP controller (added 2026-05-06).
+        # See managers/ltx_ball_client.py and reverse_engineering/ for protocol notes.
+        self._ltx = LTXController()
     
     def start_discovery(self):
         """
@@ -284,6 +289,71 @@ class BallManager(QObject):
             ip = ips[i] if i < len(ips) else ""
             controller.set_ip(ip)
         self.logger.info(f"Ball IPs updated: {ips}")
+
+    # ------------------------------------------------------------------ #
+    # Sequence upload / PLAY / STOP (added 2026-05-06)                    #
+    # ------------------------------------------------------------------ #
+
+    def get_configured_ball_ips(self):
+        """Return list of configured ball IPs (skipping empty slots)."""
+        return [c.ip for c in self._controllers if c.ip]
+
+    def get_configured_ball_ips_with_slot(self):
+        """Return list of (slot_index, ip) tuples for configured balls."""
+        return [(i, c.ip) for i, c in enumerate(self._controllers) if c.ip]
+
+    def upload_prg_to_slot(self, slot_index, prg_path, filename_on_ball=None):
+        """Upload a PRG file to the ball at the given slot.
+
+        Args:
+            slot_index (int): 0, 1 or 2.
+            prg_path (str): Local path to the .prg file.
+            filename_on_ball (str|None): Name to store on the ball.
+                If None, defaults to basename(prg_path).
+        Returns:
+            bool: True on success.
+        """
+        if not (0 <= slot_index < len(self._controllers)):
+            self.logger.error(f"upload_prg_to_slot: bad slot {slot_index}")
+            return False
+        ip = self._controllers[slot_index].ip
+        if not ip:
+            self.logger.warning(f"upload_prg_to_slot: slot {slot_index} has no IP")
+            return False
+        return upload_prg(ip, prg_path, filename_on_ball=filename_on_ball)
+
+    def play_balls(self, slot_indices=None):
+        """Send PLAY to one or more balls.
+
+        Args:
+            slot_indices: Optional iterable of slot indices. If None, plays all
+                slots that have an IP configured.
+        Returns:
+            dict[ip -> bool]: send result map.
+        """
+        if slot_indices is None:
+            ips = self.get_configured_ball_ips()
+        else:
+            ips = [self._controllers[i].ip
+                   for i in slot_indices
+                   if 0 <= i < len(self._controllers) and self._controllers[i].ip]
+        if not ips:
+            self.logger.warning("play_balls: no configured ball IPs")
+            return {}
+        return self._ltx.play(ips)
+
+    def stop_balls(self, slot_indices=None):
+        """Send STOP to one or more balls. Mirror of play_balls()."""
+        if slot_indices is None:
+            ips = self.get_configured_ball_ips()
+        else:
+            ips = [self._controllers[i].ip
+                   for i in slot_indices
+                   if 0 <= i < len(self._controllers) and self._controllers[i].ip]
+        if not ips:
+            self.logger.warning("stop_balls: no configured ball IPs")
+            return {}
+        return self._ltx.stop(ips)
 
     def send_color(self, ball, color):
         """

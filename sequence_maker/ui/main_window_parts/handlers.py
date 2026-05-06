@@ -621,6 +621,14 @@ def on_ball_ips(main_window):
     dialog.exec()
 
 
+def on_ball_sequences(main_window):
+    """Handle the 'Ball Sequences' action — open the upload+play dialog (added 2026-05-06)."""
+    from ui.dialogs.ball_sequence_dialog import BallSequenceDialog
+
+    dialog = BallSequenceDialog(main_window.app, main_window)
+    dialog.exec()
+
+
 def on_connect_balls(main_window):
     """Handle the 'Connect Balls' action."""
     from ui.dialogs.ball_scan_dialog import BallScanDialog
