@@ -599,8 +599,8 @@ class AudioVisualization(QWidget):
             zoom_level = timeline_widget.zoom_level
             time_scale = timeline_widget.time_scale
             
-            # Calculate time position from mouse x-coordinate
-            time = event.pos().x() / (time_scale * zoom_level)
+            # Calculate time position from mouse x-coordinate, accounting for scroll offset
+            time = (event.pos().x() + self.horizontal_scroll_offset) / (time_scale * zoom_level)
             
             # Clamp time to valid range
             if time < 0:
@@ -629,7 +629,7 @@ class AudioVisualization(QWidget):
             zoom_level = timeline_widget.zoom_level
             time_scale = timeline_widget.time_scale
             
-            time = event.pos().x() / (time_scale * zoom_level)
+            time = (event.pos().x() + self.horizontal_scroll_offset) / (time_scale * zoom_level)
             
             # Clamp time to valid range
             if time < 0:
@@ -680,8 +680,8 @@ class AudioVisualization(QWidget):
             zoom_level = timeline_widget.zoom_level
             time_scale = timeline_widget.time_scale
             
-            # Calculate time position from click x-coordinate
-            time = event.pos().x() / (time_scale * zoom_level)
+            # Calculate time position from click x-coordinate, accounting for scroll offset
+            time = (event.pos().x() + self.horizontal_scroll_offset) / (time_scale * zoom_level)
             
             # Clamp time to valid range
             if time < 0:
