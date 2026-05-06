@@ -59,9 +59,18 @@ class TimelineWidget(QWidget):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         
-        # Timeline properties
+        # Timeline properties (compact: spacing reduced 2026-05-06 to match
+        # the slimmer timeline tracks; tracks themselves are now 50 px tall —
+        # roughly 2/3 of the original 70 px — per user feedback after the
+        # initial half-height pass felt too cramped.)
+        #
+        # ``ruler_height`` is the vertical strip ABOVE the first timeline
+        # that holds the time-grid labels (e.g. "1.0s", "2.0s"). It must be
+        # tall enough for the bold ~14px font; otherwise the bottom of the
+        # text gets clipped by the first timeline's dark background.
         self.timeline_height = TIMELINE_HEIGHT
-        self.timeline_spacing = 10
+        self.timeline_spacing = 6
+        self.ruler_height = 18
         self.time_scale = 100.0  # pixels per second
         self.min_segment_width = TIMELINE_SEGMENT_MIN_WIDTH
         
@@ -113,20 +122,23 @@ class TimelineWidget(QWidget):
         # Create main layout
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # Create toolbar
+        self.main_layout.setSpacing(0)
+
+        # 2026-05-06: the per-timeline-widget toolbar is empty (all timeline
+        # controls live in the main window's Timeline menu) so we hide it.
+        # Leaving it visible produces a ~30 px empty gap between the main
+        # toolbar (with the simulated balls) and the first timeline track.
         self.toolbar = QToolBar()
+        self.toolbar.setVisible(False)
         self.main_layout.addWidget(self.toolbar)
-        
-        # Timeline controls are now handled through the Timeline menu in the main window
-        
+
         # Create scroll area
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         self.main_layout.addWidget(self.scroll_area)
-        
+
         # Create timeline container
         self.timeline_container = TimelineContainer(self)
         self.scroll_area.setWidget(self.timeline_container)
@@ -666,10 +678,15 @@ class TimelineContainer(QWidget):
         # Calculate width
         width = int(max_duration * self.parent_widget.time_scale * self.parent_widget.zoom_level)
         
-        # Calculate height based on number of timelines
+        # Calculate height based on number of timelines.
+        # 2026-05-06: a fixed ``ruler_height`` reserves vertical space above
+        # the first timeline for the time-grid labels (which would otherwise
+        # be clipped by the dark timeline background).
         timeline_count = len(self.app.project_manager.current_project.timelines)
-        height = (timeline_count * (self.parent_widget.timeline_height + self.parent_widget.timeline_spacing) +
-                 self.parent_widget.timeline_spacing)
+        height = (
+            self.parent_widget.ruler_height
+            + timeline_count * (self.parent_widget.timeline_height + self.parent_widget.timeline_spacing)
+        )
         
         # Set minimum and maximum size to exactly fit the timelines
         self.setMinimumSize(width, height)
@@ -926,8 +943,8 @@ class TimelineContainer(QWidget):
         # Get timelines
         timelines = self.app.project_manager.current_project.timelines
         
-        # Draw each timeline
-        y = self.parent_widget.timeline_spacing
+        # Draw each timeline (start below the ruler so time labels are visible)
+        y = self.parent_widget.ruler_height
         for timeline in timelines:
             # Calculate timeline rect
             timeline_rect = QRect(
@@ -974,8 +991,8 @@ class TimelineContainer(QWidget):
         # Get timelines
         timelines = self.app.project_manager.current_project.timelines
         
-        # Draw each timeline
-        y = self.parent_widget.timeline_spacing
+        # Draw each timeline (start below the ruler so time labels are visible)
+        y = self.parent_widget.ruler_height
         for timeline in timelines:
             # Calculate timeline rect
             timeline_rect = QRect(
@@ -1236,8 +1253,8 @@ class TimelineContainer(QWidget):
         # Get timelines
         timelines = self.app.project_manager.current_project.timelines
         
-        # Check each timeline
-        y = self.parent_widget.timeline_spacing
+        # Check each timeline (start below the ruler so y-coords match drawing)
+        y = self.parent_widget.ruler_height
         for timeline in timelines:
             # Calculate timeline rect
             timeline_rect = QRect(
@@ -2517,8 +2534,10 @@ class TimelineContainer(QWidget):
         zoom = self.parent_widget.zoom_level
         time_scale = self.parent_widget.time_scale
         
-        # Notes sit in the spacing area above the first timeline
-        marker_y = self.parent_widget.timeline_spacing // 2
+        # Notes sit in the ruler strip above the first timeline.
+        # Center the marker vertically in that strip, but make sure it's
+        # below the time-grid text (which sits in the top ~14 px).
+        marker_y = self.parent_widget.ruler_height // 2 + 3
         
         for note in project.notes:
             x = int(note.time * time_scale * zoom)
@@ -2554,7 +2573,8 @@ class TimelineContainer(QWidget):
         
         zoom = self.parent_widget.zoom_level
         time_scale = self.parent_widget.time_scale
-        marker_y = self.parent_widget.timeline_spacing // 2
+        # Must match the y-coord used in _draw_note_markers above
+        marker_y = self.parent_widget.ruler_height // 2 + 3
         hit = self.NOTE_MARKER_RADIUS + 3  # a little extra tolerance
         
         for note in project.notes:

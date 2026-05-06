@@ -1,5 +1,16 @@
 # Sequence Maker
 <!-- Snippet visual-refresh fix appended 2026-05-05: see Snippets feature bullet. -->
+<!-- UI compaction pass appended 2026-05-06: toolbar/timeline/audio space-saving rewrite. -->
+
+> **UI Update — 2026-05-06**: Major space-saving pass on the main window.
+> * The three simulated balls now live on the **right edge of the top toolbar** instead of taking up their own pane in the central splitter.
+> * Each of the three timeline tracks is now slimmer than before — `TIMELINE_HEIGHT` 70 → 50 (~70% of original; spacing 10 → 6). *(Initially halved to 35, then bumped to 50 on 2026-05-06 per user feedback that half-height felt too cramped.)*
+> * The audio waveform/spectrum/beats/energy strip is roughly half its previous height (40–60 px instead of 80–120 px).
+> * The legacy **File / Edit / Timeline** toolbars and the redundant **Load Audio / Process Lyrics / play / pause / stop** buttons in the audio widget have been removed — their functionality is fully reachable through the menu bar and standard keyboard shortcuts (Ctrl+N/O/S, Ctrl+Z/Y, Space, Esc, …).
+> * The single remaining toolbar holds: **Play / Pause / Stop / Loop**, the **song name**, the **current time / total time**, the **📝 Notes** button, and the three **simulated balls** (right-aligned).
+> * **Load Audio** moved to the **File** menu.
+> * A new **Visualization** menu houses the waveform / spectrum / beats / energy selection (formerly a combo box on the audio widget).
+
 
 A tool for creating color sequences for LTX juggling balls.
 

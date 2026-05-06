@@ -68,7 +68,7 @@ AUDIO_BUFFER_SIZE = 1024
 AUDIO_FORMAT = "mp3"
 
 # UI constants
-TIMELINE_HEIGHT = 70  # pixels - reduced height for more compact display
+TIMELINE_HEIGHT = 50  # pixels - compact (reduced 2026-05-06 from 70 → 35 → 50 per user feedback)
 TIMELINE_SEGMENT_MIN_WIDTH = 5  # pixels
 BALL_VISUALIZATION_SIZE = 40  # pixels - further reduced size to save more space
 ZOOM_STEP = 1.2  # Zoom factor per step
@@ -78,7 +78,9 @@ MIN_ZOOM = 0.01
 # Main window UI constants
 DEFAULT_WINDOW_WIDTH = 800
 DEFAULT_WINDOW_HEIGHT = 600
-DEFAULT_SPLITTER_SIZES = [300, 200, 200, 200]
+# 2026-05-06: ball widget moved out of the splitter to the toolbar,
+# so the splitter now has 3 default panes (timeline / audio / snippet).
+DEFAULT_SPLITTER_SIZES = [400, 200, 200]
 EDITOR_DOCK_HEIGHT = 30
 EDITOR_BUTTON_HEIGHT = 24
 EDITOR_MODES = {

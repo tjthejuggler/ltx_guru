@@ -270,6 +270,48 @@ class MainWindow(QMainWindow):
         # Update UI
         self.pause_action.setVisible(False)
         self.play_action.setVisible(True)
+
+    # ------------------------------------------------------------------
+    # 2026-05-06: toolbar song-name / position label handlers
+    # (moved out of AudioWidget into the consolidated main toolbar)
+    # ------------------------------------------------------------------
+    def _on_toolbar_audio_loaded(self, file_path, duration):
+        """Update toolbar labels when an audio file is loaded."""
+        if hasattr(self, "song_name_label"):
+            self.song_name_label.setText(os.path.basename(file_path))
+        if hasattr(self, "toolbar_position_label"):
+            self.toolbar_position_label.setText(
+                f"0:00 / {self._format_seconds_for_toolbar(duration)}"
+            )
+
+    def _on_toolbar_audio_stopped(self):
+        """Reset toolbar position label when playback stops."""
+        if hasattr(self, "toolbar_position_label") and hasattr(self.app, "audio_manager"):
+            duration = getattr(self.app.audio_manager, "duration", 0) or 0
+            self.toolbar_position_label.setText(
+                f"0:00 / {self._format_seconds_for_toolbar(duration)}"
+            )
+
+    def _on_toolbar_position_changed(self, position):
+        """Update the toolbar position label as playback progresses."""
+        if hasattr(self, "toolbar_position_label") and hasattr(self.app, "audio_manager"):
+            duration = getattr(self.app.audio_manager, "duration", 0) or 0
+            self.toolbar_position_label.setText(
+                f"{self._format_seconds_for_toolbar(position)} / "
+                f"{self._format_seconds_for_toolbar(duration)}"
+            )
+
+    @staticmethod
+    def _format_seconds_for_toolbar(seconds):
+        """Format seconds as M:SS for the toolbar position label."""
+        try:
+            seconds = float(seconds)
+        except (TypeError, ValueError):
+            seconds = 0.0
+        seconds = max(0.0, seconds)
+        minutes = int(seconds // 60)
+        secs = int(seconds % 60)
+        return f"{minutes}:{secs:02d}"
     
     def _on_key_mapping(self):
         on_key_mapping(self)

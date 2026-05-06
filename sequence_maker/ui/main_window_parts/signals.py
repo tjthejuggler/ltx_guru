@@ -34,6 +34,25 @@ def connect_audio_signals(main_window):
         main_window.app.audio_manager.audio_paused.connect(main_window._on_playback_paused)
         main_window.app.audio_manager.audio_stopped.connect(main_window._on_playback_stopped)
 
+        # 2026-05-06: song name and position labels were moved out of
+        # AudioWidget onto the main toolbar. Hook them up here so they keep
+        # tracking audio state.
+        main_window.app.audio_manager.audio_loaded.connect(
+            main_window._on_toolbar_audio_loaded
+        )
+        main_window.app.audio_manager.audio_stopped.connect(
+            main_window._on_toolbar_audio_stopped
+        )
+        main_window.app.audio_manager.position_changed.connect(
+            main_window._on_toolbar_position_changed
+        )
+        # Also follow the timeline manager's position so the label keeps in
+        # sync when the user scrubs by clicking on the timeline.
+        if hasattr(main_window.app, 'timeline_manager'):
+            main_window.app.timeline_manager.position_changed.connect(
+                main_window._on_toolbar_position_changed
+            )
+
 
 def connect_project_signals(main_window):
     """Connect project-related signals."""

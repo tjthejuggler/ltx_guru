@@ -48,9 +48,16 @@ def create_central_widget(main_window):
     main_window.timeline_widget = TimelineWidget(main_window.app, main_window)
     main_window.main_splitter.addWidget(main_window.timeline_widget)
     
-    # Create ball widget
+    # Create ball widget. 2026-05-06: instead of taking up its own pane in the
+    # main vertical splitter, the BallWidget now lives on the right-hand side
+    # of the main toolbar (created in menus.create_toolbars), saving a chunk
+    # of vertical space in the central area.
     main_window.ball_widget = BallWidget(main_window.app, main_window)
-    main_window.main_splitter.addWidget(main_window.ball_widget)
+    if hasattr(main_window, "main_toolbar"):
+        main_window.main_toolbar.addWidget(main_window.ball_widget)
+    else:
+        # Fallback (shouldn't happen — toolbars are created before widgets)
+        main_window.main_splitter.addWidget(main_window.ball_widget)
     
     # Create audio widget
     main_window.audio_widget = AudioWidget(main_window.app, main_window)

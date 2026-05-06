@@ -76,72 +76,24 @@ class AudioWidget(QWidget):
         self.update_timer.start(50)  # 20 FPS
     
     def _create_ui(self):
-        """Create the user interface."""
+        """Create the user interface.
+
+        2026-05-06: Stripped redundant top control bar. The Load Audio button,
+        Process Lyrics button, visualization-type combo box, play/pause/stop
+        buttons, song-name title label and position label have all been moved
+        to the main window's top toolbar / menus to free up vertical space.
+        Only the audio waveform visualization itself remains here.
+        """
         # Create main layout
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
-        self.main_layout.setSpacing(2)
-        
-        # Create top control layout
-        self.top_layout = QHBoxLayout()
-        self.top_layout.setContentsMargins(2, 2, 2, 2)
-        self.main_layout.addLayout(self.top_layout)
-        
-        # Create title label
-        self.title_label = QLabel("Audio Visualization")
-        self.title_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.top_layout.addWidget(self.title_label)
-        
-        # Create visualization type combo box
-        self.visualization_combo = QComboBox()
-        self.visualization_combo.addItems(["Waveform", "Spectrum", "Beats", "Energy"])
-        self.visualization_combo.setCurrentText("Waveform")
-        self.visualization_combo.currentTextChanged.connect(self._on_visualization_changed)
-        self.top_layout.addWidget(self.visualization_combo)
-        
-        # Create load audio button
-        self.load_button = QPushButton("Load Audio")
-        self.load_button.setMaximumWidth(100)
-        self.load_button.clicked.connect(self._on_load_clicked)
-        self.top_layout.addWidget(self.load_button)
-        
-        # Create process lyrics button
-        self.process_lyrics_button = QPushButton("Process Lyrics")
-        self.process_lyrics_button.setMaximumWidth(100)
-        self.process_lyrics_button.setToolTip("Process audio to extract and align lyrics")
-        self.process_lyrics_button.clicked.connect(self._on_process_lyrics_clicked)
-        self.top_layout.addWidget(self.process_lyrics_button)
-        
-        # Create playback controls
-        self.play_button = QPushButton("▶")
-        self.play_button.setMaximumWidth(30)
-        self.play_button.clicked.connect(self._on_play_clicked)
-        self.top_layout.addWidget(self.play_button)
-        
-        self.pause_button = QPushButton("⏸")
-        self.pause_button.setMaximumWidth(30)
-        self.pause_button.clicked.connect(self._on_pause_clicked)
-        self.pause_button.setEnabled(False)
-        self.top_layout.addWidget(self.pause_button)
-        
-        self.stop_button = QPushButton("⏹")
-        self.stop_button.setMaximumWidth(30)
-        self.stop_button.clicked.connect(self._on_stop_clicked)
-        self.stop_button.setEnabled(False)
-        self.top_layout.addWidget(self.stop_button)
-        
-        # Create position label
-        self.position_label = QLabel("0:00 / 0:00")
-        self.position_label.setAlignment(Qt.AlignmentFlag.AlignRight)
-        self.top_layout.addWidget(self.position_label)
-        
-        # Create visualization widget
+        self.main_layout.setSpacing(0)
+
+        # Create visualization widget (reduced 2026-05-06: half-height to save space)
         self.visualization = AudioVisualization(self.app, self)
-        self.visualization.setMinimumHeight(80)
-        self.visualization.setMaximumHeight(120)
+        self.visualization.setMinimumHeight(40)
+        self.visualization.setMaximumHeight(60)
         self.main_layout.addWidget(self.visualization)
-        
-        # Position slider removed as per user request - we'll use the red position marker instead
     
     def _connect_signals(self):
         """Connect signals to slots."""
@@ -258,89 +210,45 @@ class AudioWidget(QWidget):
     def _on_audio_loaded(self, file_path, duration):
         """
         Handle audio loaded signal.
-        
-        Args:
-            file_path (str): Path to the audio file.
-            duration (float): Duration of the audio in seconds.
+
+        2026-05-06: title/position labels and play button moved to the main
+        window's top toolbar. This handler now only stores audio metadata.
         """
         # Update audio properties
         self.audio_file = file_path
         self.duration = duration
-        
-        # Update UI
-        self.title_label.setText(f"Audio: {os.path.basename(file_path)}")
-        self.play_button.setEnabled(True)
-        
-        # Update position label
-        self._update_position_label(0)
-        self._update_position_label(0)
-    
+
     def _on_audio_started(self):
-        """Handle audio started signal."""
-        # Update UI
+        """Handle audio started signal (toolbar play/pause now lives in main window)."""
         self.playing = True
-        self.play_button.setEnabled(False)
-        self.pause_button.setEnabled(True)
-        self.stop_button.setEnabled(True)
-    
+
     def _on_audio_paused(self):
         """Handle audio paused signal."""
-        # Update UI
         self.playing = False
-        self.play_button.setEnabled(True)
-        self.pause_button.setEnabled(False)
-        self.stop_button.setEnabled(True)
-    
+
     def _on_audio_stopped(self):
         """Handle audio stopped signal."""
-        # Update UI
         self.playing = False
-        self.play_button.setEnabled(True)
-        self.pause_button.setEnabled(False)
-        self.stop_button.setEnabled(False)
-        
-        # Reset position
         self.position = 0
-        
-        # Update position label
-        self._update_position_label(0)
-    
+
     def _on_position_changed(self, position):
         """
         Handle position changed signal.
-        
+
         Args:
             position (float): New position in seconds.
         """
-        # Update position
         self.position = position
-        
-        # Update position label
-        self._update_position_label(position)
-    
+
     def _on_analysis_completed(self, analysis_data):
         """
         Handle analysis completed signal.
-        
+
         Args:
             analysis_data (dict): Analysis data.
         """
         # Update visualization
         self.visualization.set_analysis_data(analysis_data)
-    
-    def _update_position_label(self, position):
-        """
-        Update the position label.
-        
-        Args:
-            position (float): Position in seconds.
-        """
-        # Format position and duration
-        position_str = self._format_time(position)
-        duration_str = self._format_time(self.duration)
-        
-        # Update label
-        self.position_label.setText(f"{position_str} / {duration_str}")
     
     def _format_time(self, seconds):
         """

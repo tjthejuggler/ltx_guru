@@ -2,9 +2,18 @@
 Sequence Maker - Main Window Menus
 
 This module contains functions for creating and managing menus in the main window.
+
+2026-05-06: UI compaction pass.
+  * Load Audio moved out of the audio widget into the File menu.
+  * New Visualization menu hosts the waveform/spectrum/beats/energy
+    selection (previously a combo box on the audio widget).
+  * The legacy File / Edit / Timeline toolbars have been removed; only the
+    consolidated playback toolbar remains, with song name, position display
+    and the three simulated balls all sharing one row.
 """
 
-from PyQt6.QtWidgets import QLabel, QLineEdit
+from PyQt6.QtWidgets import QLabel, QLineEdit, QSizePolicy, QWidget
+from PyQt6.QtGui import QActionGroup, QAction
 from PyQt6.QtCore import Qt
 
 
@@ -27,6 +36,7 @@ def create_menus(main_window):
     create_file_menu(main_window)
     create_edit_menu(main_window)
     create_view_menu(main_window)
+    create_visualization_menu(main_window)
     create_timeline_menu(main_window)
     create_playback_menu(main_window)
     create_tools_menu(main_window)
@@ -40,6 +50,9 @@ def create_file_menu(main_window):
     main_window.file_menu.addAction(main_window.open_action)
     main_window.file_menu.addAction(main_window.save_action)
     main_window.file_menu.addAction(main_window.save_as_action)
+    main_window.file_menu.addSeparator()
+    # Load Audio (moved here 2026-05-06 from the audio widget)
+    main_window.file_menu.addAction(main_window.file_actions.load_audio_action)
     main_window.file_menu.addSeparator()
     # Import submenu
     main_window.import_menu = main_window.file_menu.addMenu("Import")
@@ -94,6 +107,50 @@ def create_view_menu(main_window):
     main_window.view_menu.addAction(main_window.toggle_lyrics_view_action)
 
 
+def create_visualization_menu(main_window):
+    """Create the audio visualization menu (added 2026-05-06).
+
+    Houses the waveform / spectrum / beats / energy selection that used to
+    live in a combo box on the audio widget. Selecting a mode updates
+    ``audio_widget.visualization_type`` and triggers a repaint.
+    """
+    main_window.visualization_menu = main_window.menuBar().addMenu("&Visualization")
+
+    # Use a checkable QActionGroup so only one mode is active at a time.
+    main_window.visualization_action_group = QActionGroup(main_window)
+    main_window.visualization_action_group.setExclusive(True)
+
+    main_window.visualization_actions = {}
+    for label, key in (
+        ("&Waveform", "waveform"),
+        ("&Spectrum", "spectrum"),
+        ("&Beats", "beats"),
+        ("&Energy", "energy"),
+    ):
+        action = QAction(label, main_window)
+        action.setCheckable(True)
+        action.setStatusTip(f"Show the {key} visualization")
+        if key == "waveform":
+            action.setChecked(True)
+
+        # Bind via a default-argument lambda so each action keeps its own key.
+        action.triggered.connect(
+            lambda checked=False, k=key: _on_visualization_mode_selected(main_window, k)
+        )
+
+        main_window.visualization_action_group.addAction(action)
+        main_window.visualization_menu.addAction(action)
+        main_window.visualization_actions[key] = action
+
+
+def _on_visualization_mode_selected(main_window, mode_key):
+    """Apply a visualization mode to the audio widget."""
+    if hasattr(main_window, "audio_widget") and main_window.audio_widget is not None:
+        main_window.audio_widget.visualization_type = mode_key
+        if hasattr(main_window.audio_widget, "visualization"):
+            main_window.audio_widget.visualization.update()
+
+
 def create_timeline_menu(main_window):
     """Create the timeline menu."""
     main_window.timeline_menu = main_window.menuBar().addMenu("&Timeline")
@@ -141,38 +198,62 @@ def create_help_menu(main_window):
 
 
 def create_toolbars(main_window):
-    """Create toolbars for the main window."""
-    # File toolbar
-    main_window.file_toolbar = main_window.addToolBar("File")
-    main_window.file_toolbar.setObjectName("FileToolbar")
-    main_window.file_toolbar.addAction(main_window.new_action)
-    main_window.file_toolbar.addAction(main_window.open_action)
-    main_window.file_toolbar.addAction(main_window.save_action)
-    
-    # Edit toolbar
-    main_window.edit_toolbar = main_window.addToolBar("Edit")
-    main_window.edit_toolbar.setObjectName("EditToolbar")
-    main_window.edit_toolbar.addAction(main_window.undo_action)
-    main_window.edit_toolbar.addAction(main_window.redo_action)
-    
-    # Timeline toolbar
-    main_window.timeline_toolbar = main_window.addToolBar("Timeline")
-    main_window.timeline_toolbar.setObjectName("TimelineToolbar")
-    main_window.timeline_toolbar.addAction(main_window.edit_segment_action)
-    main_window.timeline_toolbar.addAction(main_window.delete_segment_action)
-    
-    # Playback toolbar
-    main_window.playback_toolbar = main_window.addToolBar("Playback")
-    main_window.playback_toolbar.setObjectName("PlaybackToolbar")
-    main_window.playback_toolbar.addAction(main_window.play_action)
-    main_window.playback_toolbar.addAction(main_window.pause_action)
-    main_window.playback_toolbar.addAction(main_window.stop_action)
-    main_window.playback_toolbar.addAction(main_window.loop_action)
-    
-    # Notes toolbar
-    main_window.notes_toolbar = main_window.addToolBar("Notes")
-    main_window.notes_toolbar.setObjectName("NotesToolbar")
-    main_window.notes_toolbar.addAction(main_window.show_notes_action)
+    """Create the (single) main toolbar.
+
+    2026-05-06: Major compaction. The previous File / Edit / Timeline /
+    Playback / Notes toolbars have been collapsed into a single ``MainToolbar``
+    that holds:
+      * Play / Pause (Pause is hidden until playback starts), Stop, Loop
+      * The song-name / position display (moved out of the audio widget)
+      * Notes
+      * The three simulated balls, right-aligned (added by
+        :func:`ui.main_window_parts.widgets.create_widgets`)
+    The redundant File/Edit/Timeline buttons were removed because every one
+    of those actions is already reachable through the menu bar and through
+    keyboard shortcuts (Ctrl+N/O/S/Z/Y, etc).
+    """
+    main_window.main_toolbar = main_window.addToolBar("Main")
+    main_window.main_toolbar.setObjectName("MainToolbar")
+    main_window.main_toolbar.setMovable(False)
+
+    # Playback controls
+    main_window.main_toolbar.addAction(main_window.play_action)
+    main_window.main_toolbar.addAction(main_window.pause_action)
+    main_window.main_toolbar.addAction(main_window.stop_action)
+    main_window.main_toolbar.addAction(main_window.loop_action)
+    main_window.main_toolbar.addSeparator()
+
+    # Song-name label (formerly AudioWidget.title_label)
+    main_window.song_name_label = QLabel("No audio loaded")
+    main_window.song_name_label.setStyleSheet(
+        "QLabel { padding: 0 8px; font-weight: bold; }"
+    )
+    main_window.song_name_label.setToolTip("Currently loaded audio file")
+    main_window.main_toolbar.addWidget(main_window.song_name_label)
+
+    # Position / duration label (formerly AudioWidget.position_label).
+    main_window.toolbar_position_label = QLabel("0:00 / 0:00")
+    main_window.toolbar_position_label.setStyleSheet(
+        "QLabel { padding: 0 8px; font-family: monospace; }"
+    )
+    main_window.toolbar_position_label.setToolTip(
+        "Playback position / total duration"
+    )
+    main_window.main_toolbar.addWidget(main_window.toolbar_position_label)
+
+    main_window.main_toolbar.addSeparator()
+
+    # Notes
+    main_window.main_toolbar.addAction(main_window.show_notes_action)
+
+    # Stretch + ball widget will be appended in widgets.create_widgets() once
+    # the BallWidget has been instantiated. We add a stretch spacer here so
+    # everything appended afterwards (the balls) sits flush-right.
+    main_window.toolbar_stretch_spacer = QWidget()
+    main_window.toolbar_stretch_spacer.setSizePolicy(
+        QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+    )
+    main_window.main_toolbar.addWidget(main_window.toolbar_stretch_spacer)
 
 
 def create_statusbar(main_window):
