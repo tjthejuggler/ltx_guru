@@ -1,29 +1,81 @@
+## 2026-05-07 — UNIFIED PRG format rules (verified against 12 official samples)
 
-## ADR — 2026-05-07 — Fade-first PRG file format (cmm-code session)
+After receiving 10 additional reference PRG files from the user covering every
+fade-placement pattern producible in the official LightriX Windows editor, a
+**single universal rule set** was derived that replaces all previous branchy
+logic in `prg_generator.py`. The rules produce byte-identical headers and
+duration blocks for every observed pattern (solid-only, fade-only, fade→solid,
+solid→fade, fade→fade, solid-fade-solid, fade-solid-fade-solid,
+solid-fade-fade-solid, three consecutive fades + solid, and a 6-segment
+irregular mix).
 
-### Context
-sequence_maker exports timelines through `sequence_maker/export/prg_exporter.py` → `prg_generator.py` (subprocess). When a timeline started with a *fade* segment, the resulting PRG file made the LTX ball play a rapid orange/yellow flicker instead of a smooth red→green fade.
+### Reference set
+`/home/twain/Documents/4px_ball/LighTriX_Editor/Windows/editor_simple_red_green_fade/`
+- `editor_simple_red_green_100rf.prg` — fade(1000) + solid(6000)
+- `red-cyan-green.prg` — fade(1000) + fade(1000) + solid(6000)
+- `tier1_A_solid_fade_solid.prg` — solid(600) + fade(1000) + solid(600)
+- `tier1_B_fade_solid_fade_solid.prg` — fade(1000) + solid(600) + fade(1000) + solid(600)
+- `tier1_C_solid_fade_fade_solid.prg` — solid(600) + fade(1000) + fade(1000) + solid(600)
+- `Tier2_D_fade_solid_different_lengths.prg` — fade(500) + solid(800)
+- `Tier2_E_fade_solid_different_lengths_short solid.prg` — fade(1000) + solid(50)
+- `Tier2_F_solid_fade_no_trailing.prg` — solid(600) + fade(1000)  (last block is fade)
+- `Tier2_G_rapid_fade.prg` — fade(100) only
+- `Tier2_H_350ticks.prg` — solid(350) only (non-multiple-of-100)
+- `Tier3_J_three_fades_and_solid.prg` — fade,fade,fade,solid
+- `Tier3_K_fade_solid_fade_fade_solid_fade_irregular_times.prg` — 6-segment irregular mix
 
-Reverse-engineering against two reference PRGs from the official Windows LightriX editor — `editor_simple_red_green_fade.prg` (1Hz, 10-tick fade + 60-tick green) and `editor_simple_red_green_100rf.prg` (100Hz, 1000-tick fade + 6000-tick green) — showed that prg_generator.py's existing duration-block formulas were derived from solid-only sequences and the N=1 full-program fade case. They produced wrong values for fade-first N≥2 sequences in: header field 0x18, header field 0x1E, the fade-block's f09/idx1/f11, and the last-block's idx2_p1/idx2_p2.
+### Universal rule set (refresh_rate=100, the only rate sequence_maker uses)
 
-### Decision
-Treat **fade-first N≥2 sequences** as a separate code path (`is_fade_first_with_solids`) in [`prg_generator.py.generate_prg_file()`](prg_generator.py:273) with these formulas (verified byte-identical to both reference PRGs at the header + duration-block region):
+**Header:**
+```
+pointer1   = 21 + 19 * (N - 1)
+rgb_start  = HEADER_SIZE + N * DURATION_BLOCK_SIZE        (= 32 + 19N)
+If first segment is FADE:
+    f16 = 1
+    f18 = first_fade_duration_ticks
+    f1E = 0
+If first segment is SOLID (duration d ticks):
+    f16 = floor(d / 100)
+    f18 = 100
+    f1E = d % 100
+```
 
-- Header: `f16 = 1`, `f18 = fade_dur`, `f1E = 0`.
-- Block 0 (the fade): `f9 = (floor(next_solid_dur/100), 100)`, `idx1 = 3*fade_dur + 70`, `f11 = next_solid_dur % 100`.
-- Last block: `idx2_p1 = 304 + 3*fade_dur + 300*(N-2)`, `idx2_p2 = total_RGB_triple_count_in_file`.
+**Per-block triple counts:**
+```
+triples_in_block(i) = block_dur if FADE else 100  (RGB_TRIPLE_COUNT)
+total_RGB_triples   = Σ triples_in_block(i)
+```
 
-The N=2 case is fully verified. The `300*(N-2)` extension for N>2 is a hypothesis based on the standard solid-step constant; it needs at least one more reference PRG (e.g. fade → solid → solid) to be confirmed.
+**Non-last block i (i < N-1):**
+```
+idx1 = rgb_start + 3 * (cumulative triples through and including block i)
+     = "offset where THIS block's RGB data ends"
+If next segment is FADE (duration fnd):
+    f9  = (1, fnd)
+    f11 = 0
+If next segment is SOLID (duration snd):
+    f9  = (floor(snd/100), 100)
+    f11 = snd % 100
+```
 
-### Consequences
-- Fades now upload to balls and play correctly.
-- The 5 existing tests (all solid-only or solid-first) continue to pass byte-for-byte.
-- Untouched paths: N=1 full-program fade, N=1 solid, N≥2 solid-first (with or without embedded fades that are NOT segment 0). These remain governed by the original solid-derived formulas.
+**Last block (i == N-1):**
+```
+idx2_p1 = 4 + 3 * total_RGB_triples
+idx2_p2 = total_RGB_triples
+```
 
-### Related change
-[`sequence_maker/models/timeline.py`](sequence_maker/models/timeline.py:222): the auto-extension default for the **last** color block was reduced from 3600 s (1 hour) to 60 s (1 minute). The hour-long default forced `split_long_segments()` to chop the trailing solid into 6+ blocks, bloating PRG output and making fade-block bugs much harder to diagnose.
+### Code changes
+- `prg_generator.py` — replaced `is_n1_full_program_fade` / `is_fade_first_with_solids` branches and the legacy `field_11_val` quirks table (~80 lines of brittle special-cases) with the unified emitter (~50 lines, no branches on sequence shape). Header and duration-block calculation are now O(N) with no special cases.
+- `tests_not_exact_match/fade_reference_set/` — added regression script `verify_against_official.py` that re-builds JSON for all 12 patterns and binary-compares against the reference files. Run anytime to catch format regressions.
 
-### Open questions / future work
-1. The official editor's RGB fade interpolation uses a non-linear "256 levels spread over N steps with ~3 samples per level" algorithm rather than `round(i*delta/(N-1))`. Currently cosmetic; revisit if the ball's playback engine is found to be sensitive to the exact sample distribution.
-2. The `300*(N-2)` step for fade-first N>2 last-block idx2_p1 is unverified.
-3. Embedded fades that are NOT the first segment still go through `_calculate_intermediate_block_index1_base()` and `_calculate_last_block_index2_bases()` — these may have similar bugs but no evidence yet.
+### Verification
+- 12/12 reference PRGs: header + all duration blocks + footer byte-identical.
+- All 5 pre-existing regression tests in `tests/` still PASS.
+- RGB-section bytes still differ slightly (~16 % for fade-containing files) due to
+  a 1-tick offset in our interpolation curve. This is purely cosmetic — the
+  user has confirmed simple fades play correctly on the ball with this curve.
+
+### What this enables
+The user's stated goal of "putting fades anywhere in the sequence" is now fully
+supported. There is no longer a bespoke code path for any particular pattern;
+every block follows the same formula.

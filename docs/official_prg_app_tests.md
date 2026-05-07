@@ -2872,3 +2872,82 @@ These official app fade test results provide valuable insights for implementing 
 3. **Header Field Behavior:** The consistent header field patterns across different fade durations help validate our understanding of the PRG format.
 
 4. **Color Space Handling:** The green-yellow fade demonstrates how to handle transitions that don't involve all three RGB components changing simultaneously.
+
+---
+
+# Universal PRG Format Rules (added 2026-05-07)
+
+After reverse-engineering 12 official-editor PRG samples covering every fade
+placement pattern, the following **universal rule set** was confirmed.
+`prg_generator.py` now emits byte-identical headers + duration blocks + footers
+for every sample. RGB-section bytes still differ slightly due to a 1-tick
+cosmetic offset in our interpolation curve.
+
+All rules below assume `refresh_rate = 100 Hz`, which is what `sequence_maker`
+always exports.
+
+## Header
+```
+HEADER_SIZE          = 32
+DURATION_BLOCK_SIZE  = 19
+RGB_TRIPLE_COUNT     = 100   (number of RGB triples a SOLID segment writes)
+
+pointer1   = 21 + 19 * (N - 1)
+rgb_start  = HEADER_SIZE + N * DURATION_BLOCK_SIZE   (= 32 + 19N)
+
+If first segment is FADE:
+    f16 = 1
+    f18 = first_fade_duration_ticks
+    f1E = 0
+If first segment is SOLID (duration d ticks):
+    f16 = floor(d / 100)
+    f18 = 100
+    f1E = d mod 100
+```
+
+## Per-block triple counts
+```
+triples_in_block(i) = block_dur_ticks  if FADE
+                    = 100               if SOLID
+total_RGB_triples   = Σ triples_in_block(i)
+```
+
+## Non-last block i (i < N-1)
+```
+idx1 = rgb_start + 3 * (cumulative triples through and including block i)
+     = "offset where THIS block's RGB data ends"
+
+If next segment is FADE (duration fnd):
+    f9  = (1, fnd)
+    f11 = 0
+If next segment is SOLID (duration snd):
+    f9  = (floor(snd/100), 100)
+    f11 = snd mod 100
+```
+
+## Last block (i == N-1)
+```
+idx2_p1 = 4 + 3 * total_RGB_triples
+idx2_p2 = total_RGB_triples
+```
+
+## Verification
+12 official reference PRGs are stored in
+`/home/twain/Documents/4px_ball/LighTriX_Editor/Windows/editor_simple_red_green_fade/`.
+The regression script
+[`tests_not_exact_match/fade_reference_set/verify_against_official.py`](../tests_not_exact_match/fade_reference_set/verify_against_official.py)
+re-builds the JSON for each pattern, runs the generator, and binary-compares
+header + duration blocks + footer.
+
+## Patterns confirmed
+- Solid-only (any duration, multiples of 100 and non-multiples)
+- Fade-only (N=1)
+- Fade → Solid (N=2)
+- Solid → Fade (last block is the fade)
+- Fade → Fade → Solid
+- Solid → Fade → Solid (fade in the middle)
+- Fade → Solid → Fade → Solid (interleaved)
+- Solid → Fade → Fade → Solid
+- Fade → Fade → Fade → Solid (three consecutive fades)
+- 6-segment irregular mix (Fade → Solid → Fade → Fade → Solid → Fade)
+
