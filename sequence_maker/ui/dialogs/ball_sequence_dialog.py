@@ -78,6 +78,26 @@ class BallSequenceDialog(QDialog):
         self._workers: list[Optional[UploadWorker]] = [None] * self.NUM_SLOTS
         self._tempfiles: list[Optional[str]] = [None] * self.NUM_SLOTS
 
+        # Pause realtime UDP color streaming while this dialog is open. The
+        # streaming worker (BallManager._streaming_worker) sends a color packet
+        # to each ball every ~50ms based on the timeline cursor. Those packets
+        # would clobber any onboard PRG playback we trigger from this dialog,
+        # producing flicker / wrong colors. Remember whether streaming was
+        # active so we can restore it on close.
+        # (2026-05-06 fade-bug fix.)
+        bm = self.app.ball_manager
+        self._streaming_was_active = bool(
+            getattr(bm, "streaming_thread", None)
+            and bm.streaming_thread.is_alive()
+        )
+        if self._streaming_was_active:
+            try:
+                bm.stop_streaming()
+                logger.info("BallSequenceDialog: paused color streaming for "
+                            "onboard-PRG playback test.")
+            except Exception as e:
+                logger.error(f"Could not pause streaming on dialog open: {e}")
+
         self._build_ui()
         self._refresh_ip_labels()
 
@@ -168,8 +188,18 @@ class BallSequenceDialog(QDialog):
         ctrl_row.addWidget(self.stop_btn)
 
         ctrl_row.addSpacing(20)
-        self.with_audio_chk = QCheckBox("Sync with audio (start/stop song too)")
-        self.with_audio_chk.setChecked(True)
+        self.with_audio_chk = QCheckBox("Sync with audio (also start/stop the song)")
+        # Default to OFF: pressing PLAY here should ONLY trigger the ball's
+        # onboard PRG playback. Auto-playing the song would also advance the
+        # main-window timeline cursor and re-engage the realtime UDP color
+        # streaming, which fights with the on-ball PRG and produces flicker.
+        # The user opts in only when they explicitly want the song too.
+        self.with_audio_chk.setChecked(False)
+        self.with_audio_chk.setToolTip(
+            "If checked, pressing PLAY here also starts the song and advances "
+            "the main-window timeline cursor. Leave unchecked to play ONLY "
+            "the on-ball PRG sequence (recommended for testing fades)."
+        )
         ctrl_row.addWidget(self.with_audio_chk)
 
         ctrl_row.addStretch()
@@ -359,4 +389,15 @@ class BallSequenceDialog(QDialog):
         # Don't kill running uploads, but free temp files
         for i in range(self.NUM_SLOTS):
             self._cleanup_tempfile(i)
+
+        # Restore realtime UDP color streaming if it was active when we opened.
+        if getattr(self, "_streaming_was_active", False):
+            try:
+                self.app.ball_manager.start_streaming()
+                logger.info("BallSequenceDialog: resumed color streaming "
+                            "after dialog close.")
+            except Exception as e:
+                logger.error(f"Could not resume streaming on dialog close: {e}")
+
+        super().closeEvent(event)
         super().closeEvent(event)

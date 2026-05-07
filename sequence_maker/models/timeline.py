@@ -216,12 +216,18 @@ class Timeline:
                     end_color=None # Solid segment
                 )
             else:
-                # If there's no next segment, create one that extends to the end of the timeline
-                # This new segment is solid.
-                # Use a longer default duration that will likely cover the entire timeline
-                end_time = time + 3600  # Default to 1 hour
-                
-                # Try to find the end of the timeline by looking at the duration of other segments
+                # If there's no next segment, create one that extends to the end
+                # of the timeline. This new segment is solid.
+                # Default to a 1-minute extension (changed 2026-05-07 from
+                # 3600 s = 1 hour). The hour-long default forced the PRG
+                # generator to chop the trailing solid into 6+ blocks via
+                # split_long_segments(), bloating PRG output and exposing
+                # fade-block formula bugs in prg_generator.py.
+                end_time = time + 60  # Default to 1 minute
+
+                # Try to find the end of the timeline by looking at the
+                # duration of other segments — never shrink a segment that
+                # would naturally have run longer.
                 if self.segments:
                     max_end_time = max(segment.end_time for segment in self.segments)
                     if max_end_time > time:

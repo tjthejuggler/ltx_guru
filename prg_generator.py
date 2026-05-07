@@ -472,6 +472,15 @@ def generate_prg_file(input_json, output_prg):
     # Header Value Calculation
     # After segments are finalized and split_long_segments may have run
     is_n1_full_program_fade = (segment_count == 1 and segments[0][3] == 'fade') # This implies is_any_fade_in_sequence is true
+    # NEW (2026-05-07): treat N>=2 sequences whose first segment is a fade as a
+    # distinct case. Reverse-engineering of two official-editor PRGs (1Hz and
+    # 100Hz red->green-fade-then-solid-green) showed the official format uses
+    # different header/duration-block field formulas in this case than for
+    # solid-first sequences. See docs/official_prg_app_tests.md and the
+    # comparison table in the cmm-code session notes.
+    is_fade_first_with_solids = (
+        segment_count >= 2 and segments[0][3] == 'fade'
+    )
 
     if is_n1_full_program_fade:
         # N=1 TRUE FADE MODE
@@ -482,8 +491,20 @@ def generate_prg_file(input_json, output_prg):
         header_field_18_dynamic_val = s_block_dur   # Actual duration
         rgb_start_pointer = HEADER_SIZE + 1 * DURATION_BLOCK_SIZE # 51
         header_field_1E_calculated_val = 0
+    elif is_fade_first_with_solids:
+        # FADE-FIRST + SOLIDS MODE (N>=2, segments[0] is a fade)
+        # Verified against two official samples:
+        #   editor_simple_red_green_fade.prg     (1Hz, fade=10, solid=60)
+        #   editor_simple_red_green_100rf.prg    (100Hz, fade=1000, solid=6000)
+        # Both gave: f16=1, f18=fade_dur, f1E=0.
+        fade_dur = segments[0][0]
+        pointer1 = 21 + 19 * (segment_count - 1) if segment_count > 0 else 0
+        header_field_16_calculated_val = 1
+        header_field_18_dynamic_val = fade_dur
+        rgb_start_pointer = HEADER_SIZE + segment_count * DURATION_BLOCK_SIZE
+        header_field_1E_calculated_val = 0
     else:
-        # SOLID N=1 or MIXED SEQUENCE (N>1, may include embedded fades)
+        # SOLID N=1 or MIXED SEQUENCE that does NOT start with a fade
         first_seg_block_dur = segments[0][0]
         first_seg_type = segments[0][3]  # Get the type of the first segment
         
@@ -547,6 +568,17 @@ def generate_prg_file(input_json, output_prg):
             print(f"[WRITE] Header complete ({current_offset} bytes).")
 
             print(f"\n[WRITE] Writing {segment_count} Duration Blocks...")
+            # Pre-compute the total number of RGB triples in the file (used by
+            # the fade-first idx2_p2 formula). Solid blocks always contribute
+            # RGB_TRIPLE_COUNT (=100) triples; fade blocks contribute one triple
+            # per PRG tick of their s_block_dur.
+            total_rgb_triples_for_idx2 = 0
+            for _bd, _ci, _px, _st, _jd in segments:
+                if _st == 'fade':
+                    total_rgb_triples_for_idx2 += _bd
+                else:
+                    total_rgb_triples_for_idx2 += RGB_TRIPLE_COUNT
+
             # segments contains: (block_duration_prg, color_data, pixels, segment_type, json_duration_prg_original)
             # The first element is block_duration_prg, third is pixels.
             for idx, (block_duration_prg_current_seg, _, pixels_for_block, _, _) in enumerate(segments): # MODIFIED: Unpack 5 elements
@@ -555,16 +587,50 @@ def generate_prg_file(input_json, output_prg):
                 try:
                     if idx < segment_count - 1:
                         next_block_duration_prg_units = segments[idx + 1][0] # Get block_duration of next segment
-                        
+                        next_seg_actual_block_dur = segments[idx + 1][0]
+                        next_seg_type = segments[idx + 1][3]
+                        next_seg_json_dur_original = segments[idx + 1][4]
+
+                        # NEW (2026-05-07): For fade-first N>=2 sequences, the
+                        # FADE block (idx==0) follows a different formula set
+                        # than the solid blocks. Verified against two official
+                        # editor PRGs (1Hz and 100Hz red->green-fade->solid):
+                        #   field_09 = (floor(next_solid_dur/100), 100)
+                        #   idx1     = 3 * fade_dur + 70
+                        #   field_11 = next_solid_dur % 100
+                        if is_fade_first_with_solids and idx == 0:
+                            fade_dur = block_duration_prg_current_seg
+                            field_09_part1 = math.floor(
+                                next_seg_actual_block_dur / NOMINAL_BASE_FOR_HEADER_FIELDS
+                            )
+                            field_09_part2 = NOMINAL_BASE_FOR_HEADER_FIELDS
+                            field_09_bytes = (
+                                struct.pack('<H', field_09_part1) +
+                                struct.pack('<H', field_09_part2)
+                            )
+
+                            index1_full_base_value = 3 * fade_dur + 70
+                            index1_value_at_0D = index1_full_base_value & 0xFFFF
+                            index1_carry_at_0F = (index1_full_base_value >> 16) & 0xFFFF
+
+                            field_11_val = next_seg_actual_block_dur % NOMINAL_BASE_FOR_HEADER_FIELDS
+
+                            f.write(struct.pack('<H', pixels_for_block))
+                            f.write(BLOCK_CONST_02)
+                            f.write(struct.pack('<H', block_duration_prg_current_seg))
+                            f.write(BLOCK_CONST_07)
+                            f.write(field_09_bytes)
+                            f.write(struct.pack('<H', index1_value_at_0D))
+                            f.write(struct.pack('<H', index1_carry_at_0F))
+                            f.write(struct.pack('<H', field_11_val))
+                            current_offset += DURATION_BLOCK_SIZE
+                            continue
+
                         index1_full_base_value = _calculate_intermediate_block_index1_base(idx + 1, segment_count, segments, is_any_fade_in_sequence)
                         index1_value_at_0D = index1_full_base_value & 0xFFFF
                         index1_carry_at_0F = (index1_full_base_value >> 16) & 0xFFFF
 
                         # field_09 logic modification
-                        next_seg_actual_block_dur = segments[idx+1][0] # s_block_dur_prg of next segment
-                        next_seg_type = segments[idx+1][3]
-                        next_seg_json_dur_original = segments[idx+1][4] # s_json_dur_prg of next segment
-
                         if next_seg_type == 'fade':
                             field_09_part1 = 1
                             field_09_part2 = next_seg_json_dur_original # Use its original JSON duration (scaled to PRG units)
@@ -603,7 +669,7 @@ def generate_prg_file(input_json, output_prg):
                         
                         f.write(struct.pack('<H', pixels_for_block))
                         f.write(BLOCK_CONST_02)
-                        f.write(struct.pack('<H', block_duration_prg_current_seg)) 
+                        f.write(struct.pack('<H', block_duration_prg_current_seg))
                         f.write(BLOCK_CONST_07)
                         f.write(field_09_bytes)
                         f.write(struct.pack('<H', index1_value_at_0D))
@@ -618,6 +684,19 @@ def generate_prg_file(input_json, output_prg):
                             dur_val = s_block_dur
                             index2_part1_full = (3 * dur_val) + 4 # For N=1 True Fade, s_block_dur is dur_val
                             index2_part2_full = dur_val         # For N=1 True Fade, s_block_dur is dur_val
+                        elif is_fade_first_with_solids:
+                            # FADE-FIRST + SOLIDS, last block. Verified for N=2:
+                            #   idx2_p1 = 304 + 3*fade_dur
+                            #   idx2_p2 = total RGB triple count in the file
+                            # For N>2 we extend idx2_p1 by 300 per intermediate
+                            # solid (the standard solid step). This part is
+                            # untested against an official sample and is the
+                            # area to revisit when more reference PRGs are
+                            # available.
+                            fade_dur = segments[0][0]
+                            num_intermediate_solids = max(0, segment_count - 2)
+                            index2_part1_full = 304 + 3 * fade_dur + 300 * num_intermediate_solids
+                            index2_part2_full = total_rgb_triples_for_idx2
                         else:
                             # Standard N=1 Solid or N>1 Last Block
                             index2_part1_full, index2_part2_full = _calculate_last_block_index2_bases(segment_count, segments, is_any_fade_in_sequence)
@@ -629,7 +708,7 @@ def generate_prg_file(input_json, output_prg):
 
                         f.write(struct.pack('<H', pixels_for_block))
                         f.write(BLOCK_CONST_02)
-                        f.write(struct.pack('<H', block_duration_prg_current_seg)) 
+                        f.write(struct.pack('<H', block_duration_prg_current_seg))
                         f.write(BLOCK_CONST_07)
                         f.write(LAST_BLOCK_CONST_09)
                         f.write(struct.pack('<H', index2_part1_at_0B))

@@ -1,45 +1,29 @@
-## ADR — LTX Ball Sequence Upload & Trigger: Reverse-Engineering Strategy (2026-05-06)
+
+## ADR — 2026-05-07 — Fade-first PRG file format (cmm-code session)
 
 ### Context
+sequence_maker exports timelines through `sequence_maker/export/prg_exporter.py` → `prg_generator.py` (subprocess). When a timeline started with a *fade* segment, the resulting PRG file made the LTX ball play a rapid orange/yellow flicker instead of a smooth red→green fade.
 
-Existing state: TCP upload (port 8888) is fully solved. UDP play/stop control (port 41412) is partially solved — commands are 9-byte `61 OPID CB2 00 00 P1 P2 TS3 TS4` frames; OpID cycling and TS-echo are understood; CB2 and P1/P2 algorithms are NOT and our scripts get a "red LED" rejection intermittently.
-
-The official Android app **`com.lightrix.ltxremote`** (`/home/twain/Documents/4px_ball/LTX_Remote/Android/app-release-1.0.0+18.apk`, July 2020 build, 18 MB) is the working oracle — it controls the balls reliably. We had not yet used it as a reference.
+Reverse-engineering against two reference PRGs from the official Windows LightriX editor — `editor_simple_red_green_fade.prg` (1Hz, 10-tick fade + 60-tick green) and `editor_simple_red_green_100rf.prg` (100Hz, 1000-tick fade + 6000-tick green) — showed that prg_generator.py's existing duration-block formulas were derived from solid-only sequences and the N=1 full-program fade case. They produced wrong values for fade-first N≥2 sequences in: header field 0x18, header field 0x1E, the fade-block's f09/idx1/f11, and the last-block's idx2_p1/idx2_p2.
 
 ### Decision
+Treat **fade-first N≥2 sequences** as a separate code path (`is_fade_first_with_solids`) in [`prg_generator.py.generate_prg_file()`](prg_generator.py:273) with these formulas (verified byte-identical to both reference PRGs at the header + duration-block region):
 
-1. **Decompile the APK** with `jadx` (installed at `reverse_engineering/tools/jadx/`). The Android Java/Kotlin shell is a Flutter wrapper; the actual Dart logic is AOT-compiled into `resources/lib/{arm64-v8a,armeabi-v7a,x86_64}/libapp.so`.
+- Header: `f16 = 1`, `f18 = fade_dur`, `f1E = 0`.
+- Block 0 (the fade): `f9 = (floor(next_solid_dur/100), 100)`, `idx1 = 3*fade_dur + 70`, `f11 = next_solid_dur % 100`.
+- Last block: `idx2_p1 = 304 + 3*fade_dur + 300*(N-2)`, `idx2_p2 = total_RGB_triple_count_in_file`.
 
-2. **Skip dynamic instrumentation as the first step.** The phone is non-rooted, and Frida-gadget would require repacking + signing + reinstalling the APK (loses saved sequences, adds risk). Instead, drive the working app and capture wire traffic.
+The N=2 case is fully verified. The `300*(N-2)` extension for N>2 is a hypothesis based on the standard solid-step constant; it needs at least one more reference PRG (e.g. fade → solid → solid) to be confirmed.
 
-3. **Capture wire traffic on the laptop's existing PLAYLTX Wi-Fi hotspot** (`wlx8c902dbd3be7`, USB Wi-Fi adapter, `10.42.0.1/24`). The phone and the balls are already both clients of this AP, so the laptop sees every packet. Use `tcpdump` filtered to `udp port 41412 or tcp port 8888`.
+### Consequences
+- Fades now upload to balls and play correctly.
+- The 5 existing tests (all solid-only or solid-first) continue to pass byte-for-byte.
+- Untouched paths: N=1 full-program fade, N=1 solid, N≥2 solid-first (with or without embedded fades that are NOT segment 0). These remain governed by the original solid-derived formulas.
 
-4. **Decode captures with a stdlib-only Python pcap parser** (`reverse_engineering/capture/decode_pcap.py`) that knows the LTX protocol. It pairs every command with the surrounding ball broadcast state, making CB2/P1/P2 dependencies visible by inspection.
+### Related change
+[`sequence_maker/models/timeline.py`](sequence_maker/models/timeline.py:222): the auto-extension default for the **last** color block was reduced from 3600 s (1 hour) to 60 s (1 minute). The hour-long default forced `split_long_segments()` to chop the trailing solid into 6+ blocks, bloating PRG output and making fade-block bugs much harder to diagnose.
 
-5. **Run a fixed sequence of named experiments** (`reverse_engineering/capture/EXPERIMENTS.md`) that isolate one variable at a time (E1 idle baseline → E2 upload → E3 single play → E4 cycles → E5 app restarts → E6 ball power-cycles → E7 effect commands → E8 red-LED recovery).
-
-6. **Escalate to Frida-gadget instrumentation only if** the experiments fail to reveal the CB2/P1/P2 algorithm (i.e. they look truly random and stateless to ball- and app-side reset).
-
-### Findings already from the decompile (no captures yet)
-
-The APK is a Flutter app whose Dart class/method names survive in `libapp.so` strings:
-
-- Source files inferred: `package:ltxremote/{main.dart, common/{brightness,colorpicker,effects}.dart, engines/{node,nodeengine,nodemanager,showengine}.dart, pages/{livecontrol,nodelist,showcontrol}.dart}`.
-- Key methods: `sendShowCommand`, `startShow`, `startShowNoSync`, `stopShow`, `stopShowNoSync`, `sendStrobe`, `sendBrightness`, `sendColor`, `sendGlobalStateCommand`, `sendEventCommand`, `sendPacket`, `eventHandlerSendData`, `batchUploadPressed`, `uploadFirmware`.
-- Strings in binary: `"PLAYLTXBALL"`, `"upload ok"`, `"Unrecognized command "`, `"UDP sender bound to "`, `"] Node is not connected, not uploading."`, `"] Upload complete"`, `"Error uploading firmware : "`.
-- `CommandIDs` exists as a class with static int constants — values are inlined at call sites, not preserved as symbols. Bodies of the relevant functions are pure ARM machine code in `libapp.so`; Frida hook of `Socket_SendTo` is the cheapest way to read them at runtime if static analysis becomes necessary.
-
-### Tooling artefacts created
-
-- `reverse_engineering/tools/jadx/`              — jadx 1.5.1 standalone
-- `reverse_engineering/decompiled/ltx_remote/`   — full APK decompile
-- `reverse_engineering/analysis/libapp_strings.txt` (11k strings)
-- `reverse_engineering/analysis/{class_names,protocol_hits,ltxremote_files,all_enums}.txt`
-- `reverse_engineering/capture/capture.sh`       — `sudo tcpdump` wrapper
-- `reverse_engineering/capture/decode_pcap.py`   — stdlib pcap decoder + LTX annotator
-- `reverse_engineering/capture/test_decoder.py`  — synthetic-pcap unit test (passing)
-- `reverse_engineering/capture/EXPERIMENTS.md`   — runbook for E1-E8
-
-### Status
-
-Tooling complete and validated. Awaiting capture data from physical experiments E1-E8 to nail CB2 and P1/P2 algorithms. Once those are pinned, `ltx_ball_client.py` will replace the existing `sequence_uploading_and_triggering/trigger_sequence_*.py` family.
+### Open questions / future work
+1. The official editor's RGB fade interpolation uses a non-linear "256 levels spread over N steps with ~3 samples per level" algorithm rather than `round(i*delta/(N-1))`. Currently cosmetic; revisit if the ball's playback engine is found to be sensitive to the exact sample distribution.
+2. The `300*(N-2)` step for fade-first N>2 last-block idx2_p1 is unverified.
+3. Embedded fades that are NOT the first segment still go through `_calculate_intermediate_block_index1_base()` and `_calculate_last_block_index2_bases()` — these may have similar bugs but no evidence yet.
