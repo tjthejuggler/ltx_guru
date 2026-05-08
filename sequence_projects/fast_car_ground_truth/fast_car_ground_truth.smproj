@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-07T08:31:59.273939",
+    "modified": "2026-05-08T13:57:14.106586",
     "name": "fast car ground truth",
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-07T08:31:59.273824",
+      "modified": "2026-05-08T13:57:14.106330",
       "segments": [
         {
           "startTime": 0.0,
@@ -157,7 +157,7 @@
           "startTime": 55.45,
           "endTime": 57.83,
           "color": [
-            255,
+            0,
             255,
             0
           ],
@@ -347,6 +347,18 @@
         },
         {
           "startTime": 92.2,
+          "endTime": 94.53,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 94.53,
           "endTime": 96.91,
           "color": [
             255,
@@ -1203,7 +1215,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-07T08:31:59.273886",
+      "modified": "2026-05-08T13:57:14.106454",
       "segments": [
         {
           "startTime": 0.0,
@@ -1341,7 +1353,7 @@
           "startTime": 55.45,
           "endTime": 57.83,
           "color": [
-            255,
+            0,
             255,
             0
           ],
@@ -2387,7 +2399,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-07T08:31:59.273936",
+      "modified": "2026-05-08T13:57:14.106580",
       "segments": [
         {
           "startTime": 0.0,
@@ -2523,9 +2535,9 @@
         },
         {
           "startTime": 55.45,
-          "endTime": 57.83,
+          "endTime": 57.82,
           "color": [
-            255,
+            0,
             255,
             0
           ],

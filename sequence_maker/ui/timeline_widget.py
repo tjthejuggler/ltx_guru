@@ -2440,49 +2440,39 @@ class TimelineContainer(QWidget):
                 return
 
             segment_to_edit = self.parent_widget.selected_segment
-            
-            # Import and use the actual FadeEffectDialog
-            try:
-                from sequence_maker.ui.dialogs.fade_effect_dialog import FadeEffectDialog
-            except ImportError as e:
-                self.logger.error(f"Failed to import FadeEffectDialog: {e}")
-                # Show an error message to the user (optional)
-                from PyQt6.QtWidgets import QMessageBox
-                QMessageBox.critical(self, "Error", "Could not load the Fade Effect Dialog.")
-                return
+            timeline = self.parent_widget.selected_timeline
 
-            initial_start_c = segment_to_edit.color
-            initial_end_c = segment_to_edit.end_color # This will be None if it's a solid segment
+            # Find the colour playing immediately before this segment.
+            # For a fade segment the effective end colour is end_color;
+            # for a solid segment it is just color.
+            prev_color = (0, 0, 0)  # Default to black if no previous segment
+            segs_before = [s for s in timeline.segments
+                           if s.end_time <= segment_to_edit.start_time + 0.001]
+            if segs_before:
+                prev_seg = max(segs_before, key=lambda s: s.end_time)
+                if prev_seg.segment_type == 'fade' and prev_seg.end_color is not None:
+                    prev_color = prev_seg.end_color
+                else:
+                    prev_color = prev_seg.color
 
-            dialog = FadeEffectDialog(initial_start_color=initial_start_c,
-                                      initial_end_color=initial_end_c,
-                                      parent=self)
-            
-            if dialog.exec():
-                new_start_color_rgb, new_end_color_rgb = dialog.get_colors()
+            # Fade from the previous colour to this segment's current colour
+            fade_start_color = prev_color
+            fade_end_color = segment_to_edit.color
 
-                # Update the segment directly first for immediate visual feedback if needed,
-                # though TimelineManager.modify_segment should handle this and emit signals.
-                segment_to_edit.color = new_start_color_rgb
-                segment_to_edit.end_color = new_end_color_rgb
-                segment_to_edit.segment_type = 'fade' # Explicitly set as fade
+            # Save undo state before modifying
+            if self.app.timeline_manager.undo_manager:
+                self.app.timeline_manager.undo_manager.save_state("apply_fade_effect")
 
-                self.logger.info(f"Segment updated to fade: {segment_to_edit.color} to {segment_to_edit.end_color}")
-
-                # Call TimelineManager.modify_segment. This method will need to be
-                # updated to accept end_color and segment_type.
-                # Call TimelineManager.modify_segment with all necessary parameters
-                self.app.timeline_manager.modify_segment(
-                    timeline=self.parent_widget.selected_timeline,
-                    segment=segment_to_edit,
-                    color=new_start_color_rgb,    # This is the start_color
-                    end_color=new_end_color_rgb,  # Pass the new end_color
-                    segment_type='fade'           # Explicitly set the type
-                    # pixels are not changed by this dialog, so we don't pass them
-                )
-                # The segment_modified signal will be emitted by modify_segment if changes occurred.
-                # self.timeline_container.update() will be triggered by the signal chain.
-                # No need to call it directly here if modify_segment handles signals correctly.
+            self.app.timeline_manager.modify_segment(
+                timeline=timeline,
+                segment=segment_to_edit,
+                color=fade_start_color,
+                end_color=fade_end_color,
+                segment_type='fade'
+            )
+            self.logger.info(
+                f"Segment updated to fade: {fade_start_color} → {fade_end_color}"
+            )
 
         else: # Original effect logic for other types
             # This part remains unchanged for other effect types like "strobe", "pulse", "rainbow"
