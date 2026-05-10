@@ -45,6 +45,16 @@ class ToolsActions:
         self.process_lyrics_action.setStatusTip("Process lyrics for timeline")
         self.process_lyrics_action.triggered.connect(self.main_window._on_process_lyrics)
         
+        # Edit Lyrics Text action
+        self.edit_lyrics_action = QAction("Edit &Lyrics Text...", self.main_window)
+        self.edit_lyrics_action.setStatusTip("Edit lyrics text (timestamps will be regenerated)")
+        self.edit_lyrics_action.triggered.connect(self.main_window._on_edit_lyrics)
+        
+        # Edit Timestamps action
+        self.edit_timestamps_action = QAction("Edit Lyric &Timestamps...", self.main_window)
+        self.edit_timestamps_action.setStatusTip("Edit lyrics timestamps")
+        self.edit_timestamps_action.triggered.connect(self.main_window._on_edit_timestamps)
+        
         # Help actions
         self.about_action = QAction("&About", self.main_window)
         self.about_action.setStatusTip("About Sequence Maker")

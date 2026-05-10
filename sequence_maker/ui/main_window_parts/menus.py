@@ -186,7 +186,13 @@ def create_tools_menu(main_window):
     # Audio tools section
     main_window.tools_menu.addSeparator()
     main_window.tools_menu.addAction(main_window.crop_audio_action)
-    
+
+    # Lyrics tools section
+    main_window.tools_menu.addSeparator()
+    main_window.tools_menu.addAction(main_window.process_lyrics_action)
+    main_window.tools_menu.addAction(main_window.edit_lyrics_action)
+    main_window.tools_menu.addAction(main_window.edit_timestamps_action)
+
     # Version history
     main_window.tools_menu.addSeparator()
     main_window.tools_menu.addAction(main_window.version_history_action)

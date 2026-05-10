@@ -239,8 +239,9 @@ class SequenceMakerApp:
             self.ball_manager.connect_balls
         )
         
-        # Connect lyrics manager to lyrics widget
-        self.lyrics_manager.set_lyrics_widget(self.main_window.lyrics_widget)
+        # Lyrics are now displayed in the lyrics timeline inside AudioWidget,
+        # so we no longer need to connect lyrics_manager to a separate widget.
+        # The AudioWidget connects to lyrics_processed and project_loaded directly.
         
         # Connect sequence swap manager signals
         self.sequence_swap_manager.sequence_swapped.connect(

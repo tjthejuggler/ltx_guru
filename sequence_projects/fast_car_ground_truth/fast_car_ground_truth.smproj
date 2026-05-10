@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-10T07:44:09.403114",
+    "modified": "2026-05-10T14:59:37.559392",
     "name": "fast car ground truth",
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-10T07:44:09.402921",
+      "modified": "2026-05-10T14:59:37.559132",
       "segments": [
         {
           "startTime": 0.0,
@@ -1220,7 +1220,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-10T07:44:09.403022",
+      "modified": "2026-05-10T14:59:37.559320",
       "segments": [
         {
           "startTime": 0.0,
@@ -2404,7 +2404,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-10T07:44:09.403110",
+      "modified": "2026-05-10T14:59:37.559388",
       "segments": [
         {
           "startTime": 0.0,
@@ -4130,8 +4130,8 @@
       },
       {
         "word": "see",
-        "start": 66.9,
-        "end": 66.92
+        "start": 75.55,
+        "end": 76.25
       },
       {
         "word": "my",
@@ -6034,14 +6034,14 @@
   "notes": [],
   "markers": [
     {
-      "id": "4ff4d0b5-1d76-49ee-86d9-26cf2bfffec0",
-      "time": 5.91,
+      "id": "e88ab16e-5c1c-4b27-a90b-839415136fe6",
+      "time": 20.7,
       "color": [
-        0,
         255,
+        0,
         0
       ],
-      "created": "2026-05-10T07:31:06.944391"
+      "created": "2026-05-10T11:09:05.380375"
     }
   ],
   "chat_history": [],

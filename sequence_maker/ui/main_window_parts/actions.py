@@ -138,6 +138,9 @@ def create_tools_actions(main_window):
     main_window.key_mapping_action = main_window.tools_actions.key_mapping_action
     main_window.crop_audio_action = main_window.tools_actions.crop_audio_action
     main_window.connect_balls_action = main_window.tools_actions.connect_balls_action
+    main_window.process_lyrics_action = main_window.tools_actions.process_lyrics_action
+    main_window.edit_lyrics_action = main_window.tools_actions.edit_lyrics_action
+    main_window.edit_timestamps_action = main_window.tools_actions.edit_timestamps_action
     
     # Create version history action
     main_window.version_history_action = QAction("&Version History...", main_window)

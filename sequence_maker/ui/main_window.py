@@ -15,7 +15,6 @@ from resources.resources import get_icon_path
 from ui.timeline_widget import TimelineWidget
 from ui.ball_widget import BallWidget
 from ui.audio_widget import AudioWidget
-from ui.lyrics_widget import LyricsWidget
 
 from ui.dialogs.settings_dialog import SettingsDialog
 from ui.dialogs.key_mapping_dialog import KeyMappingDialog
@@ -351,6 +350,63 @@ class MainWindow(QMainWindow):
                 lyrics_text = dialog.get_lyrics_text()
                 self.app.lyrics_manager.process_lyrics(lyrics_text)
     
+    def _on_edit_lyrics(self):
+        """Open the Edit Lyrics dialog (edits text; timestamps regenerated on OK)."""
+        if not hasattr(self.app.project_manager, 'current_project') or not self.app.project_manager.current_project:
+            return
+        project = self.app.project_manager.current_project
+        if not hasattr(project, 'lyrics') or not project.lyrics:
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "No Lyrics", "No lyrics data to edit. Process lyrics first.")
+            return
+        from ui.lyrics_widget import LyricsEditDialog
+        dialog = LyricsEditDialog(project.lyrics, "lyrics", self)
+        if dialog.exec() == dialog.DialogCode.Accepted:
+            edited = dialog.get_edited_lyrics()
+            if edited:
+                project.lyrics = edited
+                # Update lyrics timeline
+                if hasattr(self, 'audio_widget') and hasattr(self.audio_widget, 'lyrics_timeline'):
+                    self.audio_widget.lyrics_timeline.set_lyrics(edited)
+                # If lyrics text changed, offer to reprocess
+                if getattr(dialog, 'lyrics_text_changed', False):
+                    from PyQt6.QtWidgets import QMessageBox
+                    response = QMessageBox.question(
+                        self, "Reprocess Lyrics",
+                        "Lyrics text changed. Reprocess timestamps?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                        QMessageBox.StandardButton.Yes
+                    )
+                    if response == QMessageBox.StandardButton.Yes and hasattr(self.app, 'lyrics_manager') and self.app.audio_manager.audio_file:
+                        self.app.lyrics_manager.align_lyrics_directly(
+                            self.app.audio_manager.audio_file, edited
+                        )
+                self.app.project_manager.project_changed.emit()
+    
+    def _on_edit_timestamps(self):
+        """Open the Edit Timestamps dialog (edits word-level timestamps directly)."""
+        if not hasattr(self.app.project_manager, 'current_project') or not self.app.project_manager.current_project:
+            return
+        project = self.app.project_manager.current_project
+        if not hasattr(project, 'lyrics') or not project.lyrics:
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "No Lyrics", "No lyrics data to edit. Process lyrics first.")
+            return
+        if not hasattr(project.lyrics, 'word_timestamps') or not project.lyrics.word_timestamps:
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.warning(self, "No Timestamps", "No timestamps to edit. Process lyrics first.")
+            return
+        from ui.lyrics_widget import LyricsEditDialog
+        dialog = LyricsEditDialog(project.lyrics, "timestamps", self)
+        if dialog.exec() == dialog.DialogCode.Accepted:
+            edited = dialog.get_edited_lyrics()
+            if edited:
+                project.lyrics = edited
+                # Update lyrics timeline
+                if hasattr(self, 'audio_widget') and hasattr(self.audio_widget, 'lyrics_timeline'):
+                    self.audio_widget.lyrics_timeline.set_lyrics(edited)
+                self.app.project_manager.project_changed.emit()
+    
     def _on_about(self):
         on_about(self)
     
@@ -371,8 +427,8 @@ class MainWindow(QMainWindow):
         self.audio_widget.setVisible(checked)
     
     def _on_toggle_lyrics_view(self, checked):
-        if hasattr(self, 'lyrics_widget'):
-            self.lyrics_widget.setVisible(checked)
+        if hasattr(self, 'audio_widget') and hasattr(self.audio_widget, 'lyrics_timeline'):
+            self.audio_widget.lyrics_timeline.setVisible(checked)
     
     # Editor methods that delegate to the refactored modules
     def show_segment_editor(self, timeline, segment):

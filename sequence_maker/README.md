@@ -44,6 +44,16 @@ Sequence Maker is a desktop application that allows you to create, edit, and vis
   - In **begin** mode the snippet starts at the position marker; in **end** mode it ends at the marker.
   - Snippets are **automatically persisted** to `~/.sequence_maker/snippets.json` and restored on the next launch — they are global to the application, not tied to any specific project. *(Fixed 2026-05-05: snippets were previously wiped whenever a project was loaded.)*
   - **Undo / Redo** of snippet apply works just like normal color insertion: press <kbd>Ctrl</kbd>+<kbd>Z</kbd> after applying a snippet to revert the entire insertion in one step. *(Fixed 2026-05-05.)*
+- **Lyrics Timeline** *(2026-05-10)*: Word-level lyrics displayed as boxes on a timeline directly above the audio waveform, perfectly aligned with the color and audio timelines.
+  - Each word box is positioned precisely at its start/end timestamp.
+  - Click a word to seek to its start; click the same word again to seek to its end.
+  - **Drag a word** to move it in time (shifts both start and end together).
+  - **Drag the left/right edge** of a word to resize its start or end time independently (cursor changes to ↔ resize icon).
+  - Hover over a word to see its start and end times in a tooltip.
+  - Font size scales with zoom level (clamped between 6 px and 28 px).
+  - All drag/resize changes are persisted to the project's lyrics data and mark the project as changed (saved on next save).
+  - The old collapsible lyrics pane has been removed — lyrics are now always visible in the timeline.
+  - **Edit Lyrics** and **Edit Timestamps** actions are available in the **Tools** menu.
 - **Timeline Markers** *(2026-05-10)*: Visual reference markers pinned to specific times on the song (audio) timeline.
   - Right-click anywhere on the audio waveform area and choose **Add Marker Here** to place a marker.
   - Pick from 6 basic colors (Red, Green, Blue, Yellow, Cyan, Magenta) in the color picker popup.

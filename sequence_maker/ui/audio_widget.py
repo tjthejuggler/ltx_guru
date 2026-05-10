@@ -2,6 +2,8 @@
 Sequence Maker - Audio Widget
 
 This module defines the AudioWidget class, which displays audio visualizations and controls.
+It also contains the LyricsTimelineWidget which is placed directly above the audio
+visualization and shows word-level lyrics aligned with the timeline.
 """
 
 import logging
@@ -13,6 +15,8 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPointF
 from PyQt6.QtGui import QPainter, QColor, QBrush, QPen, QLinearGradient, QPolygonF
+
+from ui.lyrics_timeline_widget import LyricsTimelineWidget
 
 
 class AudioWidget(QWidget):
@@ -82,12 +86,17 @@ class AudioWidget(QWidget):
         Process Lyrics button, visualization-type combo box, play/pause/stop
         buttons, song-name title label and position label have all been moved
         to the main window's top toolbar / menus to free up vertical space.
-        Only the audio waveform visualization itself remains here.
+        2026-05-10: Added LyricsTimelineWidget directly above the audio
+        visualization so lyrics align with the audio/color timelines.
         """
         # Create main layout
         self.main_layout = QVBoxLayout(self)
         self.main_layout.setContentsMargins(0, 0, 0, 0)
         self.main_layout.setSpacing(0)
+
+        # Create lyrics timeline widget (above the audio visualization)
+        self.lyrics_timeline = LyricsTimelineWidget(self.app, self)
+        self.main_layout.addWidget(self.lyrics_timeline)
 
         # Create visualization widget (reduced 2026-05-06: half-height to save space)
         self.visualization = AudioVisualization(self.app, self)
@@ -107,6 +116,45 @@ class AudioWidget(QWidget):
         
         # Connect timeline manager signals to ensure position sync with ball timelines
         self.app.timeline_manager.position_changed.connect(self._on_position_changed)
+
+        # Connect lyrics timeline word click → seek position
+        self.lyrics_timeline.word_clicked.connect(self._on_lyrics_word_clicked)
+
+        # Connect lyrics manager signal for when lyrics are processed
+        if hasattr(self.app, 'lyrics_manager'):
+            self.app.lyrics_manager.lyrics_processed.connect(self._on_lyrics_processed)
+
+        # Connect project loaded signal to update lyrics display
+        self.app.project_manager.project_loaded.connect(self._on_project_loaded_for_lyrics)
+
+        # Note: zoom_changed signal is connected in signals.py after all widgets
+        # are created, because self.app.main_window doesn't exist yet at this point.
+
+    def connect_zoom_signal(self):
+        """Connect the timeline zoom signal (called from signals.py after init)."""
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'timeline_widget'):
+            self.app.main_window.timeline_widget.zoom_changed.connect(self._on_zoom_changed)
+
+    def _on_zoom_changed(self, zoom_level):
+        """Handle zoom change — repaint lyrics timeline."""
+        self.lyrics_timeline.update()
+
+    def _on_lyrics_word_clicked(self, time_seconds):
+        """Handle a word click from the lyrics timeline — seek playback."""
+        self.app.timeline_manager.set_position(time_seconds)
+        if hasattr(self.app, 'audio_manager'):
+            self.app.audio_manager.seek(time_seconds)
+
+    def _on_lyrics_processed(self, lyrics_data):
+        """Handle lyrics_processed signal — update the lyrics timeline."""
+        self.lyrics_timeline.set_lyrics(lyrics_data)
+
+    def _on_project_loaded_for_lyrics(self, project):
+        """Handle project loaded — update lyrics timeline with project lyrics."""
+        if project and hasattr(project, 'lyrics') and project.lyrics:
+            self.lyrics_timeline.set_lyrics(project.lyrics)
+        else:
+            self.lyrics_timeline.set_lyrics(None)
     
     def update_visualization(self):
         """Update the audio visualization."""
@@ -239,6 +287,8 @@ class AudioWidget(QWidget):
             position (float): New position in seconds.
         """
         self.position = position
+        # Forward position to lyrics timeline
+        self.lyrics_timeline.set_position(position)
 
     def _on_analysis_completed(self, analysis_data):
         """
@@ -265,10 +315,12 @@ class AudioWidget(QWidget):
         return f"{minutes}:{seconds:02d}"
 
     def set_horizontal_scroll_offset(self, offset: int):
-        """Set the horizontal scroll offset for the visualization."""
+        """Set the horizontal scroll offset for the visualization and lyrics timeline."""
         if hasattr(self, 'visualization'):
             self.visualization.horizontal_scroll_offset = offset
             self.visualization.update()
+        if hasattr(self, 'lyrics_timeline'):
+            self.lyrics_timeline.set_horizontal_scroll_offset(offset)
 
 
 class AudioVisualization(QWidget):

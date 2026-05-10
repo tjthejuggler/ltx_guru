@@ -53,15 +53,17 @@ class LyricsManager(QObject):
     
     def set_lyrics_widget(self, lyrics_widget):
         """
-        Set the lyrics widget reference.
+        Set the lyrics widget reference (legacy — no longer required since
+        lyrics are now displayed in the LyricsTimelineWidget inside AudioWidget).
         
         Args:
-            lyrics_widget: The lyrics widget instance.
+            lyrics_widget: The lyrics widget instance (or None).
         """
         self.lyrics_widget = lyrics_widget
         
-        # Connect status signal to widget
-        self.status_updated.connect(self.lyrics_widget.update_status)
+        # Connect status signal to widget if provided
+        if lyrics_widget is not None and hasattr(lyrics_widget, 'update_status'):
+            self.status_updated.connect(lyrics_widget.update_status)
     
     def _on_project_loaded(self, project):
         """

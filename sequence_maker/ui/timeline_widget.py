@@ -41,6 +41,7 @@ class TimelineWidget(QWidget):
     segment_double_clicked = pyqtSignal(object, object)  # timeline, segment
     segment_context_menu = pyqtSignal(object, object, QPoint)  # timeline, segment, position
     horizontal_scroll_changed = pyqtSignal(int) # New signal for horizontal scroll
+    zoom_changed = pyqtSignal(float)  # Emitted when zoom level changes
     
     def __init__(self, app, parent=None):
         """
@@ -220,6 +221,9 @@ class TimelineWidget(QWidget):
         
         # Redraw
         self.timeline_container.update()
+        
+        # Notify listeners (e.g. lyrics timeline) that zoom changed
+        self.zoom_changed.emit(self.zoom_level)
     
     def set_position(self, position):
         """
