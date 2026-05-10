@@ -1469,7 +1469,7 @@ class TimelineContainer(QWidget):
                 self.parent_widget.set_position(time)
         
         elif event.button() == Qt.MouseButton.RightButton:
-            # Check for note marker right-click first
+            # Check for note marker right-click
             clicked_note = self._get_note_at_pos(event.pos())
             if clicked_note:
                 self._show_note_context_menu(clicked_note, event.pos())
@@ -2179,7 +2179,6 @@ class TimelineContainer(QWidget):
         menu.addSeparator()
         
         # Add Note action
-        time_at_pos = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         add_note_action = menu.addAction("Add Note Here")
         add_note_action.triggered.connect(
             lambda checked, m=menu, t=time_at_pos: (m.close(), self._add_note_at_time(t))
@@ -2228,7 +2227,6 @@ class TimelineContainer(QWidget):
         
         # Add Note action
         add_note_action = menu.addAction("Add Note Here")
-        time_at_pos = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         add_note_action.triggered.connect(
             lambda checked, m=menu, t=time_at_pos: (m.close(), self._add_note_at_time(t))
         )
@@ -2659,3 +2657,4 @@ class TimelineContainer(QWidget):
         delete_action.triggered.connect(lambda: self._delete_note(note))
         
         menu.exec(self.mapToGlobal(pos))
+    

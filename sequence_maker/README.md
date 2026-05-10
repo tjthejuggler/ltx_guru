@@ -44,6 +44,13 @@ Sequence Maker is a desktop application that allows you to create, edit, and vis
   - In **begin** mode the snippet starts at the position marker; in **end** mode it ends at the marker.
   - Snippets are **automatically persisted** to `~/.sequence_maker/snippets.json` and restored on the next launch — they are global to the application, not tied to any specific project. *(Fixed 2026-05-05: snippets were previously wiped whenever a project was loaded.)*
   - **Undo / Redo** of snippet apply works just like normal color insertion: press <kbd>Ctrl</kbd>+<kbd>Z</kbd> after applying a snippet to revert the entire insertion in one step. *(Fixed 2026-05-05.)*
+- **Timeline Markers** *(2026-05-10)*: Visual reference markers pinned to specific times on the song (audio) timeline.
+  - Right-click anywhere on the audio waveform area and choose **Add Marker Here** to place a marker.
+  - Pick from 6 basic colors (Red, Green, Blue, Yellow, Cyan, Magenta) in the color picker popup.
+  - Markers appear as dotted vertical lines on the audio visualization, with a small diamond at the top.
+  - Click a marker to select it; drag it left/right to reposition it.
+  - Right-click a marker to delete it.
+  - Markers are purely visual — they do not affect sequences or playback. Saved with the project.
 - **LLM Integration**: Use AI to automatically generate sequences based on music analysis, lyrics synchronization, and natural language instructions.
 
 ## Installation

@@ -13,6 +13,7 @@ from pathlib import Path
 
 from app.constants import APP_VERSION, PROJECT_FILE_EXTENSION
 from models.lyrics import Lyrics
+from models.marker import TimelineMarker
 from models.note import TimelineNote
 from models.timeline import Timeline
 from models.segment import TimelineSegment
@@ -78,6 +79,9 @@ class Project:
         # Timeline notes
         self.notes = []
         
+        # Timeline markers (visual reference only)
+        self.markers = []
+        
         # LLM data
         self.chat_history = []
         self.llm_metadata = {
@@ -141,6 +145,7 @@ class Project:
             "lyrics": self.lyrics.to_dict() if self.lyrics else {},
             "snippets": [s.to_dict() for s in self.snippets] if hasattr(self, 'snippets') else [],
             "notes": [note.to_dict() for note in self.notes],
+            "markers": [marker.to_dict() for marker in self.markers],
             "chat_history": self.chat_history,
             "llm_metadata": self.llm_metadata,
             "llm_customization": {
@@ -237,6 +242,10 @@ class Project:
         # Set notes data
         for note_data in data.get("notes", []):
             project.notes.append(TimelineNote.from_dict(note_data))
+        
+        # Set markers data
+        for marker_data in data.get("markers", []):
+            project.markers.append(TimelineMarker.from_dict(marker_data))
         
         # Set LLM data
         project.chat_history = data.get("chat_history", [])

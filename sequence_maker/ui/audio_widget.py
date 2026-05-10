@@ -9,10 +9,10 @@ import os
 import numpy as np
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QSizePolicy, QSlider, QComboBox, QCheckBox, QFileDialog
+    QSizePolicy, QSlider, QComboBox, QCheckBox, QFileDialog, QMenu
 )
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QPainter, QColor, QBrush, QPen, QLinearGradient
+from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QPointF
+from PyQt6.QtGui import QPainter, QColor, QBrush, QPen, QLinearGradient, QPolygonF
 
 
 class AudioWidget(QWidget):
@@ -301,6 +301,11 @@ class AudioVisualization(QWidget):
         # Dragging state
         self.dragging_position = False
         
+        # Marker interaction state
+        self.selected_marker = None
+        self.dragging_marker = False
+        self.MARKER_HIT_TOLERANCE = 6  # pixels tolerance for clicking a marker
+        
         # Horizontal scroll offset
         self.horizontal_scroll_offset = 0
     
@@ -342,6 +347,9 @@ class AudioVisualization(QWidget):
         
         # Draw position marker
         self._draw_position_marker(painter)
+        
+        # Draw timeline markers
+        self._draw_markers(painter)
     
     def _draw_waveform(self, painter):
         """
@@ -593,7 +601,23 @@ class AudioVisualization(QWidget):
         Args:
             event: Mouse event.
         """
-        if self.dragging_position:
+        if self.dragging_marker and self.selected_marker:
+            # Drag the selected marker to the new time position
+            timeline_widget = self.app.main_window.timeline_widget
+            zoom_level = timeline_widget.zoom_level
+            time_scale = timeline_widget.time_scale
+            
+            time = (event.pos().x() + self.horizontal_scroll_offset) / (time_scale * zoom_level)
+            if time < 0:
+                time = 0
+            audio_duration = self.app.audio_manager.duration if hasattr(self.app, 'audio_manager') else 0
+            if audio_duration > 0 and time > audio_duration:
+                time = audio_duration
+            
+            self.selected_marker.time = time
+            self.update()
+            self.setCursor(Qt.CursorShape.ClosedHandCursor)
+        elif self.dragging_position:
             # Get timeline zoom level and time scale
             timeline_widget = self.app.main_window.timeline_widget
             zoom_level = timeline_widget.zoom_level
@@ -644,8 +668,13 @@ class AudioVisualization(QWidget):
             if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'update_cursor_hover_position'):
                 self.app.main_window.update_cursor_hover_position(time)
                 
-            # Change cursor to indicate the visualization is clickable
-            self.setCursor(Qt.CursorShape.PointingHandCursor)
+            # Check if hovering over a marker — change cursor to open hand
+            hovered_marker = self._get_marker_at_pos(event.pos())
+            if hovered_marker:
+                self.setCursor(Qt.CursorShape.OpenHandCursor)
+            else:
+                # Change cursor to indicate the visualization is clickable
+                self.setCursor(Qt.CursorShape.PointingHandCursor)
         
         # Accept the event
         event.accept()
@@ -675,6 +704,20 @@ class AudioVisualization(QWidget):
             event: Mouse event.
         """
         if event.button() == Qt.MouseButton.LeftButton:
+            # Check if clicking on a marker first
+            clicked_marker = self._get_marker_at_pos(event.pos())
+            if clicked_marker:
+                self.selected_marker = clicked_marker
+                self.dragging_marker = True
+                self.setCursor(Qt.CursorShape.ClosedHandCursor)
+                self.update()
+                event.accept()
+                return
+            
+            # Deselect any previously selected marker
+            if self.selected_marker:
+                self.selected_marker = None
+                self.update()
             # Get timeline zoom level and time scale
             timeline_widget = self.app.main_window.timeline_widget
             zoom_level = timeline_widget.zoom_level
@@ -700,6 +743,19 @@ class AudioVisualization(QWidget):
             
             # Accept the event
             event.accept()
+        elif event.button() == Qt.MouseButton.RightButton:
+            # Check if right-clicking on a marker
+            clicked_marker = self._get_marker_at_pos(event.pos())
+            if clicked_marker:
+                self.selected_marker = clicked_marker
+                self._show_marker_context_menu(clicked_marker, event.pos())
+                self.update()
+                event.accept()
+                return
+            
+            # Otherwise show "Add Marker" context menu at click position
+            self._show_add_marker_menu(event.pos())
+            event.accept()
         else:
             # Pass other buttons to parent
             super().mousePressEvent(event)
@@ -711,15 +767,162 @@ class AudioVisualization(QWidget):
         Args:
             event: Mouse event.
         """
-        if event.button() == Qt.MouseButton.LeftButton and self.dragging_position:
-            # End dragging
-            self.dragging_position = False
+        if event.button() == Qt.MouseButton.LeftButton:
+            if self.dragging_marker:
+                self.dragging_marker = False
+                self.setCursor(Qt.CursorShape.OpenHandCursor)
+                event.accept()
+                return
+            if self.dragging_position:
+                # End dragging
+                self.dragging_position = False
+                
+                # Reset cursor
+                self.setCursor(Qt.CursorShape.PointingHandCursor)
+                
+                # Accept the event
+                event.accept()
+                return
+        # Pass other buttons to parent
+        super().mouseReleaseEvent(event)
+    
+    # ------------------------------------------------------------------
+    # Marker-related methods
+    # ------------------------------------------------------------------
+    
+    def _draw_markers(self, painter):
+        """
+        Draw timeline markers as dotted vertical lines on the audio visualization.
+        
+        Each marker is a thin dotted line at its time position, colored
+        according to the marker's color attribute, with a small diamond
+        indicator at the top.
+        """
+        project = self.app.project_manager.current_project
+        if not project or not project.markers:
+            return
+        
+        timeline_widget = self.app.main_window.timeline_widget
+        zoom_level = timeline_widget.zoom_level
+        time_scale = timeline_widget.time_scale
+        
+        for marker in project.markers:
+            x = int(marker.time * time_scale * zoom_level) - self.horizontal_scroll_offset
+            r, g, b = marker.color
             
-            # Reset cursor
-            self.setCursor(Qt.CursorShape.PointingHandCursor)
+            # Draw dotted line spanning the full height
+            pen = QPen(QColor(r, g, b, 180), 2, Qt.PenStyle.DotLine)
+            painter.setPen(pen)
+            painter.drawLine(x, 0, x, self.height())
             
-            # Accept the event
-            event.accept()
-        else:
-            # Pass other buttons to parent
-            super().mouseReleaseEvent(event)
+            # Draw a small diamond at the top of the line for visibility
+            diamond_y = 2
+            diamond_size = 5
+            diamond = [
+                QPointF(x, diamond_y - diamond_size),
+                QPointF(x + diamond_size, diamond_y),
+                QPointF(x, diamond_y + diamond_size),
+                QPointF(x - diamond_size, diamond_y),
+            ]
+            painter.setBrush(QBrush(QColor(r, g, b)))
+            painter.setPen(QPen(QColor(r, g, b), 1))
+            painter.drawPolygon(QPolygonF(diamond))
+            
+            # If this marker is selected, draw a highlight border around the diamond
+            if marker == self.selected_marker:
+                painter.setBrush(QBrush(QColor(255, 255, 255, 80)))
+                painter.setPen(QPen(QColor(255, 255, 255), 2))
+                painter.drawPolygon(QPolygonF(diamond))
+    
+    def _get_marker_at_pos(self, pos):
+        """
+        Return the marker whose dotted line is closest to *pos*, or None.
+        
+        Args:
+            pos: QPoint position.
+        
+        Returns:
+            TimelineMarker or None.
+        """
+        project = self.app.project_manager.current_project
+        if not project or not project.markers:
+            return None
+        
+        timeline_widget = self.app.main_window.timeline_widget
+        zoom_level = timeline_widget.zoom_level
+        time_scale = timeline_widget.time_scale
+        
+        for marker in project.markers:
+            x = int(marker.time * time_scale * zoom_level) - self.horizontal_scroll_offset
+            if abs(pos.x() - x) <= self.MARKER_HIT_TOLERANCE:
+                return marker
+        
+        return None
+    
+    def _show_add_marker_menu(self, pos):
+        """
+        Show a context menu with 'Add Marker Here' at the given position.
+        
+        Args:
+            pos: QPoint position in widget coordinates.
+        """
+        menu = QMenu(self)
+        
+        timeline_widget = self.app.main_window.timeline_widget
+        time_at_pos = (pos.x() + self.horizontal_scroll_offset) / (timeline_widget.time_scale * timeline_widget.zoom_level)
+        
+        add_marker_action = menu.addAction("Add Marker Here")
+        add_marker_action.triggered.connect(
+            lambda checked, t=time_at_pos: self._add_marker_at_time(t)
+        )
+        
+        menu.exec(self.mapToGlobal(pos))
+    
+    def _add_marker_at_time(self, time):
+        """
+        Open the color picker dialog and create a marker at the given time.
+        
+        Args:
+            time (float): Time position in seconds.
+        """
+        from ui.dialogs.marker_color_dialog import MarkerColorDialog
+        
+        dialog = MarkerColorDialog(self)
+        if dialog.exec() == MarkerColorDialog.DialogCode.Accepted:
+            color = dialog.get_color()
+            if color:
+                from models.marker import TimelineMarker
+                marker = TimelineMarker(time=time, color=color)
+                project = self.app.project_manager.current_project
+                if project:
+                    project.markers.append(marker)
+                    self.update()
+    
+    def _show_marker_context_menu(self, marker, pos):
+        """
+        Show a right-click context menu for a timeline marker.
+        
+        Args:
+            marker: The TimelineMarker.
+            pos: QPoint position in widget coordinates.
+        """
+        menu = QMenu(self)
+        
+        delete_action = menu.addAction("Delete Marker")
+        delete_action.triggered.connect(lambda: self._delete_marker(marker))
+        
+        menu.exec(self.mapToGlobal(pos))
+    
+    def _delete_marker(self, marker):
+        """
+        Remove a marker from the project.
+        
+        Args:
+            marker: TimelineMarker to remove.
+        """
+        project = self.app.project_manager.current_project
+        if project and marker in project.markers:
+            project.markers.remove(marker)
+            if self.selected_marker == marker:
+                self.selected_marker = None
+            self.update()

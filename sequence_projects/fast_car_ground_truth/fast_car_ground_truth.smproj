@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-08T13:57:14.106586",
+    "modified": "2026-05-10T07:44:09.403114",
     "name": "fast car ground truth",
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-08T13:57:14.106330",
+      "modified": "2026-05-10T07:44:09.402921",
       "segments": [
         {
           "startTime": 0.0,
@@ -349,13 +349,18 @@
           "startTime": 92.2,
           "endTime": 94.53,
           "color": [
-            255,
             0,
+            255,
             0
           ],
           "pixels": 4,
           "effects": [],
-          "segment_type": "solid"
+          "segment_type": "fade",
+          "endColor": [
+            255,
+            0,
+            0
+          ]
         },
         {
           "startTime": 94.53,
@@ -1215,7 +1220,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-08T13:57:14.106454",
+      "modified": "2026-05-10T07:44:09.403022",
       "segments": [
         {
           "startTime": 0.0,
@@ -1230,7 +1235,7 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 23.05,
+          "startTime": 23.41,
           "endTime": 25.33,
           "color": [
             255,
@@ -2399,7 +2404,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-08T13:57:14.106580",
+      "modified": "2026-05-10T07:44:09.403110",
       "segments": [
         {
           "startTime": 0.0,
@@ -6027,6 +6032,18 @@
   },
   "snippets": [],
   "notes": [],
+  "markers": [
+    {
+      "id": "4ff4d0b5-1d76-49ee-86d9-26cf2bfffec0",
+      "time": 5.91,
+      "color": [
+        0,
+        255,
+        0
+      ],
+      "created": "2026-05-10T07:31:06.944391"
+    }
+  ],
   "chat_history": [],
   "llm_metadata": {
     "token_usage": 0,
