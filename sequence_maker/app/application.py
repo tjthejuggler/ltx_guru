@@ -267,6 +267,9 @@ class SequenceMakerApp:
         # Start autosave timer
         self.project_manager.start_autosave()
         
+        # Start ball auto-discovery (passive UDP listener)
+        self.ball_manager.start_discovery()
+        
         # Run the Qt application
         return self.qt_app.exec()
     

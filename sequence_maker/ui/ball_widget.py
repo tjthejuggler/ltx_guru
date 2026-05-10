@@ -98,6 +98,7 @@ class BallWidget(QWidget):
         self.app.ball_manager.ball_lost.connect(self._on_ball_lost)
         self.app.ball_manager.ball_assigned.connect(self._on_ball_assigned)
         self.app.ball_manager.ball_unassigned.connect(self._on_ball_unassigned)
+        self.app.ball_manager.ball_ips_auto_updated.connect(self._on_ball_ips_auto_updated)
     
     def _create_ball_widgets(self):
         """Create ball widgets for each timeline."""
@@ -143,75 +144,17 @@ class BallWidget(QWidget):
                 self.logger.debug(f"Updated ball {i}")
     
     def _on_connect_clicked(self):
-        """Handle Connect to Balls button click."""
+        """Handle Connect to Balls action (via menu or keyboard)."""
         # Start ball discovery and show scan dialog
         self.app.ball_manager.connect_balls()
-        
-        # Update button state based on connected balls
-        if self.app.ball_manager.balls:
-            self.connect_button.setText("Connected")
-            self.stream_button.setEnabled(True)
-            
-            # Show a summary of connected balls
-            self._show_connected_balls_summary()
-        else:
-            self.connect_button.setText("Connect to Balls")
-            self.connect_button.setEnabled(True)
-    
-    def _show_connected_balls_summary(self):
-        """Show a summary of connected balls."""
-        # Get all connected balls
-        connected_balls = []
-        for timeline_index in range(len(self.app.project_manager.current_project.timelines)):
-            ball = self.app.ball_manager.get_ball_for_timeline(timeline_index)
-            if ball:
-                connected_balls.append((timeline_index, ball))
-        
-        # If no balls are connected, don't show anything
-        if not connected_balls:
-            return
-        
-        # Create summary message
-        summary = "Connected Balls:\n\n"
-        for timeline_index, ball in connected_balls:
-            summary += f"Timeline {timeline_index + 1}: Ball {ball.ip}\n"
-        
-        # Show message box
-        from PyQt6.QtWidgets import QMessageBox
-        QMessageBox.information(self, "Connected Balls", summary)
-    
-    def _enable_stream_button(self):
-        """Enable the Stream Colors button."""
-        self.connect_button.setText("Connected")
-        self.stream_button.setEnabled(True)
     
     def _on_stream_clicked(self):
-        """Handle Stream Colors button click."""
-        # Check if already streaming
+        """Handle Stream Colors action (via menu or keyboard)."""
+        # Toggle streaming
         if self.app.ball_manager.streaming:
-            # Stop streaming
             self.app.ball_manager.stop_streaming()
-            self.stream_button.setText("Stream Colors")
-            
-            # Inform user that direct color sending is enabled
-            from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.information(
-                self,
-                "Direct Color Mode",
-                "Streaming mode disabled. Colors will now be sent directly to balls when they change in the visualization."
-            )
         else:
-            # Start streaming
             self.app.ball_manager.start_streaming()
-            self.stream_button.setText("Stop Streaming")
-            
-            # Inform user that streaming mode is enabled
-            from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.information(
-                self,
-                "Streaming Mode",
-                "Streaming mode enabled. Colors will be continuously sent to balls based on the timeline position."
-            )
     
     def _on_ball_clicked(self, timeline_index):
         """
@@ -264,8 +207,28 @@ class BallWidget(QWidget):
         Args:
             ball: Discovered ball.
         """
-        # Automatically start streaming when balls are connected
-        self.app.ball_manager.start_streaming()
+        # Auto-assignment is handled by BallManager._auto_assign_ips.
+        # Streaming will be started once IPs are auto-assigned.
+        pass
+
+    def _on_ball_ips_auto_updated(self, ips):
+        """
+        Handle ball IPs auto-updated signal from auto-discovery.
+
+        Args:
+            ips (list[str]): List of 3 IP strings (empty for unassigned slots).
+        """
+        assigned = [ip for ip in ips if ip]
+        if assigned:
+            # Auto-start streaming so colors flow to the balls immediately
+            if not self.app.ball_manager.streaming:
+                self.app.ball_manager.start_streaming()
+            self.logger.info(f"Auto-discovery assigned {len(assigned)} ball(s): {assigned}")
+        else:
+            if self.app.ball_manager.streaming:
+                self.app.ball_manager.stop_streaming()
+        # Refresh ball visualizations to reflect new IP assignments
+        self.update_balls()
     
     def _on_ball_lost(self, ball):
         """
@@ -274,8 +237,15 @@ class BallWidget(QWidget):
         Args:
             ball: Lost ball.
         """
-        # Update is handled by the update timer
-        pass
+        # The ball was removed from BallManager.balls before this signal,
+        # so _update_status on all visualizations will see the slot as empty
+        # and remove the green border.
+        for i in range(self.ball_layout.count()):
+            item = self.ball_layout.itemAt(i)
+            if item.widget() and isinstance(item.widget(), BallVisualization):
+                ball_viz = item.widget()
+                ball_viz._update_status()
+                ball_viz.update()
     
     def _on_ball_assigned(self, ball, timeline_index):
         """

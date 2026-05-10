@@ -32,7 +32,9 @@ class BallIPDialog(QDialog):
 
         info = QLabel(
             "Enter the IP address for each ball.\n"
-            "Leave blank to disable sending to that ball."
+            "Leave blank to disable sending to that ball.\n\n"
+            "💡 Balls on the network are auto-detected and IPs are\n"
+            "filled in automatically when discovered."
         )
         info.setWordWrap(True)
         layout.addWidget(info)

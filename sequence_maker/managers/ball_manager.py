@@ -9,7 +9,7 @@ import socket
 import threading
 import time
 import struct
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import QObject, pyqtSignal, QTimer
 
 from app.constants import BALL_DISCOVERY_TIMEOUT, BALL_CONTROL_PORT, BALL_BROADCAST_IDENTIFIER
 from managers.led_ball_controller import LEDBallController
@@ -64,6 +64,7 @@ class BallManager(QObject):
     ball_assigned = pyqtSignal(object, int)  # ball, timeline_index
     ball_unassigned = pyqtSignal(object)  # ball
     color_sent = pyqtSignal(object, tuple)  # ball, color
+    ball_ips_auto_updated = pyqtSignal(list)  # list of 3 IP strings
     
     def __init__(self, app):
         """
@@ -102,6 +103,18 @@ class BallManager(QObject):
         # Sequence upload + PLAY/STOP controller (added 2026-05-06).
         # See managers/ltx_ball_client.py and reverse_engineering/ for protocol notes.
         self._ltx = LTXController()
+
+        # Auto-assignment of discovered balls to IP slots.
+        # When balls are discovered/lost, a debounce timer fires and
+        # reassigns IPs + timeline slots in discovery order.
+        self._auto_assign_pending = False
+        self._auto_assign_timer = QTimer(self)
+        self._auto_assign_timer.setSingleShot(True)
+        self._auto_assign_timer.timeout.connect(self._auto_assign_ips)
+
+        # Connect discovery signals for auto-assignment
+        self.ball_discovered.connect(self._schedule_auto_assign)
+        self.ball_lost.connect(self._schedule_auto_assign)
     
     def start_discovery(self):
         """
@@ -289,6 +302,75 @@ class BallManager(QObject):
             ip = ips[i] if i < len(ips) else ""
             controller.set_ip(ip)
         self.logger.info(f"Ball IPs updated: {ips}")
+
+    # ------------------------------------------------------------------ #
+    # Auto-assignment of discovered balls (added 2026-05-10)              #
+    # ------------------------------------------------------------------ #
+
+    def _schedule_auto_assign(self, _ball=None):
+        """Debounced trigger: when balls appear/disappear, schedule an
+        auto-assign pass after a short delay so rapid events are coalesced."""
+        if not self._auto_assign_pending:
+            self._auto_assign_pending = True
+            self._auto_assign_timer.start(500)  # 500 ms debounce
+
+    def _auto_assign_ips(self):
+        """Assign discovered balls to the three IP/timeline slots.
+
+        Discovery order determines slot assignment:
+            1st discovered → Ball 1 (slot 0)
+            2nd discovered → Ball 2 (slot 1)
+            3rd discovered → Ball 3 (slot 2)
+
+        If a ball is lost the remaining balls shift up.  The config and
+        LED controllers are updated, and ``ball_ips_auto_updated`` is emitted
+        so the UI can refresh.
+        """
+        self._auto_assign_pending = False
+
+        # Build ordered list of discovered ball IPs.
+        # self.balls is a dict (insertion-ordered since Python 3.7).
+        discovered_ips = list(self.balls.keys())
+
+        # Build the 3-slot IP list (empty string for unassigned slots)
+        new_ips = ["", "", ""]
+        for i, ip in enumerate(discovered_ips[:3]):
+            new_ips[i] = ip
+
+        # Update controllers
+        self.set_ball_ips(new_ips)
+
+        # Persist to config
+        self.app.config.set("ball_control", "ball_ips", new_ips)
+        self.app.config.save()
+
+        # Assign each discovered ball to its timeline slot
+        for i, ip in enumerate(discovered_ips[:3]):
+            ball = self.balls[ip]
+            if ball.timeline_index != i:
+                # Unassign from old slot if any
+                if ball.timeline_index >= 0:
+                    ball.timeline_index = -1
+                    self.ball_unassigned.emit(ball)
+                # Assign to new slot
+                self.assign_ball_to_timeline(ball, i)
+
+        # Unassign any balls beyond the first 3
+        for ip in discovered_ips[3:]:
+            ball = self.balls[ip]
+            if ball.timeline_index >= 0:
+                self.unassign_ball(ball)
+
+        # Clear slots for lost balls (timelines with no discovered ball)
+        for slot in range(3):
+            if new_ips[slot] == "":
+                # Check if any ball was previously assigned to this slot
+                for ball in self.balls.values():
+                    if ball.timeline_index == slot:
+                        self.unassign_ball(ball)
+
+        self.logger.info(f"Auto-assigned ball IPs: {new_ips}")
+        self.ball_ips_auto_updated.emit(new_ips)
 
     # ------------------------------------------------------------------ #
     # Sequence upload / PLAY / STOP (added 2026-05-06)                    #
