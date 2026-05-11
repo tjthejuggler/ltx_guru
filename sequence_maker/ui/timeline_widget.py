@@ -2140,6 +2140,16 @@ class TimelineContainer(QWidget):
         
         menu.addSeparator()
         
+        # Add Merge with Previous action
+        segment_index = timeline.segments.index(segment) if segment in timeline.segments else -1
+        merge_action = menu.addAction("Merge with Previous")
+        merge_action.triggered.connect(
+            lambda checked, t=timeline, s=segment: self._merge_segment_with_previous(t, s)
+        )
+        merge_action.setEnabled(segment_index > 0)
+        
+        menu.addSeparator()
+        
         delete_action = menu.addAction("Delete")
         delete_action.triggered.connect(self.parent_widget.delete_selected_segment)
         
@@ -2183,6 +2193,7 @@ class TimelineContainer(QWidget):
         menu.addSeparator()
         
         # Add Note action
+        time_at_pos = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         add_note_action = menu.addAction("Add Note Here")
         add_note_action.triggered.connect(
             lambda checked, m=menu, t=time_at_pos: (m.close(), self._add_note_at_time(t))
@@ -2230,6 +2241,7 @@ class TimelineContainer(QWidget):
         menu.addSeparator()
         
         # Add Note action
+        time_at_pos = pos.x() / (self.parent_widget.time_scale * self.parent_widget.zoom_level)
         add_note_action = menu.addAction("Add Note Here")
         add_note_action.triggered.connect(
             lambda checked, m=menu, t=time_at_pos: (m.close(), self._add_note_at_time(t))
@@ -2387,6 +2399,50 @@ class TimelineContainer(QWidget):
                     # Update the UI
                     self.logger.debug("Updating UI after JSON import")
                     self.update()
+    
+    def _merge_segment_with_previous(self, timeline, segment):
+        """
+        Merge a segment with the previous segment in the timeline.
+        
+        The previous segment's end_time is extended to the merged segment's end_time,
+        and the merged segment is removed. A single undo step reverses the whole operation.
+        
+        Args:
+            timeline: Timeline containing the segments.
+            segment: Segment to merge into the previous one.
+        """
+        if not timeline or not segment:
+            return
+        
+        if segment not in timeline.segments:
+            return
+        
+        segment_index = timeline.segments.index(segment)
+        if segment_index <= 0:
+            return
+        
+        previous_segment = timeline.segments[segment_index - 1]
+        new_end_time = segment.end_time
+        
+        # Save state for undo (single step for the whole merge)
+        if self.app.undo_manager:
+            self.app.undo_manager.save_state("merge_segment_with_previous")
+        
+        # Use the timeline manager to modify the previous segment's end time
+        # Temporarily mark as dragging to prevent extra undo saves from modify_segment
+        self.app.timeline_manager.is_dragging = True
+        self.app.timeline_manager.modify_segment(
+            timeline=timeline,
+            segment=previous_segment,
+            end_time=new_end_time
+        )
+        self.app.timeline_manager.is_dragging = False
+        
+        # Remove the merged segment via the manager
+        self.app.timeline_manager.remove_segment(timeline, segment)
+        
+        # Force immediate repaint of the timeline container
+        self.parent_widget.timeline_container.update()
     
     def _change_segment_color(self, color):
         """
