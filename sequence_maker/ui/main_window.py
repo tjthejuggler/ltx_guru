@@ -879,6 +879,16 @@ class MainWindow(QMainWindow):
             event.accept()
             return
 
+        # PgUp/PgDn: clone or move selected segment between timelines
+        if key in (Qt.Key.Key_PageUp, Qt.Key.Key_PageDown):
+            if (hasattr(self, 'timeline_widget') and
+                    self.timeline_widget.selected_segment is not None and
+                    self.timeline_widget.selected_timeline is not None):
+                direction = -1 if key == Qt.Key.Key_PageUp else 1
+                self.timeline_widget._move_segment_to_timeline(direction)
+            event.accept()
+            return
+
         # Bracket key: merge selected segment with previous
         if key == Qt.Key.Key_BracketLeft:
             if (hasattr(self, 'timeline_widget') and

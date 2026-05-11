@@ -12,7 +12,7 @@ This module contains functions for creating and managing menus in the main windo
     and the three simulated balls all sharing one row.
 """
 
-from PyQt6.QtWidgets import QLabel, QLineEdit, QSizePolicy, QWidget
+from PyQt6.QtWidgets import QLabel, QLineEdit, QSizePolicy, QWidget, QCheckBox
 from PyQt6.QtGui import QActionGroup, QAction
 from PyQt6.QtCore import Qt
 
@@ -254,6 +254,16 @@ def create_toolbars(main_window):
 
     # Notes
     main_window.main_toolbar.addAction(main_window.show_notes_action)
+
+    # Arrows Clone checkbox — when checked, Up/Down arrows copy the selected
+    # segment to the adjacent timeline; when unchecked, they move it (cut).
+    main_window.arrows_clone_checkbox = QCheckBox("Arrows Clone")
+    main_window.arrows_clone_checkbox.setToolTip(
+        "When checked, PgUp/PgDn clone segments between timelines (copy). "
+        "When unchecked, they move them (cut)."
+    )
+    main_window.arrows_clone_checkbox.setChecked(True)
+    main_window.main_toolbar.addWidget(main_window.arrows_clone_checkbox)
 
     # Stretch + ball widget will be appended in widgets.create_widgets() once
     # the BallWidget has been instantiated. We add a stretch spacer here so

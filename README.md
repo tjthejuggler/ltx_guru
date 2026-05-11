@@ -23,6 +23,19 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-05-11 18:54 UTC+1 - PgUp/PgDn Clone/Move Segments Between Timelines
+- **PgUp/PgDn keys now clone or move the selected color segment to an adjacent timeline.**
+  - **PgUp** moves the segment to the previous timeline (cyclic: Ball 1→3, Ball 2→1, Ball 3→2).
+  - **PgDn** moves the segment to the next timeline (cyclic: Ball 1→2, Ball 2→3, Ball 3→1).
+  - The cloned/moved segment has the same color, start time, and end time, and overwrites whatever was on the target timeline in that time range.
+- **"Arrows Clone" checkbox added to the main toolbar.** When checked (default), the original segment is kept on the source timeline (copy). When unchecked, the original is removed by merging it with its previous neighbour (cut/move).
+- **Up/Down arrow keys** still adjust segment duration (extend/shrink end time) as before.
+- **Left/Right arrow keys** still nudge the segment by 0.01 s as before.
+- **Files modified:**
+  - [`sequence_maker/ui/timeline_widget.py`](sequence_maker/ui/timeline_widget.py:537) — Added `_move_segment_to_timeline()` method; added PgUp/PgDn key handlers in `keyPressEvent`.
+  - [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py:882) — Added PgUp/PgDn delegation to `TimelineWidget._move_segment_to_timeline()` in `keyPressEvent`.
+  - [`sequence_maker/ui/main_window_parts/menus.py`](sequence_maker/ui/main_window_parts/menus.py:258) — Added `QCheckBox("Arrows Clone")` to the main toolbar.
+
 ### 2026-05-11 17:19 UTC+1 - Snippet Lyric-Synced Duration Fix
 - **Removed the `snippet.duration` clamp in lyric-synced modes.** In
   `End of Word` / `Start of Word` modes the effective duration is now

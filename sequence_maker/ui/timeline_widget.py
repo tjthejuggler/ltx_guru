@@ -18,6 +18,7 @@ from PyQt6.QtGui import (
 )
 
 from app.constants import TIMELINE_HEIGHT, TIMELINE_SEGMENT_MIN_WIDTH, ZOOM_STEP, MAX_ZOOM, MIN_ZOOM
+from models.segment import TimelineSegment
 
 
 class TimelineWidget(QWidget):
@@ -138,6 +139,9 @@ class TimelineWidget(QWidget):
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        # Install event filter so PgUp/PgDn are intercepted for segment
+        # cloning/moving before the scroll area consumes them for scrolling.
+        self.scroll_area.viewport().installEventFilter(self)
         self.main_layout.addWidget(self.scroll_area)
 
         # Create timeline container
@@ -533,6 +537,106 @@ class TimelineWidget(QWidget):
         # This is more reliable and avoids artifacts with time markers
         self.timeline_container.force_repaint()
     
+    def eventFilter(self, obj, event):
+        """Intercept PgUp/PgDn before the scroll area consumes them for scrolling."""
+        if event.type() == event.Type.KeyPress and event.key() in (Qt.Key.Key_PageUp, Qt.Key.Key_PageDown):
+            if self.selected_timeline and self.selected_segment:
+                direction = -1 if event.key() == Qt.Key.Key_PageUp else 1
+                self._move_segment_to_timeline(direction)
+                return True  # Event consumed — don't pass to scroll area
+        return super().eventFilter(obj, event)
+    
+    def _move_segment_to_timeline(self, direction):
+        """
+        Clone or move the selected segment to an adjacent timeline.
+        
+        Direction: -1 = PgUp (previous timeline), +1 = PgDn (next timeline).
+        Timelines cycle: Ball 1→3 (PgUp) / 1→2 (PgDn), Ball 2→1 (PgUp) / 2→3 (PgDn), Ball 3→2 (PgUp) / 3→1 (PgDn).
+        
+        If the 'arrows_clone' checkbox on the main toolbar is checked, the original
+        segment is kept (copy). If unchecked, the original is merged with its
+        previous neighbour (cut/move).
+        """
+        if not self.selected_timeline or not self.selected_segment:
+            return
+        
+        timelines = self.app.timeline_manager.get_timelines()
+        if not timelines or len(timelines) < 2:
+            return
+        
+        # Find the index of the current timeline
+        try:
+            current_index = timelines.index(self.selected_timeline)
+        except ValueError:
+            return
+        
+        # Calculate target index with cyclic wrapping
+        target_index = (current_index + direction) % len(timelines)
+        target_timeline = timelines[target_index]
+        
+        seg = self.selected_segment
+        
+        # Create a new segment with the same properties
+        new_segment = TimelineSegment(
+            start_time=seg.start_time,
+            end_time=seg.end_time,
+            color=seg.color,
+            pixels=seg.pixels,
+            end_color=seg.end_color
+        )
+        # Preserve segment type (solid/fade)
+        new_segment.segment_type = seg.segment_type
+        
+        # Save a single undo state for the whole operation, then suppress
+        # intermediate saves by setting is_dragging (same pattern used by
+        # _merge_segment_with_previous).
+        self.app.timeline_manager.is_dragging = True
+        if self.app.undo_manager:
+            self.app.undo_manager.save_state("arrow_clone_segment")
+        
+        # Add the new segment to the target timeline (this will overlap/cover whatever was there)
+        self.app.timeline_manager.add_segment_object(target_timeline, new_segment)
+        
+        # Resolve overlaps on the target timeline
+        self.timeline_container._resolve_segment_overlap(new_segment, target_timeline)
+        
+        # If NOT in clone mode, merge the original segment with its previous neighbour
+        is_clone = False
+        if hasattr(self.app, 'main_window') and hasattr(self.app.main_window, 'arrows_clone_checkbox'):
+            is_clone = self.app.main_window.arrows_clone_checkbox.isChecked()
+        
+        if not is_clone:
+            # Remove the original segment from the source timeline.
+            # If it has a previous neighbour, merge into it (extends previous
+            # segment's end_time); otherwise just delete it outright.
+            src_timeline = self.selected_timeline
+            src_segment = self.selected_segment
+            if src_segment in src_timeline.segments:
+                seg_idx = src_timeline.segments.index(src_segment)
+                if seg_idx > 0:
+                    # Remember the previous segment before merging
+                    prev_segment = src_timeline.segments[seg_idx - 1]
+                    self.timeline_container._merge_segment_with_previous(src_timeline, src_segment)
+                    # After merge, check if the next segment (now adjacent to
+                    # prev_segment) has the exact same color. If so, merge it
+                    # too so we end up with one solid chunk of the same color.
+                    if prev_segment in src_timeline.segments:
+                        prev_idx = src_timeline.segments.index(prev_segment)
+                        if prev_idx + 1 < len(src_timeline.segments):
+                            next_seg = src_timeline.segments[prev_idx + 1]
+                            if (next_seg.color == prev_segment.color and
+                                    next_seg.segment_type == prev_segment.segment_type and
+                                    next_seg.end_color == prev_segment.end_color):
+                                self.timeline_container._merge_segment_with_previous(src_timeline, next_seg)
+                else:
+                    self.app.timeline_manager.remove_segment(src_timeline, src_segment)
+        
+        # Re-enable undo saves
+        self.app.timeline_manager.is_dragging = False
+        
+        # Select the new segment on the target timeline
+        self.select_segment(target_timeline, new_segment)
+    
     def keyPressEvent(self, event):
         """Handle key press events."""
         # Undo (Ctrl+Z)
@@ -619,6 +723,18 @@ class TimelineWidget(QWidget):
                         segment=self.selected_segment,
                         end_time=self.selected_segment.end_time - 0.01
                     )
+                event.accept()
+                return
+            
+            if event.key() == Qt.Key.Key_PageUp:
+                # Clone/move segment to previous timeline (cyclic: 1→3, 2→1, 3→2)
+                self._move_segment_to_timeline(direction=-1)
+                event.accept()
+                return
+            
+            if event.key() == Qt.Key.Key_PageDown:
+                # Clone/move segment to next timeline (cyclic: 1→2, 2→3, 3→1)
+                self._move_segment_to_timeline(direction=1)
                 event.accept()
                 return
         
