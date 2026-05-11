@@ -2120,7 +2120,10 @@ class TimelineContainer(QWidget):
         if not segments or len(segments) <= 1:
             return
         
-        # Sort segments by start time for easier processing
+        # Sort segments by start time for easier processing.
+        # Iterate over a snapshot because we may add/remove segments while
+        # resolving overlaps (e.g. splitting an existing segment in two when
+        # the moved segment lands in its middle).
         sorted_segments = sorted(segments, key=lambda s: s.start_time)
         
         for segment in sorted_segments:
@@ -2132,7 +2135,35 @@ class TimelineContainer(QWidget):
             if not (moved_segment.end_time <= segment.start_time or moved_segment.start_time >= segment.end_time):
                 # Segments overlap
                 
-                # If segment is to the left of moved_segment
+                # Case 1: existing segment fully contains the moved segment.
+                # We need to SPLIT it in two so the trailing piece is preserved
+                # (e.g. green 3-6 with blue 4-5 dropped into it should yield
+                # green 3-4, blue 4-5, green 5-6 -- not green 3-4, blue 4-5,
+                # empty 5-6).
+                if (segment.start_time < moved_segment.start_time and
+                        segment.end_time > moved_segment.end_time):
+                    # Create the trailing piece from moved_segment.end_time to
+                    # segment.end_time, preserving color/type/pixels.
+                    trailing = TimelineSegment(
+                        start_time=moved_segment.end_time,
+                        end_time=segment.end_time,
+                        color=segment.color,
+                        pixels=segment.pixels,
+                        end_color=segment.end_color
+                    )
+                    trailing.segment_type = segment.segment_type
+                    self.app.timeline_manager.add_segment_object(timeline, trailing)
+                    
+                    # Shrink the original segment to end where moved_segment starts.
+                    self.app.timeline_manager.modify_segment(
+                        timeline=timeline,
+                        segment=segment,
+                        end_time=moved_segment.start_time
+                    )
+                    continue
+                
+                # Case 2: segment is to the left of moved_segment (or fully on
+                # the left side, partially overlapping).
                 if segment.start_time < moved_segment.start_time:
                     # Resize segment end to not overlap
                     new_end_time = min(segment.end_time, moved_segment.start_time)
@@ -2146,7 +2177,8 @@ class TimelineContainer(QWidget):
                             end_time=new_end_time
                         )
                 
-                # If segment is to the right of moved_segment
+                # Case 3: segment is to the right of moved_segment (or fully on
+                # the right side, partially overlapping).
                 else:
                     # Resize segment start to not overlap
                     new_start_time = max(segment.start_time, moved_segment.end_time)

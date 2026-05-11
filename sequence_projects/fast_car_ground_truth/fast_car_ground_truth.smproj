@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-11T18:04:57.967662",
+    "modified": "2026-05-11T19:29:35.641433",
     "name": "fast car ground truth",
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-11T18:04:57.967477",
+      "modified": "2026-05-11T19:29:35.641341",
       "segments": [
         {
           "startTime": 0.0,
@@ -839,7 +839,7 @@
         },
         {
           "startTime": 155.95,
-          "endTime": 156.91,
+          "endTime": 157.73,
           "color": [
             0,
             255,
@@ -850,8 +850,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 156.91,
-          "endTime": 157.34,
+          "startTime": 157.73,
+          "endTime": 158.46,
           "color": [
             0,
             0,
@@ -862,8 +862,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 157.34,
-          "endTime": 159.55,
+          "startTime": 158.46,
+          "endTime": 159.22,
           "color": [
             0,
             255,
@@ -874,8 +874,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 159.55,
-          "endTime": 159.73,
+          "startTime": 159.22,
+          "endTime": 159.52,
           "color": [
             0,
             0,
@@ -886,8 +886,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 159.73,
-          "endTime": 160.74,
+          "startTime": 159.52,
+          "endTime": 160.3,
           "color": [
             0,
             255,
@@ -898,8 +898,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 160.74,
-          "endTime": 161.24,
+          "startTime": 160.3,
+          "endTime": 160.72,
           "color": [
             0,
             0,
@@ -910,8 +910,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 161.24,
-          "endTime": 161.86,
+          "startTime": 160.72,
+          "endTime": 161.54,
           "color": [
             0,
             255,
@@ -922,8 +922,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 161.86,
-          "endTime": 162.25,
+          "startTime": 161.54,
+          "endTime": 161.84,
           "color": [
             0,
             0,
@@ -934,7 +934,7 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 162.25,
+          "startTime": 161.84,
           "endTime": 163.75,
           "color": [
             0,
@@ -1707,7 +1707,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-11T18:04:57.967574",
+      "modified": "2026-05-11T19:29:35.641394",
       "segments": [
         {
           "startTime": 0.0,
@@ -2383,11 +2383,23 @@
         },
         {
           "startTime": 156.24,
-          "endTime": 157.34,
+          "endTime": 156.91,
           "color": [
             0,
             255,
             0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 156.91,
+          "endTime": 157.34,
+          "color": [
+            0,
+            0,
+            255
           ],
           "pixels": 4,
           "effects": [],
@@ -2395,19 +2407,7 @@
         },
         {
           "startTime": 157.34,
-          "endTime": 157.72,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 157.72,
-          "endTime": 158.93,
+          "endTime": 159.55,
           "color": [
             0,
             255,
@@ -2418,8 +2418,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 158.93,
-          "endTime": 159.22,
+          "startTime": 159.55,
+          "endTime": 159.73,
           "color": [
             0,
             0,
@@ -2430,8 +2430,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 159.22,
-          "endTime": 159.75,
+          "startTime": 159.73,
+          "endTime": 160.74,
           "color": [
             0,
             255,
@@ -2442,8 +2442,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 159.75,
-          "endTime": 160.29,
+          "startTime": 160.74,
+          "endTime": 161.24,
           "color": [
             0,
             0,
@@ -2454,12 +2454,24 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 160.29,
+          "startTime": 161.24,
+          "endTime": 161.86,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 161.86,
           "endTime": 162.25,
           "color": [
             0,
-            255,
-            0
+            0,
+            255
           ],
           "pixels": 4,
           "effects": [],
@@ -2467,18 +2479,6 @@
         },
         {
           "startTime": 162.25,
-          "endTime": 162.62,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 162.62,
           "endTime": 163.75,
           "color": [
             0,
@@ -3251,7 +3251,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-11T18:04:57.967658",
+      "modified": "2026-05-11T19:29:35.641431",
       "segments": [
         {
           "startTime": 0.0,
@@ -3927,6 +3927,30 @@
         },
         {
           "startTime": 156.5,
+          "endTime": 157.34,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 157.34,
+          "endTime": 157.72,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 157.72,
           "endTime": 157.73,
           "color": [
             0,
@@ -3939,23 +3963,23 @@
         },
         {
           "startTime": 157.73,
-          "endTime": 158.46,
+          "endTime": 158.93,
           "color": [
             0,
-            0,
-            255
+            255,
+            0
           ],
           "pixels": 4,
           "effects": [],
           "segment_type": "solid"
         },
         {
-          "startTime": 158.46,
+          "startTime": 158.93,
           "endTime": 159.22,
           "color": [
             0,
-            255,
-            0
+            0,
+            255
           ],
           "pixels": 4,
           "effects": [],
@@ -3963,19 +3987,7 @@
         },
         {
           "startTime": 159.22,
-          "endTime": 159.52,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 159.52,
-          "endTime": 160.3,
+          "endTime": 159.75,
           "color": [
             0,
             255,
@@ -3986,8 +3998,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 160.3,
-          "endTime": 160.72,
+          "startTime": 159.75,
+          "endTime": 160.29,
           "color": [
             0,
             0,
@@ -3998,8 +4010,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 160.72,
-          "endTime": 161.54,
+          "startTime": 160.29,
+          "endTime": 162.25,
           "color": [
             0,
             255,
@@ -4010,24 +4022,12 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 161.54,
-          "endTime": 161.84,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 161.84,
+          "startTime": 162.25,
           "endTime": 162.62,
           "color": [
             0,
-            255,
-            0
+            0,
+            255
           ],
           "pixels": 4,
           "effects": [],
@@ -4035,18 +4035,6 @@
         },
         {
           "startTime": 162.62,
-          "endTime": 163.12,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 163.12,
           "endTime": 163.75,
           "color": [
             0,
