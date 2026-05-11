@@ -23,7 +23,7 @@ from PyQt6.QtWidgets import QWidget, QToolTip, QSizePolicy
 from PyQt6.QtCore import Qt, QRect, pyqtSignal, QPoint
 from PyQt6.QtGui import (
     QPainter, QColor, QPen, QBrush, QFont, QFontMetrics,
-    QMouseEvent
+    QMouseEvent, QKeyEvent
 )
 
 
@@ -101,7 +101,7 @@ class LyricsTimelineWidget(QWidget):
         self.setMouseTracking(True)
 
         # Widget properties
-        self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         self.setFixedHeight(self.TIMELINE_HEIGHT)
 
@@ -121,12 +121,19 @@ class LyricsTimelineWidget(QWidget):
     def set_position(self, position):
         """Update the current playback position (seconds)."""
         self._current_position = position
+        # Keep current selection if position is still within it (handles overlapping words)
+        if (self._selected_word is not None
+                and self._selected_word.start is not None
+                and self._selected_word.end is not None
+                and self._selected_word.start <= position < self._selected_word.end):
+            self.update()
+            return
         # Determine which word is "current"
         self._selected_word = None
         for wt in self._word_timestamps:
             if wt.start is None or wt.end is None:
                 continue
-            if wt.start <= position <= wt.end:
+            if wt.start <= position < wt.end:
                 self._selected_word = wt
                 break
         self.update()
@@ -437,12 +444,15 @@ class LyricsTimelineWidget(QWidget):
                     # Persist the change
                     self._mark_project_changed()
                 else:
-                    # It was a click, not a drag — seek
+                    # It was a click, not a drag — select the clicked word and seek
                     wt = self._drag_word
-                    if wt is self._selected_word and wt.end is not None:
+                    was_already_selected = (wt is self._selected_word)
+                    self._selected_word = wt  # Set directly to avoid time-based lookup errors
+                    if was_already_selected and wt.end is not None:
                         self.word_clicked.emit(wt.end)
                     else:
                         self.word_clicked.emit(wt.start)
+                    self.update()
 
                 self._drag_mode = self._DRAG_NONE
                 self._drag_word = None
@@ -458,3 +468,39 @@ class LyricsTimelineWidget(QWidget):
         self.setCursor(Qt.CursorShape.ArrowCursor)
         self.update()
         super().leaveEvent(event)
+
+    def keyPressEvent(self, event: QKeyEvent):
+        """Handle key press events — backtick selects the next lyric word."""
+        if event.key() == Qt.Key.Key_QuoteLeft:
+            if not self._word_timestamps:
+                event.ignore()
+                return
+
+            # Determine start index for the search
+            if self._selected_word is None:
+                start_idx = 0
+            else:
+                try:
+                    start_idx = self._word_timestamps.index(self._selected_word) + 1
+                except ValueError:
+                    start_idx = 0
+
+            # Scan forward (wrapping around) for the next word with valid timestamps
+            next_word = None
+            for i in range(len(self._word_timestamps)):
+                candidate = self._word_timestamps[(start_idx + i) % len(self._word_timestamps)]
+                if candidate.start is not None and candidate.end is not None:
+                    next_word = candidate
+                    break
+
+            if next_word is None:
+                event.ignore()
+                return
+
+            self._selected_word = next_word
+            self._current_position = next_word.start
+            self.word_clicked.emit(next_word.start)
+            self.update()
+            event.accept()
+        else:
+            super().keyPressEvent(event)
