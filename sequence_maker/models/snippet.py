@@ -24,7 +24,13 @@ class Snippet:
     Attributes:
         name: Display name for the snippet.
         hotkey: A single letter or number that triggers the snippet with Shift.
-        duration: Length of the snippet in seconds.
+        duration: Length of the snippet in seconds (used directly when
+            duration_mode is "timed"; used as a max/preview length for the
+            mini-timeline editor when duration_mode is "end_of_word").
+        duration_mode: How the snippet's duration is determined when applied.
+            "timed" — use the fixed ``duration`` value.
+            "end_of_word" — extend from the insertion position until the end
+            of the next timestamped lyric word (clamped to ``duration`` max).
         timelines: List of Timeline objects (one per ball).
         ball_enabled: List of bools indicating which balls are included.
     """
@@ -32,7 +38,14 @@ class Snippet:
     # Valid hotkey characters
     VALID_HOTKEYS = list("abcdefghijklmnopqrstuvwxyz0123456789")
 
-    def __init__(self, name="New Snippet", hotkey="", duration=2.0, num_balls=3):
+    # Valid duration modes
+    DURATION_MODE_TIMED = "timed"
+    DURATION_MODE_END_OF_WORD = "end_of_word"
+    DURATION_MODE_BEGINNING_OF_WORD = "beginning_of_word"
+    DURATION_MODE_VALUES = (DURATION_MODE_TIMED, DURATION_MODE_END_OF_WORD, DURATION_MODE_BEGINNING_OF_WORD)
+
+    def __init__(self, name="New Snippet", hotkey="", duration=2.0, num_balls=3,
+                 duration_mode="timed"):
         """
         Initialize a new snippet.
 
@@ -41,12 +54,14 @@ class Snippet:
             hotkey: Single letter/number for Shift+hotkey trigger.
             duration: Duration in seconds.
             num_balls: Number of ball timelines to create.
+            duration_mode: "timed" or "end_of_word".
         """
         self.logger = logging.getLogger("SequenceMaker.Snippet")
 
         self.name = name
         self.hotkey = hotkey.lower() if hotkey else ""
         self.duration = duration
+        self.duration_mode = duration_mode if duration_mode in self.DURATION_MODE_VALUES else self.DURATION_MODE_TIMED
         self.created = datetime.now().isoformat()
         self.modified = self.created
 
@@ -66,6 +81,7 @@ class Snippet:
             "name": self.name,
             "hotkey": self.hotkey,
             "duration": self.duration,
+            "durationMode": self.duration_mode,
             "created": self.created,
             "modified": self.modified,
             "timelines": [t.to_dict() for t in self.timelines],
@@ -79,6 +95,7 @@ class Snippet:
             name=data.get("name", "Unnamed Snippet"),
             hotkey=data.get("hotkey", ""),
             duration=data.get("duration", 2.0),
+            duration_mode=data.get("durationMode", Snippet.DURATION_MODE_TIMED),
         )
 
         snippet.created = data.get("created", datetime.now().isoformat())

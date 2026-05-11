@@ -314,8 +314,25 @@ class SnippetWidget(QWidget):
         self.hotkey_edit.textChanged.connect(self._on_hotkey_changed)
         props_layout.addWidget(self.hotkey_edit)
 
-        # Duration
+        # Duration mode toggle
         props_layout.addWidget(QLabel("Duration:"))
+        self.duration_mode_combo = QComboBox()
+        self.duration_mode_combo.addItem("Timed", "timed")
+        self.duration_mode_combo.addItem("End of Word", "end_of_word")
+        self.duration_mode_combo.addItem("Start of Word", "beginning_of_word")
+        self.duration_mode_combo.setFixedWidth(120)
+        self.duration_mode_combo.setToolTip(
+            "Timed — use the fixed duration below.\n"
+            "End of Word — snippet extends until the very next\n"
+            "timestamped lyric word ends (clamped to max below).\n"
+            "Start of Word — snippet extends until the very next\n"
+            "timestamped lyric word begins (clamped to max below)."
+        )
+        self.duration_mode_combo.currentIndexChanged.connect(self._on_duration_mode_changed)
+        props_layout.addWidget(self.duration_mode_combo)
+
+        # Duration spin (enabled only in "timed" mode; in lyric-synced
+        # modes it serves as a maximum cap)
         self.duration_spin = QDoubleSpinBox()
         self.duration_spin.setRange(0.1, 30.0)
         self.duration_spin.setValue(2.0)
@@ -522,6 +539,19 @@ class SnippetWidget(QWidget):
         # Repaint timelines
         for bar in self._timeline_bars:
             bar.update()
+
+    def _on_duration_mode_changed(self, index):
+        """Handle duration mode toggle between Timed / End of Word / Start of Word."""
+        if not self.current_snippet or not hasattr(self.app, 'snippet_manager'):
+            return
+
+        mode = self.duration_mode_combo.currentData()
+        self.current_snippet.duration_mode = mode
+        # In lyric-synced modes the duration spin still serves as a max cap,
+        # but we visually indicate it's not the primary duration driver.
+        is_timed = (mode == "timed")
+        self.duration_spin.setEnabled(is_timed if self.current_snippet else False)
+        self.app.snippet_manager.snippet_modified.emit(self.current_snippet)
 
     def _on_apply_snippet(self):
         """Apply the current snippet at the current position."""
@@ -788,15 +818,27 @@ class SnippetWidget(QWidget):
         if self.current_snippet:
             self.hotkey_edit.blockSignals(True)
             self.duration_spin.blockSignals(True)
+            self.duration_mode_combo.blockSignals(True)
 
             self.hotkey_edit.setText(self.current_snippet.hotkey.upper())
             self.duration_spin.setValue(self.current_snippet.duration)
 
+            # Set duration mode combo
+            mode = getattr(self.current_snippet, 'duration_mode', 'timed')
+            idx = self.duration_mode_combo.findData(mode)
+            if idx >= 0:
+                self.duration_mode_combo.setCurrentIndex(idx)
+            # Duration spin enabled only in timed mode (when a snippet is selected)
+            self.duration_spin.setEnabled(mode == "timed")
+
             self.hotkey_edit.blockSignals(False)
             self.duration_spin.blockSignals(False)
+            self.duration_mode_combo.blockSignals(False)
         else:
             self.hotkey_edit.setText("")
             self.duration_spin.setValue(2.0)
+            self.duration_mode_combo.setCurrentIndex(0)
+            self.duration_spin.setEnabled(False)
 
     def _build_timeline_bars(self):
         """Build the mini timeline bars for the current snippet."""
@@ -863,7 +905,13 @@ class SnippetWidget(QWidget):
         has_snippet = self.current_snippet is not None
 
         self.hotkey_edit.setEnabled(has_snippet)
-        self.duration_spin.setEnabled(has_snippet)
+        self.duration_mode_combo.setEnabled(has_snippet)
+        # Duration spin: enabled only when a snippet is selected AND mode is "timed"
+        if has_snippet:
+            mode = getattr(self.current_snippet, 'duration_mode', 'timed')
+            self.duration_spin.setEnabled(mode == "timed")
+        else:
+            self.duration_spin.setEnabled(False)
         self.apply_button.setEnabled(has_snippet)
         self.stop_editing_button.setEnabled(has_snippet)
         self.delete_button.setEnabled(has_snippet)

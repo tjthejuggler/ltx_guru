@@ -718,6 +718,10 @@ class MainWindow(QMainWindow):
                 mode = self.app.snippet_manager.snippet_mode
                 if mode == "end":
                     # End of snippet should be at the position marker.
+                    # We use snippet.duration as the position estimate; the
+                    # actual effective duration (which may differ for
+                    # "end_of_word" mode) is computed inside apply_snippet
+                    # from the final apply_position.
                     apply_position = max(0.0, marker - snippet.duration)
                 else:
                     # "begin" (default active mode): snippet starts at the marker.

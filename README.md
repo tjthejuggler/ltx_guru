@@ -23,6 +23,19 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-05-11 17:05 UTC+1 - Snippet Lyric-Synced Duration Modes
+- **Added `duration_mode` to snippets** — each snippet can now be set to one of three modes:
+  - **Timed** (default, legacy): fixed duration from the spin box.
+  - **End of Word**: snippet extends from the insertion position until the very next time any timestamped lyric word ends (clamped to the configured max duration). If the position is mid-word, that word's end is used.
+  - **Start of Word**: snippet extends from the insertion position until the very next time any timestamped lyric word begins (clamped to the configured max duration).
+- **UI toggle** — a "Duration:" combo box in the snippet properties row lets you switch between "Timed", "End of Word", and "Start of Word"; the duration spin box is disabled for lyric-synced modes (it still serves as a maximum cap).
+- **Apply logic** — `SnippetManager.apply_snippet()` computes the effective duration based on the mode before applying segments. Falls back to the configured max duration if no matching word boundary is found.
+- **Files modified:**
+  - [`sequence_maker/models/snippet.py`](sequence_maker/models/snippet.py) — Added `duration_mode` attribute, `DURATION_MODE_TIMED`/`DURATION_MODE_END_OF_WORD`/`DURATION_MODE_BEGINNING_OF_WORD` constants, serialization in `to_dict()`/`from_dict()`.
+  - [`sequence_maker/ui/snippet_widget.py`](sequence_maker/ui/snippet_widget.py) — Added `duration_mode_combo` with three options, `_on_duration_mode_changed` handler, updated `_load_snippet_properties` and `_update_ui_state`.
+  - [`sequence_maker/managers/snippet_manager.py`](sequence_maker/managers/snippet_manager.py) — Added `_get_end_of_word_duration()`, `_get_beginning_of_word_duration()` helpers, `get_effective_duration()` public method, updated `apply_snippet()` to delegate to `get_effective_duration()`.
+  - [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py) — Updated "end" mode comment to clarify effective duration is computed inside `apply_snippet`.
+
 ### 2026-04-03 17:37 UTC-6 - LLM GUI Removal & Hot-Swap System
 - **Removed all LLM integration from the Sequence Maker GUI** — menus, actions, handlers, settings tab, manager initialization, and imports have been gutted
 - **Created hot-swap system** ([`sequence_maker/managers/sequence_swap_manager.py`](sequence_maker/managers/sequence_swap_manager.py)) — uses QFileSystemWatcher to monitor `~/.sequence_maker/sequence_swap_inbox.json` for new sequences pushed by the Sequence Designer Roo mode

@@ -213,14 +213,146 @@ class SnippetManager(QObject):
                 return snippet
         return None
 
+    def _get_end_of_word_duration(self, position, max_duration):
+        """
+        Calculate the effective duration for an "end_of_word" snippet.
+
+        Finds the very next time any timestamped lyric word ends after
+        ``position``.  If the position is in the middle of a word, that
+        word's end is used.  If the position is before a word, that
+        word's end is used.  The result is clamped to ``max_duration``.
+        If no word end is found after position, falls back to
+        ``max_duration``.
+
+        Args:
+            position: The insertion start time in seconds.
+            max_duration: Maximum allowed duration (snippet.duration).
+
+        Returns:
+            float: Effective duration in seconds.
+        """
+        project = self.app.project_manager.current_project
+        if not project or not hasattr(project, 'lyrics') or not project.lyrics:
+            return max_duration
+
+        word_timestamps = getattr(project.lyrics, 'word_timestamps', [])
+        if not word_timestamps:
+            return max_duration
+
+        # Find the first word whose end time is > position.
+        # This covers both cases:
+        #   - position is mid-word → that word's end is the next end
+        #   - position is before a word → that word's end is the next end
+        for wt in word_timestamps:
+            if wt.start is None or wt.end is None:
+                continue
+            if wt.end > position:
+                effective = wt.end - position
+                # Clamp to max_duration
+                effective = min(effective, max_duration)
+                if effective <= 0:
+                    continue
+                self.logger.info(
+                    f"End-of-word: next word end '{wt.word}' at "
+                    f"{wt.end:.2f}s, effective duration {effective:.2f}s"
+                )
+                return effective
+
+        # No word end found after position — fall back to max_duration
+        self.logger.info("End-of-word: no word end found after position, using max duration")
+        return max_duration
+
+    def _get_beginning_of_word_duration(self, position, max_duration):
+        """
+        Calculate the effective duration for a "beginning_of_word" snippet.
+
+        Finds the very next time any timestamped lyric word begins after
+        ``position``.  The result is clamped to ``max_duration``.
+        If no word start is found after position, falls back to
+        ``max_duration``.
+
+        Args:
+            position: The insertion start time in seconds.
+            max_duration: Maximum allowed duration (snippet.duration).
+
+        Returns:
+            float: Effective duration in seconds.
+        """
+        project = self.app.project_manager.current_project
+        if not project or not hasattr(project, 'lyrics') or not project.lyrics:
+            return max_duration
+
+        word_timestamps = getattr(project.lyrics, 'word_timestamps', [])
+        if not word_timestamps:
+            return max_duration
+
+        # Find the first word whose start time is > position.
+        for wt in word_timestamps:
+            if wt.start is None or wt.end is None:
+                continue
+            if wt.start > position:
+                effective = wt.start - position
+                # Clamp to max_duration
+                effective = min(effective, max_duration)
+                if effective <= 0:
+                    continue
+                self.logger.info(
+                    f"Beginning-of-word: next word start '{wt.word}' at "
+                    f"{wt.start:.2f}s, effective duration {effective:.2f}s"
+                )
+                return effective
+
+        # No word start found after position — fall back to max_duration
+        self.logger.info("Beginning-of-word: no word start found after position, using max duration")
+        return max_duration
+
+    def get_effective_duration(self, snippet, position):
+        """
+        Return the effective duration for a snippet at a given position.
+
+        For "timed" mode this is simply ``snippet.duration``.
+        For "end_of_word" mode this is the distance from ``position`` to
+        the very next word end, clamped to ``snippet.duration``.
+        For "beginning_of_word" mode this is the distance from
+        ``position`` to the very next word start, clamped to
+        ``snippet.duration``.
+
+        This is a public wrapper so callers (e.g. MainWindow) can
+        calculate the effective duration without actually applying the
+        snippet.
+
+        Args:
+            snippet: The snippet.
+            position: Start time in seconds.
+
+        Returns:
+            float: Effective duration in seconds.
+        """
+        duration_mode = getattr(snippet, 'duration_mode', Snippet.DURATION_MODE_TIMED)
+        if duration_mode == Snippet.DURATION_MODE_END_OF_WORD:
+            return self._get_end_of_word_duration(position, snippet.duration)
+        if duration_mode == Snippet.DURATION_MODE_BEGINNING_OF_WORD:
+            return self._get_beginning_of_word_duration(position, snippet.duration)
+        return snippet.duration
+
     def apply_snippet(self, snippet, position):
         """
         Apply a snippet to the main timelines at the given position.
 
         This overwrites any existing segments in the time range
-        ``[position, position + snippet.duration]`` for each enabled ball
+        ``[position, position + effective_duration]`` for each enabled ball
         timeline. Anything outside that window — both before ``position``
-        and after ``position + snippet.duration`` — is preserved exactly.
+        and after ``position + effective_duration`` — is preserved exactly.
+
+        When the snippet's ``duration_mode`` is:
+
+        - ``"end_of_word"``: effective duration extends from ``position``
+          to the very next time any word ends (clamped to
+          ``snippet.duration`` as a maximum).
+        - ``"beginning_of_word"``: effective duration extends from
+          ``position`` to the very next time any word begins (clamped to
+          ``snippet.duration`` as a maximum).
+        - ``"timed"`` (default): the fixed ``snippet.duration`` is used.
 
         Args:
             snippet: The snippet to apply.
@@ -233,10 +365,9 @@ class SnippetManager(QObject):
         project = self.app.project_manager.current_project
         main_timelines = project.timelines
 
-        # Always use the user-configured snippet.duration. ``get_duration()``
-        # also returns this now, but be explicit so the apply range is
-        # obviously bounded by the snippet's own length.
-        snippet_duration = snippet.duration
+        # Determine effective duration based on duration_mode
+        snippet_duration = self.get_effective_duration(snippet, position)
+
         if snippet_duration <= 0:
             self.logger.warning(
                 f"Snippet '{snippet.name}' has non-positive duration "

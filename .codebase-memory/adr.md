@@ -1,22 +1,16 @@
-# ADR: Backslash Hotkey and Zero Key Color Configuration
+ADR: Snippet "End of Word" Duration Mode
 
-**Date:** 2026-05-11
-**Status:** Accepted
+Date: 2026-05-11
 
-## Context
-Two new hotkey features were requested:
-1. `\` key to jump the position marker back to the previous timeline marker
-2. `0` key to add configurable per-timeline colors at the current position
+Decision: Add a per-snippet `duration_mode` field with two values:
+- "timed" (default, legacy): snippet uses its fixed `duration` value
+- "end_of_word": when applied, the snippet's effective duration extends from the insertion position to the end of the next timestamped lyric word, clamped to `snippet.duration` as a maximum
 
-## Decision
-1. **Backslash key**: In `MainWindow.keyPressEvent()`, when `\` is pressed, find the last marker strictly before the current position and jump there (or to 0.0 if none exists). Also seeks audio to keep in sync.
-2. **Zero key**: Added `zero_key_colors` attribute to `Project` model (list of 3 RGB tuples or None). When `0` is pressed, each non-None color is applied to its respective timeline via `add_color_at_position()`. The configuration dialog is accessible from Timeline → "Configure '0' Key Colors…".
-3. **ZeroKeyColorDialog**: New dialog in `ui/dialogs/zero_key_color_dialog.py` with 3 rows (one per ball), each having quick-pick color buttons (matching the segment context menu), a "Custom…" QColorDialog button, and a "None" button to skip that timeline.
+Rationale: Users want snippets that automatically adapt to lyric word boundaries, so a color pattern fills exactly until the next word ends rather than requiring manual duration adjustment for each word.
 
-## Impact
-- `sequence_maker/ui/main_window.py` — added `\` and `0` key handlers, `_on_configure_zero_key()` method, `QDialog` import
-- `sequence_maker/models/project.py` — added `zero_key_colors` attribute, serialization in `to_dict`/`from_dict`
-- `sequence_maker/ui/actions/timeline_actions.py` — added `configure_zero_key_action`
-- `sequence_maker/ui/main_window_parts/actions.py` — registered `configure_zero_key_action`
-- `sequence_maker/ui/main_window_parts/menus.py` — added menu item to Timeline menu
-- `sequence_maker/ui/dialogs/zero_key_color_dialog.py` — new file
+Implementation:
+- `Snippet.duration_mode` attribute with `DURATION_MODE_TIMED` / `DURATION_MODE_END_OF_WORD` constants
+- Serialized as `durationMode` in JSON (backward-compatible: missing key defaults to "timed")
+- UI: combo box toggle in snippet properties row; duration spin disabled in "end_of_word" mode
+- `SnippetManager._get_end_of_word_duration()` finds next word from position; `get_effective_duration()` is the public API
+- `apply_snippet()` computes effective duration based on mode before applying segments
