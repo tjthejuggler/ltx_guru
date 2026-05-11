@@ -51,3 +51,10 @@ class TimelineActions:
             "past the end of your song"
         )
         self.set_max_time_action.triggered.connect(self.main_window._on_set_max_time)
+
+        # Configure '0' Key Colors action
+        self.configure_zero_key_action = QAction("Configure '0' &Key Colors...", self.main_window)
+        self.configure_zero_key_action.setStatusTip(
+            "Set the colours applied to each ball timeline when the '0' key is pressed"
+        )
+        self.configure_zero_key_action.triggered.connect(self.main_window._on_configure_zero_key)

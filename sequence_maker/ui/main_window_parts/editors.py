@@ -26,9 +26,8 @@ def show_segment_editor(main_window, timeline, segment):
     # Show the editor
     main_window.editor_dock.show()
     
-    # Focus the start time field
-    main_window.segment_start_edit.setFocus()
-    main_window.segment_start_edit.selectAll()
+    # Do NOT auto-focus the start time field — the user can click it
+    # manually if they want to edit the begin time.
 
 
 def hide_segment_editor(main_window):

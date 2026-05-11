@@ -82,6 +82,10 @@ class Project:
         # Timeline markers (visual reference only)
         self.markers = []
         
+        # Zero-key colors: configurable per-timeline colors for the '0' hotkey
+        # Each entry is an RGB tuple or None (meaning "don't set this timeline")
+        self.zero_key_colors = [None, None, None]
+        
         # LLM data
         self.chat_history = []
         self.llm_metadata = {
@@ -146,6 +150,9 @@ class Project:
             "snippets": [s.to_dict() for s in self.snippets] if hasattr(self, 'snippets') else [],
             "notes": [note.to_dict() for note in self.notes],
             "markers": [marker.to_dict() for marker in self.markers],
+            "zero_key_colors": [
+                list(c) if c is not None else None for c in self.zero_key_colors
+            ],
             "chat_history": self.chat_history,
             "llm_metadata": self.llm_metadata,
             "llm_customization": {
@@ -246,6 +253,12 @@ class Project:
         # Set markers data
         for marker_data in data.get("markers", []):
             project.markers.append(TimelineMarker.from_dict(marker_data))
+        
+        # Set zero-key colors
+        saved_zkc = data.get("zero_key_colors", [None, None, None])
+        project.zero_key_colors = [
+            tuple(c) if c is not None else None for c in saved_zkc
+        ]
         
         # Set LLM data
         project.chat_history = data.get("chat_history", [])

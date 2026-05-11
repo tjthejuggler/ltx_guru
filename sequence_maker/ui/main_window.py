@@ -6,7 +6,7 @@ This module defines the MainWindow class, which is the main application window.
 
 import logging
 import os
-from PyQt6.QtWidgets import QMainWindow
+from PyQt6.QtWidgets import QMainWindow, QDialog
 from PyQt6.QtGui import QKeyEvent
 from PyQt6.QtCore import Qt
 
@@ -314,6 +314,15 @@ class MainWindow(QMainWindow):
     
     def _on_key_mapping(self):
         on_key_mapping(self)
+
+    def _on_configure_zero_key(self):
+        """Open the dialog to configure colours for the '0' hotkey."""
+        from ui.dialogs.zero_key_color_dialog import ZeroKeyColorDialog
+        project = self.app.project_manager.current_project
+        current = getattr(project, 'zero_key_colors', [None, None, None])
+        dlg = ZeroKeyColorDialog(current, self)
+        if dlg.exec() == QDialog.DialogCode.Accepted:
+            project.zero_key_colors = dlg.get_colors()
     
     def _on_ball_ips(self):
         on_ball_ips(self)
@@ -741,6 +750,25 @@ class MainWindow(QMainWindow):
                 return
             # --- End snippet editing integration ---
             
+            # --- Selected segment color change (number keys 1-9) ---
+            # When a segment is selected and a number key (all-ball key) is
+            # pressed, change the selected segment's color instead of adding
+            # a new color at the position marker.
+            if (len(timelines) > 1 and
+                    hasattr(self, 'timeline_widget') and
+                    self.timeline_widget.selected_segment is not None):
+                if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
+                    self.app.undo_manager.save_state("change_segment_color")
+                self.app.timeline_manager.modify_segment(
+                    timeline=self.timeline_widget.selected_timeline,
+                    segment=self.timeline_widget.selected_segment,
+                    color=color
+                )
+                self._update_ui()
+                event.accept()
+                return
+            # --- End selected segment color change ---
+            
             # Check for fade creation first, then other effect modifiers
             effect_type = None
             create_fade = False
@@ -829,6 +857,51 @@ class MainWindow(QMainWindow):
                 # Also seek audio to keep them in sync
                 if hasattr(self.app, 'audio_manager'):
                     self.app.audio_manager.seek(new_pos)
+            event.accept()
+            return
+
+        # Bracket key: merge selected segment with previous
+        if key == Qt.Key.Key_BracketLeft:
+            if (hasattr(self, 'timeline_widget') and
+                    self.timeline_widget.selected_segment is not None and
+                    self.timeline_widget.selected_timeline is not None):
+                self.timeline_widget.timeline_container._merge_segment_with_previous(
+                    self.timeline_widget.selected_timeline,
+                    self.timeline_widget.selected_segment
+                )
+            event.accept()
+            return
+
+        # Backslash key: jump position marker back to the previous marker
+        if key == Qt.Key.Key_Backslash:
+            if hasattr(self.app, 'project_manager') and self.app.project_manager.current_project:
+                markers = self.app.project_manager.current_project.markers
+                current_pos = self.app.timeline_manager.position
+                # Find the last marker strictly before the current position
+                prev_marker = None
+                for marker in sorted(markers, key=lambda m: m.time):
+                    if marker.time < current_pos - 0.01:
+                        prev_marker = marker
+                    else:
+                        break
+                new_pos = prev_marker.time if prev_marker else 0.0
+                self.app.timeline_manager.set_position(new_pos)
+                if hasattr(self.app, 'audio_manager'):
+                    self.app.audio_manager.seek(new_pos)
+            event.accept()
+            return
+
+        # '0' key: add configured colors to all 3 timelines at current position
+        if key == Qt.Key.Key_0 and not modifiers:
+            if hasattr(self.app, 'project_manager') and self.app.project_manager.current_project:
+                zero_colors = getattr(self.app.project_manager.current_project, 'zero_key_colors', None)
+                if zero_colors:
+                    if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
+                        self.app.undo_manager.save_state("add_color_zero_key")
+                    for tl_idx, color in enumerate(zero_colors):
+                        if color is not None and hasattr(self.app, 'timeline_manager'):
+                            self.app.timeline_manager.add_color_at_position(tl_idx, color)
+                    self._update_ui()
             event.accept()
             return
 

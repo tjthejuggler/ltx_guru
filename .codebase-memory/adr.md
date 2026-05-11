@@ -1,20 +1,22 @@
-ADR: Auto-discovery of LTX Balls at Startup
+# ADR: Backslash Hotkey and Zero Key Color Configuration
 
-Date: 2026-05-10
+**Date:** 2026-05-11
+**Status:** Accepted
 
-Context:
-Users previously had to manually type IP addresses for each ball via the Ball IP Dialog. The official LTX app auto-detects balls on the network.
+## Context
+Two new hotkey features were requested:
+1. `\` key to jump the position marker back to the previous timeline marker
+2. `0` key to add configurable per-timeline colors at the current position
 
-Decision:
-- Leverage the existing `_discovery_worker` (passive UDP listener on port 41412, matching "NPLAYLTXBALL" broadcasts) that was already present in BallManager.
-- Start discovery automatically at app startup (in `application.py run()`).
-- Add `_schedule_auto_assign` / `_auto_assign_ips` methods with 500ms debounce to auto-assign discovered balls to the 3 IP/timeline slots in discovery order (1st→Ball 1, 2nd→Ball 2, 3rd→Ball 3).
-- Auto-assignment overwrites any existing IPs (as requested).
-- Emit `ball_ips_auto_updated` signal so the UI (BallWidget) can update button states and auto-start streaming.
-- Persist auto-assigned IPs to config so they survive restarts.
+## Decision
+1. **Backslash key**: In `MainWindow.keyPressEvent()`, when `\` is pressed, find the last marker strictly before the current position and jump there (or to 0.0 if none exists). Also seeks audio to keep in sync.
+2. **Zero key**: Added `zero_key_colors` attribute to `Project` model (list of 3 RGB tuples or None). When `0` is pressed, each non-None color is applied to its respective timeline via `add_color_at_position()`. The configuration dialog is accessible from Timeline → "Configure '0' Key Colors…".
+3. **ZeroKeyColorDialog**: New dialog in `ui/dialogs/zero_key_color_dialog.py` with 3 rows (one per ball), each having quick-pick color buttons (matching the segment context menu), a "Custom…" QColorDialog button, and a "None" button to skip that timeline.
 
-Consequences:
-- Users no longer need to manually enter ball IPs when balls are on the network.
-- The manual Ball IP Dialog still works as a fallback (with a note about auto-discovery).
-- The BallScanDialog (manual scan) still works for advanced use cases.
-- Port 41412 is bound by the passive listener at startup; the scan dialog's active scan may conflict (pre-existing issue, not worsened).
+## Impact
+- `sequence_maker/ui/main_window.py` — added `\` and `0` key handlers, `_on_configure_zero_key()` method, `QDialog` import
+- `sequence_maker/models/project.py` — added `zero_key_colors` attribute, serialization in `to_dict`/`from_dict`
+- `sequence_maker/ui/actions/timeline_actions.py` — added `configure_zero_key_action`
+- `sequence_maker/ui/main_window_parts/actions.py` — registered `configure_zero_key_action`
+- `sequence_maker/ui/main_window_parts/menus.py` — added menu item to Timeline menu
+- `sequence_maker/ui/dialogs/zero_key_color_dialog.py` — new file

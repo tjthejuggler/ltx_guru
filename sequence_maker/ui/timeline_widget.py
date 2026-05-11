@@ -1408,8 +1408,13 @@ class TimelineContainer(QWidget):
                         # Set cursor
                         self.setCursor(Qt.CursorShape.SizeHorCursor)
                     else:
-                        # Select segment
-                        self.parent_widget.select_segment(timeline, segment)
+                        # Toggle selection: deselect if clicking the same segment
+                        if (self.parent_widget.selected_segment is segment and
+                                self.parent_widget.selected_timeline is timeline):
+                            self.parent_widget.clear_selection()
+                        else:
+                            # Select segment
+                            self.parent_widget.select_segment(timeline, segment)
                         
                         # Check if clicking on edge
                         if edge:
@@ -2142,7 +2147,7 @@ class TimelineContainer(QWidget):
         
         # Add Merge with Previous action
         segment_index = timeline.segments.index(segment) if segment in timeline.segments else -1
-        merge_action = menu.addAction("Merge with Previous")
+        merge_action = menu.addAction("Merge with Previous ( [ )")
         merge_action.triggered.connect(
             lambda checked, t=timeline, s=segment: self._merge_segment_with_previous(t, s)
         )
