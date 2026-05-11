@@ -23,6 +23,31 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-05-11 17:19 UTC+1 - Snippet Lyric-Synced Duration Fix
+- **Removed the `snippet.duration` clamp in lyric-synced modes.** In
+  `End of Word` / `Start of Word` modes the effective duration is now
+  driven *purely* by the next lyric word boundary after the insertion
+  point — the snippet runs from the position marker all the way to the
+  next word end / next word start. The configured `duration` is now only
+  used as a *fallback* if no word boundary can be found (e.g. no lyrics
+  loaded, or position is past the last word).
+- **Authored mini-timeline is stretched to fit the effective window.**
+  Previously a 2 s authored snippet inserted into a 5 s lyric window
+  would only colour the first 2 s and leave 3 s blank. The mini-timeline
+  segments are now scaled by `effective_duration / snippet.duration` so
+  the whole authored pattern always fills the actual window.
+- **Fixed `Snippet Mode: END` + lyric duration mode** in
+  [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py:703).
+  Lyric-synced modes always anchor the snippet's *start* at the position
+  marker (per spec: "we are still supposed to be starting the snippet at
+  the current position marker"). The old code subtracted
+  `snippet.duration` from the marker, which is meaningless when the
+  runtime length is decided by lyrics rather than the configured value.
+- **Files modified:**
+  - [`sequence_maker/managers/snippet_manager.py`](sequence_maker/managers/snippet_manager.py:216) — Removed `max_duration` clamp in `_get_end_of_word_duration` / `_get_beginning_of_word_duration` (renamed parameter to `fallback_duration`); added `time_scale` stretch in `apply_snippet`.
+  - [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py:703) — In `keyPressEvent`, lyric duration modes now ignore `Snippet Mode: END` for start-position calculation and always anchor at the marker.
+  - [`sequence_maker/models/snippet.py`](sequence_maker/models/snippet.py:24) — Updated docstring to reflect that `duration` is the authoring length / fallback only in lyric modes, not a hard cap.
+
 ### 2026-05-11 17:05 UTC+1 - Snippet Lyric-Synced Duration Modes
 - **Added `duration_mode` to snippets** — each snippet can now be set to one of three modes:
   - **Timed** (default, legacy): fixed duration from the spin box.

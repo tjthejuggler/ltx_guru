@@ -331,8 +331,10 @@ class SnippetWidget(QWidget):
         self.duration_mode_combo.currentIndexChanged.connect(self._on_duration_mode_changed)
         props_layout.addWidget(self.duration_mode_combo)
 
-        # Duration spin (enabled only in "timed" mode; in lyric-synced
-        # modes it serves as a maximum cap)
+        # Duration spin (enabled only in "timed" mode). In lyric-synced
+        # modes this is just the authoring length of the mini-timeline
+        # editor and a fallback used when no lyric word boundary is found;
+        # it does NOT cap the runtime duration.
         self.duration_spin = QDoubleSpinBox()
         self.duration_spin.setRange(0.1, 30.0)
         self.duration_spin.setValue(2.0)
@@ -547,8 +549,9 @@ class SnippetWidget(QWidget):
 
         mode = self.duration_mode_combo.currentData()
         self.current_snippet.duration_mode = mode
-        # In lyric-synced modes the duration spin still serves as a max cap,
-        # but we visually indicate it's not the primary duration driver.
+        # In lyric-synced modes the duration spin is the authoring length of
+        # the mini-timeline editor and a fallback for when no word boundary
+        # can be found; the actual on-timeline length is set by lyric words.
         is_timed = (mode == "timed")
         self.duration_spin.setEnabled(is_timed if self.current_snippet else False)
         self.app.snippet_manager.snippet_modified.emit(self.current_snippet)

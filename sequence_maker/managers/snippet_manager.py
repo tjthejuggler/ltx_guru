@@ -213,31 +213,37 @@ class SnippetManager(QObject):
                 return snippet
         return None
 
-    def _get_end_of_word_duration(self, position, max_duration):
+    def _get_end_of_word_duration(self, position, fallback_duration):
         """
         Calculate the effective duration for an "end_of_word" snippet.
 
         Finds the very next time any timestamped lyric word ends after
         ``position``.  If the position is in the middle of a word, that
         word's end is used.  If the position is before a word, that
-        word's end is used.  The result is clamped to ``max_duration``.
-        If no word end is found after position, falls back to
-        ``max_duration``.
+        word's end is used.
+
+        The lyric-synced duration is *NOT* clamped by the snippet's
+        configured ``duration`` — the whole point of this mode is that the
+        snippet runs until the next word boundary regardless of the
+        authoring length.  ``fallback_duration`` is only used if no word
+        boundary is found after the insertion position (e.g. project has
+        no lyrics, or the position is past the last word).
 
         Args:
             position: The insertion start time in seconds.
-            max_duration: Maximum allowed duration (snippet.duration).
+            fallback_duration: Duration to return when no lyric word
+                boundary can be found after ``position``.
 
         Returns:
             float: Effective duration in seconds.
         """
         project = self.app.project_manager.current_project
         if not project or not hasattr(project, 'lyrics') or not project.lyrics:
-            return max_duration
+            return fallback_duration
 
         word_timestamps = getattr(project.lyrics, 'word_timestamps', [])
         if not word_timestamps:
-            return max_duration
+            return fallback_duration
 
         # Find the first word whose end time is > position.
         # This covers both cases:
@@ -248,8 +254,6 @@ class SnippetManager(QObject):
                 continue
             if wt.end > position:
                 effective = wt.end - position
-                # Clamp to max_duration
-                effective = min(effective, max_duration)
                 if effective <= 0:
                     continue
                 self.logger.info(
@@ -258,33 +262,35 @@ class SnippetManager(QObject):
                 )
                 return effective
 
-        # No word end found after position — fall back to max_duration
-        self.logger.info("End-of-word: no word end found after position, using max duration")
-        return max_duration
+        # No word end found after position — fall back to the configured duration
+        self.logger.info("End-of-word: no word end found after position, using fallback duration")
+        return fallback_duration
 
-    def _get_beginning_of_word_duration(self, position, max_duration):
+    def _get_beginning_of_word_duration(self, position, fallback_duration):
         """
         Calculate the effective duration for a "beginning_of_word" snippet.
 
         Finds the very next time any timestamped lyric word begins after
-        ``position``.  The result is clamped to ``max_duration``.
-        If no word start is found after position, falls back to
-        ``max_duration``.
+        ``position``.  The duration is *NOT* clamped by the snippet's
+        configured ``duration``; the lyric boundary alone determines how
+        far the snippet extends.  ``fallback_duration`` is only used if
+        no word start can be found after the insertion position.
 
         Args:
             position: The insertion start time in seconds.
-            max_duration: Maximum allowed duration (snippet.duration).
+            fallback_duration: Duration to return when no lyric word
+                boundary can be found after ``position``.
 
         Returns:
             float: Effective duration in seconds.
         """
         project = self.app.project_manager.current_project
         if not project or not hasattr(project, 'lyrics') or not project.lyrics:
-            return max_duration
+            return fallback_duration
 
         word_timestamps = getattr(project.lyrics, 'word_timestamps', [])
         if not word_timestamps:
-            return max_duration
+            return fallback_duration
 
         # Find the first word whose start time is > position.
         for wt in word_timestamps:
@@ -292,8 +298,6 @@ class SnippetManager(QObject):
                 continue
             if wt.start > position:
                 effective = wt.start - position
-                # Clamp to max_duration
-                effective = min(effective, max_duration)
                 if effective <= 0:
                     continue
                 self.logger.info(
@@ -302,20 +306,21 @@ class SnippetManager(QObject):
                 )
                 return effective
 
-        # No word start found after position — fall back to max_duration
-        self.logger.info("Beginning-of-word: no word start found after position, using max duration")
-        return max_duration
+        # No word start found after position — fall back to the configured duration
+        self.logger.info("Beginning-of-word: no word start found after position, using fallback duration")
+        return fallback_duration
 
     def get_effective_duration(self, snippet, position):
         """
         Return the effective duration for a snippet at a given position.
 
-        For "timed" mode this is simply ``snippet.duration``.
-        For "end_of_word" mode this is the distance from ``position`` to
-        the very next word end, clamped to ``snippet.duration``.
-        For "beginning_of_word" mode this is the distance from
-        ``position`` to the very next word start, clamped to
-        ``snippet.duration``.
+        - ``"timed"``: returns the fixed ``snippet.duration``.
+        - ``"end_of_word"``: returns the distance from ``position`` to the
+          very next lyric-word end.  Falls back to ``snippet.duration`` if
+          no word boundary is found.  **Not clamped** by ``snippet.duration``.
+        - ``"beginning_of_word"``: returns the distance from ``position``
+          to the very next lyric-word start.  Falls back to ``snippet.duration``
+          if no word boundary is found.  **Not clamped** by ``snippet.duration``.
 
         This is a public wrapper so callers (e.g. MainWindow) can
         calculate the effective duration without actually applying the
@@ -347,12 +352,13 @@ class SnippetManager(QObject):
         When the snippet's ``duration_mode`` is:
 
         - ``"end_of_word"``: effective duration extends from ``position``
-          to the very next time any word ends (clamped to
-          ``snippet.duration`` as a maximum).
+          to the very next time any word ends. The snippet's authored
+          mini-timeline is **stretched** to fill that window.
         - ``"beginning_of_word"``: effective duration extends from
-          ``position`` to the very next time any word begins (clamped to
-          ``snippet.duration`` as a maximum).
-        - ``"timed"`` (default): the fixed ``snippet.duration`` is used.
+          ``position`` to the very next time any word begins. The snippet's
+          authored mini-timeline is **stretched** to fill that window.
+        - ``"timed"`` (default): the fixed ``snippet.duration`` is used and
+          segments are placed verbatim.
 
         Args:
             snippet: The snippet to apply.
@@ -374,6 +380,20 @@ class SnippetManager(QObject):
                 f"{snippet_duration}; skipping apply."
             )
             return
+
+        # In lyric-synced modes the snippet's authored length (``snippet.duration``)
+        # is decoupled from the actual window length on the main timeline.
+        # Stretch the snippet's mini-timeline segments proportionally so the
+        # authored pattern always fills the effective window exactly — without
+        # this scaling, a 2 s authored snippet inserted into a 4 s lyric window
+        # would only colour the first 2 s and leave the remainder blank.
+        duration_mode = getattr(snippet, 'duration_mode', Snippet.DURATION_MODE_TIMED)
+        authored_duration = snippet.duration if snippet.duration > 0 else snippet_duration
+        if duration_mode in (Snippet.DURATION_MODE_END_OF_WORD,
+                             Snippet.DURATION_MODE_BEGINNING_OF_WORD):
+            time_scale = snippet_duration / authored_duration
+        else:
+            time_scale = 1.0
 
         modified_timelines = []
         for i, snippet_timeline in enumerate(snippet.timelines):
@@ -445,16 +465,20 @@ class SnippetManager(QObject):
             for seg in segments_to_add:
                 main_timeline.add_segment(seg)
 
-            # Add snippet segments, offset by position
+            # Add snippet segments, offset by position.
+            # In lyric-synced modes ``time_scale`` stretches the authored
+            # timeline to fill the effective window; in "timed" mode it is 1.0.
             for seg in snippet_timeline.segments:
-                new_start = seg.start_time + position
-                new_end = seg.end_time + position
+                new_start = seg.start_time * time_scale + position
+                new_end = seg.end_time * time_scale + position
 
-                # Clamp to snippet duration
+                # Clamp to the effective window
                 if new_start >= end_position:
                     continue
                 if new_end > end_position:
                     new_end = end_position
+                if new_end <= new_start:
+                    continue
 
                 new_seg = TimelineSegment(
                     start_time=new_start,

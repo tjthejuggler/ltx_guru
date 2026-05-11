@@ -705,6 +705,11 @@ class MainWindow(QMainWindow):
         #   "begin" -> snippet starts AT the position marker (legacy behaviour)
         #   "end"   -> snippet ends AT the position marker, so it is inserted
         #              starting at (position - snippet.duration), clamped to 0.
+        # Lyric-synced duration modes ("end_of_word" / "beginning_of_word")
+        # always start at the position marker because the snippet's runtime
+        # length is driven by the next lyric word boundary, not by a fixed
+        # ``snippet.duration``; subtracting ``snippet.duration`` in those
+        # modes would shift the start backwards into a meaningless offset.
         # This must be checked BEFORE the DEFAULT_KEY_MAPPING block so it works
         # for any hotkey, not just color keys.
         if (
@@ -716,15 +721,25 @@ class MainWindow(QMainWindow):
             if snippet is not None:
                 marker = getattr(self.app.timeline_manager, 'position', 0.0)
                 mode = self.app.snippet_manager.snippet_mode
-                if mode == "end":
-                    # End of snippet should be at the position marker.
-                    # We use snippet.duration as the position estimate; the
-                    # actual effective duration (which may differ for
-                    # "end_of_word" mode) is computed inside apply_snippet
-                    # from the final apply_position.
+                # Import inside the block to avoid a top-level import cycle.
+                from models.snippet import Snippet
+                duration_mode = getattr(
+                    snippet, 'duration_mode', Snippet.DURATION_MODE_TIMED
+                )
+                is_lyric_mode = duration_mode in (
+                    Snippet.DURATION_MODE_END_OF_WORD,
+                    Snippet.DURATION_MODE_BEGINNING_OF_WORD,
+                )
+                if mode == "end" and not is_lyric_mode:
+                    # "end" + "timed": snippet ends at the marker, so it
+                    # starts ``snippet.duration`` seconds before it.
                     apply_position = max(0.0, marker - snippet.duration)
                 else:
-                    # "begin" (default active mode): snippet starts at the marker.
+                    # "begin" (any duration mode) OR "end" + lyric mode:
+                    # the snippet starts at the marker. In lyric modes the
+                    # window extends forward from the marker to the next
+                    # word boundary; in "timed" begin mode it extends by
+                    # ``snippet.duration``.
                     apply_position = marker
                 if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
                     self.app.undo_manager.save_state("apply_snippet")

@@ -24,13 +24,19 @@ class Snippet:
     Attributes:
         name: Display name for the snippet.
         hotkey: A single letter or number that triggers the snippet with Shift.
-        duration: Length of the snippet in seconds (used directly when
-            duration_mode is "timed"; used as a max/preview length for the
-            mini-timeline editor when duration_mode is "end_of_word").
+        duration: Length of the snippet in seconds. Used directly when
+            ``duration_mode`` is ``"timed"``. In lyric-synced modes this is
+            only the **authoring** length of the mini-timeline editor; the
+            actual on-timeline length is determined by the next word
+            boundary at apply time, and the authored pattern is stretched
+            to fit. The configured ``duration`` is also used as a fallback
+            when no lyric boundary can be found after the insertion point.
         duration_mode: How the snippet's duration is determined when applied.
-            "timed" — use the fixed ``duration`` value.
-            "end_of_word" — extend from the insertion position until the end
-            of the next timestamped lyric word (clamped to ``duration`` max).
+            ``"timed"`` — use the fixed ``duration`` value.
+            ``"end_of_word"`` — extend from the insertion position until
+            the end of the next timestamped lyric word.
+            ``"beginning_of_word"`` — extend from the insertion position
+            until the start of the next timestamped lyric word.
         timelines: List of Timeline objects (one per ball).
         ball_enabled: List of bools indicating which balls are included.
     """
