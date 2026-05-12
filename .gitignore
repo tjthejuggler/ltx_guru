@@ -56,3 +56,4 @@ memory-bank/
 
 /sequence_maker/ppq_api_key.txt
 /sequence_maker/.venv/
+/.venv/

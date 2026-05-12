@@ -1,0 +1,3814 @@
+{
+  "song_title": "Bushes of Love",
+  "artist_name": "Bad Lip Reading",
+  "raw_lyrics": "49 times we fought that beast\nYour old man and me\nIt had a chicken head with duck feet\nWith a woman's face too\nOh, that's rad!\nAnd it was waiting in the bushes for us\nThen it ripped off your dad's face\nHe was screaming something awful\nIn fact there was this huge mess\nI had to change the floors\nThe floors?\nYou see, his blood it drained into the boards\nAnd I had to change 'em\nBut we all got a chicken-duck-woman thing waiting for us\nEveryday I worry all day\nAbout what's waiting in the bushes of love\n'Cause something's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\n'Cause something's waiting in the bushes for us\nSomething's waiting in the bushes of love\nYo, never knew my dad\nHe didn't care about me\nDead horizon is all my macro-binoculars see\nMoisture-farming all my life and not a drop spilt\nMy aunt and uncle, double suns\nAnd sippin' blue milk\nMy aunt and uncle, double suns\nI'm sick of blue milk\nBut then a desert hobo came and told me\nWe all got a chicken-duck-woman thing waiting for us\nEveryday I worry all day\nAbout what's waiting in the bushes of love\n'Cause something's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nHold me when I open like a flower\nHold me right\nYeah, I ain't had to bake for a girl in a long time\nA long time\nI think my cooking's awesome\nI've got her picture in my photo wagon\nHa ha, keep it poppin'\nYeah, she'd probably love to honky tonk\n(She'd probably love to honky tonk)\nThat's what I said\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find what I don't wanna find\nWaitin' for me 'round the corner, oh no no\n(Waiting for us)\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find any more\nCrispy bodies by the door\n49 times\nYeah, it was 49 times\nAnd now it might be waiting for you\nCould be hiding behind that scrap pile\nThat's just a big cow\nI know you really want someone to hold you\nBut we all got a chicken-duck-woman thing waiting for us\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day (all day)\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find what I don't wanna find\nWaitin' for me 'round the corner, oh no no\n(Waiting for us)\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find what I don't wanna find\nWaitin' for me 'round the corner, oh no no",
+  "word_timestamps": [
+    {
+      "word": "<unk>",
+      "start": 7.92,
+      "end": 8.26,
+      "case": "success"
+    },
+    {
+      "word": "times",
+      "start": 8.34,
+      "end": 8.72,
+      "case": "success"
+    },
+    {
+      "word": "we",
+      "start": 10.26,
+      "end": 10.47,
+      "case": "success"
+    },
+    {
+      "word": "fought",
+      "start": 10.47,
+      "end": 10.79,
+      "case": "success"
+    },
+    {
+      "word": "that",
+      "start": 11.42,
+      "end": 11.45,
+      "case": "success"
+    },
+    {
+      "word": "beast",
+      "start": 11.45,
+      "end": 11.5,
+      "case": "success"
+    },
+    {
+      "word": "your",
+      "start": 12.14,
+      "end": 12.29,
+      "case": "success"
+    },
+    {
+      "word": "old",
+      "start": 12.29,
+      "end": 12.46,
+      "case": "success"
+    },
+    {
+      "word": "man",
+      "start": 12.49,
+      "end": 12.78,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 12.78,
+      "end": 12.83,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": 12.85,
+      "end": 13.04,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": 13.78,
+      "end": 13.8,
+      "case": "success"
+    },
+    {
+      "word": "had",
+      "start": 13.98,
+      "end": 14.2,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 14.2,
+      "end": 14.29,
+      "case": "success"
+    },
+    {
+      "word": "chicken",
+      "start": 14.33,
+      "end": 14.72,
+      "case": "success"
+    },
+    {
+      "word": "head",
+      "start": 14.76,
+      "end": 15.0,
+      "case": "success"
+    },
+    {
+      "word": "with",
+      "start": 15.0,
+      "end": 15.13,
+      "case": "success"
+    },
+    {
+      "word": "duck",
+      "start": 15.19,
+      "end": 15.46,
+      "case": "success"
+    },
+    {
+      "word": "feet",
+      "start": 15.61,
+      "end": 15.89,
+      "case": "success"
+    },
+    {
+      "word": "with",
+      "start": 16.71,
+      "end": 16.89,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 16.89,
+      "end": 16.9,
+      "case": "success"
+    },
+    {
+      "word": "woman's",
+      "start": 16.9,
+      "end": 17.33,
+      "case": "success"
+    },
+    {
+      "word": "face",
+      "start": 17.33,
+      "end": 17.76,
+      "case": "success"
+    },
+    {
+      "word": "too",
+      "start": 17.76,
+      "end": 18.14,
+      "case": "success"
+    },
+    {
+      "word": "oh",
+      "start": 18.41,
+      "end": 18.61,
+      "case": "success"
+    },
+    {
+      "word": "that's",
+      "start": 18.61,
+      "end": 18.88,
+      "case": "success"
+    },
+    {
+      "word": "rad",
+      "start": 18.88,
+      "end": 19.37,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 19.73,
+      "end": 19.77,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": 19.77,
+      "end": 19.79,
+      "case": "success"
+    },
+    {
+      "word": "was",
+      "start": 19.79,
+      "end": 19.83,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 20.37,
+      "end": 20.83,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 20.84,
+      "end": 21.0,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 21.0,
+      "end": 21.16,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 21.18,
+      "end": 21.6,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 21.64,
+      "end": 21.92,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 21.92,
+      "end": 22.15,
+      "case": "success"
+    },
+    {
+      "word": "then",
+      "start": 22.7,
+      "end": 22.81,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": 22.81,
+      "end": 22.88,
+      "case": "success"
+    },
+    {
+      "word": "ripped",
+      "start": 22.88,
+      "end": 23.28,
+      "case": "success"
+    },
+    {
+      "word": "off",
+      "start": 23.28,
+      "end": 23.48,
+      "case": "success"
+    },
+    {
+      "word": "your",
+      "start": 23.58,
+      "end": 23.75,
+      "case": "success"
+    },
+    {
+      "word": "dad's",
+      "start": 23.77,
+      "end": 24.18,
+      "case": "success"
+    },
+    {
+      "word": "face",
+      "start": 24.18,
+      "end": 24.69,
+      "case": "success"
+    },
+    {
+      "word": "he",
+      "start": 25.08,
+      "end": 25.28,
+      "case": "success"
+    },
+    {
+      "word": "was",
+      "start": 25.28,
+      "end": 25.46,
+      "case": "success"
+    },
+    {
+      "word": "screaming",
+      "start": 25.48,
+      "end": 25.86,
+      "case": "success"
+    },
+    {
+      "word": "something",
+      "start": 25.91,
+      "end": 26.4,
+      "case": "success"
+    },
+    {
+      "word": "awful",
+      "start": 26.4,
+      "end": 26.83,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 27.47,
+      "end": 27.61,
+      "case": "success"
+    },
+    {
+      "word": "fact",
+      "start": 27.61,
+      "end": 27.86,
+      "case": "success"
+    },
+    {
+      "word": "there",
+      "start": 27.86,
+      "end": 28.03,
+      "case": "success"
+    },
+    {
+      "word": "was",
+      "start": 28.04,
+      "end": 28.28,
+      "case": "success"
+    },
+    {
+      "word": "this",
+      "start": 28.28,
+      "end": 28.5,
+      "case": "success"
+    },
+    {
+      "word": "huge",
+      "start": 28.5,
+      "end": 28.74,
+      "case": "success"
+    },
+    {
+      "word": "mess",
+      "start": 28.92,
+      "end": 29.23,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 29.3,
+      "end": 29.37,
+      "case": "success"
+    },
+    {
+      "word": "had",
+      "start": 29.37,
+      "end": 29.59,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 29.6,
+      "end": 29.72,
+      "case": "success"
+    },
+    {
+      "word": "change",
+      "start": 29.72,
+      "end": 30.22,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 30.22,
+      "end": 30.37,
+      "case": "success"
+    },
+    {
+      "word": "floors",
+      "start": 30.4,
+      "end": 31.01,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 32.26,
+      "end": 32.28,
+      "case": "success"
+    },
+    {
+      "word": "floors",
+      "start": 32.28,
+      "end": 32.78,
+      "case": "success"
+    },
+    {
+      "word": "you",
+      "start": 33.43,
+      "end": 33.56,
+      "case": "success"
+    },
+    {
+      "word": "see",
+      "start": 33.59,
+      "end": 33.88,
+      "case": "success"
+    },
+    {
+      "word": "his",
+      "start": 33.88,
+      "end": 34.22,
+      "case": "success"
+    },
+    {
+      "word": "blood",
+      "start": 34.28,
+      "end": 34.75,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": 34.75,
+      "end": 34.88,
+      "case": "success"
+    },
+    {
+      "word": "drained",
+      "start": 34.89,
+      "end": 35.41,
+      "case": "success"
+    },
+    {
+      "word": "into",
+      "start": 35.41,
+      "end": 35.95,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 36.0,
+      "end": 36.14,
+      "case": "success"
+    },
+    {
+      "word": "boards",
+      "start": 36.14,
+      "end": 36.68,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 36.69,
+      "end": 36.82,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 36.82,
+      "end": 36.84,
+      "case": "success"
+    },
+    {
+      "word": "had",
+      "start": 36.89,
+      "end": 37.32,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 37.34,
+      "end": 37.39,
+      "case": "success"
+    },
+    {
+      "word": "change",
+      "start": 37.47,
+      "end": 38.0,
+      "case": "success"
+    },
+    {
+      "word": "'em",
+      "start": 38.0,
+      "end": 38.32,
+      "case": "success"
+    },
+    {
+      "word": "but",
+      "start": 38.57,
+      "end": 38.6,
+      "case": "success"
+    },
+    {
+      "word": "we",
+      "start": 38.61,
+      "end": 39.03,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 39.03,
+      "end": 39.19,
+      "case": "success"
+    },
+    {
+      "word": "got",
+      "start": 39.19,
+      "end": 39.5,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 39.5,
+      "end": 39.52,
+      "case": "success"
+    },
+    {
+      "word": "chicken",
+      "start": 39.59,
+      "end": 40.05,
+      "case": "success"
+    },
+    {
+      "word": "duck",
+      "start": 40.06,
+      "end": 40.33,
+      "case": "success"
+    },
+    {
+      "word": "woman",
+      "start": 40.41,
+      "end": 40.88,
+      "case": "success"
+    },
+    {
+      "word": "thing",
+      "start": 40.9,
+      "end": 41.15,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 41.15,
+      "end": 41.54,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 41.54,
+      "end": 41.85,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 41.85,
+      "end": 42.38,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 43.11,
+      "end": 43.74,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 43.74,
+      "end": 43.9,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 43.91,
+      "end": 44.35,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 44.4,
+      "end": 44.73,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 44.76,
+      "end": 45.18,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 46.47,
+      "end": 46.69,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 46.69,
+      "end": 46.91,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 46.91,
+      "end": 47.41,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 47.41,
+      "end": 47.58,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 47.59,
+      "end": 47.73,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 47.76,
+      "end": 48.21,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 48.21,
+      "end": 48.35,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 48.4,
+      "end": 48.8,
+      "case": "success"
+    },
+    {
+      "word": "'Cause",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "something's",
+      "start": 49.83,
+      "end": 50.35,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 50.35,
+      "end": 50.79,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 50.84,
+      "end": 51.01,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 51.02,
+      "end": 51.17,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 51.19,
+      "end": 51.63,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 51.66,
+      "end": 51.93,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 51.93,
+      "end": 52.22,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 53.26,
+      "end": 53.78,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 53.78,
+      "end": 54.11,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 54.11,
+      "end": 54.24,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 54.46,
+      "end": 54.57,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 54.58,
+      "end": 55.06,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 55.06,
+      "end": 55.25,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 55.25,
+      "end": 55.66,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 56.77,
+      "end": 57.48,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 57.48,
+      "end": 57.57,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 57.57,
+      "end": 58.07,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 58.12,
+      "end": 58.42,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 58.42,
+      "end": 58.97,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 60.19,
+      "end": 60.43,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 60.43,
+      "end": 60.62,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 60.62,
+      "end": 61.13,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 61.13,
+      "end": 61.29,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 61.29,
+      "end": 61.44,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 61.46,
+      "end": 61.91,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 61.91,
+      "end": 62.13,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 62.13,
+      "end": 62.49,
+      "case": "success"
+    },
+    {
+      "word": "'cause",
+      "start": 62.61,
+      "end": 62.64,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 63.54,
+      "end": 64.06,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 64.06,
+      "end": 64.45,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 64.52,
+      "end": 64.69,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 64.7,
+      "end": 64.88,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 64.91,
+      "end": 65.3,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 65.3,
+      "end": 65.64,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 65.64,
+      "end": 65.95,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 66.97,
+      "end": 67.5,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 67.5,
+      "end": 67.96,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 67.96,
+      "end": 68.13,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 68.14,
+      "end": 68.28,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 68.32,
+      "end": 68.76,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 68.76,
+      "end": 68.99,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 68.99,
+      "end": 69.29,
+      "case": "success"
+    },
+    {
+      "word": "yo",
+      "start": 69.64,
+      "end": 70.01,
+      "case": "success"
+    },
+    {
+      "word": "never",
+      "start": 70.22,
+      "end": 70.48,
+      "case": "success"
+    },
+    {
+      "word": "knew",
+      "start": 70.48,
+      "end": 70.67,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 70.71,
+      "end": 70.91,
+      "case": "success"
+    },
+    {
+      "word": "dad",
+      "start": 70.91,
+      "end": 71.18,
+      "case": "success"
+    },
+    {
+      "word": "he",
+      "start": 71.19,
+      "end": 71.37,
+      "case": "success"
+    },
+    {
+      "word": "didn't",
+      "start": 71.37,
+      "end": 71.79,
+      "case": "success"
+    },
+    {
+      "word": "care",
+      "start": 71.79,
+      "end": 72.11,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 72.11,
+      "end": 72.65,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "dead",
+      "start": 73.06,
+      "end": 73.32,
+      "case": "success"
+    },
+    {
+      "word": "horizon",
+      "start": 73.47,
+      "end": 74.2,
+      "case": "success"
+    },
+    {
+      "word": "is",
+      "start": 74.2,
+      "end": 74.43,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 74.43,
+      "end": 74.57,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 74.57,
+      "end": 74.76,
+      "case": "success"
+    },
+    {
+      "word": "macro",
+      "start": 74.76,
+      "end": 75.19,
+      "case": "success"
+    },
+    {
+      "word": "binoculars",
+      "start": 75.19,
+      "end": 76.02,
+      "case": "success"
+    },
+    {
+      "word": "see",
+      "start": 76.09,
+      "end": 76.44,
+      "case": "success"
+    },
+    {
+      "word": "moisture",
+      "start": 76.45,
+      "end": 76.89,
+      "case": "success"
+    },
+    {
+      "word": "farming",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "all",
+      "start": 77.45,
+      "end": 77.58,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 77.58,
+      "end": 77.74,
+      "case": "success"
+    },
+    {
+      "word": "life",
+      "start": 77.77,
+      "end": 78.09,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 78.09,
+      "end": 78.22,
+      "case": "success"
+    },
+    {
+      "word": "not",
+      "start": 78.22,
+      "end": 78.51,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 78.51,
+      "end": 78.58,
+      "case": "success"
+    },
+    {
+      "word": "drop",
+      "start": 78.58,
+      "end": 78.96,
+      "case": "success"
+    },
+    {
+      "word": "spilt",
+      "start": 78.96,
+      "end": 79.52,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 79.72,
+      "end": 79.85,
+      "case": "success"
+    },
+    {
+      "word": "aunt",
+      "start": 79.93,
+      "end": 80.1,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 80.15,
+      "end": 80.31,
+      "case": "success"
+    },
+    {
+      "word": "uncle",
+      "start": 80.36,
+      "end": 80.76,
+      "case": "success"
+    },
+    {
+      "word": "double",
+      "start": 80.8,
+      "end": 81.13,
+      "case": "success"
+    },
+    {
+      "word": "suns",
+      "start": 81.13,
+      "end": 81.17,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 81.17,
+      "end": 81.2,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 81.2,
+      "end": 82.28,
+      "case": "success"
+    },
+    {
+      "word": "blue",
+      "start": 82.33,
+      "end": 82.45,
+      "case": "success"
+    },
+    {
+      "word": "milk",
+      "start": 82.45,
+      "end": 82.97,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 83.16,
+      "end": 83.35,
+      "case": "success"
+    },
+    {
+      "word": "aunt",
+      "start": 83.35,
+      "end": 83.38,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 83.39,
+      "end": 83.77,
+      "case": "success"
+    },
+    {
+      "word": "uncle",
+      "start": 83.91,
+      "end": 84.2,
+      "case": "success"
+    },
+    {
+      "word": "double",
+      "start": 84.22,
+      "end": 84.57,
+      "case": "success"
+    },
+    {
+      "word": "suns",
+      "start": 84.57,
+      "end": 84.93,
+      "case": "success"
+    },
+    {
+      "word": "i'm",
+      "start": 84.93,
+      "end": 85.07,
+      "case": "success"
+    },
+    {
+      "word": "sick",
+      "start": 85.07,
+      "end": 85.36,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 85.36,
+      "end": 85.51,
+      "case": "success"
+    },
+    {
+      "word": "blue",
+      "start": 85.51,
+      "end": 85.7,
+      "case": "success"
+    },
+    {
+      "word": "milk",
+      "start": 85.7,
+      "end": 85.74,
+      "case": "success"
+    },
+    {
+      "word": "but",
+      "start": 87.18,
+      "end": 87.24,
+      "case": "success"
+    },
+    {
+      "word": "then",
+      "start": 87.24,
+      "end": 87.42,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 87.6,
+      "end": 87.61,
+      "case": "success"
+    },
+    {
+      "word": "desert",
+      "start": 87.61,
+      "end": 88.05,
+      "case": "success"
+    },
+    {
+      "word": "hobo",
+      "start": 88.07,
+      "end": 88.45,
+      "case": "success"
+    },
+    {
+      "word": "came",
+      "start": 88.45,
+      "end": 88.75,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 88.75,
+      "end": 88.89,
+      "case": "success"
+    },
+    {
+      "word": "told",
+      "start": 88.89,
+      "end": 89.02,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": 89.02,
+      "end": 89.04,
+      "case": "success"
+    },
+    {
+      "word": "we",
+      "start": 90.21,
+      "end": 90.46,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "got",
+      "start": 90.63,
+      "end": 90.91,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 90.92,
+      "end": 90.97,
+      "case": "success"
+    },
+    {
+      "word": "chicken",
+      "start": 91.02,
+      "end": 91.48,
+      "case": "success"
+    },
+    {
+      "word": "duck",
+      "start": 91.48,
+      "end": 91.75,
+      "case": "success"
+    },
+    {
+      "word": "woman",
+      "start": 91.81,
+      "end": 92.31,
+      "case": "success"
+    },
+    {
+      "word": "thing",
+      "start": 92.31,
+      "end": 92.56,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 92.56,
+      "end": 92.97,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 92.98,
+      "end": 93.29,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 93.29,
+      "end": 93.69,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 94.49,
+      "end": 95.14,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 95.14,
+      "end": 95.15,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 95.32,
+      "end": 95.77,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 95.81,
+      "end": 96.14,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 96.17,
+      "end": 96.67,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 97.9,
+      "end": 98.15,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 98.15,
+      "end": 98.34,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 98.34,
+      "end": 98.84,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 98.84,
+      "end": 99.0,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 99.01,
+      "end": 99.15,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 99.19,
+      "end": 99.66,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 99.67,
+      "end": 99.84,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 99.84,
+      "end": 100.16,
+      "case": "success"
+    },
+    {
+      "word": "'Cause",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "something's",
+      "start": 101.26,
+      "end": 101.78,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 101.78,
+      "end": 102.23,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 102.25,
+      "end": 102.44,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 102.45,
+      "end": 102.58,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 102.61,
+      "end": 103.04,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 103.07,
+      "end": 103.35,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 103.35,
+      "end": 103.65,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 104.68,
+      "end": 105.19,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 105.19,
+      "end": 105.5,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 105.5,
+      "end": 105.68,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 105.93,
+      "end": 106.01,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 106.03,
+      "end": 106.46,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 106.52,
+      "end": 106.67,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 106.67,
+      "end": 107.1,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 108.09,
+      "end": 108.86,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 108.86,
+      "end": 109.0,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 109.0,
+      "end": 109.49,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 109.55,
+      "end": 109.83,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 109.87,
+      "end": 110.39,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 110.48,
+      "end": 110.52,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 110.52,
+      "end": 110.56,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 112.06,
+      "end": 112.55,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 112.55,
+      "end": 112.71,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 112.71,
+      "end": 112.87,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 112.89,
+      "end": 113.36,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 113.36,
+      "end": 113.55,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 113.55,
+      "end": 113.87,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 115.0,
+      "end": 115.49,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 115.49,
+      "end": 115.95,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 115.98,
+      "end": 116.15,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 116.15,
+      "end": 116.3,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 116.33,
+      "end": 116.74,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 116.74,
+      "end": 117.06,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 117.06,
+      "end": 117.23,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 118.4,
+      "end": 118.92,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 118.92,
+      "end": 119.31,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 119.38,
+      "end": 119.56,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 119.57,
+      "end": 119.72,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 119.73,
+      "end": 120.18,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 120.23,
+      "end": 120.4,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 120.4,
+      "end": 120.69,
+      "case": "success"
+    },
+    {
+      "word": "hold",
+      "start": 121.47,
+      "end": 121.72,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": 121.72,
+      "end": 121.9,
+      "case": "success"
+    },
+    {
+      "word": "when",
+      "start": 122.2,
+      "end": 122.23,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 122.23,
+      "end": 122.41,
+      "case": "success"
+    },
+    {
+      "word": "open",
+      "start": 122.41,
+      "end": 122.77,
+      "case": "success"
+    },
+    {
+      "word": "like",
+      "start": 122.79,
+      "end": 123.05,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 123.05,
+      "end": 123.13,
+      "case": "success"
+    },
+    {
+      "word": "flower",
+      "start": 123.13,
+      "end": 123.99,
+      "case": "success"
+    },
+    {
+      "word": "hold",
+      "start": 125.36,
+      "end": 125.62,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": 125.62,
+      "end": 125.75,
+      "case": "success"
+    },
+    {
+      "word": "right",
+      "start": 125.81,
+      "end": 126.12,
+      "case": "success"
+    },
+    {
+      "word": "yeah",
+      "start": 128.18,
+      "end": 128.41,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 128.41,
+      "end": 128.51,
+      "case": "success"
+    },
+    {
+      "word": "ain't",
+      "start": 128.51,
+      "end": 128.67,
+      "case": "success"
+    },
+    {
+      "word": "had",
+      "start": 128.88,
+      "end": 129.03,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 129.03,
+      "end": 129.17,
+      "case": "success"
+    },
+    {
+      "word": "bake",
+      "start": 129.21,
+      "end": 129.57,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 129.67,
+      "end": 129.95,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 129.95,
+      "end": 130.04,
+      "case": "success"
+    },
+    {
+      "word": "girl",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "in",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "a",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "long",
+      "start": 130.92,
+      "end": 131.41,
+      "case": "success"
+    },
+    {
+      "word": "time",
+      "start": 131.58,
+      "end": 132.06,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 133.3,
+      "end": 133.42,
+      "case": "success"
+    },
+    {
+      "word": "long",
+      "start": 133.42,
+      "end": 133.89,
+      "case": "success"
+    },
+    {
+      "word": "time",
+      "start": 134.0,
+      "end": 134.43,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 134.75,
+      "end": 134.76,
+      "case": "success"
+    },
+    {
+      "word": "think",
+      "start": 134.77,
+      "end": 135.0,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 135.0,
+      "end": 135.16,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 135.16,
+      "end": 135.93,
+      "case": "success"
+    },
+    {
+      "word": "awesome",
+      "start": 136.12,
+      "end": 136.23,
+      "case": "success"
+    },
+    {
+      "word": "i've",
+      "start": 136.4,
+      "end": 136.47,
+      "case": "success"
+    },
+    {
+      "word": "got",
+      "start": 136.47,
+      "end": 136.76,
+      "case": "success"
+    },
+    {
+      "word": "her",
+      "start": 136.76,
+      "end": 136.88,
+      "case": "success"
+    },
+    {
+      "word": "picture",
+      "start": 136.88,
+      "end": 137.39,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 137.39,
+      "end": 137.59,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 137.59,
+      "end": 137.73,
+      "case": "success"
+    },
+    {
+      "word": "photo",
+      "start": 137.73,
+      "end": 138.15,
+      "case": "success"
+    },
+    {
+      "word": "wagon",
+      "start": 138.17,
+      "end": 138.46,
+      "case": "success"
+    },
+    {
+      "word": "ha",
+      "start": 138.47,
+      "end": 138.68,
+      "case": "success"
+    },
+    {
+      "word": "ha",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "keep",
+      "start": 139.02,
+      "end": 139.31,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": 139.31,
+      "end": 139.45,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 139.49,
+      "end": 139.97,
+      "case": "success"
+    },
+    {
+      "word": "yeah",
+      "start": 140.14,
+      "end": 140.19,
+      "case": "success"
+    },
+    {
+      "word": "she'd",
+      "start": 140.99,
+      "end": 141.16,
+      "case": "success"
+    },
+    {
+      "word": "probably",
+      "start": 141.22,
+      "end": 141.62,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 141.62,
+      "end": 141.85,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 141.87,
+      "end": 142.01,
+      "case": "success"
+    },
+    {
+      "word": "honky",
+      "start": 142.08,
+      "end": 142.46,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 142.49,
+      "end": 142.57,
+      "case": "success"
+    },
+    {
+      "word": "She'd",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "probably",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "love",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "to",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "honky",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "<unk>",
+      "start": 145.93,
+      "end": 147.22,
+      "case": "success"
+    },
+    {
+      "word": "that's",
+      "start": 147.52,
+      "end": 147.56,
+      "case": "success"
+    },
+    {
+      "word": "what",
+      "start": 147.56,
+      "end": 147.59,
+      "case": "success"
+    },
+    {
+      "word": "I",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "said",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "i",
+      "start": 148.32,
+      "end": 148.44,
+      "case": "success"
+    },
+    {
+      "word": "used",
+      "start": 148.44,
+      "end": 148.72,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 148.72,
+      "end": 148.9,
+      "case": "success"
+    },
+    {
+      "word": "ride",
+      "start": 148.9,
+      "end": 149.39,
+      "case": "success"
+    },
+    {
+      "word": "across",
+      "start": 150.12,
+      "end": 150.41,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 150.44,
+      "end": 150.58,
+      "case": "success"
+    },
+    {
+      "word": "desert",
+      "start": 150.6,
+      "end": 151.09,
+      "case": "success"
+    },
+    {
+      "word": "you",
+      "start": 151.09,
+      "end": 151.13,
+      "case": "success"
+    },
+    {
+      "word": "know",
+      "start": 151.28,
+      "end": 151.75,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 151.75,
+      "end": 151.89,
+      "case": "success"
+    },
+    {
+      "word": "used",
+      "start": 151.89,
+      "end": 152.13,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 152.13,
+      "end": 152.29,
+      "case": "success"
+    },
+    {
+      "word": "glide",
+      "start": 152.29,
+      "end": 152.92,
+      "case": "success"
+    },
+    {
+      "word": "on",
+      "start": 153.61,
+      "end": 153.76,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 153.76,
+      "end": 153.78,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 153.78,
+      "end": 154.01,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 154.92,
+      "end": 154.93,
+      "case": "success"
+    },
+    {
+      "word": "pray",
+      "start": 154.93,
+      "end": 154.96,
+      "case": "success"
+    },
+    {
+      "word": "that",
+      "start": 154.96,
+      "end": 154.99,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 155.42,
+      "end": 155.53,
+      "case": "success"
+    },
+    {
+      "word": "don't",
+      "start": 155.53,
+      "end": 155.7,
+      "case": "success"
+    },
+    {
+      "word": "find",
+      "start": 155.7,
+      "end": 156.31,
+      "case": "success"
+    },
+    {
+      "word": "what",
+      "start": 156.85,
+      "end": 156.95,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 157.27,
+      "end": 157.28,
+      "case": "success"
+    },
+    {
+      "word": "don't",
+      "start": 157.28,
+      "end": 157.49,
+      "case": "success"
+    },
+    {
+      "word": "wanna",
+      "start": 157.49,
+      "end": 157.54,
+      "case": "success"
+    },
+    {
+      "word": "find",
+      "start": 157.87,
+      "end": 158.33,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 158.79,
+      "end": 159.56,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 159.56,
+      "end": 159.58,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": 159.58,
+      "end": 159.6,
+      "case": "success"
+    },
+    {
+      "word": "'round",
+      "start": 159.6,
+      "end": 159.89,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 159.89,
+      "end": 160.01,
+      "case": "success"
+    },
+    {
+      "word": "corner",
+      "start": 160.06,
+      "end": 160.27,
+      "case": "success"
+    },
+    {
+      "word": "oh",
+      "start": 160.27,
+      "end": 160.28,
+      "case": "success"
+    },
+    {
+      "word": "no",
+      "start": 160.28,
+      "end": 160.62,
+      "case": "success"
+    },
+    {
+      "word": "no",
+      "start": 160.62,
+      "end": 160.79,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 161.16,
+      "end": 161.54,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 161.54,
+      "end": 161.81,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 161.81,
+      "end": 161.83,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 162.02,
+      "end": 162.18,
+      "case": "success"
+    },
+    {
+      "word": "used",
+      "start": 162.18,
+      "end": 162.42,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 162.42,
+      "end": 162.44,
+      "case": "success"
+    },
+    {
+      "word": "ride",
+      "start": 162.61,
+      "end": 163.1,
+      "case": "success"
+    },
+    {
+      "word": "across",
+      "start": 163.9,
+      "end": 164.1,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 164.1,
+      "end": 164.12,
+      "case": "success"
+    },
+    {
+      "word": "desert",
+      "start": 164.29,
+      "end": 164.69,
+      "case": "success"
+    },
+    {
+      "word": "you",
+      "start": 164.69,
+      "end": 164.74,
+      "case": "success"
+    },
+    {
+      "word": "know",
+      "start": 165.01,
+      "end": 165.45,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 165.45,
+      "end": 165.66,
+      "case": "success"
+    },
+    {
+      "word": "used",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "to",
+      "start": 165.86,
+      "end": 166.01,
+      "case": "success"
+    },
+    {
+      "word": "glide",
+      "start": 166.01,
+      "end": 166.79,
+      "case": "success"
+    },
+    {
+      "word": "on",
+      "start": 167.33,
+      "end": 167.41,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 167.41,
+      "end": 167.43,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 167.43,
+      "end": 167.58,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 167.59,
+      "end": 167.6,
+      "case": "success"
+    },
+    {
+      "word": "pray",
+      "start": 170.34,
+      "end": 170.6,
+      "case": "success"
+    },
+    {
+      "word": "that",
+      "start": 170.66,
+      "end": 170.94,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 173.33,
+      "end": 173.34,
+      "case": "success"
+    },
+    {
+      "word": "don't",
+      "start": 173.34,
+      "end": 173.37,
+      "case": "success"
+    },
+    {
+      "word": "find",
+      "start": 173.37,
+      "end": 173.79,
+      "case": "success"
+    },
+    {
+      "word": "any",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "more",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "Crispy",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "bodies",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "by",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "the",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "door",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "<unk>",
+      "start": 178.94,
+      "end": 179.61,
+      "case": "success"
+    },
+    {
+      "word": "times",
+      "start": 179.78,
+      "end": 180.51,
+      "case": "success"
+    },
+    {
+      "word": "yeah",
+      "start": 181.6,
+      "end": 182.02,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "was",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "<unk>",
+      "start": 183.02,
+      "end": 183.51,
+      "case": "success"
+    },
+    {
+      "word": "times",
+      "start": 183.58,
+      "end": 184.09,
+      "case": "success"
+    },
+    {
+      "word": "and",
+      "start": 184.09,
+      "end": 184.36,
+      "case": "success"
+    },
+    {
+      "word": "now",
+      "start": 184.4,
+      "end": 184.7,
+      "case": "success"
+    },
+    {
+      "word": "it",
+      "start": 184.75,
+      "end": 184.77,
+      "case": "success"
+    },
+    {
+      "word": "might",
+      "start": 184.9,
+      "end": 185.19,
+      "case": "success"
+    },
+    {
+      "word": "be",
+      "start": 185.34,
+      "end": 185.61,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 185.8,
+      "end": 186.16,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 186.61,
+      "end": 186.63,
+      "case": "success"
+    },
+    {
+      "word": "you",
+      "start": 186.63,
+      "end": 186.85,
+      "case": "success"
+    },
+    {
+      "word": "could",
+      "start": 187.92,
+      "end": 188.18,
+      "case": "success"
+    },
+    {
+      "word": "be",
+      "start": 188.18,
+      "end": 188.34,
+      "case": "success"
+    },
+    {
+      "word": "hiding",
+      "start": 188.35,
+      "end": 188.64,
+      "case": "success"
+    },
+    {
+      "word": "behind",
+      "start": 188.64,
+      "end": 189.04,
+      "case": "success"
+    },
+    {
+      "word": "that",
+      "start": 189.04,
+      "end": 189.19,
+      "case": "success"
+    },
+    {
+      "word": "scrap",
+      "start": 189.19,
+      "end": 189.59,
+      "case": "success"
+    },
+    {
+      "word": "pile",
+      "start": 189.59,
+      "end": 190.31,
+      "case": "success"
+    },
+    {
+      "word": "that's",
+      "start": 191.26,
+      "end": 191.32,
+      "case": "success"
+    },
+    {
+      "word": "just",
+      "start": 191.36,
+      "end": 191.62,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 191.62,
+      "end": 191.73,
+      "case": "success"
+    },
+    {
+      "word": "big",
+      "start": 191.77,
+      "end": 192.09,
+      "case": "success"
+    },
+    {
+      "word": "cow",
+      "start": 192.14,
+      "end": 192.57,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 192.58,
+      "end": 192.59,
+      "case": "success"
+    },
+    {
+      "word": "know",
+      "start": 192.59,
+      "end": 192.99,
+      "case": "success"
+    },
+    {
+      "word": "you",
+      "start": 193.01,
+      "end": 193.21,
+      "case": "success"
+    },
+    {
+      "word": "really",
+      "start": 193.22,
+      "end": 193.89,
+      "case": "success"
+    },
+    {
+      "word": "want",
+      "start": 193.89,
+      "end": 194.19,
+      "case": "success"
+    },
+    {
+      "word": "someone",
+      "start": 194.21,
+      "end": 194.99,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 195.46,
+      "end": 195.64,
+      "case": "success"
+    },
+    {
+      "word": "hold",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "you",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "but",
+      "start": 196.31,
+      "end": 196.5,
+      "case": "success"
+    },
+    {
+      "word": "we",
+      "start": 196.5,
+      "end": 196.72,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 196.72,
+      "end": 196.9,
+      "case": "success"
+    },
+    {
+      "word": "got",
+      "start": 196.9,
+      "end": 197.19,
+      "case": "success"
+    },
+    {
+      "word": "a",
+      "start": 197.19,
+      "end": 197.27,
+      "case": "success"
+    },
+    {
+      "word": "chicken",
+      "start": 197.27,
+      "end": 197.75,
+      "case": "success"
+    },
+    {
+      "word": "duck",
+      "start": 197.75,
+      "end": 198.06,
+      "case": "success"
+    },
+    {
+      "word": "woman",
+      "start": 198.19,
+      "end": 198.61,
+      "case": "success"
+    },
+    {
+      "word": "thing",
+      "start": 198.64,
+      "end": 198.83,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 198.85,
+      "end": 199.26,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 199.08,
+      "end": 199.1,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 200.72,
+      "end": 200.74,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 200.78,
+      "end": 201.48,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 201.48,
+      "end": 201.59,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 201.59,
+      "end": 202.05,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 202.1,
+      "end": 202.4,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 202.46,
+      "end": 202.9,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 204.19,
+      "end": 204.36,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 204.4,
+      "end": 204.59,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 204.62,
+      "end": 205.1,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 205.13,
+      "end": 205.28,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 205.28,
+      "end": 205.44,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 205.46,
+      "end": 205.94,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 205.94,
+      "end": 206.11,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 206.11,
+      "end": 206.51,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 207.57,
+      "end": 208.06,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 208.06,
+      "end": 208.46,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 208.54,
+      "end": 208.71,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 208.71,
+      "end": 208.85,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 208.9,
+      "end": 209.31,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 209.41,
+      "end": 209.65,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 209.65,
+      "end": 209.95,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 210.97,
+      "end": 211.47,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 211.47,
+      "end": 211.86,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 211.99,
+      "end": 212.15,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 212.17,
+      "end": 212.29,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 212.33,
+      "end": 212.71,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 212.71,
+      "end": 212.73,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 212.74,
+      "end": 213.32,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 214.49,
+      "end": 215.2,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 215.2,
+      "end": 215.29,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 215.29,
+      "end": 215.78,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 215.83,
+      "end": 216.09,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 216.18,
+      "end": 216.65,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "day",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "about",
+      "start": 217.92,
+      "end": 218.15,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 218.15,
+      "end": 218.34,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 218.34,
+      "end": 218.8,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 218.84,
+      "end": 219.0,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 219.0,
+      "end": 219.11,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 219.18,
+      "end": 219.66,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 219.66,
+      "end": 219.84,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 219.84,
+      "end": 220.11,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 221.29,
+      "end": 221.49,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 221.77,
+      "end": 222.23,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 222.24,
+      "end": 222.42,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 222.42,
+      "end": 222.56,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 222.62,
+      "end": 223.03,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 223.05,
+      "end": 223.36,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 223.36,
+      "end": 223.52,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 224.69,
+      "end": 225.19,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 225.19,
+      "end": 225.58,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 225.7,
+      "end": 225.88,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 225.89,
+      "end": 226.03,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 226.05,
+      "end": 226.45,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 226.54,
+      "end": 226.67,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 226.67,
+      "end": 226.95,
+      "case": "success"
+    },
+    {
+      "word": "everyday",
+      "start": 228.24,
+      "end": 228.85,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 228.85,
+      "end": 228.86,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 229.05,
+      "end": 229.48,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 229.53,
+      "end": 229.82,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 229.87,
+      "end": 230.21,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 231.62,
+      "end": 231.86,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 231.86,
+      "end": 232.01,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 232.05,
+      "end": 232.49,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 232.56,
+      "end": 232.71,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 232.71,
+      "end": 232.85,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 232.88,
+      "end": 233.32,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 233.32,
+      "end": 233.34,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 233.55,
+      "end": 233.84,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 235.37,
+      "end": 235.49,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 235.49,
+      "end": 235.82,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 235.82,
+      "end": 235.84,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 235.84,
+      "end": 235.86,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 236.34,
+      "end": 236.73,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 236.81,
+      "end": 237.06,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 237.06,
+      "end": 237.23,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 237.4,
+      "end": 237.59,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 238.9,
+      "end": 239.14,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "the",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "bushes",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "of",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "love",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "everyday",
+      "start": 241.92,
+      "end": 242.61,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 242.61,
+      "end": 242.73,
+      "case": "success"
+    },
+    {
+      "word": "worry",
+      "start": 242.73,
+      "end": 243.18,
+      "case": "success"
+    },
+    {
+      "word": "all",
+      "start": 243.26,
+      "end": 243.55,
+      "case": "success"
+    },
+    {
+      "word": "day",
+      "start": 243.58,
+      "end": 244.17,
+      "case": "success"
+    },
+    {
+      "word": "about",
+      "start": 245.34,
+      "end": 245.49,
+      "case": "success"
+    },
+    {
+      "word": "what's",
+      "start": 245.65,
+      "end": 245.77,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 245.77,
+      "end": 246.22,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 246.24,
+      "end": 246.42,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 246.42,
+      "end": 246.57,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 246.6,
+      "end": 247.08,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 247.08,
+      "end": 247.23,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 247.26,
+      "end": 247.58,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 249.08,
+      "end": 249.21,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 249.21,
+      "end": 249.54,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 249.54,
+      "end": 249.56,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 249.56,
+      "end": 249.59,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 250.05,
+      "end": 250.45,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 250.45,
+      "end": 250.8,
+      "case": "success"
+    },
+    {
+      "word": "us",
+      "start": 250.8,
+      "end": 250.95,
+      "case": "success"
+    },
+    {
+      "word": "something's",
+      "start": 252.18,
+      "end": 252.51,
+      "case": "success"
+    },
+    {
+      "word": "waiting",
+      "start": 252.64,
+      "end": 253.03,
+      "case": "success"
+    },
+    {
+      "word": "in",
+      "start": 253.15,
+      "end": 253.29,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 253.29,
+      "end": 253.39,
+      "case": "success"
+    },
+    {
+      "word": "bushes",
+      "start": 253.46,
+      "end": 253.84,
+      "case": "success"
+    },
+    {
+      "word": "of",
+      "start": 253.95,
+      "end": 254.11,
+      "case": "success"
+    },
+    {
+      "word": "love",
+      "start": 254.11,
+      "end": 254.46,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 254.55,
+      "end": 254.84,
+      "case": "success"
+    },
+    {
+      "word": "used",
+      "start": 254.85,
+      "end": 254.96,
+      "case": "success"
+    },
+    {
+      "word": "to",
+      "start": 255.01,
+      "end": 255.17,
+      "case": "success"
+    },
+    {
+      "word": "ride",
+      "start": 255.17,
+      "end": 255.48,
+      "case": "success"
+    },
+    {
+      "word": "across",
+      "start": 256.43,
+      "end": 256.75,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 256.76,
+      "end": 256.88,
+      "case": "success"
+    },
+    {
+      "word": "desert",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "you",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "know",
+      "start": 257.53,
+      "end": 258.03,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 258.03,
+      "end": 258.21,
+      "case": "success"
+    },
+    {
+      "word": "used",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "to",
+      "start": 258.33,
+      "end": 258.35,
+      "case": "success"
+    },
+    {
+      "word": "glide",
+      "start": 258.58,
+      "end": 258.9,
+      "case": "success"
+    },
+    {
+      "word": "on",
+      "start": 259.91,
+      "end": 260.11,
+      "case": "success"
+    },
+    {
+      "word": "my",
+      "start": 260.11,
+      "end": 260.13,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 260.13,
+      "end": 260.28,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 260.98,
+      "end": 261.15,
+      "case": "success"
+    },
+    {
+      "word": "pray",
+      "start": 261.4,
+      "end": 261.48,
+      "case": "success"
+    },
+    {
+      "word": "that",
+      "start": 261.48,
+      "end": 261.53,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 261.7,
+      "end": 261.82,
+      "case": "success"
+    },
+    {
+      "word": "don't",
+      "start": 261.86,
+      "end": 262.0,
+      "case": "success"
+    },
+    {
+      "word": "find",
+      "start": 262.0,
+      "end": 262.44,
+      "case": "success"
+    },
+    {
+      "word": "what",
+      "start": 263.14,
+      "end": 263.39,
+      "case": "success"
+    },
+    {
+      "word": "i",
+      "start": 263.39,
+      "end": 263.55,
+      "case": "success"
+    },
+    {
+      "word": "don't",
+      "start": 263.56,
+      "end": 263.78,
+      "case": "success"
+    },
+    {
+      "word": "wanna",
+      "start": 263.78,
+      "end": 263.83,
+      "case": "success"
+    },
+    {
+      "word": "find",
+      "start": 264.16,
+      "end": 264.46,
+      "case": "success"
+    },
+    {
+      "word": "<unk>",
+      "start": 278.78,
+      "end": 279.55,
+      "case": "success"
+    },
+    {
+      "word": "for",
+      "start": 279.55,
+      "end": 279.57,
+      "case": "success"
+    },
+    {
+      "word": "me",
+      "start": 279.57,
+      "end": 279.59,
+      "case": "success"
+    },
+    {
+      "word": "'round",
+      "start": 279.59,
+      "end": 279.91,
+      "case": "success"
+    },
+    {
+      "word": "the",
+      "start": 279.91,
+      "end": 280.02,
+      "case": "success"
+    },
+    {
+      "word": "corner",
+      "start": 280.06,
+      "end": 280.26,
+      "case": "success"
+    },
+    {
+      "word": "oh",
+      "start": 280.26,
+      "end": 280.27,
+      "case": "success"
+    },
+    {
+      "word": "no",
+      "start": 280.27,
+      "end": 280.62,
+      "case": "success"
+    },
+    {
+      "word": "no",
+      "start": 280.62,
+      "end": 280.81,
+      "case": "success"
+    },
+    {
+      "word": "Waiting",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "for",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "us",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "I",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "used",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "to",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "ride",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "across",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "the",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "desert",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "you",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "know",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "I",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "used",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "to",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "glide",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "on",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "my",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "speeder",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "I",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "pray",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "That",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "I",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "don't",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "find",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "what",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "I",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "don't",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "wanna",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "find",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "Waitin",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "for",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "me",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "'round",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "the",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "corner",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "oh",
+      "start": null,
+      "end": null,
+      "case": "not-found-in-audio"
+    },
+    {
+      "word": "no",
+      "start": 280.81,
+      "end": 281.53,
+      "case": "success"
+    },
+    {
+      "word": "no",
+      "start": 281.77,
+      "end": 281.9,
+      "case": "success"
+    }
+  ],
+  "transcription_source": "gentle-forced-alignment",
+  "alignment_stats": {
+    "total_words": 633,
+    "aligned_words": 558,
+    "not_found_in_audio": 75,
+    "aligned_percentage": 88.15,
+    "quality": "GOOD",
+    "out_of_order_timestamps": 0
+  }
+}

@@ -1,0 +1,1161 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "title": "Bushes of Love - B-Word Highlights",
+    "artist": "Bad Lip Reading",
+    "description": "Blue on B-words with dark orange lead-in. Balls 2&3 solid orange.",
+    "target_prg_refresh_rate": 50,
+    "default_pixels": 3,
+    "audio_file": "sequence_maker/songs/Bushes of Love.mp3"
+  },
+  "effects_timeline": [
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 6.45,
+        "end_seconds": 11.45
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 11.45,
+        "end_seconds": 11.5
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 16.18,
+        "end_seconds": 21.18
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 21.18,
+        "end_seconds": 21.6
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 29.28,
+        "end_seconds": 34.28
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 34.28,
+        "end_seconds": 34.75
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 31.14,
+        "end_seconds": 36.14
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 36.14,
+        "end_seconds": 36.68
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 33.57,
+        "end_seconds": 38.57
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 38.57,
+        "end_seconds": 38.6
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 42.76,
+        "end_seconds": 47.76
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 47.76,
+        "end_seconds": 48.21
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 46.19,
+        "end_seconds": 51.19
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 51.19,
+        "end_seconds": 51.63
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 49.58,
+        "end_seconds": 54.58
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 54.58,
+        "end_seconds": 55.06
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 56.46,
+        "end_seconds": 61.46
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 61.46,
+        "end_seconds": 61.91
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 59.91,
+        "end_seconds": 64.91
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 64.91,
+        "end_seconds": 65.3
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 63.32,
+        "end_seconds": 68.32
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 68.32,
+        "end_seconds": 68.76
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 70.19,
+        "end_seconds": 75.19
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 75.19,
+        "end_seconds": 76.02
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 77.33,
+        "end_seconds": 82.33
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 82.33,
+        "end_seconds": 82.45
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 80.51,
+        "end_seconds": 85.51
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 85.51,
+        "end_seconds": 85.7
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 82.18,
+        "end_seconds": 87.18
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 87.18,
+        "end_seconds": 87.24
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 94.19,
+        "end_seconds": 99.19
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 99.19,
+        "end_seconds": 99.66
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 97.61,
+        "end_seconds": 102.61
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 102.61,
+        "end_seconds": 103.04
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 101.03,
+        "end_seconds": 106.03
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 106.03,
+        "end_seconds": 106.46
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 107.89,
+        "end_seconds": 112.89
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 112.89,
+        "end_seconds": 113.36
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 111.33,
+        "end_seconds": 116.33
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 116.33,
+        "end_seconds": 116.74
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 114.73,
+        "end_seconds": 119.73
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 119.73,
+        "end_seconds": 120.18
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 124.21,
+        "end_seconds": 129.21
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 129.21,
+        "end_seconds": 129.57
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 170.85,
+        "end_seconds": 175.85
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 175.85,
+        "end_seconds": 176.365
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 171.494,
+        "end_seconds": 176.494
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 176.494,
+        "end_seconds": 177.009
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 180.34,
+        "end_seconds": 185.34
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 185.34,
+        "end_seconds": 185.61
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 183.18,
+        "end_seconds": 188.18
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 188.18,
+        "end_seconds": 188.34
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 183.64,
+        "end_seconds": 188.64
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 188.64,
+        "end_seconds": 189.04
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 186.77,
+        "end_seconds": 191.77
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 191.77,
+        "end_seconds": 192.09
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 191.31,
+        "end_seconds": 196.31
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 196.31,
+        "end_seconds": 196.5
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 200.46,
+        "end_seconds": 205.46
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 205.46,
+        "end_seconds": 205.94
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 203.9,
+        "end_seconds": 208.9
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 208.9,
+        "end_seconds": 209.31
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 207.33,
+        "end_seconds": 212.33
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 212.33,
+        "end_seconds": 212.71
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 214.18,
+        "end_seconds": 219.18
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 219.18,
+        "end_seconds": 219.66
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 217.62,
+        "end_seconds": 222.62
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 222.62,
+        "end_seconds": 223.03
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 221.05,
+        "end_seconds": 226.05
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 226.05,
+        "end_seconds": 226.45
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 227.88,
+        "end_seconds": 232.88
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 232.88,
+        "end_seconds": 233.32
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 231.34,
+        "end_seconds": 236.34
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 236.34,
+        "end_seconds": 236.73
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 235.159,
+        "end_seconds": 240.159
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 240.159,
+        "end_seconds": 240.53
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 241.6,
+        "end_seconds": 246.6
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 246.6,
+        "end_seconds": 247.08
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 245.05,
+        "end_seconds": 250.05
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 250.05,
+        "end_seconds": 250.45
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 248.46,
+        "end_seconds": 253.46
+      },
+      "params": {
+        "color": [
+          165,
+          42,
+          0
+        ]
+      }
+    },
+    {
+      "type": "SolidColor",
+      "timing": {
+        "start_seconds": 253.46,
+        "end_seconds": 253.84
+      },
+      "params": {
+        "color": [
+          0,
+          0,
+          255
+        ]
+      }
+    }
+  ]
+}

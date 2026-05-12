@@ -1,0 +1,4430 @@
+{
+  "metadata": {
+    "version": "0.1.0",
+    "created": "2026-05-12T09:59:03.339777+00:00",
+    "modified": "2026-05-12T11:13:05.210411",
+    "name": "bushes_of_love",
+    "description": "Sequence for Bushes of Love by Bad Lip Reading"
+  },
+  "settings": {
+    "defaultPixels": 3,
+    "refreshRate": 1,
+    "totalDuration": 284.1425850340136,
+    "zoomLevel": 1.0
+  },
+  "keyMappings": {},
+  "effects": {},
+  "timelines": [
+    {
+      "name": "Ball 1",
+      "defaultPixels": 3,
+      "created": "2026-05-12T09:59:03.339777+00:00",
+      "modified": "2026-05-12T11:13:05.210385",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 6.45,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 6.45,
+          "endTime": 11.11,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 11.11,
+          "endTime": 11.83,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 11.83,
+          "endTime": 16.18,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 16.18,
+          "endTime": 21.18,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 21.18,
+          "endTime": 21.6,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 21.6,
+          "endTime": 29.28,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 29.28,
+          "endTime": 34.28,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 34.28,
+          "endTime": 36.14,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 36.14,
+          "endTime": 38.47,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 38.47,
+          "endTime": 38.6,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 38.6,
+          "endTime": 42.76,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 42.76,
+          "endTime": 46.19,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 46.2,
+          "endTime": 51.2,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 47.76,
+          "endTime": 48.21,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 49.58,
+          "endTime": 54.58,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 51.19,
+          "endTime": 51.63,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 54.58,
+          "endTime": 55.06,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.06,
+          "endTime": 56.46,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 56.46,
+          "endTime": 61.46,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.91,
+          "endTime": 64.91,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 61.46,
+          "endTime": 61.91,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 63.32,
+          "endTime": 68.32,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.91,
+          "endTime": 65.3,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 68.32,
+          "endTime": 68.76,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 68.76,
+          "endTime": 70.19,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 70.19,
+          "endTime": 75.19,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.19,
+          "endTime": 76.02,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 76.02,
+          "endTime": 77.33,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 77.33,
+          "endTime": 82.33,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 80.51,
+          "endTime": 85.51,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 82.18,
+          "endTime": 87.18,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 82.33,
+          "endTime": 82.45,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.51,
+          "endTime": 85.7,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 87.18,
+          "endTime": 87.24,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 87.24,
+          "endTime": 94.19,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 94.19,
+          "endTime": 99.19,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 97.61,
+          "endTime": 102.61,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 99.19,
+          "endTime": 99.66,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 101.03,
+          "endTime": 106.03,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 102.61,
+          "endTime": 103.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 106.03,
+          "endTime": 106.46,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 106.46,
+          "endTime": 107.89,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 107.89,
+          "endTime": 112.89,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 111.33,
+          "endTime": 116.33,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.89,
+          "endTime": 113.36,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 114.73,
+          "endTime": 119.73,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 116.33,
+          "endTime": 116.74,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 119.73,
+          "endTime": 120.18,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 120.18,
+          "endTime": 124.21,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 124.21,
+          "endTime": 129.21,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 129.21,
+          "endTime": 129.57,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 129.57,
+          "endTime": 170.85,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 170.85,
+          "endTime": 175.85,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 175.85,
+          "endTime": 176.49,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 175.85,
+          "endTime": 176.37,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 176.49,
+          "endTime": 177.01,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 177.01,
+          "endTime": 180.34,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 180.34,
+          "endTime": 188.18,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.18,
+          "endTime": 188.64,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.18,
+          "endTime": 191.77,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.18,
+          "endTime": 188.34,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 188.64,
+          "endTime": 189.04,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 191.31,
+          "endTime": 196.31,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 191.77,
+          "endTime": 192.09,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 196.31,
+          "endTime": 196.5,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 196.5,
+          "endTime": 200.46,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 200.46,
+          "endTime": 205.46,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 203.9,
+          "endTime": 208.9,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 205.46,
+          "endTime": 205.94,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 207.33,
+          "endTime": 212.33,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 208.9,
+          "endTime": 209.31,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 212.33,
+          "endTime": 212.71,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 212.71,
+          "endTime": 214.18,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 214.18,
+          "endTime": 219.18,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 217.62,
+          "endTime": 222.62,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 219.18,
+          "endTime": 219.66,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 221.05,
+          "endTime": 226.05,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 222.62,
+          "endTime": 223.03,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 226.05,
+          "endTime": 226.45,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 226.45,
+          "endTime": 227.88,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 227.88,
+          "endTime": 232.88,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 231.34,
+          "endTime": 236.34,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 232.88,
+          "endTime": 233.32,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 235.16,
+          "endTime": 239.8,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 236.34,
+          "endTime": 236.73,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 239.8,
+          "endTime": 240.24,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 240.24,
+          "endTime": 241.6,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 241.6,
+          "endTime": 246.6,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 245.05,
+          "endTime": 250.05,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 246.6,
+          "endTime": 247.08,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 248.46,
+          "endTime": 253.46,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 250.05,
+          "endTime": 250.45,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 253.46,
+          "endTime": 253.84,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 253.84,
+          "endTime": 284.19,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    },
+    {
+      "name": "Ball 2",
+      "defaultPixels": 3,
+      "created": "2026-05-12T09:59:03.339777+00:00",
+      "modified": "2026-05-12T11:13:05.210404",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 284.19,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    },
+    {
+      "name": "Ball 3",
+      "defaultPixels": 3,
+      "created": "2026-05-12T09:59:03.339777+00:00",
+      "modified": "2026-05-12T11:13:05.210408",
+      "segments": [
+        {
+          "startTime": 0.0,
+          "endTime": 284.19,
+          "color": [
+            255,
+            165,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        }
+      ]
+    }
+  ],
+  "audio": {
+    "embedded": false,
+    "filename": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Bushes of Love.mp3",
+    "filepath": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Bushes of Love.mp3",
+    "duration": 0,
+    "data": null
+  },
+  "visualizations": {
+    "selected": [
+      "waveform",
+      "beats"
+    ],
+    "settings": {
+      "waveform": {
+        "color": [
+          0,
+          0,
+          255
+        ],
+        "height": 100
+      },
+      "beats": {
+        "color": [
+          255,
+          0,
+          0
+        ],
+        "threshold": 0.5
+      }
+    }
+  },
+  "lyrics": {
+    "song_name": "Bushes of Love",
+    "artist_name": "Bad Lip Reading",
+    "lyrics_text": "49 times we fought that beast\nYour old man and me\nIt had a chicken head with duck feet\nWith a woman's face too\nOh, that's rad!\nAnd it was waiting in the bushes for us\nThen it ripped off your dad's face\nHe was screaming something awful\nIn fact there was this huge mess\nI had to change the floors\nThe floors?\nYou see, his blood it drained into the boards\nAnd I had to change 'em\nBut we all got a chicken-duck-woman thing waiting for us\nEveryday I worry all day\nAbout what's waiting in the bushes of love\n'Cause something's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\n'Cause something's waiting in the bushes for us\nSomething's waiting in the bushes of love\nYo, never knew my dad\nHe didn't care about me\nDead horizon is all my macro-binoculars see\nMoisture-farming all my life and not a drop spilt\nMy aunt and uncle, double suns\nAnd sippin' blue milk\nMy aunt and uncle, double suns\nI'm sick of blue milk\nBut then a desert hobo came and told me\nWe all got a chicken-duck-woman thing waiting for us\nEveryday I worry all day\nAbout what's waiting in the bushes of love\n'Cause something's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nHold me when I open like a flower\nHold me right\nYeah, I ain't had to bake for a girl in a long time\nA long time\nI think my cooking's awesome\nI've got her picture in my photo wagon\nHa ha, keep it poppin'\nYeah, she'd probably love to honky tonk\n(She'd probably love to honky tonk)\nThat's what I said\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find what I don't wanna find\nWaitin' for me 'round the corner, oh no no\n(Waiting for us)\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find any more\nCrispy bodies by the door\n49 times\nYeah, it was 49 times\nAnd now it might be waiting for you\nCould be hiding behind that scrap pile\nThat's just a big cow\nI know you really want someone to hold you\nBut we all got a chicken-duck-woman thing waiting for us\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day (all day)\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nEveryday I worry all day\nAbout what's waiting in the bushes of love\nSomething's waiting in the bushes for us\nSomething's waiting in the bushes of love\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find what I don't wanna find\nWaitin' for me 'round the corner, oh no no\n(Waiting for us)\nI used to ride across the desert, you know\nI used to glide on my speeder, I pray\nThat I don't find what I don't wanna find\nWaitin' for me 'round the corner, oh no no",
+    "word_timestamps": [
+      {
+        "word": "<unk>",
+        "start": 7.92,
+        "end": 8.26
+      },
+      {
+        "word": "times",
+        "start": 8.34,
+        "end": 8.72
+      },
+      {
+        "word": "we",
+        "start": 10.26,
+        "end": 10.47
+      },
+      {
+        "word": "fought",
+        "start": 10.47,
+        "end": 10.79
+      },
+      {
+        "word": "that",
+        "start": 10.97,
+        "end": 11.149999999999999
+      },
+      {
+        "word": "beast",
+        "start": 11.139999999999999,
+        "end": 11.8
+      },
+      {
+        "word": "your",
+        "start": 12.14,
+        "end": 12.29
+      },
+      {
+        "word": "old",
+        "start": 12.29,
+        "end": 12.46
+      },
+      {
+        "word": "man",
+        "start": 12.49,
+        "end": 12.78
+      },
+      {
+        "word": "and",
+        "start": 12.78,
+        "end": 12.83
+      },
+      {
+        "word": "me",
+        "start": 12.85,
+        "end": 13.04
+      },
+      {
+        "word": "it",
+        "start": 13.78,
+        "end": 13.8
+      },
+      {
+        "word": "had",
+        "start": 13.98,
+        "end": 14.2
+      },
+      {
+        "word": "a",
+        "start": 14.2,
+        "end": 14.29
+      },
+      {
+        "word": "chicken",
+        "start": 14.33,
+        "end": 14.72
+      },
+      {
+        "word": "head",
+        "start": 14.76,
+        "end": 15.0
+      },
+      {
+        "word": "with",
+        "start": 15.0,
+        "end": 15.13
+      },
+      {
+        "word": "duck",
+        "start": 15.19,
+        "end": 15.46
+      },
+      {
+        "word": "feet",
+        "start": 15.61,
+        "end": 15.89
+      },
+      {
+        "word": "with",
+        "start": 16.71,
+        "end": 16.89
+      },
+      {
+        "word": "a",
+        "start": 16.89,
+        "end": 16.9
+      },
+      {
+        "word": "woman's",
+        "start": 16.9,
+        "end": 17.33
+      },
+      {
+        "word": "face",
+        "start": 17.33,
+        "end": 17.76
+      },
+      {
+        "word": "too",
+        "start": 17.76,
+        "end": 18.14
+      },
+      {
+        "word": "oh",
+        "start": 18.41,
+        "end": 18.61
+      },
+      {
+        "word": "that's",
+        "start": 18.61,
+        "end": 18.88
+      },
+      {
+        "word": "rad",
+        "start": 18.88,
+        "end": 19.37
+      },
+      {
+        "word": "and",
+        "start": 19.73,
+        "end": 19.77
+      },
+      {
+        "word": "it",
+        "start": 19.77,
+        "end": 19.79
+      },
+      {
+        "word": "was",
+        "start": 19.79,
+        "end": 19.83
+      },
+      {
+        "word": "waiting",
+        "start": 20.37,
+        "end": 20.83
+      },
+      {
+        "word": "in",
+        "start": 20.84,
+        "end": 21.0
+      },
+      {
+        "word": "the",
+        "start": 21.0,
+        "end": 21.16
+      },
+      {
+        "word": "bushes",
+        "start": 21.18,
+        "end": 21.6
+      },
+      {
+        "word": "for",
+        "start": 21.64,
+        "end": 21.92
+      },
+      {
+        "word": "us",
+        "start": 21.92,
+        "end": 22.15
+      },
+      {
+        "word": "then",
+        "start": 22.7,
+        "end": 22.81
+      },
+      {
+        "word": "it",
+        "start": 22.81,
+        "end": 22.88
+      },
+      {
+        "word": "ripped",
+        "start": 22.88,
+        "end": 23.28
+      },
+      {
+        "word": "off",
+        "start": 23.28,
+        "end": 23.48
+      },
+      {
+        "word": "your",
+        "start": 23.58,
+        "end": 23.75
+      },
+      {
+        "word": "dad's",
+        "start": 23.77,
+        "end": 24.18
+      },
+      {
+        "word": "face",
+        "start": 24.18,
+        "end": 24.69
+      },
+      {
+        "word": "he",
+        "start": 25.08,
+        "end": 25.28
+      },
+      {
+        "word": "was",
+        "start": 25.28,
+        "end": 25.46
+      },
+      {
+        "word": "screaming",
+        "start": 25.48,
+        "end": 25.86
+      },
+      {
+        "word": "something",
+        "start": 25.91,
+        "end": 26.4
+      },
+      {
+        "word": "awful",
+        "start": 26.4,
+        "end": 26.83
+      },
+      {
+        "word": "in",
+        "start": 27.47,
+        "end": 27.61
+      },
+      {
+        "word": "fact",
+        "start": 27.61,
+        "end": 27.86
+      },
+      {
+        "word": "there",
+        "start": 27.86,
+        "end": 28.03
+      },
+      {
+        "word": "was",
+        "start": 28.04,
+        "end": 28.28
+      },
+      {
+        "word": "this",
+        "start": 28.28,
+        "end": 28.5
+      },
+      {
+        "word": "huge",
+        "start": 28.5,
+        "end": 28.74
+      },
+      {
+        "word": "mess",
+        "start": 28.92,
+        "end": 29.23
+      },
+      {
+        "word": "i",
+        "start": 29.3,
+        "end": 29.37
+      },
+      {
+        "word": "had",
+        "start": 29.37,
+        "end": 29.59
+      },
+      {
+        "word": "to",
+        "start": 29.6,
+        "end": 29.72
+      },
+      {
+        "word": "change",
+        "start": 29.72,
+        "end": 30.22
+      },
+      {
+        "word": "the",
+        "start": 30.22,
+        "end": 30.37
+      },
+      {
+        "word": "floors",
+        "start": 30.4,
+        "end": 31.01
+      },
+      {
+        "word": "the",
+        "start": 32.26,
+        "end": 32.28
+      },
+      {
+        "word": "floors",
+        "start": 32.28,
+        "end": 32.78
+      },
+      {
+        "word": "you",
+        "start": 33.43,
+        "end": 33.56
+      },
+      {
+        "word": "see",
+        "start": 33.59,
+        "end": 33.88
+      },
+      {
+        "word": "his",
+        "start": 33.88,
+        "end": 34.22
+      },
+      {
+        "word": "blood",
+        "start": 34.28,
+        "end": 34.75
+      },
+      {
+        "word": "it",
+        "start": 34.75,
+        "end": 34.88
+      },
+      {
+        "word": "drained",
+        "start": 34.89,
+        "end": 35.41
+      },
+      {
+        "word": "into",
+        "start": 35.41,
+        "end": 35.95
+      },
+      {
+        "word": "the",
+        "start": 36.0,
+        "end": 36.14
+      },
+      {
+        "word": "boards",
+        "start": 36.14,
+        "end": 36.68
+      },
+      {
+        "word": "and",
+        "start": 36.69,
+        "end": 36.82
+      },
+      {
+        "word": "i",
+        "start": 36.82,
+        "end": 36.84
+      },
+      {
+        "word": "had",
+        "start": 36.89,
+        "end": 37.32
+      },
+      {
+        "word": "to",
+        "start": 37.34,
+        "end": 37.39
+      },
+      {
+        "word": "change",
+        "start": 37.47,
+        "end": 38.0
+      },
+      {
+        "word": "'em",
+        "start": 38.0,
+        "end": 38.32
+      },
+      {
+        "word": "but",
+        "start": 38.45,
+        "end": 38.6
+      },
+      {
+        "word": "we",
+        "start": 38.61,
+        "end": 39.03
+      },
+      {
+        "word": "all",
+        "start": 39.03,
+        "end": 39.19
+      },
+      {
+        "word": "got",
+        "start": 39.19,
+        "end": 39.5
+      },
+      {
+        "word": "a",
+        "start": 39.5,
+        "end": 39.52
+      },
+      {
+        "word": "chicken",
+        "start": 39.59,
+        "end": 40.05
+      },
+      {
+        "word": "duck",
+        "start": 40.06,
+        "end": 40.33
+      },
+      {
+        "word": "woman",
+        "start": 40.41,
+        "end": 40.88
+      },
+      {
+        "word": "thing",
+        "start": 40.9,
+        "end": 41.15
+      },
+      {
+        "word": "waiting",
+        "start": 41.15,
+        "end": 41.54
+      },
+      {
+        "word": "for",
+        "start": 41.54,
+        "end": 41.85
+      },
+      {
+        "word": "us",
+        "start": 41.85,
+        "end": 42.38
+      },
+      {
+        "word": "everyday",
+        "start": 43.11,
+        "end": 43.74
+      },
+      {
+        "word": "i",
+        "start": 43.74,
+        "end": 43.9
+      },
+      {
+        "word": "worry",
+        "start": 43.91,
+        "end": 44.35
+      },
+      {
+        "word": "all",
+        "start": 44.4,
+        "end": 44.73
+      },
+      {
+        "word": "day",
+        "start": 44.76,
+        "end": 45.18
+      },
+      {
+        "word": "about",
+        "start": 46.47,
+        "end": 46.69
+      },
+      {
+        "word": "what's",
+        "start": 46.69,
+        "end": 46.91
+      },
+      {
+        "word": "waiting",
+        "start": 46.91,
+        "end": 47.41
+      },
+      {
+        "word": "in",
+        "start": 47.41,
+        "end": 47.58
+      },
+      {
+        "word": "the",
+        "start": 47.59,
+        "end": 47.73
+      },
+      {
+        "word": "bushes",
+        "start": 47.76,
+        "end": 48.21
+      },
+      {
+        "word": "of",
+        "start": 48.21,
+        "end": 48.35
+      },
+      {
+        "word": "love",
+        "start": 48.4,
+        "end": 48.8
+      },
+      {
+        "word": "'Cause",
+        "start": 48.903,
+        "end": 49.315
+      },
+      {
+        "word": "something's",
+        "start": 49.83,
+        "end": 50.35
+      },
+      {
+        "word": "waiting",
+        "start": 50.35,
+        "end": 50.79
+      },
+      {
+        "word": "in",
+        "start": 50.84,
+        "end": 51.01
+      },
+      {
+        "word": "the",
+        "start": 51.02,
+        "end": 51.17
+      },
+      {
+        "word": "bushes",
+        "start": 51.19,
+        "end": 51.63
+      },
+      {
+        "word": "for",
+        "start": 51.66,
+        "end": 51.93
+      },
+      {
+        "word": "us",
+        "start": 51.93,
+        "end": 52.22
+      },
+      {
+        "word": "something's",
+        "start": 53.26,
+        "end": 53.78
+      },
+      {
+        "word": "waiting",
+        "start": 53.78,
+        "end": 54.11
+      },
+      {
+        "word": "in",
+        "start": 54.11,
+        "end": 54.24
+      },
+      {
+        "word": "the",
+        "start": 54.46,
+        "end": 54.57
+      },
+      {
+        "word": "bushes",
+        "start": 54.58,
+        "end": 55.06
+      },
+      {
+        "word": "of",
+        "start": 55.06,
+        "end": 55.25
+      },
+      {
+        "word": "love",
+        "start": 55.25,
+        "end": 55.66
+      },
+      {
+        "word": "everyday",
+        "start": 56.77,
+        "end": 57.48
+      },
+      {
+        "word": "i",
+        "start": 57.48,
+        "end": 57.57
+      },
+      {
+        "word": "worry",
+        "start": 57.57,
+        "end": 58.07
+      },
+      {
+        "word": "all",
+        "start": 58.12,
+        "end": 58.42
+      },
+      {
+        "word": "day",
+        "start": 58.42,
+        "end": 58.97
+      },
+      {
+        "word": "about",
+        "start": 60.19,
+        "end": 60.43
+      },
+      {
+        "word": "what's",
+        "start": 60.43,
+        "end": 60.62
+      },
+      {
+        "word": "waiting",
+        "start": 60.62,
+        "end": 61.13
+      },
+      {
+        "word": "in",
+        "start": 61.13,
+        "end": 61.29
+      },
+      {
+        "word": "the",
+        "start": 61.29,
+        "end": 61.44
+      },
+      {
+        "word": "bushes",
+        "start": 61.46,
+        "end": 61.91
+      },
+      {
+        "word": "of",
+        "start": 61.91,
+        "end": 62.13
+      },
+      {
+        "word": "love",
+        "start": 62.13,
+        "end": 62.49
+      },
+      {
+        "word": "'cause",
+        "start": 62.61,
+        "end": 62.64
+      },
+      {
+        "word": "something's",
+        "start": 63.54,
+        "end": 64.06
+      },
+      {
+        "word": "waiting",
+        "start": 64.06,
+        "end": 64.45
+      },
+      {
+        "word": "in",
+        "start": 64.52,
+        "end": 64.69
+      },
+      {
+        "word": "the",
+        "start": 64.7,
+        "end": 64.88
+      },
+      {
+        "word": "bushes",
+        "start": 64.91,
+        "end": 65.3
+      },
+      {
+        "word": "for",
+        "start": 65.3,
+        "end": 65.64
+      },
+      {
+        "word": "us",
+        "start": 65.64,
+        "end": 65.95
+      },
+      {
+        "word": "something's",
+        "start": 66.97,
+        "end": 67.5
+      },
+      {
+        "word": "waiting",
+        "start": 67.5,
+        "end": 67.96
+      },
+      {
+        "word": "in",
+        "start": 67.96,
+        "end": 68.13
+      },
+      {
+        "word": "the",
+        "start": 68.14,
+        "end": 68.28
+      },
+      {
+        "word": "bushes",
+        "start": 68.32,
+        "end": 68.76
+      },
+      {
+        "word": "of",
+        "start": 68.76,
+        "end": 68.99
+      },
+      {
+        "word": "love",
+        "start": 68.99,
+        "end": 69.29
+      },
+      {
+        "word": "yo",
+        "start": 69.64,
+        "end": 70.01
+      },
+      {
+        "word": "never",
+        "start": 70.22,
+        "end": 70.48
+      },
+      {
+        "word": "knew",
+        "start": 70.48,
+        "end": 70.67
+      },
+      {
+        "word": "my",
+        "start": 70.71,
+        "end": 70.91
+      },
+      {
+        "word": "dad",
+        "start": 70.91,
+        "end": 71.18
+      },
+      {
+        "word": "he",
+        "start": 71.19,
+        "end": 71.37
+      },
+      {
+        "word": "didn't",
+        "start": 71.37,
+        "end": 71.79
+      },
+      {
+        "word": "care",
+        "start": 71.79,
+        "end": 72.11
+      },
+      {
+        "word": "about",
+        "start": 72.11,
+        "end": 72.65
+      },
+      {
+        "word": "me",
+        "start": 72.691,
+        "end": 72.855
+      },
+      {
+        "word": "dead",
+        "start": 73.06,
+        "end": 73.32
+      },
+      {
+        "word": "horizon",
+        "start": 73.47,
+        "end": 74.2
+      },
+      {
+        "word": "is",
+        "start": 74.2,
+        "end": 74.43
+      },
+      {
+        "word": "all",
+        "start": 74.43,
+        "end": 74.57
+      },
+      {
+        "word": "my",
+        "start": 74.57,
+        "end": 74.76
+      },
+      {
+        "word": "macro",
+        "start": 74.76,
+        "end": 75.19
+      },
+      {
+        "word": "binoculars",
+        "start": 75.19,
+        "end": 76.02
+      },
+      {
+        "word": "see",
+        "start": 76.09,
+        "end": 76.44
+      },
+      {
+        "word": "moisture",
+        "start": 76.45,
+        "end": 76.89
+      },
+      {
+        "word": "farming",
+        "start": 76.946,
+        "end": 77.17
+      },
+      {
+        "word": "all",
+        "start": 77.45,
+        "end": 77.58
+      },
+      {
+        "word": "my",
+        "start": 77.58,
+        "end": 77.74
+      },
+      {
+        "word": "life",
+        "start": 77.77,
+        "end": 78.09
+      },
+      {
+        "word": "and",
+        "start": 78.09,
+        "end": 78.22
+      },
+      {
+        "word": "not",
+        "start": 78.22,
+        "end": 78.51
+      },
+      {
+        "word": "a",
+        "start": 78.51,
+        "end": 78.58
+      },
+      {
+        "word": "drop",
+        "start": 78.58,
+        "end": 78.96
+      },
+      {
+        "word": "spilt",
+        "start": 78.96,
+        "end": 79.52
+      },
+      {
+        "word": "my",
+        "start": 79.72,
+        "end": 79.85
+      },
+      {
+        "word": "aunt",
+        "start": 79.93,
+        "end": 80.1
+      },
+      {
+        "word": "and",
+        "start": 80.15,
+        "end": 80.31
+      },
+      {
+        "word": "uncle",
+        "start": 80.36,
+        "end": 80.76
+      },
+      {
+        "word": "double",
+        "start": 80.8,
+        "end": 81.13
+      },
+      {
+        "word": "suns",
+        "start": 81.13,
+        "end": 81.17
+      },
+      {
+        "word": "and",
+        "start": 81.17,
+        "end": 81.2
+      },
+      {
+        "word": "<unk>",
+        "start": 81.2,
+        "end": 82.28
+      },
+      {
+        "word": "blue",
+        "start": 82.33,
+        "end": 82.45
+      },
+      {
+        "word": "milk",
+        "start": 82.45,
+        "end": 82.97
+      },
+      {
+        "word": "my",
+        "start": 83.16,
+        "end": 83.35
+      },
+      {
+        "word": "aunt",
+        "start": 83.35,
+        "end": 83.38
+      },
+      {
+        "word": "and",
+        "start": 83.39,
+        "end": 83.77
+      },
+      {
+        "word": "uncle",
+        "start": 83.91,
+        "end": 84.2
+      },
+      {
+        "word": "double",
+        "start": 84.22,
+        "end": 84.57
+      },
+      {
+        "word": "suns",
+        "start": 84.57,
+        "end": 84.93
+      },
+      {
+        "word": "i'm",
+        "start": 84.93,
+        "end": 85.07
+      },
+      {
+        "word": "sick",
+        "start": 85.07,
+        "end": 85.36
+      },
+      {
+        "word": "of",
+        "start": 85.36,
+        "end": 85.51
+      },
+      {
+        "word": "blue",
+        "start": 85.51,
+        "end": 85.7
+      },
+      {
+        "word": "milk",
+        "start": 85.7,
+        "end": 85.74
+      },
+      {
+        "word": "but",
+        "start": 87.18,
+        "end": 87.24
+      },
+      {
+        "word": "then",
+        "start": 87.24,
+        "end": 87.42
+      },
+      {
+        "word": "a",
+        "start": 87.6,
+        "end": 87.61
+      },
+      {
+        "word": "desert",
+        "start": 87.61,
+        "end": 88.05
+      },
+      {
+        "word": "hobo",
+        "start": 88.07,
+        "end": 88.45
+      },
+      {
+        "word": "came",
+        "start": 88.45,
+        "end": 88.75
+      },
+      {
+        "word": "and",
+        "start": 88.75,
+        "end": 88.89
+      },
+      {
+        "word": "told",
+        "start": 88.89,
+        "end": 89.02
+      },
+      {
+        "word": "me",
+        "start": 89.02,
+        "end": 89.04
+      },
+      {
+        "word": "we",
+        "start": 90.21,
+        "end": 90.46
+      },
+      {
+        "word": "all",
+        "start": 90.477,
+        "end": 90.545
+      },
+      {
+        "word": "got",
+        "start": 90.63,
+        "end": 90.91
+      },
+      {
+        "word": "a",
+        "start": 90.92,
+        "end": 90.97
+      },
+      {
+        "word": "chicken",
+        "start": 91.02,
+        "end": 91.48
+      },
+      {
+        "word": "duck",
+        "start": 91.48,
+        "end": 91.75
+      },
+      {
+        "word": "woman",
+        "start": 91.81,
+        "end": 92.31
+      },
+      {
+        "word": "thing",
+        "start": 92.31,
+        "end": 92.56
+      },
+      {
+        "word": "waiting",
+        "start": 92.56,
+        "end": 92.97
+      },
+      {
+        "word": "for",
+        "start": 92.98,
+        "end": 93.29
+      },
+      {
+        "word": "us",
+        "start": 93.29,
+        "end": 93.69
+      },
+      {
+        "word": "everyday",
+        "start": 94.49,
+        "end": 95.14
+      },
+      {
+        "word": "i",
+        "start": 95.14,
+        "end": 95.15
+      },
+      {
+        "word": "worry",
+        "start": 95.32,
+        "end": 95.77
+      },
+      {
+        "word": "all",
+        "start": 95.81,
+        "end": 96.14
+      },
+      {
+        "word": "day",
+        "start": 96.17,
+        "end": 96.67
+      },
+      {
+        "word": "about",
+        "start": 97.9,
+        "end": 98.15
+      },
+      {
+        "word": "what's",
+        "start": 98.15,
+        "end": 98.34
+      },
+      {
+        "word": "waiting",
+        "start": 98.34,
+        "end": 98.84
+      },
+      {
+        "word": "in",
+        "start": 98.84,
+        "end": 99.0
+      },
+      {
+        "word": "the",
+        "start": 99.01,
+        "end": 99.15
+      },
+      {
+        "word": "bushes",
+        "start": 99.19,
+        "end": 99.66
+      },
+      {
+        "word": "of",
+        "start": 99.67,
+        "end": 99.84
+      },
+      {
+        "word": "love",
+        "start": 99.84,
+        "end": 100.16
+      },
+      {
+        "word": "'Cause",
+        "start": 100.27,
+        "end": 100.71
+      },
+      {
+        "word": "something's",
+        "start": 101.26,
+        "end": 101.78
+      },
+      {
+        "word": "waiting",
+        "start": 101.78,
+        "end": 102.23
+      },
+      {
+        "word": "in",
+        "start": 102.25,
+        "end": 102.44
+      },
+      {
+        "word": "the",
+        "start": 102.45,
+        "end": 102.58
+      },
+      {
+        "word": "bushes",
+        "start": 102.61,
+        "end": 103.04
+      },
+      {
+        "word": "for",
+        "start": 103.07,
+        "end": 103.35
+      },
+      {
+        "word": "us",
+        "start": 103.35,
+        "end": 103.65
+      },
+      {
+        "word": "something's",
+        "start": 104.68,
+        "end": 105.19
+      },
+      {
+        "word": "waiting",
+        "start": 105.19,
+        "end": 105.5
+      },
+      {
+        "word": "in",
+        "start": 105.5,
+        "end": 105.68
+      },
+      {
+        "word": "the",
+        "start": 105.93,
+        "end": 106.01
+      },
+      {
+        "word": "bushes",
+        "start": 106.03,
+        "end": 106.46
+      },
+      {
+        "word": "of",
+        "start": 106.52,
+        "end": 106.67
+      },
+      {
+        "word": "love",
+        "start": 106.67,
+        "end": 107.1
+      },
+      {
+        "word": "everyday",
+        "start": 108.09,
+        "end": 108.86
+      },
+      {
+        "word": "i",
+        "start": 108.86,
+        "end": 109.0
+      },
+      {
+        "word": "worry",
+        "start": 109.0,
+        "end": 109.49
+      },
+      {
+        "word": "all",
+        "start": 109.55,
+        "end": 109.83
+      },
+      {
+        "word": "day",
+        "start": 109.87,
+        "end": 110.39
+      },
+      {
+        "word": "about",
+        "start": 110.48,
+        "end": 110.52
+      },
+      {
+        "word": "what's",
+        "start": 110.52,
+        "end": 110.56
+      },
+      {
+        "word": "waiting",
+        "start": 112.06,
+        "end": 112.55
+      },
+      {
+        "word": "in",
+        "start": 112.55,
+        "end": 112.71
+      },
+      {
+        "word": "the",
+        "start": 112.71,
+        "end": 112.87
+      },
+      {
+        "word": "bushes",
+        "start": 112.89,
+        "end": 113.36
+      },
+      {
+        "word": "of",
+        "start": 113.36,
+        "end": 113.55
+      },
+      {
+        "word": "love",
+        "start": 113.55,
+        "end": 113.87
+      },
+      {
+        "word": "something's",
+        "start": 115.0,
+        "end": 115.49
+      },
+      {
+        "word": "waiting",
+        "start": 115.49,
+        "end": 115.95
+      },
+      {
+        "word": "in",
+        "start": 115.98,
+        "end": 116.15
+      },
+      {
+        "word": "the",
+        "start": 116.15,
+        "end": 116.3
+      },
+      {
+        "word": "bushes",
+        "start": 116.33,
+        "end": 116.74
+      },
+      {
+        "word": "for",
+        "start": 116.74,
+        "end": 117.06
+      },
+      {
+        "word": "us",
+        "start": 117.06,
+        "end": 117.23
+      },
+      {
+        "word": "something's",
+        "start": 118.4,
+        "end": 118.92
+      },
+      {
+        "word": "waiting",
+        "start": 118.92,
+        "end": 119.31
+      },
+      {
+        "word": "in",
+        "start": 119.38,
+        "end": 119.56
+      },
+      {
+        "word": "the",
+        "start": 119.57,
+        "end": 119.72
+      },
+      {
+        "word": "bushes",
+        "start": 119.73,
+        "end": 120.18
+      },
+      {
+        "word": "of",
+        "start": 120.23,
+        "end": 120.4
+      },
+      {
+        "word": "love",
+        "start": 120.4,
+        "end": 120.69
+      },
+      {
+        "word": "hold",
+        "start": 121.47,
+        "end": 121.72
+      },
+      {
+        "word": "me",
+        "start": 121.72,
+        "end": 121.9
+      },
+      {
+        "word": "when",
+        "start": 122.2,
+        "end": 122.23
+      },
+      {
+        "word": "i",
+        "start": 122.23,
+        "end": 122.41
+      },
+      {
+        "word": "open",
+        "start": 122.41,
+        "end": 122.77
+      },
+      {
+        "word": "like",
+        "start": 122.79,
+        "end": 123.05
+      },
+      {
+        "word": "a",
+        "start": 123.05,
+        "end": 123.13
+      },
+      {
+        "word": "flower",
+        "start": 123.13,
+        "end": 123.99
+      },
+      {
+        "word": "hold",
+        "start": 125.36,
+        "end": 125.62
+      },
+      {
+        "word": "me",
+        "start": 125.62,
+        "end": 125.75
+      },
+      {
+        "word": "right",
+        "start": 125.81,
+        "end": 126.12
+      },
+      {
+        "word": "yeah",
+        "start": 128.18,
+        "end": 128.41
+      },
+      {
+        "word": "i",
+        "start": 128.41,
+        "end": 128.51
+      },
+      {
+        "word": "ain't",
+        "start": 128.51,
+        "end": 128.67
+      },
+      {
+        "word": "had",
+        "start": 128.88,
+        "end": 129.03
+      },
+      {
+        "word": "to",
+        "start": 129.03,
+        "end": 129.17
+      },
+      {
+        "word": "bake",
+        "start": 129.21,
+        "end": 129.57
+      },
+      {
+        "word": "for",
+        "start": 129.67,
+        "end": 129.95
+      },
+      {
+        "word": "a",
+        "start": 129.95,
+        "end": 130.04
+      },
+      {
+        "word": "girl",
+        "start": 130.084,
+        "end": 130.26
+      },
+      {
+        "word": "in",
+        "start": 130.304,
+        "end": 130.48
+      },
+      {
+        "word": "a",
+        "start": 130.524,
+        "end": 130.7
+      },
+      {
+        "word": "long",
+        "start": 130.92,
+        "end": 131.41
+      },
+      {
+        "word": "time",
+        "start": 131.58,
+        "end": 132.06
+      },
+      {
+        "word": "a",
+        "start": 133.3,
+        "end": 133.42
+      },
+      {
+        "word": "long",
+        "start": 133.42,
+        "end": 133.89
+      },
+      {
+        "word": "time",
+        "start": 134.0,
+        "end": 134.43
+      },
+      {
+        "word": "i",
+        "start": 134.75,
+        "end": 134.76
+      },
+      {
+        "word": "think",
+        "start": 134.77,
+        "end": 135.0
+      },
+      {
+        "word": "my",
+        "start": 135.0,
+        "end": 135.16
+      },
+      {
+        "word": "<unk>",
+        "start": 135.16,
+        "end": 135.93
+      },
+      {
+        "word": "awesome",
+        "start": 136.12,
+        "end": 136.23
+      },
+      {
+        "word": "i've",
+        "start": 136.4,
+        "end": 136.47
+      },
+      {
+        "word": "got",
+        "start": 136.47,
+        "end": 136.76
+      },
+      {
+        "word": "her",
+        "start": 136.76,
+        "end": 136.88
+      },
+      {
+        "word": "picture",
+        "start": 136.88,
+        "end": 137.39
+      },
+      {
+        "word": "in",
+        "start": 137.39,
+        "end": 137.59
+      },
+      {
+        "word": "my",
+        "start": 137.59,
+        "end": 137.73
+      },
+      {
+        "word": "photo",
+        "start": 137.73,
+        "end": 138.15
+      },
+      {
+        "word": "wagon",
+        "start": 138.17,
+        "end": 138.46
+      },
+      {
+        "word": "ha",
+        "start": 138.47,
+        "end": 138.68
+      },
+      {
+        "word": "ha",
+        "start": 138.714,
+        "end": 138.85
+      },
+      {
+        "word": "keep",
+        "start": 139.02,
+        "end": 139.31
+      },
+      {
+        "word": "it",
+        "start": 139.31,
+        "end": 139.45
+      },
+      {
+        "word": "<unk>",
+        "start": 139.49,
+        "end": 139.97
+      },
+      {
+        "word": "yeah",
+        "start": 140.14,
+        "end": 140.19
+      },
+      {
+        "word": "she'd",
+        "start": 140.99,
+        "end": 141.16
+      },
+      {
+        "word": "probably",
+        "start": 141.22,
+        "end": 141.62
+      },
+      {
+        "word": "love",
+        "start": 141.62,
+        "end": 141.85
+      },
+      {
+        "word": "to",
+        "start": 141.87,
+        "end": 142.01
+      },
+      {
+        "word": "honky",
+        "start": 142.08,
+        "end": 142.46
+      },
+      {
+        "word": "<unk>",
+        "start": 142.49,
+        "end": 142.57
+      },
+      {
+        "word": "She'd",
+        "start": 142.682,
+        "end": 143.13
+      },
+      {
+        "word": "probably",
+        "start": 143.242,
+        "end": 143.69
+      },
+      {
+        "word": "love",
+        "start": 143.802,
+        "end": 144.25
+      },
+      {
+        "word": "to",
+        "start": 144.362,
+        "end": 144.81
+      },
+      {
+        "word": "honky",
+        "start": 144.922,
+        "end": 145.37
+      },
+      {
+        "word": "<unk>",
+        "start": 145.93,
+        "end": 147.22
+      },
+      {
+        "word": "that's",
+        "start": 147.52,
+        "end": 147.56
+      },
+      {
+        "word": "what",
+        "start": 147.56,
+        "end": 147.59
+      },
+      {
+        "word": "I",
+        "start": 147.639,
+        "end": 147.833
+      },
+      {
+        "word": "said",
+        "start": 147.882,
+        "end": 148.077
+      },
+      {
+        "word": "i",
+        "start": 148.32,
+        "end": 148.44
+      },
+      {
+        "word": "used",
+        "start": 148.44,
+        "end": 148.72
+      },
+      {
+        "word": "to",
+        "start": 148.72,
+        "end": 148.9
+      },
+      {
+        "word": "ride",
+        "start": 148.9,
+        "end": 149.39
+      },
+      {
+        "word": "across",
+        "start": 150.12,
+        "end": 150.41
+      },
+      {
+        "word": "the",
+        "start": 150.44,
+        "end": 150.58
+      },
+      {
+        "word": "desert",
+        "start": 150.6,
+        "end": 151.09
+      },
+      {
+        "word": "you",
+        "start": 151.09,
+        "end": 151.13
+      },
+      {
+        "word": "know",
+        "start": 151.28,
+        "end": 151.75
+      },
+      {
+        "word": "i",
+        "start": 151.75,
+        "end": 151.89
+      },
+      {
+        "word": "used",
+        "start": 151.89,
+        "end": 152.13
+      },
+      {
+        "word": "to",
+        "start": 152.13,
+        "end": 152.29
+      },
+      {
+        "word": "glide",
+        "start": 152.29,
+        "end": 152.92
+      },
+      {
+        "word": "on",
+        "start": 153.61,
+        "end": 153.76
+      },
+      {
+        "word": "my",
+        "start": 153.76,
+        "end": 153.78
+      },
+      {
+        "word": "<unk>",
+        "start": 153.78,
+        "end": 154.01
+      },
+      {
+        "word": "i",
+        "start": 154.92,
+        "end": 154.93
+      },
+      {
+        "word": "pray",
+        "start": 154.93,
+        "end": 154.96
+      },
+      {
+        "word": "that",
+        "start": 154.96,
+        "end": 154.99
+      },
+      {
+        "word": "i",
+        "start": 155.42,
+        "end": 155.53
+      },
+      {
+        "word": "don't",
+        "start": 155.53,
+        "end": 155.7
+      },
+      {
+        "word": "find",
+        "start": 155.7,
+        "end": 156.31
+      },
+      {
+        "word": "what",
+        "start": 156.85,
+        "end": 156.95
+      },
+      {
+        "word": "i",
+        "start": 157.27,
+        "end": 157.28
+      },
+      {
+        "word": "don't",
+        "start": 157.28,
+        "end": 157.49
+      },
+      {
+        "word": "wanna",
+        "start": 157.49,
+        "end": 157.54
+      },
+      {
+        "word": "find",
+        "start": 157.87,
+        "end": 158.33
+      },
+      {
+        "word": "<unk>",
+        "start": 158.79,
+        "end": 159.56
+      },
+      {
+        "word": "for",
+        "start": 159.56,
+        "end": 159.58
+      },
+      {
+        "word": "me",
+        "start": 159.58,
+        "end": 159.6
+      },
+      {
+        "word": "'round",
+        "start": 159.6,
+        "end": 159.89
+      },
+      {
+        "word": "the",
+        "start": 159.89,
+        "end": 160.01
+      },
+      {
+        "word": "corner",
+        "start": 160.06,
+        "end": 160.27
+      },
+      {
+        "word": "oh",
+        "start": 160.27,
+        "end": 160.28
+      },
+      {
+        "word": "no",
+        "start": 160.28,
+        "end": 160.62
+      },
+      {
+        "word": "no",
+        "start": 160.62,
+        "end": 160.79
+      },
+      {
+        "word": "waiting",
+        "start": 161.16,
+        "end": 161.54
+      },
+      {
+        "word": "for",
+        "start": 161.54,
+        "end": 161.81
+      },
+      {
+        "word": "us",
+        "start": 161.81,
+        "end": 161.83
+      },
+      {
+        "word": "i",
+        "start": 162.02,
+        "end": 162.18
+      },
+      {
+        "word": "used",
+        "start": 162.18,
+        "end": 162.42
+      },
+      {
+        "word": "to",
+        "start": 162.42,
+        "end": 162.44
+      },
+      {
+        "word": "ride",
+        "start": 162.61,
+        "end": 163.1
+      },
+      {
+        "word": "across",
+        "start": 163.9,
+        "end": 164.1
+      },
+      {
+        "word": "the",
+        "start": 164.1,
+        "end": 164.12
+      },
+      {
+        "word": "desert",
+        "start": 164.29,
+        "end": 164.69
+      },
+      {
+        "word": "you",
+        "start": 164.69,
+        "end": 164.74
+      },
+      {
+        "word": "know",
+        "start": 165.01,
+        "end": 165.45
+      },
+      {
+        "word": "i",
+        "start": 165.45,
+        "end": 165.66
+      },
+      {
+        "word": "used",
+        "start": 165.68,
+        "end": 165.76
+      },
+      {
+        "word": "to",
+        "start": 165.86,
+        "end": 166.01
+      },
+      {
+        "word": "glide",
+        "start": 166.01,
+        "end": 166.79
+      },
+      {
+        "word": "on",
+        "start": 167.33,
+        "end": 167.41
+      },
+      {
+        "word": "my",
+        "start": 167.41,
+        "end": 167.43
+      },
+      {
+        "word": "<unk>",
+        "start": 167.43,
+        "end": 167.58
+      },
+      {
+        "word": "i",
+        "start": 167.59,
+        "end": 167.6
+      },
+      {
+        "word": "pray",
+        "start": 168.6,
+        "end": 168.85999999999999
+      },
+      {
+        "word": "that",
+        "start": 167.96,
+        "end": 168.4
+      },
+      {
+        "word": "i",
+        "start": 169.35,
+        "end": 169.58
+      },
+      {
+        "word": "don't",
+        "start": 169.59,
+        "end": 169.95000000000002
+      },
+      {
+        "word": "find",
+        "start": 170.04999999999998,
+        "end": 170.46999999999997
+      },
+      {
+        "word": "any",
+        "start": 170.61900000000003,
+        "end": 171.13400000000001
+      },
+      {
+        "word": "more",
+        "start": 171.322,
+        "end": 171.837
+      },
+      {
+        "word": "Crispy",
+        "start": 172.09599999999998,
+        "end": 172.611
+      },
+      {
+        "word": "bodies",
+        "start": 172.63,
+        "end": 173.145
+      },
+      {
+        "word": "by",
+        "start": 173.154,
+        "end": 173.66899999999998
+      },
+      {
+        "word": "the",
+        "start": 173.69699999999997,
+        "end": 174.063
+      },
+      {
+        "word": "door",
+        "start": 174.10100000000003,
+        "end": 174.616
+      },
+      {
+        "word": "<unk>",
+        "start": 178.94,
+        "end": 179.61
+      },
+      {
+        "word": "times",
+        "start": 179.78,
+        "end": 180.51
+      },
+      {
+        "word": "yeah",
+        "start": 181.6,
+        "end": 182.02
+      },
+      {
+        "word": "it",
+        "start": 182.087,
+        "end": 182.353
+      },
+      {
+        "word": "was",
+        "start": 182.42,
+        "end": 182.687
+      },
+      {
+        "word": "<unk>",
+        "start": 183.02,
+        "end": 183.51
+      },
+      {
+        "word": "times",
+        "start": 183.58,
+        "end": 184.09
+      },
+      {
+        "word": "and",
+        "start": 184.09,
+        "end": 184.36
+      },
+      {
+        "word": "now",
+        "start": 184.4,
+        "end": 184.7
+      },
+      {
+        "word": "it",
+        "start": 184.75,
+        "end": 184.77
+      },
+      {
+        "word": "might",
+        "start": 184.9,
+        "end": 185.19
+      },
+      {
+        "word": "be",
+        "start": 185.32999999999998,
+        "end": 185.6
+      },
+      {
+        "word": "waiting",
+        "start": 185.8,
+        "end": 186.16
+      },
+      {
+        "word": "for",
+        "start": 186.61,
+        "end": 186.63
+      },
+      {
+        "word": "you",
+        "start": 186.63,
+        "end": 186.85
+      },
+      {
+        "word": "could",
+        "start": 187.92,
+        "end": 188.18
+      },
+      {
+        "word": "be",
+        "start": 188.18,
+        "end": 188.34
+      },
+      {
+        "word": "hiding",
+        "start": 188.35,
+        "end": 188.64
+      },
+      {
+        "word": "behind",
+        "start": 188.64,
+        "end": 189.04
+      },
+      {
+        "word": "that",
+        "start": 189.04,
+        "end": 189.19
+      },
+      {
+        "word": "scrap",
+        "start": 189.19,
+        "end": 189.59
+      },
+      {
+        "word": "pile",
+        "start": 189.59,
+        "end": 190.31
+      },
+      {
+        "word": "that's",
+        "start": 191.26,
+        "end": 191.32
+      },
+      {
+        "word": "just",
+        "start": 191.36,
+        "end": 191.62
+      },
+      {
+        "word": "a",
+        "start": 191.62,
+        "end": 191.73
+      },
+      {
+        "word": "big",
+        "start": 191.77,
+        "end": 192.09
+      },
+      {
+        "word": "cow",
+        "start": 192.14,
+        "end": 192.57
+      },
+      {
+        "word": "i",
+        "start": 192.58,
+        "end": 192.59
+      },
+      {
+        "word": "know",
+        "start": 192.59,
+        "end": 192.99
+      },
+      {
+        "word": "you",
+        "start": 193.01,
+        "end": 193.21
+      },
+      {
+        "word": "really",
+        "start": 193.22,
+        "end": 193.89
+      },
+      {
+        "word": "want",
+        "start": 193.89,
+        "end": 194.19
+      },
+      {
+        "word": "someone",
+        "start": 194.21,
+        "end": 194.99
+      },
+      {
+        "word": "to",
+        "start": 195.02,
+        "end": 195.2
+      },
+      {
+        "word": "hold",
+        "start": 195.225,
+        "end": 195.563
+      },
+      {
+        "word": "you",
+        "start": 195.58799999999997,
+        "end": 195.94699999999997
+      },
+      {
+        "word": "but",
+        "start": 196.31,
+        "end": 196.5
+      },
+      {
+        "word": "we",
+        "start": 196.5,
+        "end": 196.72
+      },
+      {
+        "word": "all",
+        "start": 196.72,
+        "end": 196.9
+      },
+      {
+        "word": "got",
+        "start": 196.9,
+        "end": 197.19
+      },
+      {
+        "word": "a",
+        "start": 197.19,
+        "end": 197.27
+      },
+      {
+        "word": "chicken",
+        "start": 197.27,
+        "end": 197.75
+      },
+      {
+        "word": "duck",
+        "start": 197.75,
+        "end": 198.06
+      },
+      {
+        "word": "woman",
+        "start": 198.19,
+        "end": 198.61
+      },
+      {
+        "word": "thing",
+        "start": 198.64,
+        "end": 198.83
+      },
+      {
+        "word": "waiting",
+        "start": 198.85,
+        "end": 199.26
+      },
+      {
+        "word": "for",
+        "start": 199.08,
+        "end": 199.1
+      },
+      {
+        "word": "us",
+        "start": 200.72,
+        "end": 200.74
+      },
+      {
+        "word": "everyday",
+        "start": 200.78,
+        "end": 201.48
+      },
+      {
+        "word": "i",
+        "start": 201.48,
+        "end": 201.59
+      },
+      {
+        "word": "worry",
+        "start": 201.59,
+        "end": 202.05
+      },
+      {
+        "word": "all",
+        "start": 202.1,
+        "end": 202.4
+      },
+      {
+        "word": "day",
+        "start": 202.46,
+        "end": 202.9
+      },
+      {
+        "word": "about",
+        "start": 204.19,
+        "end": 204.36
+      },
+      {
+        "word": "what's",
+        "start": 204.4,
+        "end": 204.59
+      },
+      {
+        "word": "waiting",
+        "start": 204.62,
+        "end": 205.1
+      },
+      {
+        "word": "in",
+        "start": 205.13,
+        "end": 205.28
+      },
+      {
+        "word": "the",
+        "start": 205.28,
+        "end": 205.44
+      },
+      {
+        "word": "bushes",
+        "start": 205.46,
+        "end": 205.94
+      },
+      {
+        "word": "of",
+        "start": 205.94,
+        "end": 206.11
+      },
+      {
+        "word": "love",
+        "start": 206.11,
+        "end": 206.51
+      },
+      {
+        "word": "something's",
+        "start": 207.57,
+        "end": 208.06
+      },
+      {
+        "word": "waiting",
+        "start": 208.06,
+        "end": 208.46
+      },
+      {
+        "word": "in",
+        "start": 208.54,
+        "end": 208.71
+      },
+      {
+        "word": "the",
+        "start": 208.71,
+        "end": 208.85
+      },
+      {
+        "word": "bushes",
+        "start": 208.9,
+        "end": 209.31
+      },
+      {
+        "word": "for",
+        "start": 209.41,
+        "end": 209.65
+      },
+      {
+        "word": "us",
+        "start": 209.65,
+        "end": 209.95
+      },
+      {
+        "word": "something's",
+        "start": 210.97,
+        "end": 211.47
+      },
+      {
+        "word": "waiting",
+        "start": 211.47,
+        "end": 211.86
+      },
+      {
+        "word": "in",
+        "start": 211.99,
+        "end": 212.15
+      },
+      {
+        "word": "the",
+        "start": 212.17,
+        "end": 212.29
+      },
+      {
+        "word": "bushes",
+        "start": 212.33,
+        "end": 212.71
+      },
+      {
+        "word": "of",
+        "start": 212.71,
+        "end": 212.73
+      },
+      {
+        "word": "love",
+        "start": 212.74,
+        "end": 213.32
+      },
+      {
+        "word": "everyday",
+        "start": 214.49,
+        "end": 215.2
+      },
+      {
+        "word": "i",
+        "start": 215.2,
+        "end": 215.29
+      },
+      {
+        "word": "worry",
+        "start": 215.29,
+        "end": 215.78
+      },
+      {
+        "word": "all",
+        "start": 215.83,
+        "end": 216.09
+      },
+      {
+        "word": "day",
+        "start": 216.18,
+        "end": 216.65
+      },
+      {
+        "word": "all",
+        "start": 216.735,
+        "end": 217.073
+      },
+      {
+        "word": "day",
+        "start": 217.158,
+        "end": 217.497
+      },
+      {
+        "word": "about",
+        "start": 217.92,
+        "end": 218.15
+      },
+      {
+        "word": "what's",
+        "start": 218.15,
+        "end": 218.34
+      },
+      {
+        "word": "waiting",
+        "start": 218.34,
+        "end": 218.8
+      },
+      {
+        "word": "in",
+        "start": 218.84,
+        "end": 219.0
+      },
+      {
+        "word": "the",
+        "start": 219.0,
+        "end": 219.11
+      },
+      {
+        "word": "bushes",
+        "start": 219.18,
+        "end": 219.66
+      },
+      {
+        "word": "of",
+        "start": 219.66,
+        "end": 219.84
+      },
+      {
+        "word": "love",
+        "start": 219.84,
+        "end": 220.11
+      },
+      {
+        "word": "something's",
+        "start": 221.29,
+        "end": 221.49
+      },
+      {
+        "word": "waiting",
+        "start": 221.77,
+        "end": 222.23
+      },
+      {
+        "word": "in",
+        "start": 222.24,
+        "end": 222.42
+      },
+      {
+        "word": "the",
+        "start": 222.42,
+        "end": 222.56
+      },
+      {
+        "word": "bushes",
+        "start": 222.62,
+        "end": 223.03
+      },
+      {
+        "word": "for",
+        "start": 223.05,
+        "end": 223.36
+      },
+      {
+        "word": "us",
+        "start": 223.36,
+        "end": 223.52
+      },
+      {
+        "word": "something's",
+        "start": 224.69,
+        "end": 225.19
+      },
+      {
+        "word": "waiting",
+        "start": 225.19,
+        "end": 225.58
+      },
+      {
+        "word": "in",
+        "start": 225.7,
+        "end": 225.88
+      },
+      {
+        "word": "the",
+        "start": 225.89,
+        "end": 226.03
+      },
+      {
+        "word": "bushes",
+        "start": 226.05,
+        "end": 226.45
+      },
+      {
+        "word": "of",
+        "start": 226.54,
+        "end": 226.67
+      },
+      {
+        "word": "love",
+        "start": 226.67,
+        "end": 226.95
+      },
+      {
+        "word": "everyday",
+        "start": 228.24,
+        "end": 228.85
+      },
+      {
+        "word": "i",
+        "start": 228.85,
+        "end": 228.86
+      },
+      {
+        "word": "worry",
+        "start": 229.05,
+        "end": 229.48
+      },
+      {
+        "word": "all",
+        "start": 229.53,
+        "end": 229.82
+      },
+      {
+        "word": "day",
+        "start": 229.87,
+        "end": 230.21
+      },
+      {
+        "word": "about",
+        "start": 231.62,
+        "end": 231.86
+      },
+      {
+        "word": "what's",
+        "start": 231.86,
+        "end": 232.01
+      },
+      {
+        "word": "waiting",
+        "start": 232.05,
+        "end": 232.49
+      },
+      {
+        "word": "in",
+        "start": 232.56,
+        "end": 232.71
+      },
+      {
+        "word": "the",
+        "start": 232.71,
+        "end": 232.85
+      },
+      {
+        "word": "bushes",
+        "start": 232.88,
+        "end": 233.32
+      },
+      {
+        "word": "of",
+        "start": 233.32,
+        "end": 233.34
+      },
+      {
+        "word": "love",
+        "start": 233.55,
+        "end": 233.84
+      },
+      {
+        "word": "something's",
+        "start": 235.37,
+        "end": 235.49
+      },
+      {
+        "word": "waiting",
+        "start": 235.49,
+        "end": 235.82
+      },
+      {
+        "word": "in",
+        "start": 235.82,
+        "end": 235.84
+      },
+      {
+        "word": "the",
+        "start": 235.84,
+        "end": 235.86
+      },
+      {
+        "word": "bushes",
+        "start": 236.34,
+        "end": 236.73
+      },
+      {
+        "word": "for",
+        "start": 236.81,
+        "end": 237.06
+      },
+      {
+        "word": "us",
+        "start": 237.06,
+        "end": 237.23
+      },
+      {
+        "word": "something's",
+        "start": 237.4,
+        "end": 237.59
+      },
+      {
+        "word": "waiting",
+        "start": 238.9,
+        "end": 239.14
+      },
+      {
+        "word": "in",
+        "start": 239.173,
+        "end": 239.423
+      },
+      {
+        "word": "the",
+        "start": 239.446,
+        "end": 239.74699999999999
+      },
+      {
+        "word": "bushes",
+        "start": 239.789,
+        "end": 240.19
+      },
+      {
+        "word": "of",
+        "start": 240.20299999999997,
+        "end": 240.39299999999997
+      },
+      {
+        "word": "love",
+        "start": 240.406,
+        "end": 240.73699999999997
+      },
+      {
+        "word": "everyday",
+        "start": 241.92,
+        "end": 242.61
+      },
+      {
+        "word": "i",
+        "start": 242.61,
+        "end": 242.73
+      },
+      {
+        "word": "worry",
+        "start": 242.73,
+        "end": 243.18
+      },
+      {
+        "word": "all",
+        "start": 243.26,
+        "end": 243.55
+      },
+      {
+        "word": "day",
+        "start": 243.58,
+        "end": 244.17
+      },
+      {
+        "word": "about",
+        "start": 245.34,
+        "end": 245.49
+      },
+      {
+        "word": "what's",
+        "start": 245.5,
+        "end": 245.77
+      },
+      {
+        "word": "waiting",
+        "start": 245.77,
+        "end": 246.22
+      },
+      {
+        "word": "in",
+        "start": 246.24,
+        "end": 246.42
+      },
+      {
+        "word": "the",
+        "start": 246.42,
+        "end": 246.57
+      },
+      {
+        "word": "bushes",
+        "start": 246.6,
+        "end": 247.08
+      },
+      {
+        "word": "of",
+        "start": 247.08,
+        "end": 247.23
+      },
+      {
+        "word": "love",
+        "start": 247.26,
+        "end": 247.58
+      },
+      {
+        "word": "something's",
+        "start": 249.08,
+        "end": 249.21
+      },
+      {
+        "word": "waiting",
+        "start": 249.21,
+        "end": 249.54
+      },
+      {
+        "word": "in",
+        "start": 249.54,
+        "end": 249.56
+      },
+      {
+        "word": "the",
+        "start": 249.56,
+        "end": 249.59
+      },
+      {
+        "word": "bushes",
+        "start": 250.05,
+        "end": 250.45
+      },
+      {
+        "word": "for",
+        "start": 250.45,
+        "end": 250.8
+      },
+      {
+        "word": "us",
+        "start": 250.8,
+        "end": 250.95
+      },
+      {
+        "word": "something's",
+        "start": 252.18,
+        "end": 252.51
+      },
+      {
+        "word": "waiting",
+        "start": 252.64,
+        "end": 253.03
+      },
+      {
+        "word": "in",
+        "start": 253.15,
+        "end": 253.29
+      },
+      {
+        "word": "the",
+        "start": 253.29,
+        "end": 253.39
+      },
+      {
+        "word": "bushes",
+        "start": 253.46,
+        "end": 253.84
+      },
+      {
+        "word": "of",
+        "start": 253.95,
+        "end": 254.11
+      },
+      {
+        "word": "love",
+        "start": 254.11,
+        "end": 254.46
+      },
+      {
+        "word": "i",
+        "start": 254.55,
+        "end": 254.84
+      },
+      {
+        "word": "used",
+        "start": 254.85,
+        "end": 254.96
+      },
+      {
+        "word": "to",
+        "start": 255.01,
+        "end": 255.17
+      },
+      {
+        "word": "ride",
+        "start": 255.17,
+        "end": 256.37
+      },
+      {
+        "word": "across",
+        "start": 256.43,
+        "end": 256.75
+      },
+      {
+        "word": "the",
+        "start": 256.76,
+        "end": 256.88
+      },
+      {
+        "word": "desert",
+        "start": 256.923,
+        "end": 257.097
+      },
+      {
+        "word": "you",
+        "start": 257.14,
+        "end": 257.313
+      },
+      {
+        "word": "know",
+        "start": 257.53,
+        "end": 258.03
+      },
+      {
+        "word": "i",
+        "start": 258.03,
+        "end": 258.21
+      },
+      {
+        "word": "used",
+        "start": 258.222,
+        "end": 258.272
+      },
+      {
+        "word": "to",
+        "start": 258.33,
+        "end": 258.35
+      },
+      {
+        "word": "glide",
+        "start": 258.58,
+        "end": 259.61999999999995
+      },
+      {
+        "word": "on",
+        "start": 259.91,
+        "end": 260.11
+      },
+      {
+        "word": "my",
+        "start": 260.11,
+        "end": 260.13
+      },
+      {
+        "word": "<unk>",
+        "start": 260.13,
+        "end": 260.90999999999997
+      },
+      {
+        "word": "i",
+        "start": 260.98,
+        "end": 261.09999999999997
+      },
+      {
+        "word": "pray",
+        "start": 261.15,
+        "end": 261.48
+      },
+      {
+        "word": "that",
+        "start": 261.46000000000004,
+        "end": 261.68
+      },
+      {
+        "word": "i",
+        "start": 261.7,
+        "end": 261.82
+      },
+      {
+        "word": "don't",
+        "start": 261.86,
+        "end": 262.0
+      },
+      {
+        "word": "find",
+        "start": 262.0,
+        "end": 262.96
+      },
+      {
+        "word": "what",
+        "start": 263.14,
+        "end": 263.39
+      },
+      {
+        "word": "i",
+        "start": 263.39,
+        "end": 263.55
+      },
+      {
+        "word": "don't",
+        "start": 263.56,
+        "end": 263.78
+      },
+      {
+        "word": "wanna",
+        "start": 263.78000000000003,
+        "end": 264.14000000000004
+      },
+      {
+        "word": "find",
+        "start": 264.16,
+        "end": 264.46
+      },
+      {
+        "word": "<unk>",
+        "start": 278.78,
+        "end": 279.55
+      },
+      {
+        "word": "for",
+        "start": 279.55,
+        "end": 279.57
+      },
+      {
+        "word": "me",
+        "start": 279.57,
+        "end": 279.59
+      },
+      {
+        "word": "'round",
+        "start": 279.59,
+        "end": 279.91
+      },
+      {
+        "word": "the",
+        "start": 279.91,
+        "end": 280.02
+      },
+      {
+        "word": "corner",
+        "start": 280.06,
+        "end": 280.26
+      },
+      {
+        "word": "oh",
+        "start": 280.26,
+        "end": 280.27
+      },
+      {
+        "word": "no",
+        "start": 280.27,
+        "end": 280.62
+      },
+      {
+        "word": "no",
+        "start": 280.62,
+        "end": 280.81
+      },
+      {
+        "word": "Waiting",
+        "start": 280.81,
+        "end": 280.86
+      },
+      {
+        "word": "for",
+        "start": 280.86,
+        "end": 280.91
+      },
+      {
+        "word": "us",
+        "start": 280.91,
+        "end": 280.96000000000004
+      },
+      {
+        "word": "I",
+        "start": 280.96,
+        "end": 281.01
+      },
+      {
+        "word": "used",
+        "start": 281.01,
+        "end": 281.06
+      },
+      {
+        "word": "to",
+        "start": 281.06,
+        "end": 281.11
+      },
+      {
+        "word": "ride",
+        "start": 281.11,
+        "end": 281.16
+      },
+      {
+        "word": "across",
+        "start": 281.16,
+        "end": 281.21000000000004
+      },
+      {
+        "word": "the",
+        "start": 281.21,
+        "end": 281.26
+      },
+      {
+        "word": "desert",
+        "start": 281.26,
+        "end": 281.31
+      },
+      {
+        "word": "you",
+        "start": 281.31,
+        "end": 281.36
+      },
+      {
+        "word": "know",
+        "start": 281.36,
+        "end": 281.41
+      },
+      {
+        "word": "I",
+        "start": 281.41,
+        "end": 281.46000000000004
+      },
+      {
+        "word": "used",
+        "start": 281.46,
+        "end": 281.51
+      },
+      {
+        "word": "to",
+        "start": 281.51,
+        "end": 281.56
+      },
+      {
+        "word": "glide",
+        "start": 281.56,
+        "end": 281.61
+      },
+      {
+        "word": "on",
+        "start": 281.61,
+        "end": 281.66
+      },
+      {
+        "word": "my",
+        "start": 281.66,
+        "end": 281.71000000000004
+      },
+      {
+        "word": "speeder",
+        "start": 281.71,
+        "end": 281.76
+      },
+      {
+        "word": "I",
+        "start": 281.76,
+        "end": 281.81
+      },
+      {
+        "word": "pray",
+        "start": 281.81,
+        "end": 281.86
+      },
+      {
+        "word": "That",
+        "start": 281.86,
+        "end": 281.91
+      },
+      {
+        "word": "I",
+        "start": 281.91,
+        "end": 281.96000000000004
+      },
+      {
+        "word": "don't",
+        "start": 281.96,
+        "end": 282.01
+      },
+      {
+        "word": "find",
+        "start": 282.01,
+        "end": 282.06
+      },
+      {
+        "word": "what",
+        "start": 282.06,
+        "end": 282.11
+      },
+      {
+        "word": "I",
+        "start": 282.11,
+        "end": 282.16
+      },
+      {
+        "word": "don't",
+        "start": 282.16,
+        "end": 282.21000000000004
+      },
+      {
+        "word": "wanna",
+        "start": 282.21,
+        "end": 282.26
+      },
+      {
+        "word": "find",
+        "start": 282.26,
+        "end": 282.31
+      },
+      {
+        "word": "Waitin",
+        "start": 282.31,
+        "end": 282.36
+      },
+      {
+        "word": "for",
+        "start": 282.36,
+        "end": 282.41
+      },
+      {
+        "word": "me",
+        "start": 282.41,
+        "end": 282.46000000000004
+      },
+      {
+        "word": "'round",
+        "start": 282.46,
+        "end": 282.51
+      },
+      {
+        "word": "the",
+        "start": 282.51,
+        "end": 282.56
+      },
+      {
+        "word": "corner",
+        "start": 282.56,
+        "end": 282.61
+      },
+      {
+        "word": "oh",
+        "start": 282.61,
+        "end": 282.66
+      },
+      {
+        "word": "no",
+        "start": 280.81,
+        "end": 281.53
+      },
+      {
+        "word": "no",
+        "start": 281.77,
+        "end": 281.9
+      }
+    ]
+  },
+  "snippets": [],
+  "notes": [],
+  "markers": [],
+  "zero_key_colors": [
+    null,
+    null,
+    null
+  ],
+  "chat_history": [],
+  "llm_metadata": {
+    "token_usage": 0,
+    "estimated_cost": 0.0,
+    "interactions": []
+  },
+  "llm_customization": {
+    "custom_instructions": "",
+    "presets": [],
+    "task_templates": [],
+    "active_preset": "Default"
+  }
+}

@@ -21,7 +21,34 @@ This repository contains tools and projects for creating light sequences for LTX
   ```
   Repeat for `ball2_blue.seqdesign.json` and `ball3_green.seqdesign.json`.
 
+### Bushes of Love
+- **Created:** 2026-05-12 10:20 UTC+1
+- **Updated:** 2026-05-12 10:47 UTC+1
+- **Description:** Lyric-synced word-flash sequence for "Bushes of Love" by Bad Lip Reading (4:44). 633 words aligned via Gentle forced alignment (88.2% quality, gaps interpolated). Three-ball color scheme:
+    - Ball 1: Blue during every word starting with "B", with 5-second dark orange lead-in before each B-word
+    - Ball 2: Solid bright orange for the entire song
+    - Ball 3: Solid bright orange for the entire song
+- **Audio:** [`sequence_maker/songs/Bushes of Love.mp3`](sequence_maker/songs/Bushes of Love.mp3)
+- **Files:**
+    - [`sequence_projects/bushes_of_love/lyrics.txt`](sequence_projects/bushes_of_love/lyrics.txt) — plain text lyrics
+    - [`sequence_projects/bushes_of_love/bushes_of_love_synced_lyrics.json`](sequence_projects/bushes_of_love/bushes_of_love_synced_lyrics.json) — Gentle-aligned word timestamps
+    - [`sequence_projects/bushes_of_love/song_data.json`](sequence_projects/bushes_of_love/song_data.json) — persistent song data
+    - [`sequence_projects/bushes_of_love/bushes_of_love.ball.json`](sequence_projects/bushes_of_love/bushes_of_love.ball.json) — ball sequence format
+    - [`sequence_projects/bushes_of_love/bushes_of_love.smproj`](sequence_projects/bushes_of_love/bushes_of_love.smproj) — Sequence Maker project (3 timelines + lyrics)
+    - [`sequence_projects/bushes_of_love/bushes_of_love.seqdesign.json`](sequence_projects/bushes_of_love/bushes_of_love.seqdesign.json) — seqdesign effects timeline
+    - [`sequence_projects/bushes_of_love/generate_project.py`](sequence_projects/bushes_of_love/generate_project.py) — generator script
+
 ## Recent Updates
+
+### 2026-05-12 10:47 UTC+1 - Bushes of Love Color Scheme Update
+- **Updated color scheme:** Ball 1 now blue on B-words with 5s dark orange lead-in; Balls 2&3 solid bright orange.
+- **Interpolated missing timestamps** in the 264–279s gap (last verse repetition).
+- All 633 words now have timestamps in the `.smproj` lyrics data.
+
+### 2026-05-12 10:20 UTC+1 - Bushes of Love Project
+- **New sequence project** for "Bushes of Love" by Bad Lip Reading.
+- Lyrics aligned using Gentle forced alignment: 558/633 words (88.2% quality).
+- Generated `.ball.json`, `.smproj` (3-ball timelines), `.seqdesign.json`, and `song_data.json`.
 
 ### 2026-05-12 06:46 UTC+1 - Bulk Color Swap
 - **New "Bulk Swap" item in the Timeline menu** opens a dialog for swapping colors across the project or a time range.

@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-12T06:20:57.065511",
+    "modified": "2026-05-12T09:57:19.124109",
     "name": "fast car ground truth",
     "description": ""
   },
@@ -19,7 +19,7 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-12T06:20:57.065292",
+      "modified": "2026-05-12T09:57:19.124038",
       "segments": [
         {
           "startTime": 0.0,
@@ -781,9 +781,9 @@
           "startTime": 149.9,
           "endTime": 150.41,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -805,9 +805,9 @@
           "startTime": 152.33,
           "endTime": 152.78,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -829,9 +829,9 @@
           "startTime": 155.5,
           "endTime": 155.95,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -853,9 +853,9 @@
           "startTime": 157.73,
           "endTime": 158.46,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -877,9 +877,9 @@
           "startTime": 159.22,
           "endTime": 159.52,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -901,9 +901,9 @@
           "startTime": 160.3,
           "endTime": 160.72,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -925,9 +925,9 @@
           "startTime": 161.54,
           "endTime": 161.84,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -1707,7 +1707,7 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-12T06:20:57.065417",
+      "modified": "2026-05-12T09:57:19.124078",
       "segments": [
         {
           "startTime": 0.0,
@@ -2325,9 +2325,9 @@
           "startTime": 152.79,
           "endTime": 153.22,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -2349,9 +2349,9 @@
           "startTime": 154.57,
           "endTime": 154.96,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -2373,9 +2373,9 @@
           "startTime": 155.96,
           "endTime": 156.24,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -2397,9 +2397,9 @@
           "startTime": 156.91,
           "endTime": 157.34,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -2421,9 +2421,9 @@
           "startTime": 159.55,
           "endTime": 159.73,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -2445,9 +2445,9 @@
           "startTime": 160.74,
           "endTime": 161.24,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -2469,9 +2469,9 @@
           "startTime": 161.86,
           "endTime": 162.25,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -3251,7 +3251,7 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-12T06:20:57.065507",
+      "modified": "2026-05-12T09:57:19.124107",
       "segments": [
         {
           "startTime": 0.0,
@@ -3869,9 +3869,9 @@
           "startTime": 153.43,
           "endTime": 153.63,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -3893,9 +3893,9 @@
           "startTime": 154.96,
           "endTime": 155.5,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -3917,9 +3917,9 @@
           "startTime": 156.24,
           "endTime": 156.5,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -3941,9 +3941,9 @@
           "startTime": 157.34,
           "endTime": 157.72,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -3977,9 +3977,9 @@
           "startTime": 158.93,
           "endTime": 159.22,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -4001,9 +4001,9 @@
           "startTime": 159.75,
           "endTime": 160.29,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -4025,9 +4025,9 @@
           "startTime": 162.25,
           "endTime": 162.62,
           "color": [
+            255,
             0,
-            0,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
