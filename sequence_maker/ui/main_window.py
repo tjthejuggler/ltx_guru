@@ -171,6 +171,18 @@ class MainWindow(QMainWindow):
         # Repaint timeline in case notes were edited/deleted
         self.timeline_widget.timeline_container.update()
     
+    def _on_bulk_swap(self):
+        """Open the Bulk Swap dialog and apply swaps."""
+        project = self.app.project_manager.current_project
+        if not project:
+            return
+        from ui.dialogs.bulk_swap_dialog import BulkSwapDialog
+        project_colors = self.app.bulk_swap_manager.get_project_colors()
+        dialog = BulkSwapDialog(project_colors=project_colors, parent=self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            config = dialog.get_config()
+            self.app.bulk_swap_manager.apply_swap(config)
+    
     def _check_unsaved_changes(self):
         return check_unsaved_changes(self)
     

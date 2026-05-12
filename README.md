@@ -23,6 +23,23 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-05-12 06:46 UTC+1 - Bulk Color Swap
+- **New "Bulk Swap" item in the Timeline menu** opens a dialog for swapping colors across the project or a time range.
+- **Scope options:** "Entire Project" or "Time Range" (with start/end time inputs).
+- **Color pairs:** Each row has a "from" color and a "to" color. Click either to open a popup picker showing common colors plus any project-specific colors, plus a "Custom…" option.
+- **Plus button** adds additional color pair rows.
+- **Simultaneous swap:** All color mappings are resolved first, then applied in a single pass. Swapping red↔green works correctly (reds become green, greens become red) without intermediate loss.
+- **Time range scope:** Only segments entirely within the specified range are modified.
+- **Single undo:** The entire swap is reversible with one Ctrl+Z.
+- **Files added:**
+  - [`sequence_maker/managers/bulk_swap_manager.py`](sequence_maker/managers/bulk_swap_manager.py)
+  - [`sequence_maker/ui/dialogs/bulk_swap_dialog.py`](sequence_maker/ui/dialogs/bulk_swap_dialog.py)
+- **Files modified:**
+  - [`sequence_maker/app/application.py`](sequence_maker/app/application.py:29) — import and instantiate `BulkSwapManager`
+  - [`sequence_maker/ui/main_window_parts/actions.py`](sequence_maker/ui/main_window_parts/actions.py:124) — add `bulk_swap_action`
+  - [`sequence_maker/ui/main_window_parts/menus.py`](sequence_maker/ui/main_window_parts/menus.py:168) — add action to Timeline menu
+  - [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py:173) — add `_on_bulk_swap` handler
+
 ### 2026-05-11 18:54 UTC+1 - PgUp/PgDn Clone/Move Segments Between Timelines
 - **PgUp/PgDn keys now clone or move the selected color segment to an adjacent timeline.**
   - **PgUp** moves the segment to the previous timeline (cyclic: Ball 1→3, Ball 2→1, Ball 3→2).

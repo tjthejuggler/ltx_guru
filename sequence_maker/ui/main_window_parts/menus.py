@@ -165,6 +165,8 @@ def create_timeline_menu(main_window):
     main_window.timeline_menu.addSeparator()
     main_window.timeline_menu.addAction(main_window.configure_zero_key_action)
     main_window.timeline_menu.addSeparator()
+    main_window.timeline_menu.addAction(main_window.bulk_swap_action)
+    main_window.timeline_menu.addSeparator()
     main_window.timeline_menu.addAction(main_window.clear_timeline_action)
     main_window.timeline_menu.addSeparator()
     main_window.timeline_menu.addAction(main_window.view_jsons_action)

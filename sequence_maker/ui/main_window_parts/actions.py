@@ -122,6 +122,11 @@ def create_timeline_actions(main_window):
     main_window.show_notes_action.setStatusTip("View all timeline notes")
     main_window.show_notes_action.triggered.connect(main_window._on_show_notes)
 
+    # Bulk Swap action
+    main_window.bulk_swap_action = QAction("🔄 &Bulk Swap", main_window)
+    main_window.bulk_swap_action.setStatusTip("Bulk swap colors across the project")
+    main_window.bulk_swap_action.triggered.connect(main_window._on_bulk_swap)
+
 
 def create_playback_actions(main_window):
     """Create playback-related actions."""

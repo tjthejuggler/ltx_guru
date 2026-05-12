@@ -26,6 +26,7 @@ from managers.lyrics_manager import LyricsManager
 from managers.autosave_manager import AutosaveManager
 from managers.preference_manager import PreferenceManager
 from managers.sequence_swap_manager import SequenceSwapManager
+from managers.bulk_swap_manager import BulkSwapManager
 from resources.resources import get_icon_path
 
 # Create a custom style that forces our icon to be used
@@ -183,6 +184,9 @@ class SequenceMakerApp:
         # Add snippet manager for reusable color patterns
         from managers.snippet_manager import SnippetManager
         self.snippet_manager = SnippetManager(self)
+        
+        # Add bulk swap manager for bulk color swapping
+        self.bulk_swap_manager = BulkSwapManager(self)
         
         # Connect managers as needed
         self.timeline_manager.set_undo_manager(self.undo_manager)

@@ -1,22 +1,25 @@
-ADR-008: Arrow Keys Clone/Move Segments Between Timelines
+# ADR: Bulk Color Swap Feature
 
-Date: 2026-05-11
-Status: Accepted
+## Date: 2026-05-12
 
-Context:
-Users need to quickly copy or move color segments (chunks) from one ball timeline to another. Previously, Up/Down arrow keys adjusted segment duration (extend/shrink end time), which is less useful than cross-timeline operations for a 3-ball juggling sequence editor.
+## Status: Accepted
 
-Decision:
-- Up/Down arrow keys now navigate between timelines instead of adjusting duration.
-- Up arrow: moves segment to previous timeline (Ball 1→3, Ball 2→1, Ball 3→2 — cyclic).
-- Down arrow: moves segment to next timeline (Ball 1→2, Ball 2→3, Ball 3→1 — cyclic).
-- A "Arrows Clone" checkbox on the main toolbar controls whether the operation is copy (checked, default) or cut (unchecked).
-- When unchecked (cut mode), the original segment is removed by merging it with its previous neighbour, or simply deleted if it's the first segment.
-- Left/Right arrow keys still nudge segments by 0.01s as before.
-- The new segment on the target timeline overwrites whatever was there (overlap resolution via _resolve_segment_overlap).
-- Undo is handled as a single step using is_dragging to suppress intermediate saves.
+## Context
+Users need the ability to swap colors across the entire project or a time range. The swap must be simultaneous (not sequential) so that chained swaps like red↔green work correctly. The operation must be reversible with a single undo.
 
-Consequences:
-- Users lose the Up/Down duration adjustment shortcut (extend/shrink end time). This was rarely used and can be done via the segment editor panel.
-- The cyclic wrapping means pressing Up from Ball 1 goes to Ball 3 (not "no action"), matching the user's specification.
-- The checkbox defaults to checked (clone/copy mode) so the most common use case preserves the original segment.
+## Decision
+- Created `BulkSwapManager` in `managers/bulk_swap_manager.py` that builds a color_map dict from all pairs, then applies all mappings in a single pass over every segment in every timeline.
+- Created `BulkSwapDialog` in `ui/dialogs/bulk_swap_dialog.py` with scope selection (entire project / time range), dynamic color pair rows with a popup color picker showing common + project-specific colors, and a plus button for adding pairs.
+- For time range scope, only segments entirely within the range are modified.
+- Undo is handled by calling `undo_manager.save_state("bulk_color_swap")` before applying changes, leveraging the existing snapshot-based undo system.
+- If no changes are made (no matching colors), the saved undo state is popped to avoid cluttering the stack.
+
+## Files Added
+- `sequence_maker/managers/bulk_swap_manager.py`
+- `sequence_maker/ui/dialogs/bulk_swap_dialog.py`
+
+## Files Modified
+- `sequence_maker/app/application.py` — import and instantiate BulkSwapManager
+- `sequence_maker/ui/main_window_parts/actions.py` — add bulk_swap_action
+- `sequence_maker/ui/main_window_parts/menus.py` — add action to Timeline menu
+- `sequence_maker/ui/main_window.py` — add `_on_bulk_swap` handler
