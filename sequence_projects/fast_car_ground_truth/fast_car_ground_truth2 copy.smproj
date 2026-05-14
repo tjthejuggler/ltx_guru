@@ -2,14 +2,14 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-04T11:59:00.064570",
-    "modified": "2026-05-14T21:02:18.237899",
+    "modified": "2026-05-14T20:05:13.850933",
     "name": "fast car ground truth",
     "description": ""
   },
   "settings": {
     "defaultPixels": 4,
     "refreshRate": 1,
-    "totalDuration": 314.1757596371882,
+    "totalDuration": 294.11371882086166,
     "zoomLevel": 1.0
   },
   "keyMappings": {},
@@ -19,11 +19,215 @@
       "name": "Ball 1",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064586",
-      "modified": "2026-05-14T21:02:18.237816",
+      "modified": "2026-05-14T20:05:13.850746",
       "segments": [
         {
           "startTime": 0.0,
-          "endTime": 20.0,
+          "endTime": 50.95,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 50.95,
+          "endTime": 52.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 52.91,
+          "endTime": 55.45,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.45,
+          "endTime": 57.83,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 57.83,
+          "endTime": 59.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.5,
+          "endTime": 61.83,
+          "color": [
+            65,
+            65,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 61.83,
+          "endTime": 62.38,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 62.38,
+          "endTime": 66.4,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 66.4,
+          "endTime": 75.92,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.92,
+          "endTime": 85.28,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.28,
+          "endTime": 91.64,
+          "color": [
+            65,
+            65,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 91.64,
+          "endTime": 92.17,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 92.17,
+          "endTime": 96.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 103.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.9,
+          "endTime": 105.07,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 105.07,
+          "endTime": 105.64,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 105.64,
+          "endTime": 112.49,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.49,
+          "endTime": 114.15,
           "color": [
             255,
             255,
@@ -34,224 +238,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 20.0,
-          "endTime": 70.95,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 70.95,
-          "endTime": 72.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 72.91,
-          "endTime": 75.45,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 75.45,
-          "endTime": 77.83,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 77.83,
-          "endTime": 80.11,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 80.11,
-          "endTime": 81.83,
-          "color": [
-            65,
-            65,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 81.83,
-          "endTime": 82.38,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 82.38,
-          "endTime": 86.4,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 86.4,
-          "endTime": 95.92,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 95.92,
-          "endTime": 105.28,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 105.28,
-          "endTime": 111.64,
-          "color": [
-            65,
-            65,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 111.64,
-          "endTime": 112.17,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 112.17,
-          "endTime": 116.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 116.91,
-          "endTime": 123.9,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 123.9,
-          "endTime": 125.07,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 125.07,
-          "endTime": 125.64,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 125.64,
-          "endTime": 132.49,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 132.49,
-          "endTime": 134.15,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 134.15,
-          "endTime": 140.91,
+          "startTime": 114.15,
+          "endTime": 120.91,
           "color": [
             255,
             255,
@@ -267,8 +255,8 @@
           ]
         },
         {
-          "startTime": 140.91,
-          "endTime": 147.08,
+          "startTime": 120.91,
+          "endTime": 127.08,
           "color": [
             255,
             0,
@@ -279,8 +267,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 147.08,
-          "endTime": 150.86,
+          "startTime": 127.08,
+          "endTime": 130.86,
           "color": [
             65,
             65,
@@ -291,8 +279,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 150.86,
-          "endTime": 151.28,
+          "startTime": 130.86,
+          "endTime": 131.28,
           "color": [
             0,
             255,
@@ -303,8 +291,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 151.28,
-          "endTime": 158.69,
+          "startTime": 131.28,
+          "endTime": 138.69,
           "color": [
             255,
             255,
@@ -315,8 +303,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 158.69,
-          "endTime": 162.58,
+          "startTime": 138.69,
+          "endTime": 142.58,
           "color": [
             255,
             255,
@@ -332,8 +320,8 @@
           ]
         },
         {
-          "startTime": 162.58,
-          "endTime": 168.47,
+          "startTime": 142.58,
+          "endTime": 148.47,
           "color": [
             0,
             255,
@@ -349,8 +337,8 @@
           ]
         },
         {
-          "startTime": 168.47,
-          "endTime": 169.89,
+          "startTime": 148.47,
+          "endTime": 149.89,
           "color": [
             0,
             0,
@@ -361,8 +349,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 169.89,
-          "endTime": 172.45,
+          "startTime": 149.89,
+          "endTime": 152.45,
           "color": [
             0,
             0,
@@ -378,8 +366,8 @@
           ]
         },
         {
-          "startTime": 172.45,
-          "endTime": 173.42,
+          "startTime": 152.45,
+          "endTime": 153.42,
           "color": [
             0,
             0,
@@ -390,8 +378,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 173.42,
-          "endTime": 173.91,
+          "startTime": 153.42,
+          "endTime": 153.91,
           "color": [
             255,
             0,
@@ -402,8 +390,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 173.91,
-          "endTime": 180.75,
+          "startTime": 153.91,
+          "endTime": 160.75,
           "color": [
             0,
             0,
@@ -414,8 +402,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 180.75,
-          "endTime": 181.32,
+          "startTime": 160.75,
+          "endTime": 161.32,
           "color": [
             255,
             255,
@@ -426,8 +414,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 181.32,
-          "endTime": 185.38,
+          "startTime": 161.32,
+          "endTime": 165.38,
           "color": [
             0,
             0,
@@ -438,8 +426,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 185.38,
-          "endTime": 186.03,
+          "startTime": 165.38,
+          "endTime": 166.03,
           "color": [
             0,
             255,
@@ -450,8 +438,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 186.03,
-          "endTime": 187.33,
+          "startTime": 166.03,
+          "endTime": 167.33,
           "color": [
             0,
             0,
@@ -462,8 +450,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 187.33,
-          "endTime": 191.34,
+          "startTime": 167.33,
+          "endTime": 171.34,
           "color": [
             0,
             0,
@@ -479,8 +467,8 @@
           ]
         },
         {
-          "startTime": 191.34,
-          "endTime": 198.29,
+          "startTime": 171.34,
+          "endTime": 178.29,
           "color": [
             0,
             0,
@@ -491,8 +479,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 198.29,
-          "endTime": 198.65,
+          "startTime": 178.29,
+          "endTime": 178.65,
           "color": [
             0,
             0,
@@ -508,8 +496,8 @@
           ]
         },
         {
-          "startTime": 198.65,
-          "endTime": 199.98,
+          "startTime": 178.65,
+          "endTime": 179.98,
           "color": [
             255,
             0,
@@ -520,8 +508,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 199.98,
-          "endTime": 200.85,
+          "startTime": 179.98,
+          "endTime": 180.85,
           "color": [
             255,
             255,
@@ -532,20 +520,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 200.85,
-          "endTime": 201.97,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 201.97,
-          "endTime": 201.97,
+          "startTime": 180.85,
+          "endTime": 181.97,
           "color": [
             255,
             0,
@@ -556,32 +532,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 201.97,
-          "endTime": 201.97,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 201.97,
-          "endTime": 202.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 202.91,
-          "endTime": 203.88,
+          "startTime": 181.97,
+          "endTime": 181.97,
           "color": [
             255,
             0,
@@ -592,8 +544,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 203.88,
-          "endTime": 204.71,
+          "startTime": 181.97,
+          "endTime": 181.97,
           "color": [
             0,
             255,
@@ -604,8 +556,44 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 204.71,
-          "endTime": 205.02,
+          "startTime": 181.97,
+          "endTime": 182.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 182.91,
+          "endTime": 183.88,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 183.88,
+          "endTime": 184.71,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 184.71,
+          "endTime": 185.02,
           "color": [
             0,
             0,
@@ -616,8 +604,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 205.02,
-          "endTime": 205.54,
+          "startTime": 185.02,
+          "endTime": 185.54,
           "color": [
             0,
             255,
@@ -628,8 +616,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 205.54,
-          "endTime": 206.76,
+          "startTime": 185.54,
+          "endTime": 186.76,
           "color": [
             0,
             255,
@@ -645,8 +633,8 @@
           ]
         },
         {
-          "startTime": 206.76,
-          "endTime": 208.39,
+          "startTime": 186.76,
+          "endTime": 188.39,
           "color": [
             0,
             0,
@@ -657,8 +645,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 208.39,
-          "endTime": 208.81,
+          "startTime": 188.39,
+          "endTime": 188.81,
           "color": [
             255,
             255,
@@ -669,8 +657,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 208.81,
-          "endTime": 215.95,
+          "startTime": 188.81,
+          "endTime": 195.95,
           "color": [
             0,
             0,
@@ -681,8 +669,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 215.95,
-          "endTime": 219.17,
+          "startTime": 195.95,
+          "endTime": 199.17,
           "color": [
             0,
             0,
@@ -698,523 +686,7 @@
           ]
         },
         {
-          "startTime": 219.17,
-          "endTime": 277.0,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 277.0,
-          "endTime": 277.56,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 277.56,
-          "endTime": 277.81,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 277.81,
-          "endTime": 279.34,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 279.34,
-          "endTime": 279.59,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 279.59,
-          "endTime": 281.11,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 281.11,
-          "endTime": 281.36,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 281.36,
-          "endTime": 282.83,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 282.83,
-          "endTime": 283.08,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 283.08,
-          "endTime": 284.57,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 284.57,
-          "endTime": 284.82,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 284.82,
-          "endTime": 286.33,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 286.33,
-          "endTime": 286.58,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 286.58,
-          "endTime": 288.07,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 288.07,
-          "endTime": 288.32,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 288.32,
-          "endTime": 289.82,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 289.82,
-          "endTime": 290.07,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 290.07,
-          "endTime": 291.49,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 291.49,
-          "endTime": 291.74,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 291.74,
-          "endTime": 293.21,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 293.21,
-          "endTime": 293.46,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 293.46,
-          "endTime": 294.92,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 294.92,
-          "endTime": 295.17,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 295.17,
-          "endTime": 295.86,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 295.86,
-          "endTime": 296.62,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 296.62,
-          "endTime": 296.87,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 296.87,
-          "endTime": 298.34,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 298.34,
-          "endTime": 298.59,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 298.59,
-          "endTime": 300.08,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 300.08,
-          "endTime": 300.33,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 300.33,
-          "endTime": 301.82,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 301.82,
-          "endTime": 302.07,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 302.07,
-          "endTime": 303.56,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 303.56,
-          "endTime": 303.81,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 303.81,
-          "endTime": 305.3,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 305.3,
-          "endTime": 305.55,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 305.55,
-          "endTime": 307.05,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 307.05,
-          "endTime": 307.3,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 307.3,
-          "endTime": 308.81,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 308.81,
-          "endTime": 309.06,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 309.06,
-          "endTime": 310.53,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 310.53,
-          "endTime": 310.78,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 310.78,
-          "endTime": 314.11,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 314.11,
+          "startTime": 199.17,
           "endTime": 3600.0,
           "color": [
             255,
@@ -1231,11 +703,215 @@
       "name": "Ball 2",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064589",
-      "modified": "2026-05-14T21:02:18.237859",
+      "modified": "2026-05-14T20:05:13.850876",
       "segments": [
         {
           "startTime": 0.0,
-          "endTime": 20.0,
+          "endTime": 50.95,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 50.95,
+          "endTime": 52.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 52.91,
+          "endTime": 55.45,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.45,
+          "endTime": 57.83,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 57.83,
+          "endTime": 59.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.5,
+          "endTime": 64.1,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.1,
+          "endTime": 64.65,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.65,
+          "endTime": 66.41,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 66.41,
+          "endTime": 75.92,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.92,
+          "endTime": 85.29,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.29,
+          "endTime": 94.03,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 94.03,
+          "endTime": 94.6,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 94.6,
+          "endTime": 96.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 103.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.9,
+          "endTime": 107.69,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 107.69,
+          "endTime": 108.5,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 108.5,
+          "endTime": 112.49,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.49,
+          "endTime": 114.14,
           "color": [
             255,
             165,
@@ -1246,224 +922,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 20.0,
-          "endTime": 70.95,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 70.95,
-          "endTime": 72.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 72.91,
-          "endTime": 75.45,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 75.45,
-          "endTime": 77.83,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 77.83,
-          "endTime": 80.11,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 80.11,
-          "endTime": 84.1,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 84.1,
-          "endTime": 84.65,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 84.65,
-          "endTime": 86.41,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 86.41,
-          "endTime": 95.92,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 95.92,
-          "endTime": 105.29,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 105.29,
-          "endTime": 114.03,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 114.03,
-          "endTime": 114.6,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 114.6,
-          "endTime": 116.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 116.91,
-          "endTime": 123.9,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 123.9,
-          "endTime": 127.69,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 127.69,
-          "endTime": 128.5,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 128.5,
-          "endTime": 132.49,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 132.49,
-          "endTime": 134.14,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 134.14,
-          "endTime": 140.93,
+          "startTime": 114.14,
+          "endTime": 120.93,
           "color": [
             255,
             165,
@@ -1479,8 +939,8 @@
           ]
         },
         {
-          "startTime": 140.93,
-          "endTime": 147.07,
+          "startTime": 120.93,
+          "endTime": 127.07,
           "color": [
             255,
             0,
@@ -1491,8 +951,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 147.07,
-          "endTime": 155.1,
+          "startTime": 127.07,
+          "endTime": 135.1,
           "color": [
             255,
             255,
@@ -1503,8 +963,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 155.1,
-          "endTime": 155.56,
+          "startTime": 135.1,
+          "endTime": 135.56,
           "color": [
             0,
             255,
@@ -1515,8 +975,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 155.56,
-          "endTime": 158.69,
+          "startTime": 135.56,
+          "endTime": 138.69,
           "color": [
             255,
             255,
@@ -1527,8 +987,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 158.69,
-          "endTime": 162.58,
+          "startTime": 138.69,
+          "endTime": 142.58,
           "color": [
             255,
             255,
@@ -1544,8 +1004,8 @@
           ]
         },
         {
-          "startTime": 162.58,
-          "endTime": 168.47,
+          "startTime": 142.58,
+          "endTime": 148.47,
           "color": [
             0,
             255,
@@ -1561,8 +1021,8 @@
           ]
         },
         {
-          "startTime": 168.47,
-          "endTime": 169.89,
+          "startTime": 148.47,
+          "endTime": 149.89,
           "color": [
             0,
             0,
@@ -1573,8 +1033,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 169.89,
-          "endTime": 175.95,
+          "startTime": 149.89,
+          "endTime": 155.95,
           "color": [
             0,
             0,
@@ -1585,8 +1045,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 175.95,
-          "endTime": 176.51,
+          "startTime": 155.95,
+          "endTime": 156.51,
           "color": [
             255,
             0,
@@ -1597,8 +1057,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 176.51,
-          "endTime": 180.75,
+          "startTime": 156.51,
+          "endTime": 160.75,
           "color": [
             0,
             0,
@@ -1609,8 +1069,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 180.75,
-          "endTime": 181.32,
+          "startTime": 160.75,
+          "endTime": 161.32,
           "color": [
             255,
             255,
@@ -1621,8 +1081,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 181.32,
-          "endTime": 182.62,
+          "startTime": 161.32,
+          "endTime": 162.62,
           "color": [
             0,
             0,
@@ -1633,8 +1093,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 182.62,
-          "endTime": 183.15,
+          "startTime": 162.62,
+          "endTime": 163.15,
           "color": [
             0,
             255,
@@ -1645,8 +1105,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 183.15,
-          "endTime": 187.33,
+          "startTime": 163.15,
+          "endTime": 167.33,
           "color": [
             0,
             0,
@@ -1657,8 +1117,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 187.33,
-          "endTime": 191.34,
+          "startTime": 167.33,
+          "endTime": 171.34,
           "color": [
             0,
             0,
@@ -1674,8 +1134,8 @@
           ]
         },
         {
-          "startTime": 191.34,
-          "endTime": 198.29,
+          "startTime": 171.34,
+          "endTime": 178.29,
           "color": [
             0,
             0,
@@ -1686,206 +1146,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 198.29,
-          "endTime": 198.65,
+          "startTime": 178.29,
+          "endTime": 178.65,
           "color": [
             0,
             0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "fade",
-          "endColor": [
-            255,
-            0,
-            0
-          ]
-        },
-        {
-          "startTime": 198.65,
-          "endTime": 199.98,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 199.98,
-          "endTime": 200.85,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 200.85,
-          "endTime": 201.97,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 201.97,
-          "endTime": 202.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 202.91,
-          "endTime": 203.88,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 203.88,
-          "endTime": 204.71,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 204.71,
-          "endTime": 205.02,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 205.02,
-          "endTime": 205.54,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 205.54,
-          "endTime": 206.76,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "fade",
-          "endColor": [
-            0,
-            0,
-            255
-          ]
-        },
-        {
-          "startTime": 206.76,
-          "endTime": 212.61,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 212.61,
-          "endTime": 213.61,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 213.61,
-          "endTime": 215.95,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 215.95,
-          "endTime": 219.17,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "fade",
-          "endColor": [
-            255,
-            255,
-            255
-          ]
-        },
-        {
-          "startTime": 219.17,
-          "endTime": 254.93,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 254.93,
-          "endTime": 256.04,
-          "color": [
-            255,
-            255,
             255
           ],
           "pixels": 4,
@@ -1898,8 +1163,8 @@
           ]
         },
         {
-          "startTime": 256.04,
-          "endTime": 257.37,
+          "startTime": 178.65,
+          "endTime": 179.98,
           "color": [
             255,
             0,
@@ -1910,8 +1175,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 257.37,
-          "endTime": 257.74,
+          "startTime": 179.98,
+          "endTime": 180.85,
           "color": [
             255,
             255,
@@ -1922,8 +1187,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 257.74,
-          "endTime": 258.06,
+          "startTime": 180.85,
+          "endTime": 181.97,
           "color": [
             255,
             0,
@@ -1934,8 +1199,203 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 258.06,
-          "endTime": 258.83,
+          "startTime": 181.97,
+          "endTime": 182.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 182.91,
+          "endTime": 183.88,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 183.88,
+          "endTime": 184.71,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 184.71,
+          "endTime": 185.02,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 185.02,
+          "endTime": 185.54,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 185.54,
+          "endTime": 186.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "startTime": 186.76,
+          "endTime": 192.61,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 192.61,
+          "endTime": 193.61,
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 193.61,
+          "endTime": 195.95,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 195.95,
+          "endTime": 199.17,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "startTime": 199.17,
+          "endTime": 234.93,
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 234.93,
+          "endTime": 236.04,
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            255,
+            0,
+            0
+          ]
+        },
+        {
+          "startTime": 236.04,
+          "endTime": 237.37,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.37,
+          "endTime": 237.74,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 237.74,
+          "endTime": 238.06,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 238.06,
+          "endTime": 238.83,
           "color": [
             255,
             253,
@@ -1946,8 +1406,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 258.83,
-          "endTime": 259.15,
+          "startTime": 238.83,
+          "endTime": 239.15,
           "color": [
             255,
             0,
@@ -1958,8 +1418,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 259.15,
-          "endTime": 260.01,
+          "startTime": 239.15,
+          "endTime": 240.01,
           "color": [
             255,
             251,
@@ -1970,8 +1430,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 260.01,
-          "endTime": 260.38,
+          "startTime": 240.01,
+          "endTime": 240.38,
           "color": [
             255,
             0,
@@ -1982,8 +1442,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 260.38,
-          "endTime": 261.08,
+          "startTime": 240.38,
+          "endTime": 241.08,
           "color": [
             255,
             249,
@@ -1994,8 +1454,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 261.08,
-          "endTime": 261.44,
+          "startTime": 241.08,
+          "endTime": 241.44,
           "color": [
             255,
             0,
@@ -2006,8 +1466,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 261.44,
-          "endTime": 262.29,
+          "startTime": 241.44,
+          "endTime": 242.29,
           "color": [
             255,
             247,
@@ -2018,8 +1478,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 262.29,
-          "endTime": 262.68,
+          "startTime": 242.29,
+          "endTime": 242.68,
           "color": [
             255,
             0,
@@ -2030,8 +1490,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 262.68,
-          "endTime": 263.49,
+          "startTime": 242.68,
+          "endTime": 243.49,
           "color": [
             255,
             245,
@@ -2042,8 +1502,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 263.49,
-          "endTime": 263.86,
+          "startTime": 243.49,
+          "endTime": 243.86,
           "color": [
             255,
             0,
@@ -2054,8 +1514,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 263.86,
-          "endTime": 267.95,
+          "startTime": 243.86,
+          "endTime": 247.95,
           "color": [
             255,
             244,
@@ -2066,8 +1526,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 267.95,
-          "endTime": 268.39,
+          "startTime": 247.95,
+          "endTime": 248.39,
           "color": [
             255,
             0,
@@ -2078,8 +1538,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 268.39,
-          "endTime": 269.05,
+          "startTime": 248.39,
+          "endTime": 249.05,
           "color": [
             255,
             242,
@@ -2090,8 +1550,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 269.05,
-          "endTime": 269.42,
+          "startTime": 249.05,
+          "endTime": 249.42,
           "color": [
             255,
             0,
@@ -2102,8 +1562,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 269.42,
-          "endTime": 271.33,
+          "startTime": 249.42,
+          "endTime": 251.33,
           "color": [
             255,
             240,
@@ -2114,8 +1574,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 271.33,
-          "endTime": 271.65,
+          "startTime": 251.33,
+          "endTime": 251.65,
           "color": [
             255,
             0,
@@ -2126,8 +1586,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 271.65,
-          "endTime": 272.5,
+          "startTime": 251.65,
+          "endTime": 252.5,
           "color": [
             255,
             238,
@@ -2138,7 +1598,751 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 272.5,
+          "startTime": 252.5,
+          "endTime": 252.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 252.9,
+          "endTime": 253.51,
+          "color": [
+            255,
+            236,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 253.51,
+          "endTime": 253.93,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 253.93,
+          "endTime": 254.65,
+          "color": [
+            255,
+            234,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 254.65,
+          "endTime": 255.05,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 255.05,
+          "endTime": 255.79,
+          "color": [
+            255,
+            232,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 255.79,
+          "endTime": 256.26,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 256.26,
+          "endTime": 256.98,
+          "color": [
+            255,
+            230,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 256.98,
+          "endTime": 257.23,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 257.23,
+          "endTime": 257.56,
+          "color": [
+            255,
+            226,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 257.56,
+          "endTime": 257.81,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 257.81,
+          "endTime": 258.14,
+          "color": [
+            255,
+            224,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 258.14,
+          "endTime": 258.39,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 258.39,
+          "endTime": 258.74,
+          "color": [
+            255,
+            222,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 258.74,
+          "endTime": 258.99,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 258.99,
+          "endTime": 259.34,
+          "color": [
+            255,
+            221,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 259.34,
+          "endTime": 259.59,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 259.59,
+          "endTime": 259.92,
+          "color": [
+            255,
+            219,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 259.92,
+          "endTime": 260.17,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 260.17,
+          "endTime": 260.5,
+          "color": [
+            255,
+            217,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 260.5,
+          "endTime": 260.75,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 260.75,
+          "endTime": 261.11,
+          "color": [
+            255,
+            215,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 261.11,
+          "endTime": 261.36,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 261.36,
+          "endTime": 261.67,
+          "color": [
+            255,
+            213,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 261.67,
+          "endTime": 261.92,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 261.92,
+          "endTime": 262.25,
+          "color": [
+            255,
+            211,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 262.25,
+          "endTime": 262.5,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 262.5,
+          "endTime": 262.83,
+          "color": [
+            255,
+            209,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 262.83,
+          "endTime": 263.08,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 263.08,
+          "endTime": 263.43,
+          "color": [
+            255,
+            207,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 263.43,
+          "endTime": 263.68,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 263.68,
+          "endTime": 264.01,
+          "color": [
+            255,
+            205,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 264.01,
+          "endTime": 264.26,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 264.26,
+          "endTime": 264.57,
+          "color": [
+            255,
+            203,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 264.57,
+          "endTime": 264.82,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 264.82,
+          "endTime": 265.15,
+          "color": [
+            255,
+            201,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 265.15,
+          "endTime": 265.4,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 265.4,
+          "endTime": 265.75,
+          "color": [
+            255,
+            199,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 265.75,
+          "endTime": 266.0,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 266.0,
+          "endTime": 266.33,
+          "color": [
+            255,
+            198,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 266.33,
+          "endTime": 266.58,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 266.58,
+          "endTime": 266.91,
+          "color": [
+            255,
+            196,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 266.91,
+          "endTime": 267.16,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 267.16,
+          "endTime": 267.49,
+          "color": [
+            255,
+            194,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 267.49,
+          "endTime": 267.74,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 267.74,
+          "endTime": 268.07,
+          "color": [
+            255,
+            192,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 268.07,
+          "endTime": 268.32,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 268.32,
+          "endTime": 268.63,
+          "color": [
+            255,
+            190,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 268.63,
+          "endTime": 268.88,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 268.88,
+          "endTime": 269.21,
+          "color": [
+            255,
+            188,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 269.21,
+          "endTime": 269.46,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 269.46,
+          "endTime": 269.82,
+          "color": [
+            255,
+            186,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 269.82,
+          "endTime": 270.07,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 270.07,
+          "endTime": 270.37,
+          "color": [
+            255,
+            184,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 270.37,
+          "endTime": 270.62,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 270.62,
+          "endTime": 270.93,
+          "color": [
+            255,
+            182,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 270.93,
+          "endTime": 271.18,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 271.18,
+          "endTime": 271.49,
+          "color": [
+            255,
+            180,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 271.49,
+          "endTime": 271.74,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 271.74,
+          "endTime": 272.07,
+          "color": [
+            255,
+            178,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 272.07,
+          "endTime": 272.32,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 272.32,
+          "endTime": 272.65,
+          "color": [
+            255,
+            176,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 272.65,
           "endTime": 272.9,
           "color": [
             255,
@@ -2151,10 +2355,10 @@
         },
         {
           "startTime": 272.9,
-          "endTime": 273.51,
+          "endTime": 273.21,
           "color": [
             255,
-            236,
+            175,
             0
           ],
           "pixels": 4,
@@ -2162,32 +2366,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 273.51,
-          "endTime": 273.93,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 273.93,
-          "endTime": 274.65,
-          "color": [
-            255,
-            234,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 274.65,
-          "endTime": 275.05,
+          "startTime": 273.21,
+          "endTime": 273.46,
           "color": [
             255,
             0,
@@ -2198,296 +2378,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 275.05,
-          "endTime": 275.79,
-          "color": [
-            255,
-            232,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 275.79,
-          "endTime": 276.26,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 276.26,
-          "endTime": 276.98,
-          "color": [
-            255,
-            230,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 276.98,
-          "endTime": 277.23,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 277.23,
-          "endTime": 278.14,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 278.14,
-          "endTime": 278.39,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 278.39,
-          "endTime": 279.92,
-          "color": [
-            255,
-            247,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 279.92,
-          "endTime": 280.17,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 280.17,
-          "endTime": 281.67,
-          "color": [
-            255,
-            239,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 281.67,
-          "endTime": 281.92,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 281.92,
-          "endTime": 283.43,
-          "color": [
-            255,
-            230,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 283.43,
-          "endTime": 283.68,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 283.68,
-          "endTime": 285.15,
-          "color": [
-            255,
-            222,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 285.15,
-          "endTime": 285.4,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 285.4,
-          "endTime": 286.91,
-          "color": [
-            255,
-            214,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 286.91,
-          "endTime": 287.16,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 287.16,
-          "endTime": 288.63,
-          "color": [
-            255,
-            206,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 288.63,
-          "endTime": 288.88,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 288.88,
-          "endTime": 290.37,
-          "color": [
-            255,
-            198,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 290.37,
-          "endTime": 290.62,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 290.62,
-          "endTime": 292.07,
-          "color": [
-            255,
-            190,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 292.07,
-          "endTime": 292.32,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 292.32,
-          "endTime": 293.79,
-          "color": [
-            255,
-            181,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 293.79,
-          "endTime": 294.04,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 294.04,
-          "endTime": 295.48,
+          "startTime": 273.46,
+          "endTime": 273.79,
           "color": [
             255,
             173,
@@ -2498,8 +2390,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 295.48,
-          "endTime": 295.73,
+          "startTime": 273.79,
+          "endTime": 274.04,
           "color": [
             255,
             0,
@@ -2510,11 +2402,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 295.73,
-          "endTime": 295.86,
+          "startTime": 274.04,
+          "endTime": 274.37,
           "color": [
             255,
-            165,
+            171,
             0
           ],
           "pixels": 4,
@@ -2522,35 +2414,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 295.86,
-          "endTime": 297.2,
+          "startTime": 274.37,
+          "endTime": 274.62,
           "color": [
             255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 297.2,
-          "endTime": 297.45,
-          "color": [
             0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 297.45,
-          "endTime": 298.92,
-          "color": [
-            255,
-            165,
             0
           ],
           "pixels": 4,
@@ -2558,23 +2426,23 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 298.92,
-          "endTime": 299.17,
+          "startTime": 274.62,
+          "endTime": 274.92,
           "color": [
+            255,
+            169,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 274.92,
+          "endTime": 275.17,
+          "color": [
+            255,
             0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 299.17,
-          "endTime": 300.66,
-          "color": [
-            255,
-            165,
             0
           ],
           "pixels": 4,
@@ -2582,20 +2450,32 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 300.66,
-          "endTime": 300.91,
+          "startTime": 275.17,
+          "endTime": 275.48,
           "color": [
+            255,
+            167,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 275.48,
+          "endTime": 275.73,
+          "color": [
+            255,
             0,
-            255,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
           "segment_type": "solid"
         },
         {
-          "startTime": 300.91,
-          "endTime": 302.4,
+          "startTime": 275.73,
+          "endTime": 275.86,
           "color": [
             255,
             165,
@@ -2606,127 +2486,7 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 302.4,
-          "endTime": 302.65,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 302.65,
-          "endTime": 304.14,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 304.14,
-          "endTime": 304.39,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 304.39,
-          "endTime": 305.86,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 305.86,
-          "endTime": 306.11,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 306.11,
-          "endTime": 307.63,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 307.63,
-          "endTime": 307.88,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 307.88,
-          "endTime": 309.37,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 309.37,
-          "endTime": 309.62,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 309.62,
-          "endTime": 314.11,
-          "color": [
-            255,
-            165,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 314.11,
+          "startTime": 275.86,
           "endTime": 3600.0,
           "color": [
             255,
@@ -2743,11 +2503,215 @@
       "name": "Ball 3",
       "defaultPixels": 4,
       "created": "2026-05-04T11:59:00.064590",
-      "modified": "2026-05-14T21:02:18.237897",
+      "modified": "2026-05-14T20:05:13.850929",
       "segments": [
         {
           "startTime": 0.0,
-          "endTime": 20.0,
+          "endTime": 50.95,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 50.95,
+          "endTime": 52.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 52.91,
+          "endTime": 55.45,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 55.45,
+          "endTime": 57.82,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 57.83,
+          "endTime": 64.1,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 59.51,
+          "endTime": 64.1,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.1,
+          "endTime": 64.65,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 64.65,
+          "endTime": 66.41,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 66.41,
+          "endTime": 75.92,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 75.92,
+          "endTime": 85.28,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 85.28,
+          "endTime": 94.03,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 94.03,
+          "endTime": 94.6,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 94.6,
+          "endTime": 96.91,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 96.91,
+          "endTime": 103.9,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.9,
+          "endTime": 107.69,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 107.69,
+          "endTime": 108.5,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 108.5,
+          "endTime": 112.49,
+          "color": [
+            255,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 112.49,
+          "endTime": 114.14,
           "color": [
             0,
             255,
@@ -2758,236 +2722,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 20.0,
-          "endTime": 70.95,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 70.95,
-          "endTime": 72.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 72.91,
-          "endTime": 75.45,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 75.45,
-          "endTime": 77.82,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 80.11,
-          "endTime": 84.1,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 77.83,
-          "endTime": 80.11,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 80.11,
-          "endTime": 84.1,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 84.1,
-          "endTime": 84.65,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 84.65,
-          "endTime": 86.41,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 86.41,
-          "endTime": 95.92,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 95.92,
-          "endTime": 105.28,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 105.28,
-          "endTime": 114.03,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 114.03,
-          "endTime": 114.6,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 114.6,
-          "endTime": 116.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 116.91,
-          "endTime": 123.9,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 123.9,
-          "endTime": 127.69,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 127.69,
-          "endTime": 128.5,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 128.5,
-          "endTime": 132.49,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 132.49,
-          "endTime": 134.14,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 134.14,
-          "endTime": 140.91,
+          "startTime": 114.14,
+          "endTime": 120.91,
           "color": [
             0,
             255,
@@ -3003,8 +2739,8 @@
           ]
         },
         {
-          "startTime": 140.91,
-          "endTime": 147.07,
+          "startTime": 120.91,
+          "endTime": 127.07,
           "color": [
             255,
             0,
@@ -3015,8 +2751,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 147.07,
-          "endTime": 155.1,
+          "startTime": 127.07,
+          "endTime": 135.1,
           "color": [
             255,
             255,
@@ -3027,8 +2763,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 155.1,
-          "endTime": 155.56,
+          "startTime": 135.1,
+          "endTime": 135.56,
           "color": [
             0,
             255,
@@ -3039,8 +2775,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 155.56,
-          "endTime": 158.69,
+          "startTime": 135.56,
+          "endTime": 138.69,
           "color": [
             255,
             255,
@@ -3051,8 +2787,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 158.69,
-          "endTime": 162.58,
+          "startTime": 138.69,
+          "endTime": 142.58,
           "color": [
             255,
             255,
@@ -3068,8 +2804,8 @@
           ]
         },
         {
-          "startTime": 162.58,
-          "endTime": 168.47,
+          "startTime": 142.58,
+          "endTime": 148.47,
           "color": [
             0,
             255,
@@ -3085,8 +2821,8 @@
           ]
         },
         {
-          "startTime": 168.47,
-          "endTime": 169.89,
+          "startTime": 148.47,
+          "endTime": 149.89,
           "color": [
             0,
             0,
@@ -3097,8 +2833,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 169.89,
-          "endTime": 175.95,
+          "startTime": 149.89,
+          "endTime": 155.95,
           "color": [
             0,
             0,
@@ -3109,8 +2845,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 175.95,
-          "endTime": 176.51,
+          "startTime": 155.95,
+          "endTime": 156.51,
           "color": [
             255,
             0,
@@ -3121,8 +2857,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 176.51,
-          "endTime": 177.67,
+          "startTime": 156.51,
+          "endTime": 157.67,
           "color": [
             0,
             0,
@@ -3133,8 +2869,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 177.67,
-          "endTime": 178.48,
+          "startTime": 157.67,
+          "endTime": 158.48,
           "color": [
             255,
             255,
@@ -3145,8 +2881,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 178.48,
-          "endTime": 185.38,
+          "startTime": 158.48,
+          "endTime": 165.38,
           "color": [
             0,
             0,
@@ -3157,8 +2893,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 185.38,
-          "endTime": 186.03,
+          "startTime": 165.38,
+          "endTime": 166.03,
           "color": [
             0,
             255,
@@ -3169,8 +2905,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 186.03,
-          "endTime": 187.33,
+          "startTime": 166.03,
+          "endTime": 167.33,
           "color": [
             0,
             0,
@@ -3181,8 +2917,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 187.33,
-          "endTime": 191.34,
+          "startTime": 167.33,
+          "endTime": 171.34,
           "color": [
             0,
             0,
@@ -3198,8 +2934,8 @@
           ]
         },
         {
-          "startTime": 191.34,
-          "endTime": 198.29,
+          "startTime": 171.34,
+          "endTime": 178.29,
           "color": [
             0,
             0,
@@ -3210,206 +2946,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 198.29,
-          "endTime": 198.65,
+          "startTime": 178.29,
+          "endTime": 178.65,
           "color": [
             0,
             0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "fade",
-          "endColor": [
-            255,
-            0,
-            0
-          ]
-        },
-        {
-          "startTime": 198.65,
-          "endTime": 199.98,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 199.98,
-          "endTime": 200.85,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 200.85,
-          "endTime": 201.97,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 201.97,
-          "endTime": 202.91,
-          "color": [
-            255,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 202.91,
-          "endTime": 203.88,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 203.88,
-          "endTime": 204.71,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 204.71,
-          "endTime": 205.02,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 205.02,
-          "endTime": 205.54,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 205.54,
-          "endTime": 206.76,
-          "color": [
-            0,
-            255,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "fade",
-          "endColor": [
-            0,
-            0,
-            255
-          ]
-        },
-        {
-          "startTime": 206.76,
-          "endTime": 212.61,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 212.61,
-          "endTime": 213.61,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 213.61,
-          "endTime": 215.95,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 215.95,
-          "endTime": 219.17,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "fade",
-          "endColor": [
-            255,
-            255,
-            255
-          ]
-        },
-        {
-          "startTime": 219.17,
-          "endTime": 254.93,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 254.93,
-          "endTime": 256.04,
-          "color": [
-            255,
-            255,
             255
           ],
           "pixels": 4,
@@ -3422,8 +2963,8 @@
           ]
         },
         {
-          "startTime": 256.04,
-          "endTime": 257.37,
+          "startTime": 178.65,
+          "endTime": 179.98,
           "color": [
             255,
             0,
@@ -3434,8 +2975,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 257.37,
-          "endTime": 257.74,
+          "startTime": 179.98,
+          "endTime": 180.85,
           "color": [
             255,
             255,
@@ -3446,8 +2987,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 257.74,
-          "endTime": 258.06,
+          "startTime": 180.85,
+          "endTime": 181.97,
           "color": [
             255,
             0,
@@ -3458,11 +2999,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 258.06,
-          "endTime": 258.83,
+          "startTime": 181.97,
+          "endTime": 182.91,
           "color": [
             255,
-            253,
+            255,
             0
           ],
           "pixels": 4,
@@ -3470,8 +3011,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 258.83,
-          "endTime": 259.15,
+          "startTime": 182.91,
+          "endTime": 183.88,
           "color": [
             255,
             0,
@@ -3482,44 +3023,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 259.15,
-          "endTime": 260.01,
-          "color": [
-            255,
-            251,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 260.01,
-          "endTime": 260.38,
-          "color": [
-            255,
-            0,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 260.38,
-          "endTime": 261.08,
-          "color": [
-            255,
-            249,
-            0
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 261.08,
-          "endTime": 261.44,
+          "startTime": 183.88,
+          "endTime": 184.71,
           "color": [
             0,
             255,
@@ -3530,11 +3035,23 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 261.44,
-          "endTime": 262.29,
+          "startTime": 184.71,
+          "endTime": 185.02,
           "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 185.02,
+          "endTime": 185.54,
+          "color": [
+            0,
             255,
-            247,
             0
           ],
           "pixels": 4,
@@ -3542,8 +3059,107 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 262.29,
-          "endTime": 262.68,
+          "startTime": 185.54,
+          "endTime": 186.76,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            0,
+            0,
+            255
+          ]
+        },
+        {
+          "startTime": 186.76,
+          "endTime": 192.61,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 192.61,
+          "endTime": 193.61,
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 193.61,
+          "endTime": 195.95,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 195.95,
+          "endTime": 199.17,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "startTime": 199.17,
+          "endTime": 234.93,
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 234.93,
+          "endTime": 236.04,
+          "color": [
+            255,
+            255,
+            255
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "fade",
+          "endColor": [
+            255,
+            0,
+            0
+          ]
+        },
+        {
+          "startTime": 236.04,
+          "endTime": 237.37,
           "color": [
             255,
             0,
@@ -3554,11 +3170,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 262.68,
-          "endTime": 263.49,
+          "startTime": 237.37,
+          "endTime": 237.74,
           "color": [
             255,
-            245,
+            255,
             0
           ],
           "pixels": 4,
@@ -3566,8 +3182,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 263.49,
-          "endTime": 263.86,
+          "startTime": 237.74,
+          "endTime": 238.06,
           "color": [
             255,
             0,
@@ -3578,11 +3194,11 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 263.86,
-          "endTime": 264.36,
+          "startTime": 238.06,
+          "endTime": 238.83,
           "color": [
             255,
-            244,
+            248,
             0
           ],
           "pixels": 4,
@@ -3590,11 +3206,131 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 264.36,
-          "endTime": 277.0,
+          "startTime": 238.83,
+          "endTime": 239.15,
           "color": [
             255,
-            244,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 239.15,
+          "endTime": 240.01,
+          "color": [
+            255,
+            241,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 240.01,
+          "endTime": 240.38,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 240.38,
+          "endTime": 241.08,
+          "color": [
+            255,
+            234,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 241.08,
+          "endTime": 241.44,
+          "color": [
+            0,
+            255,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 241.44,
+          "endTime": 242.29,
+          "color": [
+            255,
+            227,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 242.29,
+          "endTime": 242.68,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 242.68,
+          "endTime": 243.49,
+          "color": [
+            255,
+            220,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 243.49,
+          "endTime": 243.86,
+          "color": [
+            255,
+            0,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 243.86,
+          "endTime": 245.9,
+          "color": [
+            255,
+            213,
+            0
+          ],
+          "pixels": 4,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 245.9,
+          "endTime": 247.95,
+          "color": [
+            255,
+            213,
             0
           ],
           "pixels": 4,
@@ -3607,8 +3343,8 @@
           ]
         },
         {
-          "startTime": 277.0,
-          "endTime": 278.74,
+          "startTime": 247.95,
+          "endTime": 249.78,
           "color": [
             0,
             255,
@@ -3619,8 +3355,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 278.74,
-          "endTime": 278.99,
+          "startTime": 249.78,
+          "endTime": 250.46,
           "color": [
             0,
             0,
@@ -3631,468 +3367,41 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 278.99,
-          "endTime": 280.5,
+          "startTime": 250.46,
+          "endTime": 250.51,
           "color": [
             0,
             255,
-            26
+            0
           ],
           "pixels": 4,
           "effects": [],
           "segment_type": "solid"
         },
         {
-          "startTime": 280.5,
-          "endTime": 280.75,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 280.75,
-          "endTime": 282.25,
+          "startTime": 250.51,
+          "endTime": 252.39,
           "color": [
             0,
             255,
-            51
+            0
           ],
           "pixels": 4,
           "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 282.25,
-          "endTime": 282.5,
-          "color": [
+          "segment_type": "fade",
+          "endColor": [
             0,
             0,
             255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
+          ]
         },
         {
-          "startTime": 282.5,
-          "endTime": 284.01,
-          "color": [
-            0,
-            255,
-            76
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 284.01,
-          "endTime": 284.26,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 284.26,
-          "endTime": 285.75,
-          "color": [
-            0,
-            255,
-            102
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 285.75,
-          "endTime": 286.0,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 286.0,
-          "endTime": 287.49,
-          "color": [
-            0,
-            255,
-            128
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 287.49,
-          "endTime": 287.74,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 287.74,
-          "endTime": 289.21,
-          "color": [
-            0,
-            255,
-            153
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 289.21,
-          "endTime": 289.46,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 289.46,
-          "endTime": 290.93,
-          "color": [
-            0,
-            255,
-            178
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 290.93,
-          "endTime": 291.18,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 291.18,
-          "endTime": 292.65,
-          "color": [
-            0,
-            255,
-            204
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 292.65,
-          "endTime": 292.9,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 292.9,
-          "endTime": 294.37,
-          "color": [
-            0,
-            255,
-            230
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 294.37,
-          "endTime": 294.62,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 294.62,
-          "endTime": 295.86,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 295.86,
-          "endTime": 296.04,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 296.04,
-          "endTime": 296.29,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 296.29,
-          "endTime": 297.78,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 297.78,
-          "endTime": 298.03,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 298.03,
-          "endTime": 299.52,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 299.52,
-          "endTime": 299.77,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 299.77,
-          "endTime": 301.24,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 301.24,
-          "endTime": 301.49,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 301.49,
-          "endTime": 302.98,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 302.98,
-          "endTime": 303.23,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 303.23,
-          "endTime": 304.72,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 304.72,
-          "endTime": 304.97,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 304.97,
-          "endTime": 306.46,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 306.46,
-          "endTime": 306.71,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 306.71,
-          "endTime": 308.21,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 308.21,
-          "endTime": 308.46,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 308.46,
-          "endTime": 309.95,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 309.95,
-          "endTime": 310.2,
-          "color": [
-            255,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 310.2,
-          "endTime": 314.11,
-          "color": [
-            0,
-            255,
-            255
-          ],
-          "pixels": 4,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 314.11,
+          "startTime": 252.39,
           "endTime": 3600.0,
           "color": [
             0,
             255,
-            255
+            0
           ],
           "pixels": 4,
           "effects": [],
@@ -4103,8 +3412,8 @@
   ],
   "audio": {
     "embedded": false,
-    "filename": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Tracy Chapman Fast Car Lyrics_20s_offset.mp3",
-    "filepath": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Tracy Chapman Fast Car Lyrics_20s_offset.mp3",
+    "filename": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Tracy Chapman Fast Car Lyrics.mp3",
+    "filepath": "/home/twain/Projects/ltx_guru/sequence_maker/songs/Tracy Chapman Fast Car Lyrics.mp3",
     "duration": 0,
     "data": null
   },
@@ -4139,2398 +3448,2398 @@
     "word_timestamps": [
       {
         "word": "you",
-        "start": 40.94,
-        "end": 40.98
+        "start": 20.94,
+        "end": 20.98
       },
       {
         "word": "got",
-        "start": 40.98,
-        "end": 41.09
+        "start": 20.98,
+        "end": 21.09
       },
       {
         "word": "a",
-        "start": 41.09,
-        "end": 41.15
+        "start": 21.09,
+        "end": 21.15
       },
       {
         "word": "fast",
-        "start": 41.15,
-        "end": 41.5
+        "start": 21.15,
+        "end": 21.5
       },
       {
         "word": "car",
-        "start": 41.5,
-        "end": 41.53
+        "start": 21.5,
+        "end": 21.53
       },
       {
         "word": "i",
-        "start": 43.05,
-        "end": 43.3
+        "start": 23.05,
+        "end": 23.3
       },
       {
         "word": "want",
-        "start": 43.3,
-        "end": 43.51
+        "start": 23.3,
+        "end": 23.51
       },
       {
         "word": "a",
-        "start": 43.51,
-        "end": 43.57
+        "start": 23.51,
+        "end": 23.57
       },
       {
         "word": "ticket",
-        "start": 43.57,
-        "end": 43.89
+        "start": 23.57,
+        "end": 23.89
       },
       {
         "word": "to",
-        "start": 44.07,
-        "end": 44.18
+        "start": 24.07,
+        "end": 24.18
       },
       {
         "word": "anywhere",
-        "start": 44.36,
-        "end": 44.85
+        "start": 24.36,
+        "end": 24.85
       },
       {
         "word": "maybe",
-        "start": 45.33,
-        "end": 45.65
+        "start": 25.33,
+        "end": 25.65
       },
       {
         "word": "we",
-        "start": 45.65,
-        "end": 45.9
+        "start": 25.65,
+        "end": 25.9
       },
       {
         "word": "make",
-        "start": 45.9,
-        "end": 46.13
+        "start": 25.9,
+        "end": 26.13
       },
       {
         "word": "a",
-        "start": 46.13,
-        "end": 46.21
+        "start": 26.13,
+        "end": 26.21
       },
       {
         "word": "deal",
-        "start": 46.21,
-        "end": 46.77
+        "start": 26.21,
+        "end": 26.77
       },
       {
         "word": "maybe",
-        "start": 47.64,
-        "end": 48.11
+        "start": 27.64,
+        "end": 28.11
       },
       {
         "word": "together",
-        "start": 48.18,
-        "end": 48.56
+        "start": 28.18,
+        "end": 28.56
       },
       {
         "word": "we",
-        "start": 48.56,
-        "end": 48.69
+        "start": 28.56,
+        "end": 28.69
       },
       {
         "word": "can",
-        "start": 48.69,
-        "end": 48.84
+        "start": 28.69,
+        "end": 28.84
       },
       {
         "word": "get",
-        "start": 48.84,
-        "end": 49.05
+        "start": 28.84,
+        "end": 29.05
       },
       {
         "word": "somewhere",
-        "start": 49.06,
-        "end": 49.9
+        "start": 29.06,
+        "end": 29.9
       },
       {
         "word": "any",
-        "start": 50.01,
-        "end": 50.25
+        "start": 30.01,
+        "end": 30.25
       },
       {
         "word": "place",
-        "start": 50.25,
-        "end": 50.54
+        "start": 30.25,
+        "end": 30.54
       },
       {
         "word": "is",
-        "start": 50.62,
-        "end": 50.86
+        "start": 30.62,
+        "end": 30.86
       },
       {
         "word": "better",
-        "start": 50.87,
-        "end": 51.4
+        "start": 30.87,
+        "end": 31.4
       },
       {
         "word": "starting",
-        "start": 52.25,
-        "end": 52.6
+        "start": 32.25,
+        "end": 32.6
       },
       {
         "word": "from",
-        "start": 52.6,
-        "end": 52.87
+        "start": 32.6,
+        "end": 32.87
       },
       {
         "word": "zero",
-        "start": 52.87,
-        "end": 53.18
+        "start": 32.87,
+        "end": 33.18
       },
       {
         "word": "got",
-        "start": 53.18,
-        "end": 53.44
+        "start": 33.18,
+        "end": 33.44
       },
       {
         "word": "nothing",
-        "start": 53.45,
-        "end": 53.79
+        "start": 33.45,
+        "end": 33.79
       },
       {
         "word": "to",
-        "start": 53.79,
-        "end": 54.05
+        "start": 33.79,
+        "end": 34.05
       },
       {
         "word": "lose",
-        "start": 54.06,
-        "end": 54.56
+        "start": 34.06,
+        "end": 34.56
       },
       {
         "word": "maybe",
-        "start": 54.58,
-        "end": 54.9
+        "start": 34.58,
+        "end": 34.9
       },
       {
         "word": "we'll",
-        "start": 54.9,
-        "end": 55.15
+        "start": 34.9,
+        "end": 35.15
       },
       {
         "word": "make",
-        "start": 55.18,
-        "end": 55.45
+        "start": 35.18,
+        "end": 35.45
       },
       {
         "word": "something",
-        "start": 55.45,
-        "end": 56.14
+        "start": 35.45,
+        "end": 36.14
       },
       {
         "word": "me",
-        "start": 57.08,
-        "end": 57.21
+        "start": 37.08,
+        "end": 37.21
       },
       {
         "word": "myself",
-        "start": 57.21,
-        "end": 57.75
+        "start": 37.21,
+        "end": 37.75
       },
       {
         "word": "i",
-        "start": 57.78,
-        "end": 57.8
+        "start": 37.78,
+        "end": 37.8
       },
       {
         "word": "got",
-        "start": 57.8,
-        "end": 58.07
+        "start": 37.8,
+        "end": 38.07
       },
       {
         "word": "nothing",
-        "start": 58.07,
-        "end": 58.38
+        "start": 38.07,
+        "end": 38.38
       },
       {
         "word": "to",
-        "start": 58.38,
-        "end": 58.6
+        "start": 38.38,
+        "end": 38.6
       },
       {
         "word": "prove",
-        "start": 58.6,
-        "end": 59.07
+        "start": 38.6,
+        "end": 39.07
       },
       {
         "word": "you",
-        "start": 59.07,
-        "end": 59.15
+        "start": 39.07,
+        "end": 39.15
       },
       {
         "word": "got",
-        "start": 68.95,
-        "end": 69.04
+        "start": 48.95,
+        "end": 49.04
       },
       {
         "word": "a",
-        "start": 69.04,
-        "end": 69.12
+        "start": 49.04,
+        "end": 49.12
       },
       {
         "word": "fast",
-        "start": 69.12,
-        "end": 69.41
+        "start": 49.12,
+        "end": 49.41
       },
       {
         "word": "car",
-        "start": 69.41,
-        "end": 69.44
+        "start": 49.41,
+        "end": 49.44
       },
       {
         "word": "i",
-        "start": 70.95,
-        "end": 71.18
+        "start": 50.95,
+        "end": 51.18
       },
       {
         "word": "got",
-        "start": 71.18,
-        "end": 71.38
+        "start": 51.18,
+        "end": 51.38
       },
       {
         "word": "a",
-        "start": 71.38,
-        "end": 71.45
+        "start": 51.38,
+        "end": 51.45
       },
       {
         "word": "plan",
-        "start": 71.45,
-        "end": 71.93
+        "start": 51.45,
+        "end": 51.93
       },
       {
         "word": "to",
-        "start": 71.94,
-        "end": 72.03
+        "start": 51.94,
+        "end": 52.03
       },
       {
         "word": "get",
-        "start": 72.03,
-        "end": 72.25
+        "start": 52.03,
+        "end": 52.25
       },
       {
         "word": "us",
-        "start": 72.25,
-        "end": 72.39
+        "start": 52.25,
+        "end": 52.39
       },
       {
         "word": "outta",
-        "start": 72.39,
-        "end": 72.62
+        "start": 52.39,
+        "end": 52.62
       },
       {
         "word": "here",
-        "start": 72.62,
-        "end": 72.89
+        "start": 52.62,
+        "end": 52.89
       },
       {
         "word": "i",
-        "start": 72.91,
-        "end": 72.92
+        "start": 52.91,
+        "end": 52.92
       },
       {
         "word": "been",
-        "start": 72.92,
-        "end": 73.18
+        "start": 52.92,
+        "end": 53.18
       },
       {
         "word": "working",
-        "start": 73.74,
-        "end": 74.01
+        "start": 53.74,
+        "end": 54.01
       },
       {
         "word": "at",
-        "start": 74.02,
-        "end": 74.04
+        "start": 54.02,
+        "end": 54.04
       },
       {
         "word": "the",
-        "start": 74.05,
-        "end": 74.32
+        "start": 54.05,
+        "end": 54.32
       },
       {
         "word": "convenience",
-        "start": 74.52,
-        "end": 74.62
+        "start": 54.52,
+        "end": 54.62
       },
       {
         "word": "store",
-        "start": 74.62,
-        "end": 74.66
+        "start": 54.62,
+        "end": 54.66
       },
       {
         "word": "managed",
-        "start": 75.45,
-        "end": 75.86
+        "start": 55.45,
+        "end": 55.86
       },
       {
         "word": "to",
-        "start": 75.86,
-        "end": 75.88
+        "start": 55.86,
+        "end": 55.88
       },
       {
         "word": "save",
-        "start": 75.88,
-        "end": 76.38
+        "start": 55.88,
+        "end": 56.38
       },
       {
         "word": "of",
-        "start": 77.2,
-        "end": 77.23
+        "start": 57.2,
+        "end": 57.23
       },
       {
         "word": "money",
-        "start": 77.23,
-        "end": 77.68
+        "start": 57.23,
+        "end": 57.68
       },
       {
         "word": "won't",
-        "start": 77.75,
-        "end": 78.15
+        "start": 57.75,
+        "end": 58.15
       },
       {
         "word": "have",
-        "start": 78.15,
-        "end": 78.19
+        "start": 58.15,
+        "end": 58.19
       },
       {
         "word": "to",
-        "start": 78.23,
-        "end": 78.32
+        "start": 58.23,
+        "end": 58.32
       },
       {
         "word": "drive",
-        "start": 78.32,
-        "end": 78.65
+        "start": 58.32,
+        "end": 58.65
       },
       {
         "word": "too",
-        "start": 78.66,
-        "end": 78.88
+        "start": 58.66,
+        "end": 58.88
       },
       {
         "word": "far",
-        "start": 78.91,
-        "end": 79.28
+        "start": 58.91,
+        "end": 59.28
       },
       {
         "word": "just",
-        "start": 79.5,
-        "end": 79.54
+        "start": 59.5,
+        "end": 59.54
       },
       {
         "word": "<unk>",
-        "start": 80.12,
-        "end": 80.39
+        "start": 60.12,
+        "end": 60.39
       },
       {
         "word": "the",
-        "start": 80.44,
-        "end": 80.55
+        "start": 60.44,
+        "end": 60.55
       },
       {
         "word": "border",
-        "start": 80.55,
-        "end": 81.06
+        "start": 60.55,
+        "end": 61.06
       },
       {
         "word": "and",
-        "start": 81.06,
-        "end": 81.35
+        "start": 61.06,
+        "end": 61.35
       },
       {
         "word": "into",
-        "start": 81.35,
-        "end": 81.7
+        "start": 61.35,
+        "end": 61.7
       },
       {
         "word": "the",
-        "start": 81.7,
-        "end": 81.83
+        "start": 61.7,
+        "end": 61.83
       },
       {
         "word": "city",
-        "start": 81.83,
-        "end": 82.38
+        "start": 61.83,
+        "end": 62.38
       },
       {
         "word": "you",
-        "start": 82.43,
-        "end": 82.73
+        "start": 62.43,
+        "end": 62.73
       },
       {
         "word": "and",
-        "start": 82.73,
-        "end": 82.95
+        "start": 62.73,
+        "end": 62.95
       },
       {
         "word": "i",
-        "start": 82.95,
-        "end": 83.24
+        "start": 62.95,
+        "end": 63.24
       },
       {
         "word": "can",
-        "start": 83.26,
-        "end": 83.56
+        "start": 63.26,
+        "end": 63.56
       },
       {
         "word": "both",
-        "start": 83.56,
-        "end": 83.86
+        "start": 63.56,
+        "end": 63.86
       },
       {
         "word": "get",
-        "start": 83.9,
-        "end": 84.09
+        "start": 63.9,
+        "end": 64.09
       },
       {
         "word": "jobs",
-        "start": 84.1,
-        "end": 84.65
+        "start": 64.1,
+        "end": 64.65
       },
       {
         "word": "finally",
-        "start": 84.72,
-        "end": 85.14
+        "start": 64.72,
+        "end": 65.14
       },
       {
         "word": "see",
-        "start": 85.14,
-        "end": 85.59
+        "start": 65.14,
+        "end": 65.59
       },
       {
         "word": "what",
-        "start": 85.59,
-        "end": 85.79
+        "start": 65.59,
+        "end": 65.79
       },
       {
         "word": "it",
-        "start": 85.79,
-        "end": 85.86
+        "start": 65.79,
+        "end": 65.86
       },
       {
         "word": "means",
-        "start": 85.86,
-        "end": 86.07
+        "start": 65.86,
+        "end": 66.07
       },
       {
         "word": "to",
-        "start": 86.07,
-        "end": 86.15
+        "start": 66.07,
+        "end": 66.15
       },
       {
         "word": "be",
-        "start": 86.15,
-        "end": 86.4
+        "start": 66.15,
+        "end": 66.4
       },
       {
         "word": "living",
-        "start": 86.4,
-        "end": 86.7
+        "start": 66.4,
+        "end": 67.2
       },
       {
         "word": "see",
-        "start": 86.9,
-        "end": 86.92
+        "start": 75.92999999999999,
+        "end": 76.25
       },
       {
         "word": "my",
-        "start": 96.25,
-        "end": 96.42
+        "start": 76.25,
+        "end": 76.52
       },
       {
         "word": "old",
-        "start": 96.59,
-        "end": 96.73
+        "start": 76.51,
+        "end": 76.78
       },
       {
         "word": "man's",
-        "start": 96.76,
-        "end": 97.16
+        "start": 76.76,
+        "end": 77.16
       },
       {
         "word": "got",
-        "start": 97.19,
-        "end": 97.41
+        "start": 77.19,
+        "end": 77.41
       },
       {
         "word": "a",
-        "start": 97.41,
-        "end": 97.45
+        "start": 77.41,
+        "end": 77.45
       },
       {
         "word": "problem",
-        "start": 97.45,
-        "end": 98.01
+        "start": 77.45,
+        "end": 78.01
       },
       {
         "word": "he",
-        "start": 98.26,
-        "end": 98.28
+        "start": 78.26,
+        "end": 78.28
       },
       {
         "word": "lives",
-        "start": 98.28,
-        "end": 98.56
+        "start": 78.63000000000001,
+        "end": 78.94
       },
       {
         "word": "with",
-        "start": 98.92,
-        "end": 99.1
+        "start": 78.92,
+        "end": 79.1
       },
       {
         "word": "a",
-        "start": 99.1,
-        "end": 99.15
+        "start": 79.1,
+        "end": 79.15
       },
       {
         "word": "bottle",
-        "start": 99.15,
-        "end": 99.47
+        "start": 79.15,
+        "end": 79.47
       },
       {
         "word": "that's",
-        "start": 99.47,
-        "end": 99.63
+        "start": 79.47,
+        "end": 79.63
       },
       {
         "word": "the",
-        "start": 99.63,
-        "end": 99.72
+        "start": 79.63,
+        "end": 79.72
       },
       {
         "word": "way",
-        "start": 99.72,
-        "end": 100.01
+        "start": 79.72,
+        "end": 80.01
       },
       {
         "word": "it",
-        "start": 100.01,
-        "end": 100.24
+        "start": 80.01,
+        "end": 80.24
       },
       {
         "word": "is",
-        "start": 100.24,
-        "end": 100.51
+        "start": 80.24,
+        "end": 80.51
       },
       {
         "word": "he",
-        "start": 100.51,
-        "end": 100.57
+        "start": 80.51,
+        "end": 80.57
       },
       {
         "word": "says",
-        "start": 100.57,
-        "end": 100.81
+        "start": 80.57,
+        "end": 80.81
       },
       {
         "word": "his",
-        "start": 100.81,
-        "end": 100.88
+        "start": 80.81,
+        "end": 80.88
       },
       {
         "word": "body's",
-        "start": 100.88,
-        "end": 101.19
+        "start": 80.88,
+        "end": 81.19
       },
       {
         "word": "too",
-        "start": 101.19,
-        "end": 101.4
+        "start": 81.19,
+        "end": 81.4
       },
       {
         "word": "old",
-        "start": 101.4,
-        "end": 101.88
+        "start": 81.4,
+        "end": 81.88
       },
       {
         "word": "for",
-        "start": 101.94,
-        "end": 101.96
+        "start": 81.94,
+        "end": 81.96
       },
       {
         "word": "working",
-        "start": 101.97,
-        "end": 102.54
+        "start": 81.97,
+        "end": 82.54
       },
       {
         "word": "his",
-        "start": 102.9,
-        "end": 102.93
+        "start": 82.9,
+        "end": 82.93
       },
       {
         "word": "body's",
-        "start": 103.15,
-        "end": 103.46
+        "start": 83.15,
+        "end": 83.46
       },
       {
         "word": "too",
-        "start": 103.46,
-        "end": 103.66
+        "start": 83.46,
+        "end": 83.66
       },
       {
         "word": "young",
-        "start": 103.66,
-        "end": 103.98
+        "start": 83.66,
+        "end": 83.98
       },
       {
         "word": "to",
-        "start": 103.98,
-        "end": 104.0
+        "start": 83.98,
+        "end": 84.0
       },
       {
         "word": "look",
-        "start": 104.23,
-        "end": 104.5
+        "start": 84.23,
+        "end": 84.5
       },
       {
         "word": "like",
-        "start": 104.53,
-        "end": 104.9
+        "start": 84.53,
+        "end": 84.9
       },
       {
         "word": "his",
-        "start": 104.9,
-        "end": 105.25
+        "start": 84.9,
+        "end": 85.25
       },
       {
         "word": "when",
-        "start": 105.28,
-        "end": 105.4
+        "start": 85.28,
+        "end": 85.4
       },
       {
         "word": "mama",
-        "start": 105.41,
-        "end": 105.73
+        "start": 85.41,
+        "end": 85.73
       },
       {
         "word": "went",
-        "start": 105.73,
-        "end": 105.91
+        "start": 85.73,
+        "end": 85.91
       },
       {
         "word": "off",
-        "start": 105.91,
-        "end": 106.31
+        "start": 85.91,
+        "end": 86.31
       },
       {
         "word": "and",
-        "start": 106.31,
-        "end": 106.55
+        "start": 86.31,
+        "end": 86.55
       },
       {
         "word": "left",
-        "start": 106.55,
-        "end": 106.86
+        "start": 86.55,
+        "end": 86.86
       },
       {
         "word": "him",
-        "start": 106.86,
-        "end": 107.22
+        "start": 86.86,
+        "end": 87.22
       },
       {
         "word": "she",
-        "start": 107.66,
-        "end": 107.68
+        "start": 87.66,
+        "end": 87.68
       },
       {
         "word": "wanted",
-        "start": 107.73,
-        "end": 108.06
+        "start": 87.73,
+        "end": 88.06
       },
       {
         "word": "more",
-        "start": 108.06,
-        "end": 108.14
+        "start": 88.06,
+        "end": 88.14
       },
       {
         "word": "from",
-        "start": 108.28,
-        "end": 108.34
+        "start": 88.28,
+        "end": 88.34
       },
       {
         "word": "life",
-        "start": 108.34,
-        "end": 108.6
+        "start": 88.34,
+        "end": 88.6
       },
       {
         "word": "than",
-        "start": 108.6,
-        "end": 108.85
+        "start": 88.6,
+        "end": 88.85
       },
       {
         "word": "i",
-        "start": 109.7,
-        "end": 109.71
+        "start": 89.7,
+        "end": 89.71
       },
       {
         "word": "said",
-        "start": 109.71,
-        "end": 109.93
+        "start": 89.71,
+        "end": 89.93
       },
       {
         "word": "somebody's",
-        "start": 109.97,
-        "end": 110.43
+        "start": 89.97,
+        "end": 90.43
       },
       {
         "word": "gotta",
-        "start": 110.43,
-        "end": 110.8
+        "start": 90.43,
+        "end": 90.8
       },
       {
         "word": "take",
-        "start": 110.8,
-        "end": 111.1
+        "start": 90.8,
+        "end": 91.1
       },
       {
         "word": "care",
-        "start": 111.11,
-        "end": 111.47
+        "start": 91.11,
+        "end": 91.47
       },
       {
         "word": "of",
-        "start": 111.47,
-        "end": 111.5
+        "start": 91.47,
+        "end": 91.5
       },
       {
         "word": "him",
-        "start": 111.64,
-        "end": 112.17
+        "start": 91.64,
+        "end": 92.17
       },
       {
         "word": "so",
-        "start": 112.2,
-        "end": 112.3
+        "start": 92.2,
+        "end": 92.3
       },
       {
         "word": "i",
-        "start": 112.47,
-        "end": 112.48
+        "start": 92.47,
+        "end": 92.48
       },
       {
         "word": "quit",
-        "start": 112.48,
-        "end": 112.7
+        "start": 92.48,
+        "end": 92.7
       },
       {
         "word": "school",
-        "start": 112.72,
-        "end": 113.03
+        "start": 92.72,
+        "end": 93.03
       },
       {
         "word": "and",
-        "start": 113.03,
-        "end": 113.06
+        "start": 93.03,
+        "end": 93.06
       },
       {
         "word": "that's",
-        "start": 113.08,
-        "end": 113.37
+        "start": 93.08,
+        "end": 93.37
       },
       {
         "word": "what",
-        "start": 113.38,
-        "end": 113.59
+        "start": 93.38,
+        "end": 93.59
       },
       {
         "word": "i",
-        "start": 113.59,
-        "end": 113.89
+        "start": 93.59,
+        "end": 93.89
       },
       {
         "word": "did",
-        "start": 114.03,
-        "end": 114.34
+        "start": 94.03,
+        "end": 94.6
       },
       {
         "word": "you",
-        "start": 123.9,
-        "end": 124.2
+        "start": 103.9,
+        "end": 104.2
       },
       {
         "word": "got",
-        "start": 124.2,
-        "end": 124.33
+        "start": 104.2,
+        "end": 104.46999999999997
       },
       {
         "word": "a",
-        "start": 124.33,
-        "end": 124.41
+        "start": 104.45,
+        "end": 104.65999999999998
       },
       {
         "word": "fast",
-        "start": 124.42,
-        "end": 124.73
+        "start": 104.66000000000001,
+        "end": 105.08
       },
       {
         "word": "car",
-        "start": 124.73,
-        "end": 124.76
+        "start": 105.07000000000001,
+        "end": 105.64
       },
       {
         "word": "is",
-        "start": 126.05,
-        "end": 126.07
+        "start": 106.05,
+        "end": 106.07
       },
       {
         "word": "it",
-        "start": 126.07,
-        "end": 126.17
+        "start": 106.07,
+        "end": 106.17
       },
       {
         "word": "fast",
-        "start": 126.2,
-        "end": 126.57
+        "start": 106.2,
+        "end": 106.57
       },
       {
         "word": "enough",
-        "start": 126.57,
-        "end": 126.95
+        "start": 106.57,
+        "end": 106.95
       },
       {
         "word": "so",
-        "start": 126.97,
-        "end": 127.02
+        "start": 106.97,
+        "end": 107.02
       },
       {
         "word": "we",
-        "start": 127.03,
-        "end": 127.22
+        "start": 107.03,
+        "end": 107.22
       },
       {
         "word": "can",
-        "start": 127.22,
-        "end": 127.35
+        "start": 107.22,
+        "end": 107.35
       },
       {
         "word": "fly",
-        "start": 127.36,
-        "end": 127.69
+        "start": 107.36,
+        "end": 107.69
       },
       {
         "word": "away",
-        "start": 127.69,
-        "end": 128.05
+        "start": 107.69,
+        "end": 108.5
       },
       {
         "word": "gotta",
-        "start": 128.77,
-        "end": 129.02
+        "start": 108.77,
+        "end": 109.02
       },
       {
         "word": "make",
-        "start": 129.05,
-        "end": 129.4
+        "start": 109.05,
+        "end": 109.4
       },
       {
         "word": "a",
-        "start": 129.4,
-        "end": 129.45
+        "start": 109.4,
+        "end": 109.45
       },
       {
         "word": "decision",
-        "start": 129.45,
-        "end": 130.23
+        "start": 109.45,
+        "end": 110.23
       },
       {
         "word": "leave",
-        "start": 130.76,
-        "end": 131.09
+        "start": 110.76,
+        "end": 111.09
       },
       {
         "word": "tonight",
-        "start": 131.12,
-        "end": 131.6
+        "start": 111.12,
+        "end": 111.6
       },
       {
         "word": "or",
-        "start": 131.6,
-        "end": 131.61
+        "start": 111.6,
+        "end": 111.61
       },
       {
         "word": "live",
-        "start": 131.61,
-        "end": 131.86
+        "start": 111.61,
+        "end": 111.86
       },
       {
         "word": "and",
-        "start": 131.86,
-        "end": 131.96
+        "start": 111.86,
+        "end": 111.96
       },
       {
         "word": "die",
-        "start": 131.96,
-        "end": 132.24
+        "start": 111.96,
+        "end": 112.24
       },
       {
         "word": "this",
-        "start": 132.27,
-        "end": 132.45
+        "start": 112.27,
+        "end": 112.45
       },
       {
         "word": "way",
-        "start": 132.49,
-        "end": 133.02
+        "start": 112.49,
+        "end": 113.02
       },
       {
         "word": "so",
-        "start": 140.91,
-        "end": 141.02
+        "start": 120.91,
+        "end": 121.02
       },
       {
         "word": "i",
-        "start": 141.02,
-        "end": 141.07
+        "start": 121.02,
+        "end": 121.07
       },
       {
         "word": "remember",
-        "start": 141.07,
-        "end": 141.53
+        "start": 121.07,
+        "end": 121.53
       },
       {
         "word": "when",
-        "start": 141.68,
-        "end": 141.85
+        "start": 121.68,
+        "end": 121.85
       },
       {
         "word": "we",
-        "start": 141.86,
-        "end": 141.93
+        "start": 121.86,
+        "end": 121.93
       },
       {
         "word": "were",
-        "start": 141.93,
-        "end": 142.27
+        "start": 121.93,
+        "end": 122.27
       },
       {
         "word": "driving",
-        "start": 142.31,
-        "end": 142.83
+        "start": 122.31,
+        "end": 122.83
       },
       {
         "word": "driving",
-        "start": 143.21,
-        "end": 143.6
+        "start": 123.21,
+        "end": 123.6
       },
       {
         "word": "in",
-        "start": 143.6,
-        "end": 143.69
+        "start": 123.6,
+        "end": 123.69
       },
       {
         "word": "your",
-        "start": 143.69,
-        "end": 143.92
+        "start": 123.69,
+        "end": 123.92
       },
       {
         "word": "car",
-        "start": 143.92,
-        "end": 144.26
+        "start": 123.92,
+        "end": 124.26
       },
       {
         "word": "speed",
-        "start": 144.58,
-        "end": 144.99
+        "start": 124.58,
+        "end": 124.99
       },
       {
         "word": "so",
-        "start": 145.44,
-        "end": 145.61
+        "start": 125.44,
+        "end": 125.61
       },
       {
         "word": "fast",
-        "start": 146.11,
-        "end": 146.15
+        "start": 126.11,
+        "end": 126.15
       },
       {
         "word": "i",
-        "start": 146.15,
-        "end": 146.16
+        "start": 126.15,
+        "end": 126.16
       },
       {
         "word": "was",
-        "start": 146.16,
-        "end": 146.28
+        "start": 126.16,
+        "end": 126.28
       },
       {
         "word": "drunk",
-        "start": 146.3,
-        "end": 146.63
+        "start": 126.3,
+        "end": 126.63
       },
       {
         "word": "city",
-        "start": 146.63,
-        "end": 146.82
+        "start": 127.06871634945131,
+        "end": 127.41276941872428
       },
       {
         "word": "lights",
-        "start": 147.7,
-        "end": 147.74
+        "start": 127.4421285579561,
+        "end": 127.71655714163236
       },
       {
         "word": "lay",
-        "start": 147.78,
-        "end": 147.98
+        "start": 127.78,
+        "end": 127.98
       },
       {
         "word": "out",
-        "start": 148.15,
-        "end": 148.32
+        "start": 128.15,
+        "end": 128.32
       },
       {
         "word": "and",
-        "start": 148.99,
-        "end": 149.1
+        "start": 128.99,
+        "end": 129.1
       },
       {
         "word": "your",
-        "start": 149.1,
-        "end": 149.24
+        "start": 129.1,
+        "end": 129.24
       },
       {
         "word": "arm",
-        "start": 149.24,
-        "end": 149.42
+        "start": 129.24,
+        "end": 129.42
       },
       {
         "word": "felt",
-        "start": 149.66,
-        "end": 149.7
+        "start": 129.66,
+        "end": 129.7
       },
       {
         "word": "nice",
-        "start": 149.72,
-        "end": 150.08
+        "start": 129.72,
+        "end": 130.08
       },
       {
         "word": "wrapped",
-        "start": 150.08,
-        "end": 150.33
+        "start": 130.08,
+        "end": 130.33
       },
       {
         "word": "'round",
-        "start": 150.33,
-        "end": 150.61
+        "start": 130.33,
+        "end": 130.61
       },
       {
         "word": "my",
-        "start": 150.63,
-        "end": 150.86
+        "start": 130.63,
+        "end": 130.86
       },
       {
         "word": "shoulder",
-        "start": 150.86,
-        "end": 151.28
+        "start": 130.86,
+        "end": 131.28
       },
       {
         "word": "and",
-        "start": 151.28,
-        "end": 151.42
+        "start": 131.28,
+        "end": 131.42
       },
       {
         "word": "i",
-        "start": 151.5,
-        "end": 152.04
+        "start": 131.5,
+        "end": 132.04
       },
       {
         "word": "i",
-        "start": 152.56,
-        "end": 152.87
+        "start": 132.56,
+        "end": 132.87
       },
       {
         "word": "had",
-        "start": 153.49,
-        "end": 153.68
+        "start": 133.49,
+        "end": 133.68
       },
       {
         "word": "a",
-        "start": 153.68,
-        "end": 153.74
+        "start": 133.68,
+        "end": 133.74
       },
       {
         "word": "feeling",
-        "start": 153.74,
-        "end": 154.35
+        "start": 133.74,
+        "end": 134.35
       },
       {
         "word": "that",
-        "start": 154.35,
-        "end": 154.5
+        "start": 134.35,
+        "end": 134.5
       },
       {
         "word": "i",
-        "start": 154.72,
-        "end": 155.08
+        "start": 134.72,
+        "end": 135.08
       },
       {
         "word": "belonged",
-        "start": 155.1,
-        "end": 155.56
+        "start": 135.1,
+        "end": 135.56
       },
       {
         "word": "i",
-        "start": 156.06,
-        "end": 156.65
+        "start": 136.06,
+        "end": 136.65
       },
       {
         "word": "had",
-        "start": 156.7,
-        "end": 156.96
+        "start": 136.7,
+        "end": 136.96
       },
       {
         "word": "a",
-        "start": 156.96,
-        "end": 157.25
+        "start": 136.96,
+        "end": 137.25
       },
       {
         "word": "feeling",
-        "start": 157.76,
-        "end": 158.07
+        "start": 137.76,
+        "end": 138.07
       },
       {
         "word": "i",
-        "start": 158.07,
-        "end": 158.08
+        "start": 138.07,
+        "end": 138.08
       },
       {
         "word": "could",
-        "start": 159.38,
-        "end": 159.43
+        "start": 139.38,
+        "end": 139.43
       },
       {
         "word": "be",
-        "start": 159.46,
-        "end": 159.7
+        "start": 139.46,
+        "end": 139.7
       },
       {
         "word": "someone",
-        "start": 159.73,
-        "end": 160.49
+        "start": 139.73,
+        "end": 140.49
       },
       {
         "word": "be",
-        "start": 160.5,
-        "end": 160.79
+        "start": 140.5,
+        "end": 140.79
       },
       {
         "word": "someone",
-        "start": 160.82,
-        "end": 161.36
+        "start": 140.82,
+        "end": 141.36
       },
       {
         "word": "be",
-        "start": 161.69,
-        "end": 161.88
+        "start": 141.69,
+        "end": 141.88
       },
       {
         "word": "someone",
-        "start": 161.88,
-        "end": 162.67
+        "start": 141.88,
+        "end": 142.67
       },
       {
         "word": "you",
-        "start": 172.32,
-        "end": 172.6
+        "start": 152.32,
+        "end": 152.6
       },
       {
         "word": "got",
-        "start": 172.6,
-        "end": 172.72
+        "start": 152.6,
+        "end": 152.72
       },
       {
         "word": "a",
-        "start": 172.72,
-        "end": 172.8
+        "start": 152.72,
+        "end": 152.8
       },
       {
         "word": "fast",
-        "start": 172.8,
-        "end": 173.22
+        "start": 152.8,
+        "end": 153.22
       },
       {
         "word": "car",
-        "start": 173.42,
-        "end": 173.62
+        "start": 153.42,
+        "end": 153.91000000000003
       },
       {
         "word": "we",
-        "start": 174.57,
-        "end": 174.73
+        "start": 154.57,
+        "end": 154.73
       },
       {
         "word": "go",
-        "start": 174.73,
-        "end": 174.97
+        "start": 154.73,
+        "end": 154.97
       },
       {
         "word": "cruising",
-        "start": 174.97,
-        "end": 175.49
+        "start": 154.97,
+        "end": 155.49
       },
       {
         "word": "entertain",
-        "start": 175.49,
-        "end": 175.95
+        "start": 155.49,
+        "end": 155.95
       },
       {
         "word": "ourselves",
-        "start": 175.95,
-        "end": 176.51
+        "start": 155.95,
+        "end": 156.51
       },
       {
         "word": "you",
-        "start": 177.09,
-        "end": 177.11
+        "start": 156.8609297839506,
+        "end": 156.91307998971192
       },
       {
         "word": "still",
-        "start": 177.11,
-        "end": 177.24
+        "start": 156.90906121399178,
+        "end": 157.16364326131685
       },
       {
         "word": "ain't",
-        "start": 177.24,
-        "end": 177.44
+        "start": 157.15962448559674,
+        "end": 157.3355118312757
       },
       {
         "word": "got",
-        "start": 177.44,
-        "end": 177.64
+        "start": 157.3274742798354,
+        "end": 157.64
       },
       {
         "word": "a",
-        "start": 177.64,
-        "end": 177.69
+        "start": 157.64,
+        "end": 157.69
       },
       {
         "word": "job",
-        "start": 177.69,
-        "end": 178.23
+        "start": 157.6705163323045,
+        "end": 158.48000000000002
       },
       {
         "word": "and",
-        "start": 178.85,
-        "end": 178.88
+        "start": 158.92990612139917,
+        "end": 159.1608449074074
       },
       {
         "word": "work",
-        "start": 179.46,
-        "end": 179.53
+        "start": 159.2228922325103,
+        "end": 159.53
       },
       {
         "word": "in",
-        "start": 179.53,
-        "end": 179.67
+        "start": 159.53,
+        "end": 159.67
       },
       {
         "word": "a",
-        "start": 179.67,
-        "end": 179.74
+        "start": 159.67,
+        "end": 159.74
       },
       {
         "word": "market",
-        "start": 179.74,
-        "end": 180.09
+        "start": 159.74,
+        "end": 160.09
       },
       {
         "word": "as",
-        "start": 180.09,
-        "end": 180.24
+        "start": 160.09,
+        "end": 160.24
       },
       {
         "word": "a",
-        "start": 180.24,
-        "end": 180.3
+        "start": 160.24,
+        "end": 160.3
       },
       {
         "word": "checkout",
-        "start": 180.3,
-        "end": 180.74
+        "start": 160.3,
+        "end": 160.74
       },
       {
         "word": "girl",
-        "start": 180.74,
-        "end": 181.18
+        "start": 160.75,
+        "end": 161.32
       },
       {
         "word": "i",
-        "start": 181.54,
-        "end": 181.62
+        "start": 161.54,
+        "end": 161.62
       },
       {
         "word": "know",
-        "start": 181.62,
-        "end": 181.84
+        "start": 161.62,
+        "end": 161.84
       },
       {
         "word": "things",
-        "start": 181.84,
-        "end": 182.25
+        "start": 161.84,
+        "end": 162.25
       },
       {
         "word": "will",
-        "start": 182.25,
-        "end": 182.3
+        "start": 162.25,
+        "end": 162.45673225308644
       },
       {
         "word": "get",
-        "start": 182.52,
-        "end": 182.62
+        "start": 162.45168081275722,
+        "end": 162.62
       },
       {
         "word": "better",
-        "start": 182.62,
-        "end": 183.51
+        "start": 162.62,
+        "end": 163.14831018518518
       },
       {
         "word": "you'll",
-        "start": 183.76,
-        "end": 184.07
+        "start": 163.76,
+        "end": 164.07
       },
       {
         "word": "find",
-        "start": 184.07,
-        "end": 184.36
+        "start": 164.07,
+        "end": 164.36
       },
       {
         "word": "work",
-        "start": 184.36,
-        "end": 184.7
+        "start": 164.36,
+        "end": 164.7
       },
       {
         "word": "and",
-        "start": 184.7,
-        "end": 184.9
+        "start": 164.7,
+        "end": 164.9
       },
       {
         "word": "i'll",
-        "start": 184.9,
-        "end": 185.22
+        "start": 164.9,
+        "end": 165.22
       },
       {
         "word": "get",
-        "start": 185.22,
-        "end": 185.38
+        "start": 165.22,
+        "end": 165.38
       },
       {
         "word": "promoted",
-        "start": 185.38,
-        "end": 186.03
+        "start": 165.38,
+        "end": 166.03
       },
       {
         "word": "we'll",
-        "start": 186.04,
-        "end": 186.39
+        "start": 166.04,
+        "end": 166.39
       },
       {
         "word": "move",
-        "start": 186.39,
-        "end": 186.59
+        "start": 166.39,
+        "end": 166.59
       },
       {
         "word": "out",
-        "start": 186.59,
-        "end": 187.0
+        "start": 166.59,
+        "end": 167.0
       },
       {
         "word": "of",
-        "start": 187.0,
-        "end": 187.09
+        "start": 167.0,
+        "end": 167.09
       },
       {
         "word": "the",
-        "start": 187.09,
-        "end": 187.19
+        "start": 167.09,
+        "end": 167.19
       },
       {
         "word": "shelter",
-        "start": 187.2,
-        "end": 187.73
+        "start": 167.2,
+        "end": 167.73
       },
       {
         "word": "buy",
-        "start": 188.28,
-        "end": 188.64
+        "start": 168.28,
+        "end": 168.64
       },
       {
         "word": "a",
-        "start": 188.67,
-        "end": 188.68
+        "start": 168.67,
+        "end": 168.68
       },
       {
         "word": "bigger",
-        "start": 188.68,
-        "end": 188.93
+        "start": 168.68,
+        "end": 168.93
       },
       {
         "word": "house",
-        "start": 188.93,
-        "end": 189.28
+        "start": 168.93,
+        "end": 169.28
       },
       {
         "word": "and",
-        "start": 189.28,
-        "end": 189.48
+        "start": 169.28,
+        "end": 169.48
       },
       {
         "word": "live",
-        "start": 189.48,
-        "end": 189.83
+        "start": 169.48,
+        "end": 169.83
       },
       {
         "word": "in",
-        "start": 189.83,
-        "end": 189.93
+        "start": 169.83,
+        "end": 169.93
       },
       {
         "word": "the",
-        "start": 189.93,
-        "end": 190.03
+        "start": 169.93,
+        "end": 170.03
       },
       {
         "word": "suburbs",
-        "start": 190.03,
-        "end": 190.62
+        "start": 170.03,
+        "end": 170.62
       },
       {
         "word": "so",
-        "start": 190.62,
-        "end": 190.64
+        "start": 170.62,
+        "end": 170.64
       },
       {
         "word": "i",
-        "start": 198.64,
-        "end": 198.7
+        "start": 178.54,
+        "end": 178.7
       },
       {
         "word": "remember",
-        "start": 198.7,
-        "end": 198.91
+        "start": 178.70999999999998,
+        "end": 179.33999999999997
       },
       {
         "word": "when",
-        "start": 198.91,
-        "end": 199.09
+        "start": 179.46,
+        "end": 179.89
       },
       {
         "word": "we",
-        "start": 199.1,
-        "end": 199.12
+        "start": 179.91,
+        "end": 180.19
       },
       {
         "word": "were",
-        "start": 199.12,
-        "end": 199.14
+        "start": 180.20000000000002,
+        "end": 180.59
       },
       {
         "word": "in",
-        "start": 199.31,
-        "end": 199.45
+        "start": 181.0,
+        "end": 181.21
       },
       {
         "word": "your",
-        "start": 201.29,
-        "end": 201.5
+        "start": 181.29,
+        "end": 181.5
       },
       {
         "word": "car",
-        "start": 201.5,
-        "end": 201.66
+        "start": 181.5,
+        "end": 181.96999999999997
       },
       {
         "word": "speed",
-        "start": 202.19,
-        "end": 202.57
+        "start": 182.19,
+        "end": 182.57
       },
       {
         "word": "so",
-        "start": 203.04,
-        "end": 203.19
+        "start": 183.04,
+        "end": 183.19
       },
       {
         "word": "fast",
-        "start": 203.61,
-        "end": 203.65
+        "start": 183.61,
+        "end": 183.65
       },
       {
         "word": "i",
-        "start": 203.65,
-        "end": 203.74
+        "start": 183.65,
+        "end": 183.74
       },
       {
         "word": "was",
-        "start": 203.74,
-        "end": 203.85
+        "start": 183.74,
+        "end": 183.85
       },
       {
         "word": "drunk",
-        "start": 203.88,
-        "end": 204.17
+        "start": 183.88,
+        "end": 184.17
       },
       {
         "word": "city",
-        "start": 204.71,
-        "end": 205.02
+        "start": 184.71,
+        "end": 185.02
       },
       {
         "word": "lights",
-        "start": 205.02,
-        "end": 205.22
+        "start": 185.02,
+        "end": 185.22
       },
       {
         "word": "lay",
-        "start": 205.29,
-        "end": 205.48
+        "start": 185.29,
+        "end": 185.48
       },
       {
         "word": "out",
-        "start": 205.65,
-        "end": 205.83
+        "start": 185.65,
+        "end": 185.83
       },
       {
         "word": "and",
-        "start": 206.5,
-        "end": 206.62
+        "start": 186.5,
+        "end": 186.62
       },
       {
         "word": "your",
-        "start": 206.62,
-        "end": 206.76
+        "start": 186.62,
+        "end": 186.76
       },
       {
         "word": "arm",
-        "start": 206.76,
-        "end": 206.99
+        "start": 186.76,
+        "end": 186.99
       },
       {
         "word": "felt",
-        "start": 207.01,
-        "end": 207.21
+        "start": 187.01,
+        "end": 187.21
       },
       {
         "word": "nice",
-        "start": 207.26,
-        "end": 207.61
+        "start": 187.26,
+        "end": 187.61
       },
       {
         "word": "wrapped",
-        "start": 207.61,
-        "end": 207.87
+        "start": 187.61,
+        "end": 187.87
       },
       {
         "word": "'round",
-        "start": 207.87,
-        "end": 208.18
+        "start": 187.87,
+        "end": 188.18
       },
       {
         "word": "my",
-        "start": 208.18,
-        "end": 208.39
+        "start": 188.18,
+        "end": 188.39
       },
       {
         "word": "shoulder",
-        "start": 208.39,
-        "end": 208.81
+        "start": 188.39,
+        "end": 188.81
       },
       {
         "word": "and",
-        "start": 208.81,
-        "end": 208.94
+        "start": 188.81,
+        "end": 188.94
       },
       {
         "word": "i",
-        "start": 209.0,
-        "end": 209.56
+        "start": 189.0,
+        "end": 189.56
       },
       {
         "word": "i",
-        "start": 209.91,
-        "end": 210.05
+        "start": 189.91,
+        "end": 190.05
       },
       {
         "word": "had",
-        "start": 211.03,
-        "end": 211.22
+        "start": 191.03,
+        "end": 191.22
       },
       {
         "word": "a",
-        "start": 211.22,
-        "end": 211.28
+        "start": 191.22,
+        "end": 191.28
       },
       {
         "word": "feeling",
-        "start": 211.53,
-        "end": 211.87
+        "start": 191.53,
+        "end": 191.87
       },
       {
         "word": "that",
-        "start": 211.87,
-        "end": 212.25
+        "start": 191.87,
+        "end": 192.25
       },
       {
         "word": "i",
-        "start": 212.25,
-        "end": 212.47
+        "start": 192.25,
+        "end": 192.47
       },
       {
         "word": "belonged",
-        "start": 212.61,
-        "end": 213.06
+        "start": 192.61,
+        "end": 193.47
       },
       {
         "word": "i",
-        "start": 213.61,
-        "end": 214.16
+        "start": 193.61,
+        "end": 194.16
       },
       {
         "word": "i",
-        "start": 214.67,
-        "end": 214.97
+        "start": 194.67,
+        "end": 194.97
       },
       {
         "word": "had",
-        "start": 215.56,
-        "end": 215.74
+        "start": 195.56,
+        "end": 195.74
       },
       {
         "word": "a",
-        "start": 215.74,
-        "end": 215.81
+        "start": 195.74,
+        "end": 195.81
       },
       {
         "word": "feeling",
-        "start": 216.06,
-        "end": 216.38
+        "start": 196.06,
+        "end": 196.38
       },
       {
         "word": "i",
-        "start": 216.38,
-        "end": 216.82
+        "start": 196.38,
+        "end": 196.82
       },
       {
         "word": "could",
-        "start": 216.85,
-        "end": 216.93
+        "start": 196.85,
+        "end": 196.93
       },
       {
         "word": "be",
-        "start": 216.98,
-        "end": 217.19
+        "start": 196.98,
+        "end": 197.19
       },
       {
         "word": "someone",
-        "start": 217.23,
-        "end": 218.01
+        "start": 197.23,
+        "end": 198.01
       },
       {
         "word": "be",
-        "start": 218.04,
-        "end": 218.28
+        "start": 198.04,
+        "end": 198.28
       },
       {
         "word": "someone",
-        "start": 224.68,
-        "end": 224.86
+        "start": 198.3,
+        "end": 199.48000000000002
       },
       {
         "word": "you",
-        "start": 229.73,
-        "end": 230.01
+        "start": 209.73,
+        "end": 210.01
       },
       {
         "word": "got",
-        "start": 230.01,
-        "end": 230.13
+        "start": 210.01,
+        "end": 210.13
       },
       {
         "word": "a",
-        "start": 230.13,
-        "end": 230.2
+        "start": 210.13,
+        "end": 210.2
       },
       {
         "word": "fast",
-        "start": 230.2,
-        "end": 230.52
+        "start": 210.2,
+        "end": 210.52
       },
       {
         "word": "car",
-        "start": 230.52,
-        "end": 230.55
+        "start": 210.52,
+        "end": 210.55
       },
       {
         "word": "i",
-        "start": 232.03,
-        "end": 232.16
+        "start": 212.03,
+        "end": 212.16
       },
       {
         "word": "got",
-        "start": 232.16,
-        "end": 232.34
+        "start": 212.16,
+        "end": 212.34
       },
       {
         "word": "a",
-        "start": 232.34,
-        "end": 232.39
+        "start": 212.34,
+        "end": 212.39
       },
       {
         "word": "job",
-        "start": 232.39,
-        "end": 232.81
+        "start": 212.39,
+        "end": 212.81
       },
       {
         "word": "that",
-        "start": 232.84,
-        "end": 232.93
+        "start": 212.84,
+        "end": 212.93
       },
       {
         "word": "pays",
-        "start": 232.93,
-        "end": 233.18
+        "start": 212.93,
+        "end": 213.18
       },
       {
         "word": "all",
-        "start": 233.18,
-        "end": 233.34
+        "start": 213.18,
+        "end": 213.34
       },
       {
         "word": "our",
-        "start": 233.34,
-        "end": 233.54
+        "start": 213.34,
+        "end": 213.54
       },
       {
         "word": "bills",
-        "start": 233.54,
-        "end": 233.87
+        "start": 213.54,
+        "end": 213.87
       },
       {
         "word": "you",
-        "start": 233.87,
-        "end": 233.89
+        "start": 213.87,
+        "end": 213.89
       },
       {
         "word": "<unk>",
-        "start": 234.24,
-        "end": 235.33
+        "start": 214.24,
+        "end": 215.33
       },
       {
         "word": "late",
-        "start": 235.33,
-        "end": 235.6
+        "start": 215.33,
+        "end": 215.6
       },
       {
         "word": "at",
-        "start": 235.6,
-        "end": 235.72
+        "start": 215.6,
+        "end": 215.72
       },
       {
         "word": "the",
-        "start": 235.84,
-        "end": 235.95
+        "start": 215.84,
+        "end": 215.95
       },
       {
         "word": "bar",
-        "start": 235.96,
-        "end": 236.26
+        "start": 215.96,
+        "end": 216.26
       },
       {
         "word": "see",
-        "start": 236.26,
-        "end": 236.28
+        "start": 216.26,
+        "end": 216.28
       },
       {
         "word": "more",
-        "start": 236.43,
-        "end": 236.76
+        "start": 216.43,
+        "end": 216.76
       },
       {
         "word": "of",
-        "start": 236.76,
-        "end": 236.78
+        "start": 216.76,
+        "end": 216.78
       },
       {
         "word": "your",
-        "start": 236.79,
-        "end": 237.06
+        "start": 216.79,
+        "end": 217.06
       },
       {
         "word": "friends",
-        "start": 237.09,
-        "end": 237.31
+        "start": 217.09,
+        "end": 217.31
       },
       {
         "word": "than",
-        "start": 237.31,
-        "end": 237.41
+        "start": 217.31,
+        "end": 217.41
       },
       {
         "word": "you",
-        "start": 237.42,
-        "end": 237.64
+        "start": 217.42,
+        "end": 217.64
       },
       {
         "word": "do",
-        "start": 237.68,
-        "end": 237.87
+        "start": 217.68,
+        "end": 217.87
       },
       {
         "word": "of",
-        "start": 237.88,
-        "end": 237.9
+        "start": 217.88,
+        "end": 217.9
       },
       {
         "word": "your",
-        "start": 237.91,
-        "end": 238.17
+        "start": 217.91,
+        "end": 218.17
       },
       {
         "word": "kids",
-        "start": 238.17,
-        "end": 238.64
+        "start": 218.17,
+        "end": 218.64
       },
       {
         "word": "i'd",
-        "start": 238.92,
-        "end": 239.06
+        "start": 218.92,
+        "end": 219.06
       },
       {
         "word": "always",
-        "start": 239.06,
-        "end": 239.27
+        "start": 219.06,
+        "end": 219.27
       },
       {
         "word": "hoped",
-        "start": 239.27,
-        "end": 239.59
+        "start": 219.27,
+        "end": 219.59
       },
       {
         "word": "for",
-        "start": 239.62,
-        "end": 239.93
+        "start": 219.62,
+        "end": 219.93
       },
       {
         "word": "better",
-        "start": 239.93,
-        "end": 240.43
+        "start": 219.93,
+        "end": 220.43
       },
       {
         "word": "thought",
-        "start": 240.8,
-        "end": 241.04
+        "start": 220.8,
+        "end": 221.04
       },
       {
         "word": "maybe",
-        "start": 241.05,
-        "end": 241.56
+        "start": 221.05,
+        "end": 221.56
       },
       {
         "word": "together",
-        "start": 241.56,
-        "end": 242.19
+        "start": 221.56,
+        "end": 222.19
       },
       {
         "word": "you",
-        "start": 242.2,
-        "end": 242.42
+        "start": 222.2,
+        "end": 222.42
       },
       {
         "word": "and",
-        "start": 242.42,
-        "end": 242.52
+        "start": 222.42,
+        "end": 222.52
       },
       {
         "word": "<unk>",
-        "start": 242.52,
-        "end": 242.75
+        "start": 222.52,
+        "end": 222.75
       },
       {
         "word": "find",
-        "start": 242.81,
-        "end": 243.17
+        "start": 222.81,
+        "end": 223.17
       },
       {
         "word": "it",
-        "start": 243.17,
-        "end": 243.29
+        "start": 223.17,
+        "end": 223.29
       },
       {
         "word": "i",
-        "start": 243.29,
-        "end": 243.3
+        "start": 223.29,
+        "end": 223.3
       },
       {
         "word": "got",
-        "start": 243.41,
-        "end": 243.59
+        "start": 223.41,
+        "end": 223.59
       },
       {
         "word": "no",
-        "start": 243.59,
-        "end": 243.78
+        "start": 223.59,
+        "end": 223.78
       },
       {
         "word": "plans",
-        "start": 243.81,
-        "end": 244.19
+        "start": 223.81,
+        "end": 224.19
       },
       {
         "word": "i",
-        "start": 244.19,
-        "end": 244.2
+        "start": 224.19,
+        "end": 224.2
       },
       {
         "word": "ain't",
-        "start": 244.2,
-        "end": 244.54
+        "start": 224.2,
+        "end": 224.54
       },
       {
         "word": "going",
-        "start": 244.54,
-        "end": 244.83
+        "start": 224.54,
+        "end": 224.83
       },
       {
         "word": "nowhere",
-        "start": 244.83,
-        "end": 245.39
+        "start": 224.83,
+        "end": 225.39
       },
       {
         "word": "so",
-        "start": 245.61,
-        "end": 245.63
+        "start": 225.61,
+        "end": 225.63
       },
       {
         "word": "take",
-        "start": 245.65,
-        "end": 245.89
+        "start": 225.65,
+        "end": 225.89
       },
       {
         "word": "your",
-        "start": 245.9,
-        "end": 245.93
+        "start": 225.9,
+        "end": 225.93
       },
       {
         "word": "fast",
-        "start": 245.93,
-        "end": 246.22
+        "start": 225.93,
+        "end": 226.22
       },
       {
         "word": "car",
-        "start": 246.22,
-        "end": 246.6
+        "start": 226.22,
+        "end": 226.6
       },
       {
         "word": "and",
-        "start": 246.6,
-        "end": 246.81
+        "start": 226.6,
+        "end": 226.81
       },
       {
         "word": "keep",
-        "start": 246.81,
-        "end": 247.01
+        "start": 226.81,
+        "end": 227.01
       },
       {
         "word": "on",
-        "start": 247.01,
-        "end": 247.31
+        "start": 227.01,
+        "end": 227.31
       },
       {
         "word": "driving",
-        "start": 247.32,
-        "end": 247.77
+        "start": 227.32,
+        "end": 227.77
       },
       {
         "word": "so",
-        "start": 256.04,
-        "end": 256.06
+        "start": 236.04,
+        "end": 236.06
       },
       {
         "word": "i",
-        "start": 256.06,
-        "end": 256.07
+        "start": 236.06,
+        "end": 236.07
       },
       {
         "word": "remember",
-        "start": 256.07,
-        "end": 256.43
+        "start": 236.07,
+        "end": 236.43
       },
       {
         "word": "when",
-        "start": 256.46,
-        "end": 256.62
+        "start": 236.46,
+        "end": 236.62
       },
       {
         "word": "we",
-        "start": 256.62,
-        "end": 256.66
+        "start": 236.62,
+        "end": 236.66
       },
       {
         "word": "were",
-        "start": 257.35,
-        "end": 257.37
+        "start": 237.35,
+        "end": 237.37
       },
       {
         "word": "driving",
-        "start": 257.37,
-        "end": 257.59
+        "start": 237.37,
+        "end": 237.59
       },
       {
         "word": "driving",
-        "start": 257.97,
-        "end": 258.37
+        "start": 237.97,
+        "end": 238.37
       },
       {
         "word": "in",
-        "start": 258.37,
-        "end": 258.47
+        "start": 238.37,
+        "end": 238.47
       },
       {
         "word": "your",
-        "start": 258.47,
-        "end": 258.69
+        "start": 238.47,
+        "end": 238.69
       },
       {
         "word": "car",
-        "start": 258.69,
-        "end": 258.91
+        "start": 238.69,
+        "end": 238.91
       },
       {
         "word": "speed",
-        "start": 259.41,
-        "end": 259.77
+        "start": 239.41,
+        "end": 239.77
       },
       {
         "word": "so",
-        "start": 259.88,
-        "end": 259.9
+        "start": 239.88,
+        "end": 239.9
       },
       {
         "word": "fast",
-        "start": 259.9,
-        "end": 260.18
+        "start": 239.9,
+        "end": 240.18
       },
       {
         "word": "i",
-        "start": 260.2,
-        "end": 260.21
+        "start": 240.2,
+        "end": 240.21
       },
       {
         "word": "felt",
-        "start": 260.21,
-        "end": 260.37
+        "start": 240.21,
+        "end": 240.37
       },
       {
         "word": "like",
-        "start": 260.4,
-        "end": 260.62
+        "start": 240.4,
+        "end": 240.62
       },
       {
         "word": "i",
-        "start": 260.62,
-        "end": 260.65
+        "start": 240.62,
+        "end": 240.65
       },
       {
         "word": "was",
-        "start": 261.58,
-        "end": 261.61
+        "start": 240.74087962962966,
+        "end": 240.92712962962966
       },
       {
         "word": "drunk",
-        "start": 261.63,
-        "end": 261.74
+        "start": 240.9760648148148,
+        "end": 241.3927777777778
       },
       {
         "word": "city",
-        "start": 261.86,
-        "end": 262.21
+        "start": 241.86,
+        "end": 242.21
       },
       {
         "word": "lights",
-        "start": 262.21,
-        "end": 262.46
+        "start": 242.21,
+        "end": 242.46
       },
       {
         "word": "lay",
-        "start": 262.53,
-        "end": 262.7
+        "start": 242.53,
+        "end": 242.7
       },
       {
         "word": "out",
-        "start": 262.87,
-        "end": 263.09
+        "start": 242.87,
+        "end": 243.09
       },
       {
         "word": "before",
-        "start": 263.09,
-        "end": 263.49
+        "start": 243.09,
+        "end": 243.49
       },
       {
         "word": "us",
-        "start": 263.49,
-        "end": 263.67
+        "start": 243.49,
+        "end": 243.67
       },
       {
         "word": "and",
-        "start": 263.68,
-        "end": 263.84
+        "start": 243.68,
+        "end": 243.84
       },
       {
         "word": "your",
-        "start": 263.84,
-        "end": 263.96
+        "start": 243.84,
+        "end": 243.96
       },
       {
         "word": "arm",
-        "start": 263.96,
-        "end": 264.21
+        "start": 243.96,
+        "end": 244.21
       },
       {
         "word": "felt",
-        "start": 264.21,
-        "end": 264.38
+        "start": 244.21,
+        "end": 244.51310185185184
       },
       {
         "word": "nice",
-        "start": 264.76,
-        "end": 264.79
+        "start": 244.51694444444442,
+        "end": 244.79
       },
       {
         "word": "wrapped",
-        "start": 264.79,
-        "end": 265.05
+        "start": 244.79,
+        "end": 245.05
       },
       {
         "word": "'round",
-        "start": 265.05,
-        "end": 265.31
+        "start": 245.05,
+        "end": 245.31
       },
       {
         "word": "my",
-        "start": 265.36,
-        "end": 265.57
+        "start": 245.36,
+        "end": 245.57
       },
       {
         "word": "shoulder",
-        "start": 265.57,
-        "end": 266.12
+        "start": 245.56421296296296,
+        "end": 246.06212962962968
       },
       {
         "word": "and",
-        "start": 266.13,
-        "end": 266.16
+        "start": 246.06055555555557,
+        "end": 246.24680555555557
       },
       {
         "word": "i",
-        "start": 266.19,
-        "end": 266.83
+        "start": 246.23629629629627,
+        "end": 247.0441203703704
       },
       {
         "word": "i",
-        "start": 268.25,
-        "end": 268.26
+        "start": 247.04050925925924,
+        "end": 247.39194444444442
       },
       {
         "word": "had",
-        "start": 268.26,
-        "end": 268.39
+        "start": 248.19634259259257,
+        "end": 248.39
       },
       {
         "word": "a",
-        "start": 268.39,
-        "end": 268.45
+        "start": 248.39,
+        "end": 248.45
       },
       {
         "word": "feeling",
-        "start": 268.45,
-        "end": 269.04
+        "start": 248.45,
+        "end": 249.04
       },
       {
         "word": "that",
-        "start": 269.05,
-        "end": 269.42
+        "start": 249.05,
+        "end": 249.42
       },
       {
         "word": "i",
-        "start": 269.42,
-        "end": 269.76
+        "start": 249.42,
+        "end": 249.76
       },
       {
         "word": "belonged",
-        "start": 269.78,
-        "end": 270.25
+        "start": 249.78,
+        "end": 250.46
       },
       {
         "word": "i",
-        "start": 270.75,
-        "end": 271.32
+        "start": 250.75,
+        "end": 251.32
       },
       {
         "word": "i",
-        "start": 271.79,
-        "end": 272.13
+        "start": 251.34439814814814,
+        "end": 252.39
       },
       {
         "word": "had",
-        "start": 272.7,
-        "end": 272.9
+        "start": 252.7,
+        "end": 252.9
       },
       {
         "word": "a",
-        "start": 272.9,
-        "end": 272.95
+        "start": 252.89421296296297,
+        "end": 253.01365740740738
       },
       {
         "word": "feeling",
-        "start": 273.25,
-        "end": 273.5
+        "start": 253.01273148148147,
+        "end": 253.5
       },
       {
         "word": "i",
-        "start": 273.65,
-        "end": 273.93
+        "start": 253.51111111111112,
+        "end": 253.93
       },
       {
         "word": "could",
-        "start": 274.01,
-        "end": 274.06
+        "start": 253.92319444444442,
+        "end": 254.1236574074074
       },
       {
         "word": "be",
-        "start": 274.12,
-        "end": 274.33
+        "start": 254.12,
+        "end": 254.33
       },
       {
         "word": "someone",
-        "start": 274.36,
-        "end": 274.54
+        "start": 254.3252777777778,
+        "end": 254.82935185185187
       },
       {
         "word": "be",
-        "start": 275.19,
-        "end": 275.44
+        "start": 255.19,
+        "end": 255.44
       },
       {
         "word": "someone",
-        "start": 275.61,
-        "end": 275.85
+        "start": 255.44217592592594,
+        "end": 256.00625
       },
       {
         "word": "you",
-        "start": 279.23,
-        "end": 279.53
+        "start": 266.9325462962963,
+        "end": 267.2325462962963
       },
       {
         "word": "got",
-        "start": 281.78,
-        "end": 281.81
+        "start": 267.2198148148148,
+        "end": 267.4465740740741
       },
       {
         "word": "a",
-        "start": 281.81,
-        "end": 281.82
+        "start": 267.4465740740741,
+        "end": 267.62439814814815
       },
       {
         "word": "fast",
-        "start": 281.82,
-        "end": 282.01
+        "start": 267.6186111111111,
+        "end": 268.0516666666666
       },
       {
         "word": "enough",
-        "start": 282.77,
-        "end": 282.96
+        "start": 269.38458333333324,
+        "end": 269.7366203703703
       },
       {
         "word": "so",
-        "start": 283.93,
-        "end": 283.95
+        "start": 269.7401851851853,
+        "end": 269.91064814814825
       },
       {
         "word": "you",
-        "start": 289.93,
-        "end": 290.14
+        "start": 269.93,
+        "end": 270.14
       },
       {
         "word": "can",
-        "start": 290.14,
-        "end": 290.26
+        "start": 270.14,
+        "end": 270.26
       },
       {
         "word": "fly",
-        "start": 290.26,
-        "end": 290.63
+        "start": 270.26,
+        "end": 270.63
       },
       {
         "word": "away",
-        "start": 290.63,
-        "end": 291.35
+        "start": 270.63,
+        "end": 271.35
       },
       {
         "word": "you",
-        "start": 291.49,
-        "end": 291.73
+        "start": 271.49,
+        "end": 271.73
       },
       {
         "word": "gotta",
-        "start": 291.73,
-        "end": 291.96
+        "start": 271.73,
+        "end": 271.96
       },
       {
         "word": "make",
-        "start": 291.96,
-        "end": 292.33
+        "start": 271.96,
+        "end": 272.33
       },
       {
         "word": "a",
-        "start": 292.33,
-        "end": 292.39
+        "start": 272.33,
+        "end": 272.39
       },
       {
         "word": "decision",
-        "start": 292.39,
-        "end": 293.08
+        "start": 272.39,
+        "end": 273.08
       },
       {
         "word": "leave",
-        "start": 293.68,
-        "end": 294.04
+        "start": 273.68,
+        "end": 274.04
       },
       {
         "word": "tonight",
-        "start": 294.04,
-        "end": 294.5
+        "start": 274.04,
+        "end": 274.5
       },
       {
         "word": "or",
-        "start": 294.5,
-        "end": 294.53
+        "start": 274.5,
+        "end": 274.53
       },
       {
         "word": "live",
-        "start": 294.53,
-        "end": 294.74
+        "start": 274.53,
+        "end": 274.74
       },
       {
         "word": "and",
-        "start": 294.74,
-        "end": 294.84
+        "start": 274.74,
+        "end": 274.84
       },
       {
         "word": "die",
-        "start": 294.84,
-        "end": 295.1
+        "start": 274.84,
+        "end": 275.1
       },
       {
         "word": "this",
-        "start": 295.38,
-        "end": 295.41
+        "start": 275.1080092592593,
+        "end": 275.41
       },
       {
         "word": "way",
-        "start": 295.41,
-        "end": 295.86
+        "start": 275.41,
+        "end": 275.86
       }
     ]
   },
