@@ -7,10 +7,8 @@ LOG_FILE="/home/twain/Projects/ltx_guru/sequence_maker.log"
 exec > "$LOG_FILE" 2>&1
 
 # Set environment variables to help with icon display
-export QT_QPA_PLATFORMTHEME=gtk3
 export RESOURCE_NAME=SequenceMaker
 export XDG_CURRENT_DESKTOP=${XDG_CURRENT_DESKTOP:-GNOME}
-export QT_STYLE_OVERRIDE=gtk3
 export XDG_DATA_DIRS=${XDG_DATA_DIRS}:~/.local/share
 export ICON_PATH=/home/twain/Projects/ltx_guru/sequence_maker/resources/icons/sm_app_icon_better.jpeg
 

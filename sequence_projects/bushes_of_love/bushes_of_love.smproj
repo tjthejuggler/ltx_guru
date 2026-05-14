@@ -2,7 +2,7 @@
   "metadata": {
     "version": "0.1.0",
     "created": "2026-05-12T09:59:03.339777+00:00",
-    "modified": "2026-05-12T11:13:05.210411",
+    "modified": "2026-05-13T14:06:50.679531",
     "name": "bushes_of_love",
     "description": "Sequence for Bushes of Love by Bad Lip Reading"
   },
@@ -19,14 +19,14 @@
       "name": "Ball 1",
       "defaultPixels": 3,
       "created": "2026-05-12T09:59:03.339777+00:00",
-      "modified": "2026-05-12T11:13:05.210385",
+      "modified": "2026-05-13T14:06:50.679498",
       "segments": [
         {
           "startTime": 0.0,
           "endTime": 6.45,
           "color": [
             255,
-            165,
+            255,
             0
           ],
           "pixels": 3,
@@ -119,6 +119,18 @@
         },
         {
           "startTime": 34.28,
+          "endTime": 34.75,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 34.75,
           "endTime": 36.14,
           "color": [
             165,
@@ -131,6 +143,18 @@
         },
         {
           "startTime": 36.14,
+          "endTime": 36.68,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 36.68,
           "endTime": 38.47,
           "color": [
             165,
@@ -167,19 +191,7 @@
         },
         {
           "startTime": 42.76,
-          "endTime": 46.19,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 46.2,
-          "endTime": 51.2,
+          "endTime": 47.76,
           "color": [
             165,
             42,
@@ -191,7 +203,7 @@
         },
         {
           "startTime": 47.76,
-          "endTime": 48.21,
+          "endTime": 48.2,
           "color": [
             0,
             0,
@@ -202,8 +214,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 49.58,
-          "endTime": 54.58,
+          "startTime": 48.2,
+          "endTime": 51.18,
           "color": [
             165,
             42,
@@ -220,6 +232,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 51.63,
+          "endTime": 54.58,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -262,18 +286,6 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 59.91,
-          "endTime": 64.91,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
           "startTime": 61.46,
           "endTime": 61.91,
           "color": [
@@ -286,8 +298,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 63.32,
-          "endTime": 68.32,
+          "startTime": 61.91,
+          "endTime": 64.91,
           "color": [
             165,
             42,
@@ -304,6 +316,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 65.3,
+          "endTime": 68.32,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -371,7 +395,7 @@
         },
         {
           "startTime": 77.33,
-          "endTime": 82.33,
+          "endTime": 82.11,
           "color": [
             165,
             42,
@@ -382,31 +406,7 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 80.51,
-          "endTime": 85.51,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 82.18,
-          "endTime": 87.18,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 82.33,
+          "startTime": 82.11,
           "endTime": 82.45,
           "color": [
             0,
@@ -418,8 +418,20 @@
           "segment_type": "solid"
         },
         {
+          "startTime": 82.45,
+          "endTime": 85.51,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
           "startTime": 85.51,
-          "endTime": 85.7,
+          "endTime": 85.88,
           "color": [
             0,
             0,
@@ -430,7 +442,19 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 87.18,
+          "startTime": 85.88,
+          "endTime": 87.14,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 87.14,
           "endTime": 87.24,
           "color": [
             0,
@@ -466,18 +490,6 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 97.61,
-          "endTime": 102.61,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
           "startTime": 99.19,
           "endTime": 99.66,
           "color": [
@@ -490,8 +502,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 101.03,
-          "endTime": 106.03,
+          "startTime": 99.66,
+          "endTime": 102.61,
           "color": [
             165,
             42,
@@ -508,6 +520,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 103.04,
+          "endTime": 106.03,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -550,18 +574,6 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 111.33,
-          "endTime": 116.33,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
           "startTime": 112.89,
           "endTime": 113.36,
           "color": [
@@ -574,8 +586,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 114.73,
-          "endTime": 119.73,
+          "startTime": 113.36,
+          "endTime": 116.33,
           "color": [
             165,
             42,
@@ -592,6 +604,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 116.74,
+          "endTime": 119.73,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -659,7 +683,7 @@
         },
         {
           "startTime": 170.85,
-          "endTime": 175.85,
+          "endTime": 172.63,
           "color": [
             165,
             42,
@@ -670,8 +694,20 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 175.85,
-          "endTime": 176.49,
+          "startTime": 172.63,
+          "endTime": 173.15,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 173.15,
+          "endTime": 173.15,
           "color": [
             165,
             42,
@@ -682,8 +718,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 175.85,
-          "endTime": 176.37,
+          "startTime": 173.15,
+          "endTime": 173.67,
           "color": [
             0,
             0,
@@ -694,19 +730,7 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 176.49,
-          "endTime": 177.01,
-          "color": [
-            0,
-            0,
-            255
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 177.01,
+          "startTime": 173.67,
           "endTime": 180.34,
           "color": [
             255,
@@ -719,31 +743,31 @@
         },
         {
           "startTime": 180.34,
+          "endTime": 185.33,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 185.33,
+          "endTime": 185.6,
+          "color": [
+            0,
+            0,
+            255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 185.6,
           "endTime": 188.18,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 188.18,
-          "endTime": 188.64,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
-          "startTime": 188.18,
-          "endTime": 191.77,
           "color": [
             165,
             42,
@@ -766,6 +790,18 @@
           "segment_type": "solid"
         },
         {
+          "startTime": 188.34,
+          "endTime": 188.64,
+          "color": [
+            165,
+            42,
+            0
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
           "startTime": 188.64,
           "endTime": 189.04,
           "color": [
@@ -778,8 +814,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 191.31,
-          "endTime": 196.31,
+          "startTime": 189.04,
+          "endTime": 191.77,
           "color": [
             165,
             42,
@@ -796,6 +832,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 192.09,
+          "endTime": 196.31,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -838,18 +886,6 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 203.9,
-          "endTime": 208.9,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
           "startTime": 205.46,
           "endTime": 205.94,
           "color": [
@@ -862,8 +898,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 207.33,
-          "endTime": 212.33,
+          "startTime": 205.94,
+          "endTime": 208.9,
           "color": [
             165,
             42,
@@ -880,6 +916,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 209.31,
+          "endTime": 212.33,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -922,18 +970,6 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 217.62,
-          "endTime": 222.62,
-          "color": [
-            165,
-            42,
-            0
-          ],
-          "pixels": 3,
-          "effects": [],
-          "segment_type": "solid"
-        },
-        {
           "startTime": 219.18,
           "endTime": 219.66,
           "color": [
@@ -946,8 +982,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 221.05,
-          "endTime": 226.05,
+          "startTime": 219.66,
+          "endTime": 222.62,
           "color": [
             165,
             42,
@@ -964,6 +1000,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 223.03,
+          "endTime": 226.05,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -995,7 +1043,7 @@
         },
         {
           "startTime": 227.88,
-          "endTime": 232.88,
+          "endTime": 231.34,
           "color": [
             165,
             42,
@@ -1007,7 +1055,7 @@
         },
         {
           "startTime": 231.34,
-          "endTime": 236.34,
+          "endTime": 232.88,
           "color": [
             165,
             42,
@@ -1030,8 +1078,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 235.16,
-          "endTime": 239.8,
+          "startTime": 233.32,
+          "endTime": 236.34,
           "color": [
             165,
             42,
@@ -1048,6 +1096,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 236.73,
+          "endTime": 239.8,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -1091,7 +1151,7 @@
         },
         {
           "startTime": 245.05,
-          "endTime": 250.05,
+          "endTime": 246.6,
           "color": [
             165,
             42,
@@ -1114,8 +1174,8 @@
           "segment_type": "solid"
         },
         {
-          "startTime": 248.46,
-          "endTime": 253.46,
+          "startTime": 247.08,
+          "endTime": 250.05,
           "color": [
             165,
             42,
@@ -1132,6 +1192,18 @@
             0,
             0,
             255
+          ],
+          "pixels": 3,
+          "effects": [],
+          "segment_type": "solid"
+        },
+        {
+          "startTime": 250.45,
+          "endTime": 253.46,
+          "color": [
+            165,
+            42,
+            0
           ],
           "pixels": 3,
           "effects": [],
@@ -1167,7 +1239,7 @@
       "name": "Ball 2",
       "defaultPixels": 3,
       "created": "2026-05-12T09:59:03.339777+00:00",
-      "modified": "2026-05-12T11:13:05.210404",
+      "modified": "2026-05-13T14:06:50.679520",
       "segments": [
         {
           "startTime": 0.0,
@@ -1187,7 +1259,7 @@
       "name": "Ball 3",
       "defaultPixels": 3,
       "created": "2026-05-12T09:59:03.339777+00:00",
-      "modified": "2026-05-12T11:13:05.210408",
+      "modified": "2026-05-13T14:06:50.679526",
       "segments": [
         {
           "startTime": 0.0,
@@ -2148,11 +2220,11 @@
       {
         "word": "<unk>",
         "start": 81.2,
-        "end": 82.28
+        "end": 82.06
       },
       {
         "word": "blue",
-        "start": 82.33,
+        "start": 82.11000000000001,
         "end": 82.45
       },
       {
@@ -2208,16 +2280,16 @@
       {
         "word": "blue",
         "start": 85.51,
-        "end": 85.7
+        "end": 85.88
       },
       {
         "word": "milk",
-        "start": 85.7,
-        "end": 85.74
+        "start": 85.88999999999999,
+        "end": 86.24000000000001
       },
       {
         "word": "but",
-        "start": 87.18,
+        "start": 87.14,
         "end": 87.24
       },
       {
@@ -2253,12 +2325,12 @@
       {
         "word": "told",
         "start": 88.89,
-        "end": 89.02
+        "end": 89.38000000000001
       },
       {
         "word": "me",
-        "start": 89.02,
-        "end": 89.04
+        "start": 89.38,
+        "end": 89.55
       },
       {
         "word": "we",
@@ -2267,8 +2339,8 @@
       },
       {
         "word": "all",
-        "start": 90.477,
-        "end": 90.545
+        "start": 90.485,
+        "end": 90.645
       },
       {
         "word": "got",

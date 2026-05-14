@@ -249,7 +249,81 @@ class Timeline:
             self._remove_overlapping_segments(new_segment)
             
             return new_segment
-            
+    
+    def add_color_at_time_range(self, start_time, end_time, color, pixels=None):
+        """
+        Add a solid color segment with an explicit start and end time.
+        
+        This is used when a lyric word is selected and a color key is pressed —
+        the new segment should exactly match the word's time range rather than
+        starting at the position marker and extending to the next segment.
+        
+        Any existing segments that overlap with [start_time, end_time) are
+        removed or trimmed so there are no gaps or overlaps.
+        
+        Args:
+            start_time (float): Start time in seconds.
+            end_time (float): End time in seconds.
+            color (tuple): RGB color tuple.
+            pixels (int, optional): Number of pixels. If None, uses the default.
+        
+        Returns:
+            TimelineSegment: The created segment.
+        """
+        self.logger.debug(f"Adding color {color} from {start_time:.3f}s to {end_time:.3f}s")
+        
+        if pixels is None:
+            pixels = self.default_pixels
+        
+        # Clamp: end must be > start
+        if end_time <= start_time:
+            self.logger.warning(f"add_color_at_time_range: end_time ({end_time}) <= start_time ({start_time}), skipping")
+            return None
+        
+        # Remove or trim any segments that overlap with [start_time, end_time)
+        segments_to_remove = []
+        for seg in self.segments:
+            # Overlap exists if seg.start_time < end_time AND seg.end_time > start_time
+            if seg.start_time < end_time and seg.end_time > start_time:
+                # Case 1: existing segment is entirely inside the new range — remove it
+                if seg.start_time >= start_time and seg.end_time <= end_time:
+                    segments_to_remove.append(seg)
+                # Case 2: existing segment overlaps on the left (starts before, ends inside) — trim its end
+                elif seg.start_time < start_time and seg.end_time <= end_time:
+                    seg.end_time = start_time
+                # Case 3: existing segment overlaps on the right (starts inside, ends after) — trim its start
+                elif seg.start_time >= start_time and seg.end_time > end_time:
+                    seg.start_time = end_time
+                # Case 4: existing segment fully encloses the new range — split into two
+                elif seg.start_time < start_time and seg.end_time > end_time:
+                    # Left part: seg.start_time → start_time (keep original properties)
+                    # Right part: end_time → seg.end_time (keep original properties)
+                    right_segment = TimelineSegment(
+                        start_time=end_time,
+                        end_time=seg.end_time,
+                        color=seg.color,
+                        pixels=seg.pixels,
+                        end_color=seg.end_color
+                    )
+                    seg.end_time = start_time
+                    self.segments.append(right_segment)
+        
+        for seg in segments_to_remove:
+            self.segments.remove(seg)
+        
+        # Create the new segment
+        new_segment = TimelineSegment(
+            start_time=start_time,
+            end_time=end_time,
+            color=color,
+            pixels=pixels,
+            end_color=None  # Solid segment
+        )
+        self.segments.append(new_segment)
+        self._sort_segments()
+        
+        return new_segment
+    
     def _remove_overlapping_segments(self, segment):
         """
         Remove or adjust any segments that overlap with the given segment.

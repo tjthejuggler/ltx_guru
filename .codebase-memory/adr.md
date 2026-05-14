@@ -1,25 +1,20 @@
-# ADR: Bulk Color Swap Feature
+# ADR: Lyric-Word-Aware Color Key Press
 
-## Date: 2026-05-12
-
-## Status: Accepted
+**Date:** 2026-05-12
+**Status:** Accepted
 
 ## Context
-Users need the ability to swap colors across the entire project or a time range. The swap must be simultaneous (not sequential) so that chained swaps like red↔green work correctly. The operation must be reversible with a single undo.
+When a user has a lyric word selected in the lyrics timeline and presses a color key (1-9, 0, or any mapped key), the default behavior was to create a segment starting at the position marker and extending to the next segment or end-of-timeline. This didn't match the user's mental model — they selected a specific word and expected the color to fill exactly that word's time range.
 
 ## Decision
-- Created `BulkSwapManager` in `managers/bulk_swap_manager.py` that builds a color_map dict from all pairs, then applies all mappings in a single pass over every segment in every timeline.
-- Created `BulkSwapDialog` in `ui/dialogs/bulk_swap_dialog.py` with scope selection (entire project / time range), dynamic color pair rows with a popup color picker showing common + project-specific colors, and a plus button for adding pairs.
-- For time range scope, only segments entirely within the range are modified.
-- Undo is handled by calling `undo_manager.save_state("bulk_color_swap")` before applying changes, leveraging the existing snapshot-based undo system.
-- If no changes are made (no matching colors), the saved undo state is popped to avoid cluttering the stack.
+Added a check in `MainWindow.keyPressEvent` (before the normal color-add path) that detects whether a lyric word is selected in `LyricsTimelineWidget._selected_word`. If so, the new segment's start and end times are set to the word's `.start` and `.end` timestamps. This applies to both solid color keys and Shift+key (fade) presses, as well as the 0-key (zero-key colors).
 
-## Files Added
-- `sequence_maker/managers/bulk_swap_manager.py`
-- `sequence_maker/ui/dialogs/bulk_swap_dialog.py`
+New methods added:
+- `Timeline.add_color_at_time_range(start, end, color, pixels)` — creates a segment with explicit start/end, trimming/removing overlapping segments
+- `TimelineManager.add_color_at_time_range(timeline_index, start, end, color, pixels, skip_undo)` — manager wrapper
+- `TimelineManager.add_fade_at_time_range(timeline_index, start, end, color, pixels)` — creates a fade segment matching the word's time range
 
-## Files Modified
-- `sequence_maker/app/application.py` — import and instantiate BulkSwapManager
-- `sequence_maker/ui/main_window_parts/actions.py` — add bulk_swap_action
-- `sequence_maker/ui/main_window_parts/menus.py` — add action to Timeline menu
-- `sequence_maker/ui/main_window.py` — add `_on_bulk_swap` handler
+## Consequences
+- When no lyric word is selected, behavior is completely unchanged (backward compatible)
+- When a word is selected, the segment exactly matches the word's time boundaries
+- Undo is handled as a single grouped action for multi-timeline keys

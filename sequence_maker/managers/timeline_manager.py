@@ -791,6 +791,129 @@ class TimelineManager(QObject):
             )
             return self.add_color_at_position(timeline_index, new_key_color_tuple, pixels)
 
+    def add_color_at_time_range(self, timeline_index, start_time, end_time, color, pixels=None, skip_undo=False):
+        """
+        Add a solid color segment with an explicit start and end time.
+        
+        Used when a lyric word is selected — the new segment exactly matches
+        the word's time range instead of starting at the position marker.
+        
+        Args:
+            timeline_index (int): Timeline index.
+            start_time (float): Start time in seconds.
+            end_time (float): End time in seconds.
+            color (tuple): RGB color tuple.
+            pixels (int, optional): Number of pixels. If None, uses the timeline default.
+            skip_undo (bool, optional): If True, skip saving undo state (caller handles it).
+        
+        Returns:
+            TimelineSegment: The new segment, or None if the timeline is invalid.
+        """
+        self.logger.debug(
+            f"Adding color {color} from {start_time:.3f}s to {end_time:.3f}s "
+            f"to timeline {timeline_index}"
+        )
+        
+        timeline = self.get_timeline(timeline_index)
+        if not timeline:
+            self.logger.warning(f"Cannot add color: Timeline {timeline_index} not found")
+            return None
+        
+        segment = timeline.add_color_at_time_range(start_time, end_time, color, pixels)
+        
+        if self.undo_manager and not skip_undo:
+            self.undo_manager.save_state("add_color_at_time_range")
+        
+        self.segment_added.emit(timeline, segment)
+        self.app.project_manager.project_changed.emit()
+        
+        return segment
+    
+    def add_fade_at_time_range(self, timeline_index, start_time, end_time, new_key_color_tuple, pixels=None):
+        """
+        Create a fade segment with an explicit start and end time.
+        
+        Used when a lyric word is selected and Shift+color key is pressed.
+        The fade goes from the existing color at start_time to new_key_color_tuple.
+        If no existing segment overlaps, falls back to a solid segment.
+        
+        Args:
+            timeline_index (int): Timeline index.
+            start_time (float): Start time in seconds.
+            end_time (float): End time in seconds.
+            new_key_color_tuple (tuple): RGB color tuple for the fade end.
+            pixels (int, optional): Number of pixels.
+        
+        Returns:
+            TimelineSegment: The fade segment, or None if the timeline is invalid.
+        """
+        self.logger.debug(
+            f"Adding fade to {new_key_color_tuple} from {start_time:.3f}s to {end_time:.3f}s "
+            f"on timeline {timeline_index}"
+        )
+        
+        timeline = self.get_timeline(timeline_index)
+        if not timeline:
+            self.logger.warning(f"Cannot add fade: Timeline {timeline_index} not found")
+            return None
+        
+        # Find the segment at start_time to get the original color for the fade start
+        existing_segment = timeline.get_segment_at_time(start_time)
+        
+        if existing_segment:
+            original_start_color = existing_segment.color
+            effective_pixels = pixels if pixels is not None else existing_segment.pixels
+            
+            # If the existing segment starts exactly at start_time, we can convert it
+            if abs(existing_segment.start_time - start_time) < 0.001:
+                # Modify the existing segment to be a fade
+                self.modify_segment(
+                    timeline,
+                    existing_segment,
+                    end_time=end_time,
+                    color=original_start_color,
+                    end_color=new_key_color_tuple,
+                    segment_type='fade',
+                    pixels=effective_pixels,
+                )
+                if self.undo_manager:
+                    self.undo_manager.save_state("add_fade_at_time_range")
+                self.app.project_manager.project_changed.emit()
+                return existing_segment
+            
+            # Otherwise, trim the existing segment and create a new fade segment
+            # First, handle any segments that overlap with [start_time, end_time)
+            # by using add_color_at_time_range which handles trimming/removal
+            # Then modify the resulting segment to be a fade
+            
+            # Save the original color before trimming
+            fade_start_color = original_start_color
+            
+            # Create the segment in the time range
+            segment = timeline.add_color_at_time_range(start_time, end_time, fade_start_color, effective_pixels)
+            
+            # Now convert it to a fade
+            if segment:
+                self.modify_segment(
+                    timeline,
+                    segment,
+                    color=fade_start_color,
+                    end_color=new_key_color_tuple,
+                    segment_type='fade',
+                    pixels=effective_pixels,
+                )
+            
+            if self.undo_manager:
+                self.undo_manager.save_state("add_fade_at_time_range")
+            self.app.project_manager.project_changed.emit()
+            return segment
+        else:
+            # No existing segment at start_time — just add a solid segment
+            self.logger.info(
+                f"No segment at {start_time:.3f}s. Adding solid segment {new_key_color_tuple}."
+            )
+            return self.add_color_at_time_range(timeline_index, start_time, end_time, new_key_color_tuple, pixels)
+    
     def get_color_at_position(self, timeline_index):
         """
         Get the color at the current position.

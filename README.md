@@ -40,6 +40,16 @@ This repository contains tools and projects for creating light sequences for LTX
 
 ## Recent Updates
 
+### 2026-05-12 11:21 UTC+1 - Lyric-Word-Aware Color Key Press
+- **When a lyric word is selected in the lyrics timeline**, pressing a color key (1-9, 0, or any mapped key) now creates a color segment that exactly matches the selected word's start and end times, instead of starting at the position marker and extending to the next segment.
+- **Shift+color key** creates a fade segment matching the word's time range (from the existing color at the word's start to the new key color at the word's end).
+- **Works for all color key paths**: DEFAULT_KEY_MAPPING keys (1-9), the 0 key (zero-key colors), and snippet mode.
+- If no lyric word is selected, behavior is unchanged (segment starts at the position marker).
+- **Files modified:**
+  - [`sequence_maker/models/timeline.py`](sequence_maker/models/timeline.py:252) — Added `add_color_at_time_range()` method to `Timeline`.
+  - [`sequence_maker/managers/timeline_manager.py`](sequence_maker/managers/timeline_manager.py:794) — Added `add_color_at_time_range()` and `add_fade_at_time_range()` methods to `TimelineManager`.
+  - [`sequence_maker/ui/main_window.py`](sequence_maker/ui/main_window.py:802) — Added lyric-word selection check in `keyPressEvent` before the normal color-add path; also updated the 0-key handler.
+
 ### 2026-05-12 10:47 UTC+1 - Bushes of Love Color Scheme Update
 - **Updated color scheme:** Ball 1 now blue on B-words with 5s dark orange lead-in; Balls 2&3 solid bright orange.
 - **Interpolated missing timestamps** in the 264–279s gap (last verse repetition).

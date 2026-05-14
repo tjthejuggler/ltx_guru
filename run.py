@@ -35,8 +35,7 @@ def main():
         # Set environment variables to help with desktop integration
         import os
         
-        # Set Qt platform theme to better integrate with GTK-based desktops
-        os.environ["QT_QPA_PLATFORMTHEME"] = "gtk3"
+        # Set Qt auto screen scale factor
         os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
         
         # Set application class name for window manager

@@ -800,6 +800,45 @@ class MainWindow(QMainWindow):
                 return
             # --- End selected segment color change ---
             
+            # --- Selected lyric word: create segment matching word's time range ---
+            # When a lyric word is selected in the lyrics timeline, pressing a
+            # color key creates a segment that exactly matches the word's start
+            # and end times, instead of starting at the position marker.
+            selected_lyric_word = None
+            if (hasattr(self, 'audio_widget') and
+                    hasattr(self.audio_widget, 'lyrics_timeline') and
+                    self.audio_widget.lyrics_timeline._selected_word is not None):
+                selected_lyric_word = self.audio_widget.lyrics_timeline._selected_word
+            
+            if selected_lyric_word is not None:
+                word_start = selected_lyric_word.start
+                word_end = selected_lyric_word.end
+                
+                # Check for fade creation
+                create_fade = bool(modifiers & Qt.KeyboardModifier.ShiftModifier)
+                
+                # Save undo state once for all timelines
+                is_multi_timeline = len(timelines) > 1
+                if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
+                    self.app.undo_manager.save_state("add_color_lyric_word")
+                
+                for timeline_index in timelines:
+                    if hasattr(self.app, 'timeline_manager'):
+                        if create_fade:
+                            self.app.timeline_manager.add_fade_at_time_range(
+                                timeline_index, word_start, word_end, color
+                            )
+                        else:
+                            self.app.timeline_manager.add_color_at_time_range(
+                                timeline_index, word_start, word_end, color,
+                                skip_undo=True
+                            )
+                
+                self._update_ui()
+                event.accept()
+                return
+            # --- End selected lyric word ---
+            
             # Check for fade creation first, then other effect modifiers
             effect_type = None
             create_fade = False
@@ -939,9 +978,23 @@ class MainWindow(QMainWindow):
                 if zero_colors:
                     if hasattr(self.app, 'undo_manager') and self.app.undo_manager:
                         self.app.undo_manager.save_state("add_color_zero_key")
+                    
+                    # Check for selected lyric word — use its time range if present
+                    selected_lyric_word = None
+                    if (hasattr(self, 'audio_widget') and
+                            hasattr(self.audio_widget, 'lyrics_timeline') and
+                            self.audio_widget.lyrics_timeline._selected_word is not None):
+                        selected_lyric_word = self.audio_widget.lyrics_timeline._selected_word
+                    
                     for tl_idx, color in enumerate(zero_colors):
                         if color is not None and hasattr(self.app, 'timeline_manager'):
-                            self.app.timeline_manager.add_color_at_position(tl_idx, color)
+                            if selected_lyric_word is not None:
+                                self.app.timeline_manager.add_color_at_time_range(
+                                    tl_idx, selected_lyric_word.start, selected_lyric_word.end, color,
+                                    skip_undo=True
+                                )
+                            else:
+                                self.app.timeline_manager.add_color_at_position(tl_idx, color)
                     self._update_ui()
             event.accept()
             return
